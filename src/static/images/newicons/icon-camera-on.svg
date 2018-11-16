@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+<style type="text/css">
+	.st0{opacity:0.5;fill:url(#Fill-1_2_);enable-background:new    ;}
+	.st1{fill:url(#Fill-3_2_);}
+</style>
+<g id="Page-1_1_">
+	<g id="Buttons-On_x2F_Hover_1_" transform="translate(-105.000000, -968.000000)">
+		<g id="self-tools_1_" transform="translate(20.000000, 952.000000)">
+			<g id="icon-camera-on_1_" transform="translate(74.000000, 0.000000)">
+				<g id="icon_1_" transform="translate(11.764706, 16.176471)">
+					
+						<linearGradient id="Fill-1_2_" gradientUnits="userSpaceOnUse" x1="-459.505" y1="494.3802" x2="-460.398" y2="493.4872" gradientTransform="matrix(12.6494 0 0 -16.5804 5836.9536 8203.9189)">
+						<stop  offset="0" style="stop-color:#C0E249"/>
+						<stop  offset="1" style="stop-color:#48D57C"/>
+					</linearGradient>
+					<path id="Fill-1_1_" class="st0" d="M21.2,19.8l-9.3-7.1l9.3-7.1c0.8-0.6,2,0,2,1v12.3C23.2,19.8,22.1,20.4,21.2,19.8"/>
+					
+						<linearGradient id="Fill-3_2_" gradientUnits="userSpaceOnUse" x1="-472.0556" y1="498.1049" x2="-472.9484" y2="497.2118" gradientTransform="matrix(18.5796 0 0 -18.8348 8786.4414 9385.9678)">
+						<stop  offset="0" style="stop-color:#C0E249"/>
+						<stop  offset="1" style="stop-color:#48D57C"/>
+					</linearGradient>
+					<path id="Fill-3_1_" class="st1" d="M13.9,21.1H1.2c-1.1,0-1.9-0.9-1.9-1.9V6.2c0-1.1,0.9-1.9,1.9-1.9h12.8
+						c1.1,0,1.9,0.9,1.9,1.9v12.9C15.8,20.2,15,21.1,13.9,21.1"/>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+</svg>

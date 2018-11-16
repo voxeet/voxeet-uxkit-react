@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+<style type="text/css">
+	.st0{opacity:0.7;}
+	.st1{opacity:0.7;fill:url(#Fill-1_1_);enable-background:new    ;}
+	.st2{fill:url(#Fill-3_1_);}
+	.st3{fill:url(#Rectangle_2_);}
+</style>
+<g id="Page-1" class="st0">
+	<g id="Buttons-On_x2F_Hover" transform="translate(-105.000000, -968.000000)">
+		<g id="self-tools" transform="translate(20.000000, 952.000000)">
+			<g id="icon-camera-on" transform="translate(74.000000, 0.000000)">
+				<g id="icon" transform="translate(11.764706, 16.176471)">
+					
+						<linearGradient id="Fill-1_1_" gradientUnits="userSpaceOnUse" x1="-460.1569" y1="493.7076" x2="-459.3834" y2="494.6447" gradientTransform="matrix(12.6494 0 0 -16.5804 5836.9536 8203.9189)">
+						<stop  offset="0" style="stop-color:#B5B8C5"/>
+						<stop  offset="1" style="stop-color:#FFFFFF"/>
+					</linearGradient>
+					<path id="Fill-1" class="st1" d="M21.2,19.8l-9.3-7.1l9.3-7.1c0.8-0.6,2,0,2,1v12.3C23.2,19.8,22.1,20.4,21.2,19.8"/>
+					
+						<linearGradient id="Fill-3_1_" gradientUnits="userSpaceOnUse" x1="-472.8352" y1="497.1364" x2="-472.1688" y2="498.1803" gradientTransform="matrix(18.5796 0 0 -18.8348 8786.4414 9385.9678)">
+						<stop  offset="0" style="stop-color:#B5B8C5"/>
+						<stop  offset="1" style="stop-color:#FFFFFF"/>
+					</linearGradient>
+					<path id="Fill-3" class="st2" d="M13.9,21.1H1.2c-1.1,0-1.9-0.9-1.9-1.9V6.2c0-1.1,0.9-1.9,1.9-1.9h12.8c1.1,0,1.9,0.9,1.9,1.9
+						v12.9C15.8,20.2,15,21.1,13.9,21.1"/>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+<linearGradient id="Rectangle_2_" gradientUnits="userSpaceOnUse" x1="-498.9207" y1="500.5225" x2="-497.9718" y2="501.4713" gradientTransform="matrix(1.4142 -1.4142 -21.2132 -21.2132 11343.8105 9934.8398)">
+	<stop  offset="0" style="stop-color:#B5B8C5"/>
+	<stop  offset="1" style="stop-color:#FFFFFF"/>
+</linearGradient>
+<polygon id="Rectangle_1_" class="st3" points="0.4,2.6 1.8,1.3 21.9,21.4 20.5,22.7 "/>
+</svg>

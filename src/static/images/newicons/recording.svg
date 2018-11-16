@@ -1,0 +1,21 @@
+
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#000A38" offset="0%"></stop>
+            <stop stop-color="#666C88" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="btn-record-off" transform="translate(-16.000000, -16.000000)">
+            <g id="icon-call-record" transform="translate(16.000000, 16.000000)">
+                <path d="M14,0 C6.26769231,0 0,6.26769231 0,14 C0,21.7323077 6.26769231,28 14,28 C21.7323077,28 28,21.7323077 28,14 C28,6.26769231 21.7323077,0 14,0" id="Fill-2" fill="url(#linearGradient-1)"></path>
+                <text id="REC" font-family=".AppleSystemUIFont" font-size="10" font-weight="normal" fill="#FFFFFF">
+                    <tspan x="5" y="17">REC</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

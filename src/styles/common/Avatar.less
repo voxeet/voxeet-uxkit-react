@@ -1,0 +1,101 @@
+.Avatar {
+  display: inline-block;
+  border-radius: 100%;
+  overflow: hidden;
+  text-align: center;
+
+  /* Box model */
+  position: relative;
+
+  img {
+    border-radius: 50%;
+    max-width: 100%;
+    object-fit: cover;
+  }
+
+  span {
+    display: inline-block;
+
+    /* Box model */
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    /* Visual */
+    border-radius: 50%;
+    border-style: solid;
+    border-color: transparent;
+  }
+
+  /* Status */
+  span.available {
+    background-color: #6abb45;
+  }
+
+  span.away {
+    background-color: #f8ca33;
+  }
+
+  span.busy {
+    background-color: #e65c5c;
+  }
+
+  span.offline {
+    background-color: #697274;
+  }
+
+  span.none {
+    display: none;
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  /* Size */
+  &.tiny {
+    width: 2rem;
+    height: 2rem;
+
+    span {
+      width: 0.64rem;
+      height: 0.64rem;
+      border-width: 0.16rem;
+    }
+  }
+
+  &.small {
+    border-radius: 100%;
+    height: 3rem;
+    overflow: hidden;
+    width: 3rem;
+
+    span {
+      width: 0.7rem;
+      height: 0.7rem;
+      border-width: 0.2rem;
+    }
+  }
+
+  &.medium {
+    width: 4.5rem;
+    height: 4.5rem;
+
+    span {
+      width: 1.44rem;
+      height: 1.44rem;
+      border-width: 0.36rem;
+    }
+  }
+
+  &.large {
+    width: 7.7rem;
+    height: 7.7rem;
+
+    span {
+      width: 1.92rem;
+      height: 1.92rem;
+      border-width: 0.48rem;
+    }
+  }
+
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-record-on</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="0%" x2="0%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FF5768" offset="0%"></stop>
+            <stop stop-color="#EB3446" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Buttons-On/Hover" transform="translate(-685.000000, -964.000000)" fill="url(#linearGradient-1)" fill-rule="nonzero">
+            <g id="action-tools" transform="translate(524.000000, 952.000000)">
+                <g id="icon-record-on" transform="translate(150.000000, 1.000000)">
+                    <path d="M25,37 C18.3830588,37 13,31.6169412 13,25 C13,18.3830588 18.3830588,13 25,13 C31.6169412,13 37,18.3830588 37,25 C37,31.6169412 31.6169412,37 25,37 M25,11 C17.2806667,11 11,17.28 11,25 C11,32.72 17.2806667,39 25,39 C32.7193333,39 39,32.72 39,25 C39,17.28 32.7193333,11 25,11" id="Fill-1" opacity="0.7"></path>
+                    <path d="M25,16.8947368 C20.5234008,16.8947368 16.8947368,20.5234008 16.8947368,25 C16.8947368,29.4765992 20.5234008,33.1052632 25,33.1052632 C29.4765992,33.1052632 33.1052632,29.4765992 33.1052632,25 C33.1052632,20.5234008 29.4765992,16.8947368 25,16.8947368" id="Fill-2"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

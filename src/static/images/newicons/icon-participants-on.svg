@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="25px" viewBox="0 0 22 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.3 (67297) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-participants-on</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="0%" x2="0%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FFCE2D" offset="0%"></stop>
+            <stop stop-color="#FF8933" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Conference-Sidebar-Participants" transform="translate(-1317.000000, -967.000000)" fill="url(#linearGradient-1)">
+            <g id="sidebar" transform="translate(1026.000000, 0.000000)">
+                <g id="icon-participants-on" transform="translate(272.000000, 954.000000)">
+                    <g transform="translate(19.000000, 13.000000)">
+                        <path d="M17.2088889,6.25 C17.2088889,9.7017673 14.4071739,12.5 10.9514656,12.5 C7.49540274,12.5 4.69333333,9.7017673 4.69333333,6.25 C4.69333333,2.7982327 7.49540274,0 10.9514656,0 C14.4071739,0 17.2088889,2.7982327 17.2088889,6.25" id="Fill-5"></path>
+                        <path d="M9.81946204,14.0625 C4.61227836,14.0625 0.391111111,18.9595611 0.391111111,25 L21.5111111,25 C21.5111111,18.9595611 17.2895807,14.0625 12.082397,14.0625 L9.81946204,14.0625 Z" id="Fill-8"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

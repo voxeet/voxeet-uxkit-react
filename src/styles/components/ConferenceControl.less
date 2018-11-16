@@ -1,0 +1,111 @@
+.vxt-conference-control {
+    @size: 60px;
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 55px; //height: @size;
+    display: flex;
+    justify-content: center;
+    .recording {
+        position: absolute;
+        left: 6rem;
+        bottom: 3.5rem;
+        font-size: 0.85rem;
+        .icon-pause {
+            margin-right: 0.5rem;
+            font-size: 0.5rem;
+            color: @white;
+            background-color: @dangerColor;
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+    }
+    .conference-actions {
+        position: relative;
+        display: block;
+        padding: 0;
+        margin: 0;
+        .me-vumeter {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+        }
+    }
+    ul {
+        //margin: 0 0 10px;
+        padding: 0 0px;
+        display: block;
+        list-style: none; //float: left;
+        //height: @size;
+        font-size: 1rem;
+        .rounded(100px);
+        width: auto;
+        li {
+            position: relative;
+            display: grid;
+            margin: 0;
+            margin-bottom: 10px;
+            width: 40px;
+            height: 40px;
+            &.active {
+                color: #FFF;
+                background-color: #fff;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+            &:hover {
+                background-color: transparent;
+            }
+            &:first-of-type {
+                margin-left: 0;
+            }
+            &.show-volume {
+                .volume-slider {
+                    .opacity(1);
+                    top: -90px;
+                }
+            }
+            a {
+                img {
+                  width: 20px;
+                }
+                color: #C6D9EC;
+                //transition: all ease-in-out .08s;
+                padding: 10px 0;
+                &:hover,
+                &.active {
+                    color: #FFF;
+                    background-color: #fff;
+                    border-radius: 50%;
+                    cursor: pointer;
+                }
+                &.on,
+                &.icon-mute-participant:hover,
+                &.icon-record:hover,
+                &.icon-screen-share:hover,
+                &.icon-camera-video:hover {
+                    //color: @dangerColor;
+                    background-color: #fff;
+                    border-radius: 50%;
+                    cursor: pointer;
+                }
+                &.icon-mute-participant-on {
+                    background-color: #fff;
+                    border-radius: 50%;
+                    padding: 3px;
+                }
+                &.icon-gear {
+                    &.on{
+                      color: #C6D9EC;
+                      background: @navActiveItemBgColor;
+                    }
+                    &:hover {
+                        color:#FFF;
+                        background: @navActiveItemBgColor;
+                    }
+                }
+            }
+        }
+    }
+    .clearfix();
+}

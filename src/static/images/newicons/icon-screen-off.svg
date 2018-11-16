@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="20px" viewBox="0 0 21 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-screen-off</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Conference-Share-Screen" transform="translate(-536.000000, -711.000000)">
+            <g id="share-popup" transform="translate(496.000000, 617.000000)">
+                <g id="btn-share-screen" transform="translate(30.000000, 85.000000)">
+                    <g id="icon-screen-off" transform="translate(10.000000, 9.000000)">
+                        <rect id="icon_screen" stroke="#000A38" stroke-width="2" x="1" y="1" width="19" height="13.5555556" rx="2.07407407"></rect>
+                        <path d="M12,18.5185185 L15.75,18.5185185 L15.75,20 L5.25,20 L5.25,18.5185185 L9,18.5185185 L9,16.2962963 L12,16.2962963 L12,18.5185185 Z" id="Rectangle" fill="#000A38"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,21 @@
+
+<svg width="28px" height="27px" viewBox="0 0 28 27" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#000A38" offset="0%"></stop>
+            <stop stop-color="#666C88" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="btn-share-screen-off" transform="translate(-16.000000, -16.000000)" fill="url(#linearGradient-1)">
+            <g id="icon-share-screen">
+                <g transform="translate(16.000000, 16.000000)">
+                    <path d="M0,2.79949236 C0,1.25337542 1.25749733,0 2.80001787,0 L25.1999821,0 C26.7463893,0 28,1.25075626 28,2.79949236 L28,18.2005076 C28,19.7466246 26.7425027,21 25.1999821,21 L2.80001787,21 C1.2536107,21 0,19.7492437 0,18.2005076 L0,2.79949236 Z M14,5.6 C14,7.46666667 14,8.4 14,8.4 C7,7.7 6.3,15.4 6.3,15.4 C9.1,12.6 11.6666667,11.6666667 14,12.6 L14,15.4 L21.7,10.5 L14,5.6 Z" id="icon_video-white"></path>
+                    <path d="M16,25 L21,25 L21,27 L7,27 L7,25 L12,25 L12,22 L16,22 L16,25 Z" id="Rectangle" opacity="0.3"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

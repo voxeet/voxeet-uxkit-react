@@ -1,0 +1,111 @@
+* {
+  text-align: inherit;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.vxt-widget-container {
+  background-color: transparent;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+  height: 100%;
+  position: absolute;
+  z-index: 100;
+  right: 0;
+  top: 0;
+  width: 55px;
+  transition: all ease-in-out 0.2s;
+  position: fixed;
+  &.vxt-widget-opened {
+    width: 300px;
+  }
+
+  &.vxt-widget-fullscreen-on {
+    width: 100%;
+  }
+
+}
+
+.vxt-sidebar {
+  background-color: @navBgColor;
+  border-right: 1px solid @sidebarBorderColor;
+  position: absolute;
+  //left: 0;
+  top: 0;
+  height: 100%;
+  text-align: center;
+  width: 55px;
+  z-index: 50;
+  .bubble-tip {
+    background-color: #fff;
+    margin-left: -79px;
+    width: 190px;
+    border: 1px solid #ccc;
+    height: 240px;
+    position: absolute;
+    top: -265px;
+    border-radius: 4px;
+    padding: 8px;
+    font-family: @font-family;
+    .anchor-popup {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid #fff;
+      left: calc(50% - 3px);
+      position: absolute;
+      bottom: -6px;
+    }
+    .icon-close {
+      position: absolute;
+      border:none;
+      right: 15px;
+      width:auto;
+      color: #ccc;
+      font-size: 9px;
+    }
+    .icon-close:hover {
+      border:none;
+    }
+    span {
+      width: 85%;
+      display: block;
+      text-align: left;
+      color: #000;
+      margin-bottom: 20px!important;
+      margin-top: 5px!important;
+      height: auto;
+      font-size: 15px;
+      margin: auto;
+      font-weight: 800;
+    }
+    a:hover {
+      border: 1px solid @blueHover;
+      color: @blueHover;
+      border-radius: 4px;
+    }
+    a {
+      border: 1px solid #ccc;
+      width: 85%;
+      margin:auto;
+      border-radius: 4px;
+      display: block;
+      padding: 0;
+      text-align: left;
+      color: #000;
+      font-size: 12px;
+      height: auto;
+      padding-left: 8px;
+      height: 28px;
+      line-height: 28px;
+      margin-bottom: 8px;
+      img {
+        width: 16px;
+        vertical-align: text-top;
+        margin-right: 5px;
+      }
+    }
+  }
+}

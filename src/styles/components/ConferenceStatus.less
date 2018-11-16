@@ -1,0 +1,169 @@
+.vxt-conference-status {
+    z-index: 10;
+    position: relative;
+    .icn-status {
+        background-color: #FFF;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        border-radius: 100%;
+        display: block;
+        height: 2.5em;
+        width: 2.5em;
+        line-height: 2.5em;
+        text-align: center;
+        &.status-spinner {
+            background-color: @secondaryColor;
+        }
+        &.live {
+            background-color: @primaryColor;
+            &:after {
+                background: url("../../static/images/icn_conf_live.png") no-repeat 0 0;
+                background-position: center;
+                content: '';
+                display: inline-block;
+                height: 2.5em;
+                width: 2.5em; //height: 23px;
+                //width: 24px;
+            }
+            &:hover {
+                background-color: darken(@primaryColor, 6%);
+                cursor: pointer;
+            }
+        }
+        &.offline {
+            color: @secondaryColor; //line-height: 45px;
+            &:after {
+                // background: url("../../static/images/icn_conf_live_primary.png") no-repeat 0 0;
+                // background-position: center;
+                // content: '';
+                // display: inline-block;
+                // //height: 23px;
+                // height: 2.5em;
+                // width: 2.5em;
+                // margin: 0 auto; //width: 24px;
+            }
+            &:hover {
+                cursor: pointer;
+                background-color: darken(#FFF, 6%);
+            }
+        }
+    }
+}
+
+.conference-actions-up {
+    padding-top: 20px;
+    .status-icons-list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        li {
+            display: block;
+            margin-bottom: 18px;
+        }
+    }
+    .icon-close,
+    .icn-toggle-sidebar {
+        color: #C6D9EC;
+        display: block;
+        font-size: 1.3rem;
+        &:hover {
+            color: #FFF;
+            cursor: pointer;
+        }
+        span {
+            display: block;
+            transition: all ease-in-out 0.2s;
+        }
+        .vxt-widget-opened & span {
+            transform: rotate(180deg);
+        }
+    }
+    a.hang-up-btn {
+      display: block;
+      //float: left;
+      width: 40px;
+      height: 40px;
+      background-color: @dangerColor;
+      color: @white;
+      overflow: hidden;
+      font-size: 1rem;
+      line-height: 40px;
+      margin: 0 auto;
+      vertical-align: middle;
+      text-align: center;
+      .rounded(50%);
+      &:hover {
+        background-color: darken(@dangerColor, 6%);
+        cursor: pointer;
+      }
+    }
+}
+
+.spinner-circle {
+    position: relative;
+    .spinner-child {
+        width: 70%;
+        height: 70%;
+        position: absolute;
+        left: 15%;
+        top: 15%;
+        &:before {
+            content: '';
+            display: block;
+            margin: 0 auto;
+            width: 15%;
+            height: 15%;
+            background-color: #FFF;
+            ;
+            border-radius: 100%;
+            -webkit-animation: spinner-circleBounceDelay 1.2s infinite ease-in-out both;
+            animation: spinner-circleBounceDelay 1.2s infinite ease-in-out both;
+        }
+    }
+
+    .spinner-loop (@i) when (@i <= 12) {
+        .spinner-circle@{i} {
+            transform: rotate(unit((@i * 30), deg));
+            &:before {
+                animation-delay: unit((@i * -0.1), s);
+            }
+        }
+        .spinner-loop(@i + 1);
+    }
+    .spinner-loop(1);
+}
+
+@keyframes spinner-circleBounceDelay {
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    40% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+
+.vxt-conference-status-replay {
+
+    .on {
+      color: @dangerColor;
+      padding: 10px;
+    }
+
+    z-index: 1;
+    margin-bottom: 10px;
+    background-color: #FFF;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+    border-radius: 100%;
+    display: block;
+    height: 2.5em;
+    width: 2.5em;
+    line-height: 2.5em;
+    text-align: center;
+    &:hover {
+        cursor: pointer;
+        background-color: darken(#FFF, 6%);
+    }
+}

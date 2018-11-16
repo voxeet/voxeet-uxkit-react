@@ -1,0 +1,22 @@
+
+<svg width="25px" height="30px" viewBox="0 0 25 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#000A38" offset="0%"></stop>
+            <stop stop-color="#666C88" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="btn-mute-off" transform="translate(-17.000000, -16.000000)" fill="url(#linearGradient-1)">
+            <g id="Group-11">
+                <g id="Page-1" transform="translate(17.479592, 16.530612)">
+                    <path d="M11.9081633,18.2697726 C15.0743983,18.2697726 17.6505982,15.6983916 17.6505982,12.5380792 L17.6505982,5.73169335 C17.6505982,2.57138093 15.0743983,0 11.9081633,0 C8.74192822,0 6.16572836,2.57138093 6.16572836,5.73169335 L6.16572836,12.5380792 C6.16572836,15.6983916 8.74192822,18.2697726 11.9081633,18.2697726" id="Fill-3" opacity="0.3"></path>
+                    <path d="M19.8040113,9.85134795 L19.8040113,12.89631 C19.8040113,17.2420083 16.2620056,20.7773884 11.9081633,20.7773884 C7.5543209,20.7773884 4.01231527,17.2420083 4.01231527,12.89631 L4.01231527,9.85134795 L1.5,9.85134795 L1.5,12.89631 C1.5,18.1383018 5.41059817,22.4832836 10.4725545,23.1839831 L10.4725545,28.8375822 L12.9848698,28.8375822 L12.9848698,23.2294785 C18.219817,22.6899828 22.3163265,18.2618915 22.3163265,12.89631 L22.3163265,9.85134795 L19.8040113,9.85134795 Z" id="Fill-1" opacity="0.3"></path>
+                    <rect id="Rectangle" transform="translate(12.000000, 13.500000) rotate(-45.000000) translate(-12.000000, -13.500000) " x="10.5" y="-1.5" width="3" height="30"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

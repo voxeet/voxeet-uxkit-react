@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>btn-hang-up</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="0%" x2="0%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FF5768" offset="0%"></stop>
+            <stop stop-color="#EB3446" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Buttons-On/Hover" transform="translate(-866.000000, -952.000000)">
+            <g id="action-tools" transform="translate(524.000000, 952.000000)">
+                <g id="btn-hang-up" transform="translate(342.000000, 0.000000)">
+                    <circle id="Oval-4" fill="url(#linearGradient-1)" fill-rule="nonzero" cx="25" cy="25" r="25"></circle>
+                    <path d="M29.0066554,31.6220285 L28.956354,31.5848317 C25.1316006,28.7545312 21.7647375,25.3685112 18.9493403,21.5212516 L18.912354,21.470292 L21.4636691,17.3169032 L16.1768471,12 L13.6813814,14.5100366 C11.9996143,16.2010007 11.5261896,18.8025413 12.5033677,20.9826427 L12.6731348,21.3620495 C16.0370389,28.8698411 22.0206828,34.8216927 29.5222444,38.1214163 C30.2734362,38.4520953 31.062354,38.6131573 31.8423951,38.6131573 C33.332943,38.6131573 34.7927923,38.0254487 35.9005321,36.9110341 L38.4241074,34.3734719 L33.1365458,29.0561968 L29.0066554,31.6220285 Z" id="Fill-1" fill="#FFFFFF" transform="translate(25.212054, 25.306579) rotate(135.000000) translate(-25.212054, -25.306579) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

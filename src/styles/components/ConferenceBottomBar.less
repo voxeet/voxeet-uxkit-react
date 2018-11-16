@@ -1,0 +1,212 @@
+.vxt-bottom-bar{
+    position: absolute;
+    bottom: 0px;
+    transform: translate(-50%, -50%);
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    z-index: 50;
+    /*-webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;*/
+    opacity: 1;
+    width:100%;
+    background-color: @secondaryColor;
+    text-align:center;
+    .vxt-bottom-bar-actions{
+        .controls-left {
+          display: inline-block;
+          text-align: left;
+        }
+        .controls-center {
+          display: inline-block;
+          text-align:center;
+        }
+        .controls-right {
+          display: inline-block;
+          text-align:right;
+        }
+        ul{
+            list-style: none;
+            width: 32%;
+            padding: 0;
+            margin-bottom: 25px;
+            margin-top: 10px;
+            .hangup-bottom-bar {
+              margin-left: 15px;
+              &:hover {
+              background-color: transparent;
+              }
+              a img {
+                width: 50px;
+              }
+            }
+            .separator {
+              display: inline-block;
+              width: 1px;
+              height: 50px;
+              background-color: #979797;
+              overflow: hidden;
+              font-size: 1rem;
+              cursor: unset;
+              vertical-align: middle;
+              text-align: center;
+              margin: 0px 13px;
+              color: #484848;
+              &:hover {
+                background-color: #979797;
+                cursor: unset;
+              }
+            }
+            li{
+                display: inline-block;
+                width: 50px;
+                height: 50px;
+                line-height: 40px;
+                //background-color: @white;
+                //border: 1px solid @mutedColor;
+                overflow: hidden;
+                font-size: 1rem;
+                vertical-align: middle;
+                text-align: center;
+                border-radius: 50%;
+                margin: 0 13px;
+                cursor: pointer;
+                color: @grey;
+
+                >.tooltip{
+                    line-height: initial;
+                }
+
+                &:hover,
+                &.active {
+                    //background: @mutedColor;
+                    //color: @dangerColor;
+                    background-color: #fff;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    >.icon-gear {
+                        color: @linkColor;
+                    }
+                }
+                .audio3d {
+                  img {
+                    width: 36px;
+                  }
+                }
+                .bubble-tip {
+                  background-color: #fff;
+                  margin-left: -79px;
+                  width: 190px;
+                  height: 240px;
+                  position: absolute;
+                  top: -265px;
+                  border-radius: 4px;
+                  padding: 8px;
+                  font-family: @font-family;
+                  .anchor-popup {
+                    width: 0;
+                    height: 0;
+                    border-left: 5px solid transparent;
+                    border-right: 5px solid transparent;
+                    border-top: 6px solid #fff;
+                    left: calc(50% - 3px);
+                    position: absolute;
+                    bottom: -6px;
+                  }
+                  .icon-close {
+                    position: absolute;
+                    border:none;
+                    right: 15px;
+                    width:auto;
+                    color: #ccc;
+                    font-size: 9px;
+                  }
+                  .icon-close:hover {
+                    border:none;
+                  }
+                  span {
+                    width: 85%;
+                    display: block;
+                    text-align: left;
+                    color: #000;
+                    height: auto;
+                    font-size: 15px;
+                    margin: auto;
+                    font-weight: 800;
+                    margin-bottom: 7px;
+                  }
+                  a:hover {
+                    border: 1px solid @blueHover;
+                    color: @blueHover;
+                  }
+                  a {
+                    border: 1px solid #ccc;
+                    width: 85%;
+                    margin:auto;
+                    border-radius: 4px;
+                    display: block;
+                    text-align: left;
+                    color: #000;
+                    font-size: 12px;
+                    height: auto;
+                    padding-left: 8px;
+                    height: 28px;
+                    line-height: 28px;
+                    margin-bottom: 8px;
+                    img {
+                      width: 16px;
+                      vertical-align: text-top;
+                      margin-right: 5px;
+                    }
+                  }
+                }
+                a {
+                    img {
+                      width: 28px;
+                      vertical-align:middle;
+                    }
+                    div {
+                      position: absolute;
+                      font-size: 10px;
+                      width: 65px;
+                      margin-left: -9px;
+                      bottom: 4px;
+                      line-height: 11px;
+                      color: #fff;
+                      white-space: nowrap;
+                      font-family: @font-family-medium;
+                    }
+                    height: 50px;
+                    width: 50px;
+                    display: table-cell;
+                    vertical-align: middle;
+                    transition: all ease-in-out .08s;
+                    //color: @grey;
+                    color: #fff;
+                    &.on {
+                        //color: @dangerColor;
+                        //background-color: #fff;
+                        //border-radius: 50%;
+                    }
+                    &.icon-gear {
+                        &:hover,
+                        &.on {
+                            //color: @linkColor;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.hide-bottom-bar {
+  /*-webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+  opacity: 0;*/
+  //transform: translate(-50%, 100%);
+}

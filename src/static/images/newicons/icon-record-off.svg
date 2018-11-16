@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-record-off</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#B5B8C5" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="bg-footer" transform="translate(-685.000000, -964.000000)" fill="url(#linearGradient-1)">
+            <g transform="translate(0.000000, -2.000000)" id="action-tools">
+                <g transform="translate(524.000000, 954.000000)">
+                    <g id="icon-record-off" transform="translate(161.000000, 12.000000)">
+                        <path d="M14,26 C7.38305882,26 2,20.6169412 2,14 C2,7.38305882 7.38305882,2 14,2 C20.6169412,2 26,7.38305882 26,14 C26,20.6169412 20.6169412,26 14,26 M14,0 C6.28066667,0 0,6.28 0,14 C0,21.72 6.28066667,28 14,28 C21.7193333,28 28,21.72 28,14 C28,6.28 21.7193333,0 14,0" id="Fill-1" opacity="0.7"></path>
+                        <path d="M14,5.89473684 C9.52340081,5.89473684 5.89473684,9.52340081 5.89473684,14 C5.89473684,18.4765992 9.52340081,22.1052632 14,22.1052632 C18.4765992,22.1052632 22.1052632,18.4765992 22.1052632,14 C22.1052632,9.52340081 18.4765992,5.89473684 14,5.89473684" id="Fill-2"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
