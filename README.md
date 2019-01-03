@@ -76,6 +76,7 @@ The Widget is translate in english and french. The language will be automaticall
 |`oauthToken`|String||The oauth token retrieve from your backend (prevent using consumerKey/consumerSecret in frontend) ! Make sure to use this `refreshTokenCallback props of the widget too !|
 |`refreshTokenCallback`|func||Provide this function that return a promise with the refreshed token, when this one expire|
 |`conferenceAlias`|String||The conference you whant to join|
+|`chromeExtensionId`|String||Id of chrome screenshare extension, a message will be prompt when the user will try to screenshare (Inline installation is no longer supported)|
 |`displayActions`|Array|["mute" ,"recording", "screenshare", "video", "live", "attendees", "chat"]|You can disable some actions buttons. Example : displayActions={["mute", "video"]} will allow to video and mute button (Strings : "mute", "video", "screenshare", "recording", "live", "attendees", "chat")|
 |`liveRecordingEnabled`|Boolean|false|Ability to record a conference in live. Generate an MP4 video of the conference. Can be retrieve by a webhook (a small delay might be necessary for process the video)|
 |`isWidget`|Boolean|true|Indicate if component used like widget or embedded in your app|
@@ -142,102 +143,90 @@ class ActionsButtons extends Component {
     } = this.props;
 
     return (
-      <div>
-        <ul className="controls-left">
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            (!isWebinar || (isWebinar && isAdmin)) &&
-            displayActions.indexOf("mute") > -1 &&
-            !isDemo && (
-              <Buttons.ToggleMicrophoneButton
-                isMuted={isMuted}
-                toggle={toggleMicrophone}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            (!isWebinar || (isWebinar && isAdmin)) &&
-            displayActions.indexOf("video") > -1 &&
-            !isDemo && (
-              <Buttons.ToggleVideoButton
-                videoEnabled={videoEnabled}
-                toggle={toggleVideo}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            isBottomBar &&
-            isElectron && (
-              <Buttons.Toggle3DAudioButton
-                audio3DEnabled={audio3DEnabled}
-                toggleAudio3D={toggleAudio3D}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            (!isWebinar || (isWebinar && isAdmin)) && (
-              <Buttons.ToggleSettingsButton
-                displayModal={displayModal}
-                toggle={toggleModal}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-        </ul>
-        <ul className="controls-center">
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            (!isWebinar || (isWebinar && isAdmin)) &&
-            displayActions.indexOf("recording") > -1 &&
-            !isDemo && (
-              <Buttons.ToggleRecordingButton
-                isRecording={isRecording}
-                toggle={toggleRecording}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            (!isWebinar || (isWebinar && isAdmin)) &&
-            displayActions.indexOf("screenshare") > -1 &&
-            !isDemo && (
-              <Buttons.ToggleScreenShareButton
-                screenShareEnabled={isScreenshare}
-                isElectron={isElectron}
-                toggle={toggleScreenShare}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            (!isWebinar || (isWebinar && isAdmin)) &&
-            displayActions.indexOf("live") > -1 &&
-            !isDemo && (
-              <Buttons.ToggleExternalLiveButton
-                toggle={displayExternalLiveModal}
-                isExternalLive={isExternalLive}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-          {isBottomBar &&
-            (!isWebinar || (isWebinar && isAdmin)) &&
-            !isDemo && <li className="separator" />}
-          {isBottomBar && (
-            <Buttons.HangUpButtonBottomBar leave={leave} tooltipPlace="top" />
-          )}
-        </ul>
-        <ul className="controls-right" />
-      </div>
-    );
+            <div>
+                <ul className="controls-left">
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("mute") > -1 && !isDemo &&
+                        <ToggleMicrophoneButton
+                            isMuted={isMuted}
+                            toggle={toggleMicrophone}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
+                    }
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("video") > -1 && !isDemo &&
+                        <ToggleVideoButton
+                            videoEnabled={videoEnabled}
+                            toggle={toggleVideo}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
+                    }
+                    {!isWidgetFullScreenOn && !forceFullscreen && isBottomBar && isElectron &&
+                        <Toggle3DAudioButton
+                            audio3DEnabled={audio3DEnabled}
+                            toggleAudio3D={toggleAudio3D}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
+                    }
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || isWebinar && isAdmin) &&
+                        <ToggleSettingsButton
+                            displayModal={displayModal}
+                            toggle={toggleModal}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
+                    }
+                </ul>
+                <ul className="controls-center">
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("recording") > -1 && !isDemo &&
+                        <ToggleRecordingButton
+                            isRecording={isRecording}
+                            recordingLocked={recordingLocked}
+                            toggle={toggleRecording}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
+                    }
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("screenshare") > -1 && !isDemo && !browser.safari &&
+                        <ToggleScreenShareButton
+                            screenShareEnabled={isScreenshare}
+                            isElectron={isElectron}
+                            toggle={toggleScreenShare}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
+                    }
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("live") > -1 && !isDemo &&
+                        <ToggleExternalLiveButton
+                            toggle={displayExternalLiveModal}
+                            isExternalLive={isExternalLive}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
+                    }
+                    {isBottomBar && (!isWebinar || isWebinar && isAdmin) && !isDemo &&
+                        <li className="separator">
+                        </li>
+                    }
+                    {isBottomBar &&
+                        <HangUpButtonBottomBar
+                            leave={leave}
+                            tooltipPlace='top'
+                        />
+                    }
+
+                </ul>
+                <ul className="controls-right">
+                    {isBottomBar && displayActions.indexOf("attendees") > -1  &&
+                        <ToggleAttendeesListButton tooltipPlace='top' toggle={toggleAttendeesList} isBottomBar isOpen={attendeesListOpened}/>
+                    }
+                    {isBottomBar && displayActions.indexOf("chat") > -1  &&
+                        <ToggleAttendeesChatButton tooltipPlace='top' toggle={toggleAttendeesChat} isBottomBar isOpen={attendeesChatOpened}/>
+                    }
+                </ul>
+            </div>
+        );
   }
 }
 
