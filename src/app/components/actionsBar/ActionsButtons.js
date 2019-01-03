@@ -11,7 +11,8 @@ import {
     ToggleVideoButton,
     ToggleExternalLiveButton,
     ToggleSettingsButton,
-    ToggleAttendeesListButton
+    ToggleAttendeesListButton,
+    ToggleAttendeesChatButton
 } from './buttons'
 
 class ActionsButtons extends Component {
@@ -23,8 +24,8 @@ class ActionsButtons extends Component {
     render() {
         const { isBottomBar, forceFullscreen, isMuted, isRecording, isWidgetFullScreenOn,
             videoEnabled, displayModal,
-            toggleMicrophone, toggleRecording, toggleVideo, toggleScreenShare, toggleAttendeesList, attendeesListOpened,
-            toggleModal, toggleAudio3D, isWebinar, isAdmin, displayActions, leave, audio3DEnabled, isElectron, displayExternalLiveModal, isExternalLive, isScreenshare, isDemo } = this.props
+            toggleMicrophone, toggleRecording, toggleVideo, toggleScreenShare, toggleAttendeesList, attendeesListOpened, attendeesChatOpened, 
+            toggleAttendeesChat, recordingLocked, toggleModal, toggleAudio3D, isWebinar, isAdmin, displayActions, leave, audio3DEnabled, isElectron, displayExternalLiveModal, isExternalLive, isScreenshare, isDemo } = this.props
 
         return (
             <div>
@@ -66,6 +67,7 @@ class ActionsButtons extends Component {
                     {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("recording") > -1 && !isDemo &&
                         <ToggleRecordingButton
                             isRecording={isRecording}
+                            recordingLocked={recordingLocked}
                             toggle={toggleRecording}
                             isBottomBar={isBottomBar}
                             tooltipPlace={isBottomBar ? 'top' : 'right'}
@@ -101,8 +103,11 @@ class ActionsButtons extends Component {
 
                 </ul>
                 <ul className="controls-right">
-                    {isBottomBar &&
+                    {isBottomBar && displayActions.indexOf("attendees") > -1  &&
                         <ToggleAttendeesListButton tooltipPlace='top' toggle={toggleAttendeesList} isBottomBar isOpen={attendeesListOpened}/>
+                    }
+                    {isBottomBar && displayActions.indexOf("chat") > -1  &&
+                        <ToggleAttendeesChatButton tooltipPlace='top' toggle={toggleAttendeesChat} isBottomBar isOpen={attendeesChatOpened}/>
                     }
                 </ul>
             </div>
@@ -123,6 +128,7 @@ ActionsButtons.propTypes = {
     isScreenshare: PropTypes.bool.isRequired,
     displayActions: PropTypes.array.isRequired,
     toggleAudio3D: PropTypes.func.isRequired,
+    recordingLocked: PropTypes.bool.isRequired,
     displayExternalLiveModal: PropTypes.func.isRequired,
     isElectron: PropTypes.bool.isRequired,
     isExternalLive: PropTypes.bool.isRequired,
@@ -139,6 +145,8 @@ ActionsButtons.propTypes = {
     mode: PropTypes.string.isRequired,
     toggleAttendeesList: PropTypes.func.isRequired,
     attendeesListOpened: PropTypes.bool.isRequired,
+    toggleAttendeesChat: PropTypes.func.isRequired,
+    attendeesChatOpened: PropTypes.bool.isRequired
 }
 
 ActionsButtons.defaultProps = {

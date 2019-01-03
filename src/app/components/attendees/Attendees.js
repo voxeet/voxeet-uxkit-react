@@ -19,7 +19,6 @@ import AttendeesWaitingWebinarPresenter from './AttendeesWaitingWebinarPresenter
 import { List, ListWidget, Speakers, Tiles, View3D, Webinar, ToggleModeButton } from './modes'
 import AttendeesParticipantVideo from './AttendeesParticipantVideo'
 import AttendeesToggleFullscreen from './AttendeesToggleFullscreen';
-import AttendeesList from './AttendeesList';
 
 @connect((store) => {
     return {
@@ -99,8 +98,16 @@ class Attendees extends Component {
         return React.createElement(this.props.attendeesWaiting, { ...this.props })
     }
 
+    renderParticipantList() {
+        return React.createElement(this.props.attendeesList, { ...this.props, isWebinar: this.props.participantStore.isWebinar, isAdmin: this.props.participantStore.isAdmin })
+    }
+
+    renderChat() {
+        return React.createElement(this.props.attendeesChat, { ...this.props, participants: this.props.participantStore.participants, currentUser: this.props.participantStore.currentUser })
+    }
+
     render() {
-        const { mode, forceFullscreen, toggleMode, toggleWidget, isWidgetOpened, webinarLive, modalExternalAction, isWidgetFullScreenOn, videoEnabled, isAdminActived, displayModes, isElectron, isScreenshare, broadcasterModeWebinar, attendeesListOpened } = this.props
+        const { mode, forceFullscreen, toggleMode, toggleWidget, isWidgetOpened, webinarLive, modalExternalAction, isWidgetFullScreenOn, videoEnabled, isAdminActived, displayModes, isElectron, isScreenshare, broadcasterModeWebinar, attendeesListOpened, attendeesChatOpened } = this.props
         const { participants, screenShareEnabled, isAdmin, isWebinar, userIdStreamScreenShare, userStreamScreenShare, userStream, currentUser } = this.props.participantStore
 
         const participantsConnected = participants.filter(p => p.isConnected)
@@ -140,10 +147,14 @@ class Attendees extends Component {
                 />
 
                 {attendeesListOpened &&
-                    <AttendeesList participants={participants} />
+                    this.renderParticipantList()
                 }
 
-                <section className={`sidebar-container ${attendeesListOpened ? "attendees-list-opened" : ""}`}>
+                {attendeesChatOpened &&
+                    this.renderChat()
+                }
+
+                <section className={`sidebar-container ${(attendeesListOpened || attendeesChatOpened) ? "attendees-list-opened" : ""}`}>
                     {!webinarLive && isWebinar && isAdmin && broadcasterModeWebinar &&
                         <AttendeesWaitingWebinarPresenter
                             isModalSettings={true}
@@ -222,6 +233,7 @@ Attendees.propTypes = {
     isWidgetOpened: PropTypes.bool.isRequired,
     toggleWidget: PropTypes.func.isRequired,
     attendeesListOpened: PropTypes.bool.isRequired,
+    attendeesChatOpened: PropTypes.bool.isRequired,
     forceFullscreen: PropTypes.bool,
     videoEnabled: PropTypes.bool,
     isWidgetFullScreenOn: PropTypes.bool,
@@ -230,7 +242,9 @@ Attendees.propTypes = {
     displayModes: PropTypes.array,
     isElectron: PropTypes.bool,
     isScreenshare: PropTypes.bool,
-    attendeesWaiting: PropTypes.func
+    attendeesWaiting: PropTypes.func,
+    attendeesChat: PropTypes.func,
+    attendeesList: PropTypes.func
 }
 
 export default Attendees

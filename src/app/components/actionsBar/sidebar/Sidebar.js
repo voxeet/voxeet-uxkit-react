@@ -68,6 +68,7 @@ Sidebar.propTypes = {
     displayModal: PropTypes.bool.isRequired,
     isDemo: PropTypes.bool.isRequired,
     isElectron: PropTypes.bool.isRequired,
+    recordingLocked: PropTypes.bool.isRequired,
     isRecording: PropTypes.bool.isRequired,
     toggleAudio3D: PropTypes.func.isRequired,
     audio3DEnabled: PropTypes.bool.isRequired,

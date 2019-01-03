@@ -22,6 +22,9 @@ export const Types = {
     KICK_ON_HANG_UP: 'KICK_ON_HANG_UP',
     RESET_WIDGET_CONTROLS: 'RESET_WIDGET_CONTROLS',
     TOGGLE_ATTENDEES_LIST: 'TOGGLE_ATTENDEES_LIST',
+    TOGGLE_ATTENDEES_CHAT: 'TOGGLE_ATTENDEES_CHAT',
+    UNLOCK_RECORDING: 'UNLOCK_RECORDING',
+    LOCK_RECORDING: 'LOCK_RECORDING'
 }
 
 export class Actions {
@@ -164,6 +167,18 @@ export class Actions {
         }
     }
 
+    static lockRecording() {
+        return {
+            type: Types.LOCK_RECORDING
+        }
+    }
+
+    static unlockRecording() {
+        return {
+            type: Types.UNLOCK_RECORDING
+        }
+    }
+
     static toggleModalWidget() {
         return {
             type: Types.TOGGLE_MODAL_WIDGET
@@ -179,6 +194,12 @@ export class Actions {
     static toggleAttendeesList(){
         return {
             type: Types.TOGGLE_ATTENDEES_LIST
+        }
+    }
+
+    static toggleAttendeesChat(){
+        return {
+            type: Types.TOGGLE_ATTENDEES_CHAT
         }
     }
 

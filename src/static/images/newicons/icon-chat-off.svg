@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="25px" viewBox="0 0 28 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-chat-off</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#B5B8C5" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="bg-footer" transform="translate(-1381.000000, -967.000000)" fill="url(#linearGradient-1)">
+            <g transform="translate(0.000000, -2.000000)" id="sidebar-tools">
+                <g transform="translate(1293.000000, 956.000000)">
+                    <g id="icon-chat-off" transform="translate(88.000000, 13.000000)">
+                        <g id="icon-chat">
+                            <path d="M11.7645632,21.0365854 L22.722745,21.0365854 L27.9999069,25 L27.9999069,8.44481707 C27.9999069,7.48506098 27.2080222,6.70731707 26.2311264,6.70731707 L11.7645632,6.70731707 C10.7876674,6.70731707 9.99547228,7.48506098 9.99547228,8.44481707 L9.99547228,19.2993902 C9.99547228,20.2585366 10.7876674,21.0365854 11.7645632,21.0365854" id="Fill-1" opacity="0.7"></path>
+                            <path d="M16.235592,14.3292683 L5.2774102,14.3292683 L-6.20842571e-05,18.2926829 L-6.20842571e-05,1.7375 C-6.20842571e-05,0.777743902 0.792133038,0 1.76902882,0 L16.235592,0 C17.2121774,0 18.0043725,0.777743902 18.0043725,1.7375 L18.0043725,12.5917683 C18.0043725,13.5512195 17.2121774,14.3292683 16.235592,14.3292683" id="Fill-3"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -47,6 +47,7 @@ BottomBar.propTypes = {
     videoEnabled: PropTypes.bool.isRequired,
     audio3DEnabled: PropTypes.bool.isRequired,
     displayModal: PropTypes.bool.isRequired,
+    recordingLocked: PropTypes.bool.isRequired,
     isRecording: PropTypes.bool.isRequired,
     isWidgetOpened: PropTypes.bool.isRequired,
     isWidgetFullScreenOn: PropTypes.bool.isRequired,

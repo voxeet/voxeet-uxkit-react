@@ -26,7 +26,7 @@ module.exports = {
     host: '0.0.0.0',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /.jsx?$/,
         loaders: ['babel-loader'],

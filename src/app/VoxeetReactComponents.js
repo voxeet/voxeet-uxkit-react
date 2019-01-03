@@ -16,6 +16,7 @@ import {
     HangUpButtonBottomBar,
     Toggle3DAudioButton,
     ToggleExternalLiveButton,
+    ToggleAttendeesChatButton,
     ToggleAttendeesListButton,
 } from './components/actionsBar/buttons'
 
@@ -38,6 +39,7 @@ module.exports = {
         HangUpButtonBottomBar,
         Toggle3DAudioButton,
         ToggleExternalLiveButton,
+        ToggleAttendeesChatButton,
         ToggleAttendeesListButton
     }
 }

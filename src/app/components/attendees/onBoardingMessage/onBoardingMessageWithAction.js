@@ -44,7 +44,7 @@ class OnBoardingMessageWithAction extends Component {
             <div className={ isError ? (displayOnBoardingMessageWithAction ? "onboardingmessagewithaction-error" : "onboardingmessagewithaction-hidden") : (displayOnBoardingMessageWithAction ? "onboardingmessagewithaction" : "onboardingmessagewithaction-hidden")}>
                 {messageWithAction}
                 { linkWithAction &&
-                  <a onClick={() => this.linkClicked()} href={linkWithAction} target="_blank"> {strings.here}</a>
+                  <a onClick={() => this.linkClicked()} href={linkWithAction} target="_blank"> {strings.here}.</a>
                 }
                 { !isError &&
                   <a data-tip="true" onClick={() => this.linkClicked()} data-for="toggle-close" className="icon-close" title="Fermer" currentitem="false"></a>

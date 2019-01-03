@@ -1,6 +1,6 @@
 {
   "name": "@voxeet/react-components",
-  "version": "0.31.0-rc32",
+  "version": "0.31.0",
   "description": "",
   "main": "./dist/bundle.js",
   "scripts": {
@@ -16,16 +16,17 @@
     "MARTIN Valentin <vmartin@voxeet.com>"
   ],
   "dependencies": {
+    "autolinker": "^1.8.1",
     "bowser": "1.7.3",
     "classnames": "2.2.5",
     "css-element-queries": "0.4.0",
+    "dompurify": "^1.0.8",
     "immutable": "3.8.1",
     "prop-types": "15.6.0",
     "react": "16.0.0",
     "react-dom": "16.6.1",
     "react-draggable": "3.0.3",
     "react-localization": "^1.0.10",
-    "@voxeet/voxeet-web-sdk": "1.8.5",
     "react-redux": "5.0.6",
     "react-tooltip": "3.8.1",
     "redux": "3.7.2",
@@ -42,18 +43,18 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "copy-webpack-plugin": "^4.2.0",
-    "css-loader": "^0.28.7",
-    "extract-text-webpack-plugin": "^3.0.1",
-    "file-loader": "^0.11.2",
-    "html-webpack-plugin": "^2.30.1",
-    "less": "^2.7.2",
+    "css-loader": "^2.1.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^3.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^3.9.0",
     "less-loader": "^4.0.5",
     "react-hot-loader": "^3.0.0-beta.7",
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.9",
-    "webpack": "^3.6.0",
-    "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^2.8.2"
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.0",
+    "webpack-dev-server": "^3.1.14"
   },
   "peerDependencies": {
     "@voxeet/voxeet-web-sdk": "^1.8.5"

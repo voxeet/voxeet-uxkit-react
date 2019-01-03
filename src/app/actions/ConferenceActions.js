@@ -4,6 +4,7 @@ import { Actions as ErrorActions } from './ErrorActions'
 import { Actions as ControlsActions } from './ControlsActions'
 import { Actions as ParticipantActions } from './ParticipantActions'
 import { Actions as ConferenceActions } from './ConferenceActions'
+import { Actions as ChatActions } from './ChatActions'
 import { Actions as ParticipantWaitingActions } from './ParticipantWaitingActions'
 import { Actions as OnBoardingMessageActions } from './OnBoardingMessageActions'
 import { Actions as OnBoardingMessageWithActionActions } from './OnBoardingMessageWithActionActions'
@@ -11,7 +12,7 @@ import { Actions as TimerActions } from './TimerActions'
 import LocalizedStrings from 'react-localization';
 import { getOrganizedPosition, getRelativePosition } from './../libs/position';
 import { STATUS_CONNECTING, STATUS_CONNECTED, STATUS_ON_AIR } from './../constants/ParticipantStatus'
-import { BROADCAST_KICK, BROADCAST_KICK_ADMIN_HANG_UP, WEBINAR_LIVE } from './../constants/BroadcastMessageType'
+import { BROADCAST_KICK, BROADCAST_KICK_ADMIN_HANG_UP, WEBINAR_LIVE, CHAT_MESSAGE, RECORDING_STATE } from './../constants/BroadcastMessageType'
 
 export const Types = {
     INITIALIZED_SUCCESS: 'INITIALIZED_SUCCESS',
@@ -37,7 +38,8 @@ let strings = new LocalizedStrings({
    cameraOff: "Your camera is off.",
    recordConferenceStart: "Your conference is being recorded.",
    recordConferenceStop: "Your conference is no longer recorded.",
-   screenshareInProgress: "A screen share is already in progress."
+   screenshareInProgress: "You cannot screenshare while another user is screensharing.",
+   recordConferenceStartBy: "Your conference is being recorded by "
  },
  fr: {
    installExtension: "Veuillez installer cette extension ",
@@ -48,7 +50,9 @@ let strings = new LocalizedStrings({
    cameraOff: "Votre caméra est désactivée.",
    recordConferenceStart: "Votre conference est enregistrée.",
    recordConferenceStop: "Votre conference n'est plus enregistrée.",
-   screenshareInProgress: "Un partage d'écran est déjà en cours."
+   screenshareInProgress: "Un partage d'écran est déjà en cours.",
+   recordConferenceStartBy: "Votre conference est enregistrée par ",
+   recordConferenceStopBy: "Votre conference n'est plus enregistrée par "
  }
 });
 
@@ -372,31 +376,56 @@ export class Actions {
         }
     }
 
-    static sendBroadcastMessage(messageType, participant_id) {
+    static sendBroadcastMessage(messageType, participant_id, chat_payload) {
       return (dispatch, getState) => {
-        let userToKick = {}
+        let broadcastMessage = {}
         switch (messageType) {
             case BROADCAST_KICK:
-                userToKick = {
-                  "title": "Kick_Event",
-                  "userId": participant_id
+            broadcastMessage = {
+                    "title": "Kick_Event",
+                    "userId": participant_id
                 }
-                return Sdk.instance.sendConferenceMessage(userToKick).then(() => {}).catch(err => { this._throwErrorModal(err) })
+                return Sdk.instance.sendConferenceMessage(broadcastMessage).then(() => {}).catch(err => { this._throwErrorModal(err) })
                 break;
             case WEBINAR_LIVE:
-                userToKick = {
-                  "title": "Webinar_Live",
-                  "state": 1
+            broadcastMessage = {
+                    "title": "Webinar_Live",
+                    "state": 1
                 }
                 const { voxeet: { conference } } = getState()
-                if (conference.webinarLive) return Sdk.instance.sendConferenceMessage(userToKick).then(() => {console.log("BROADCAST MESSAGE SEND")}).catch(err => { this._throwErrorModal(err) })
+                if (conference.webinarLive) return Sdk.instance.sendConferenceMessage(broadcastMessage).catch(err => { this._throwErrorModal(err) })
+                break;
+            case RECORDING_STATE: 
+                broadcastMessage = {
+                    "title": "Recording_State",
+                    "recordingRunning": chat_payload.recordingRunning,
+                    "name": chat_payload.name,
+                    "userId": chat_payload.userId
+                }
+                return Sdk.instance.sendConferenceMessage(broadcastMessage).then(() => {
+                    dispatch()
+                }).catch(err => { this._throwErrorModal(err) })
+                break;
+            case CHAT_MESSAGE:
+            broadcastMessage = {
+                    "title": "Chat_Message",
+                    "content": chat_payload.content,
+                    "type": chat_payload.type,
+                    "avatarUrl": chat_payload.avatarUrl,
+                    "time": chat_payload.time,
+                    "name": chat_payload.name,
+                    "ownerId": chat_payload.ownerId
+                }
+                return Sdk.instance.sendConferenceMessage(broadcastMessage).then(() => {
+                    dispatch()
+                }).catch(err => { this._throwErrorModal(err) })
                 break;
             case BROADCAST_KICK_ADMIN_HANG_UP:
-                userToKick = {
-                  "title": "Kick_Admin_Hang_up",
-                  "ownerId": Sdk.instance.userId
+            broadcastMessage = {
+                    "title": "Kick_Admin_Hang_up",
+                    "ownerId": Sdk.instance.userId
                 }
-                return Sdk.instance.sendConferenceMessage(userToKick).then(() => {
+                return Sdk.instance.sendConferenceMessage(broadcastMessage).then(() => {
                 }).catch(err => { this._throwErrorModal(err) })
                 break;
             default:
@@ -579,6 +608,19 @@ export class Actions {
                       dispatch(this._webinarIsLive())
                       dispatch(this._isWebinarUnmuted())
                       break;
+                    case RECORDING_STATE: 
+                      if (dataParsed.recordingRunning) {
+                        dispatch(ControlsActions.lockRecording())
+                        dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.recordConferenceStartBy + dataParsed.name + ".", 1000))
+                      } else {
+                        dispatch(ControlsActions.unlockRecording())
+                        dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.recordConferenceStopBy + dataParsed.name + ".", 1000))
+                      }
+                      break;
+                    case CHAT_MESSAGE:
+                      dispatch(this._newBadgeMessage())
+                      dispatch(ChatActions.addMessage(dataParsed))
+                      break;
                     case BROADCAST_KICK_ADMIN_HANG_UP:
                       if (Sdk.instance.userId != dataParsed.ownerId) {
                         dispatch(this.leave()).then(() => {
@@ -601,6 +643,17 @@ export class Actions {
             payload: {
                 userId
             }
+        }
+    }
+
+    static _newBadgeMessage() {
+        return (dispatch, getState) => {
+            const {
+                voxeet: {
+                    controls
+                }
+            } = getState()
+            if (!controls.displayAttendeesChat) dispatch(ChatActions.newBadgeMessage())
         }
     }
 

@@ -19,6 +19,8 @@ import Modal from './attendees/modal/Modal'
 import '../../styles/main.less'
 import ConferenceRoomContainer from './ConferenceRoomContainer'
 import AttendeesWaiting from './attendees/AttendeesWaiting';
+import AttendeesList from './attendees/AttendeesList';
+import AttendeesChat from './attendees/AttendeesChat';
 
 
 let strings = new LocalizedStrings({
@@ -147,7 +149,7 @@ class ConferenceRoom extends Component {
   }
 
   render() {
-    const { dispatch, options, isWidget, isModal, conferenceAlias, constraints, actionsButtons, handleOnLeave, attendeesWaiting, broadcasterModeWebinar, isWebinar, isAdmin } = this.props
+    const { dispatch, options, isWidget, isModal, conferenceAlias, constraints, actionsButtons, attendeesList, attendeesChat, handleOnLeave, attendeesWaiting, broadcasterModeWebinar, isWebinar, isAdmin } = this.props
     const { screenShareEnabled } = this.props.participantsStore
     const { isJoined, conferenceId, initialized, isReplaying, conferenceReplayId, isElectron, webinarLive, isDemo } = this.props.conferenceStore
     if (bowser.ios && bowser.chrome) {
@@ -175,6 +177,8 @@ class ConferenceRoom extends Component {
           isModal={isModal}
           isWebinar={isWebinar}
           actionsButtons={actionsButtons}
+          attendeesChat={attendeesChat}
+          attendeesList={attendeesList}
           screenShareEnabled={screenShareEnabled}
           handleOnLeave={handleOnLeave}
           conferenceId={conferenceId}
@@ -227,6 +231,8 @@ ConferenceRoom.propTypes = {
   videoRatio: PropTypes.object,
   autoJoin: PropTypes.bool,
   actionsButtons: PropTypes.func,
+  attendeesList: PropTypes.func,
+  attendeesChat: PropTypes.func,
   broadcasterModeWebinar: PropTypes.bool,
   handleOnLeave: PropTypes.func,
   refreshTokenCallback: PropTypes.func,
@@ -270,6 +276,8 @@ ConferenceRoom.defaultProps = {
     video: false
   },
   actionsButtons: ActionsButtons,
+  attendeesList: AttendeesList,
+  attendeesChat: AttendeesChat,
   attendeesWaiting: AttendeesWaiting
 }
 

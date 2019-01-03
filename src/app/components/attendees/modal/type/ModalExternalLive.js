@@ -78,7 +78,11 @@ class ModalExternalLive extends Component {
                   </div>
                 </li>
               </ul>
-              <button onClick={this.modalAction.bind(this)} type="submit">{strings.launchLive}</button>
+              <div className="container-action">
+                <a onClick={this.modalAction.bind(this)}>
+                  {strings.launchLive}
+                </a>
+              </div>
             </div>
         )
     }

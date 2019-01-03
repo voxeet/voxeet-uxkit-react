@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import LocalizedStrings from 'react-localization';
 
 import { Actions as ConferenceActions } from '../actions/ConferenceActions'
 import { Actions as ControlsActions } from '../actions/ControlsActions'
 import { Actions as TimerActions } from '../actions/TimerActions'
 import { Actions as ErrorActions } from '../actions/ErrorActions'
+import { Actions as OnBoardingMessageActions } from '../actions/OnBoardingMessageActions'
 import Sdk from '../sdk'
-import { BROADCAST_KICK_ADMIN_HANG_UP, WEBINAR_LIVE } from '../constants/BroadcastMessageType'
+import { BROADCAST_KICK_ADMIN_HANG_UP, WEBINAR_LIVE, RECORDING_STATE } from '../constants/BroadcastMessageType'
 
 import { Sidebar } from './actionsBar'
 import Attendees from './attendees/Attendees'
@@ -15,6 +17,16 @@ import ModalClose from './attendees/modal/ModalClose'
 import Modal from './attendees/modal/Modal'
 
 import BottomBar from './actionsBar/bottomBar/BottomBar';
+
+let strings = new LocalizedStrings({
+    en:{
+        conferenceAlreadyRecord: "Your conference is already being recorded."
+    },
+    fr: {
+        conferenceAlreadyRecord: "Votre conference est déjà enregistrée."
+    }
+   });
+   
 
 @connect((store) => {
     return {
@@ -46,13 +58,11 @@ class ConferenceRoomContainer extends Component {
         this.toggleExternalLiveModal = this.toggleExternalLiveModal.bind(this)
         this.toggleExternalLive = this.toggleExternalLive.bind(this)
         this.toggleAttendeesList = this.toggleAttendeesList.bind(this)
+        this.toggleAttendeesChat = this.toggleAttendeesChat.bind(this)
         this.props.dispatch(TimerActions.startTime())
     }
 
     componentDidMount() {
-      window.onbeforeunload = function() {
-        return 'You will leave the conference. Are you sure ?';
-      }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -88,9 +98,15 @@ class ConferenceRoomContainer extends Component {
     }
 
     toggleRecording() {
-        const { isRecording } = this.props.controlsStore
+        const { isRecording, recordingLocked } = this.props.controlsStore
+        const { currentUser } = this.props.participantsStore
         const { conferenceId } = this.props
-        this.props.dispatch(ConferenceActions.toggleRecording(conferenceId, isRecording))
+        if (!recordingLocked) {
+            this.props.dispatch(ConferenceActions.toggleRecording(conferenceId, isRecording))
+            this.props.dispatch(ConferenceActions.sendBroadcastMessage(RECORDING_STATE, null, { name: currentUser.name, userId: currentUser.participant_id, recordingRunning: !isRecording }));
+        } else {
+            this.props.dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.conferenceAlreadyRecord, 1000))
+        }
     }
 
     toggleVideo() {
@@ -152,6 +168,10 @@ class ConferenceRoomContainer extends Component {
         this.props.dispatch(ControlsActions.toggleAttendeesList())
     }
 
+    toggleAttendeesChat() {
+        this.props.dispatch(ControlsActions.toggleAttendeesChat())
+    }
+
     getSidebarClasses() {
         const { forceFullscreen, isModal, isWebinar } = this.props
         const { isWidgetOpened, isWidgetFullScreenOn, modalOpened } = this.props.controlsStore
@@ -162,11 +182,11 @@ class ConferenceRoomContainer extends Component {
     }
 
     render() {
-        const { isJoined, isModal, forceFullscreen, screenShareEnabled, actionsButtons, isWebinar, isAdmin, webinarLive, attendeesWaiting, isDemo, broadcasterModeWebinar } = this.props
+        const { isJoined, isModal, forceFullscreen, screenShareEnabled, actionsButtons, attendeesChat, attendeesList, isWebinar, isAdmin, webinarLive, attendeesWaiting, isDemo, broadcasterModeWebinar } = this.props
         const { errorMessage, isError } = this.props.errorStore
         const { isModalExternalLiveOpen } = this.state
         const { userStream } = this.props.participantsStore
-        const { mode, videoEnabled, isWidgetOpened, isWidgetFullScreenOn, isMuted, isRecording, modalOpened, displayModal, displayActions, audio3DEnabled, isElectron, isExternalLive, isScreenshare, isAdminActived, displayModes, displayAttendeesList } = this.props.controlsStore
+        const { mode, videoEnabled, recordingLocked, isWidgetOpened, isWidgetFullScreenOn, isMuted, isRecording, modalOpened, displayModal, displayActions, audio3DEnabled, isElectron, isExternalLive, isScreenshare, isAdminActived, displayModes, displayAttendeesList, displayAttendeesChat } = this.props.controlsStore
         return (
             <div id="vxt-widget-container" className={(isModal ? (!modalOpened ? 'vxt-widget-modal modal-hidden' : 'vxt-widget-modal') : '')}>
                 <aside className={'vxt-widget-container' + this.getSidebarClasses()}>
@@ -191,6 +211,7 @@ class ConferenceRoomContainer extends Component {
                             toggleFullScreen={this.toggleFullScreen}
                             isWidgetOpened={isWidgetOpened}
                             isWidgetFullScreenOn={isWidgetFullScreenOn}
+                            recordingLocked={recordingLocked}
                             isScreenshare={isScreenshare}
                             isMuted={isMuted}
                             displayExternalLiveModal={this.openModalExternalLive.bind(this)}
@@ -230,6 +251,9 @@ class ConferenceRoomContainer extends Component {
                             isScreenshare={isScreenshare}
                             attendeesWaiting={attendeesWaiting}
                             attendeesListOpened={displayAttendeesList}
+                            attendeesChatOpened={displayAttendeesChat}
+                            attendeesChat={attendeesChat}
+                            attendeesList={attendeesList}
                         />
                     }
                     {isJoined && (isWidgetFullScreenOn || forceFullscreen) &&
@@ -243,6 +267,7 @@ class ConferenceRoomContainer extends Component {
                             displayActions={displayActions}
                             leave={this.leaveConference}
                             screenShareEnabled={screenShareEnabled}
+                            recordingLocked={recordingLocked}
                             isScreenshare={isScreenshare}
                             toggleWidget={this.toggleWidget}
                             toggleAudio3D={this.toggleAudio3D}
@@ -263,6 +288,8 @@ class ConferenceRoomContainer extends Component {
                             toggleMode={this.toggleMode}
                             toggleAttendeesList={this.toggleAttendeesList}
                             attendeesListOpened={displayAttendeesList}
+                            toggleAttendeesChat={this.toggleAttendeesChat}
+                            attendeesChatOpened={displayAttendeesChat}
                             actionsButtons={actionsButtons}
                         />
                     }
@@ -303,6 +330,8 @@ ConferenceRoomContainer.propTypes = {
     screenShareEnabled: PropTypes.bool,
     handleOnLeave: PropTypes.func,
     conferenceId: PropTypes.string,
+    attendeesList: PropTypes.func,
+    attendeesChat: PropTypes.func,
     attendeesWaiting: PropTypes.func
 };
 

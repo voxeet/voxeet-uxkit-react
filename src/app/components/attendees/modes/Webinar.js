@@ -29,7 +29,7 @@ class Webinar extends Component {
     render() {
         const { toggleMicrophone, kickParticipant, isAdmin, isAdminActived } = this.props
         const { participants } = this.props.participantWaiting
-        const participantsConnected = participants.filter(p => p.isConnected)
+        const participantsConnected = participants.filter(p => (p.status == "Inactive"))
         return (
                 <div className="webinar-mode">
                   {participantsConnected.length} {strings.attendees}

@@ -23,17 +23,17 @@ class ToggleRecordingButton extends Component {
     }
 
     render() {
-        const { isRecording, toggle, tooltipPlace, isBottomBar } = this.props
+        const { isRecording, toggle, tooltipPlace, isBottomBar, recordingLocked } = this.props
         const { hover } = this.state
         return (
             <li className={isRecording ? 'active' : ''}
                 onMouseEnter={() => this.setState({hover: true})}
                 onMouseLeave={() => this.setState({hover: false})}>
                 <a data-tip data-for="toggle-recording"
-                    className={'' + (isRecording ? 'on' : 'off')}
+                    className={'' + ((isRecording || recordingLocked) ? 'on' : 'off')}
                     title={strings.record}
                     onClick={() => toggle()}>
-                    <img src={(isRecording || hover) ? RecordingOn : RecordingOff} />
+                    <img src={(isRecording || hover || recordingLocked) ? RecordingOn : RecordingOff} />
                     { isBottomBar &&
                       <div><span>{strings.record}</span></div>
                     }
@@ -48,6 +48,7 @@ class ToggleRecordingButton extends Component {
 
 ToggleRecordingButton.propTypes = {
     isRecording: PropTypes.bool.isRequired,
+    recordingLocked: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
     tooltipPlace: PropTypes.string.isRequired,
     isBottomBar: PropTypes.bool.isRequired

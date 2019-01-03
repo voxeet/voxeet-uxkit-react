@@ -26,7 +26,7 @@ class ToggleExternalLiveButton extends Component {
         const { displayModal, toggle, tooltipPlace, isExternalLive, isBottomBar } = this.props
         const { hover } = this.state
         return (
-            <li className={isExternalLive ? 'active' : ''}
+            <li id="external-live" className={isExternalLive ? 'active' : ''}
                 onMouseEnter={() => this.setState({hover: true})}
                 onMouseLeave={() => this.setState({hover: false})}>
                 <a data-tip data-for="toggle-externalLive"

@@ -27,6 +27,23 @@
           display: inline-block;
           text-align:right;
         }
+        .chat-badge {
+          width: 10px;
+          height: 10px;
+          display: block;
+          top: 17px;
+          margin-left: 6px;
+          position: absolute;
+          border-radius: 50%;
+          background-color:#D04351;
+          box-shadow: 0 0 8px #D04351, inset 0 0 8px #D04351;
+          -webkit-animation: pulse 2s linear 1s infinite;
+        }
+        @-webkit-keyframes pulse {
+          0% { box-shadow:0 0 16px #D04351, inset 0 0 8px #D04351; }
+          50% { box-shadow:0 0 32px #D04351, inset 0 0 14px #D04351; }
+          100% { box-shadow:0 0 16px #D04351, inset 0 0 8px #D04351; }
+        }
         ul{
             list-style: none;
             width: 32%;

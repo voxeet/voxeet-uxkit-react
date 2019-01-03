@@ -3,12 +3,11 @@
   .settings .content { width: 300px; }
   .vxt-bottom-bar .vxt-bottom-bar-actions {
     ul {
-      width: 50%;
-    }
-    .controls-right {
-      display: none;
+      width: 32%;
+      .separator { display: none; }
     }
   }
+  #external-live { display:none; }
   .electron-info-container { width: 100%;margin:auto; }
   #loader-container {
     margin: auto;
@@ -37,12 +36,13 @@
 {
   .vxt-bottom-bar .vxt-bottom-bar-actions {
     ul {
-      width: 34%;
-    }
-    .controls-right {
-      display: none;
+      width: 33%;
+      .separator { margin: 0px 6px; }
     }
   }
+  .attendees-chat { width: 285px; }
+  .attendees-list { width: 285px; }
+  .vxt-conference-attendees .sidebar-container.attendees-list-opened { margin-right: 285px; }
   .vxt-conference-attendees .settings-webinar-presenter .content form { display: inline-block; max-width: 50%; }
   .vxt-conference-attendees .settings-webinar-presenter .modal-thirdparty { display:inline-block; max-width: 50%; }
 }
@@ -285,45 +285,49 @@
     }
   }
   #screenshare-container { display:none; }
+  #external-live { display:none; }
+  .attendees-chat { width: 100%; height: ~"calc(100% - 50px)"!important;}
+  .attendees-list { width: 100%; height: ~"calc(100% - 50px)"!important;}
   .settings .content { width: 100%; height: 100%;padding:0;margin: 0;position: absolute;}
   .settings .content .close { margin-top: 5px;margin-right: 25px; }
   .settings .content .loadbar li { width: 7px; }
   .settings .content .loadbar li .ins { width: 7px; }
   .settings .content h3 { font-size: 16px;margin-top: 20px; }
-  .vxt-bottom-bar .vxt-bottom-bar-actions {
-    ul {
-      width: 50%;
-      margin-bottom: 0px;
-      margin-top: 0px;
-      .hangup-bottom-bar a img {
-        width: 30px;
-      }
-      li {
-        width: 30px;
-        height: 30px;
-        a {
-          height: 30px;
+  .vxt-bottom-bar {
+    padding: 5px 0px 5px 0px;
+    .vxt-bottom-bar-actions {
+      ul {
+        width: 32%;
+        margin-bottom: 0px;
+        margin-top: 0px;
+        .separator { display: none; }
+        .hangup-bottom-bar a img {
           width: 30px;
-          img {
-            width: 20px;
-            vertical-align: middle;
-            margin: auto;
-            display: flex;
-          }
-          div {
-            display:none;
+        }
+        li {
+          width: 30px;
+          height: 30px;
+          a {
+            height: 30px;
+            width: 30px;
+            img {
+              width: 20px;
+              vertical-align: middle;
+              margin: auto;
+              display: flex;
+            }
+            div {
+              display:none;
+            }
           }
         }
+        .audio3d img {
+          width: 20px!important;
+          vertical-align: middle;
+          margin: auto;
+          display: flex;
+        }
       }
-      .audio3d img {
-        width: 20px!important;
-        vertical-align: middle;
-        margin: auto;
-        display: flex;
-      }
-    }
-    .controls-right {
-      display: none;
     }
   }
 }

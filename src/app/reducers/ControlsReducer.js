@@ -17,11 +17,13 @@ const defaultState = {
     isExternalLive: false,
     isAdminActived: false,
     isKickOnHangUpActived: false,
+    recordingLocked: false,
     modalOpened: true,
-    displayActions: ["mute", "recording", "screenshare", "video", "live"],
+    displayActions: ["mute", "recording", "screenshare", "video", "live", "attendees", "chat"],
     displayModes: ["list", "tiles", "speaker"],
     mode: 'tiles',
     displayAttendeesList: false,
+    displayAttendeesChat: false
 }
 
 const ControlsReducer = (state = defaultState, action) => {
@@ -85,6 +87,16 @@ const ControlsReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 isKickOnHangUpActived: true,
+            }
+        case Types.UNLOCK_RECORDING:
+            return {
+                ...state,
+                recordingLocked: false
+            }
+        case Types.LOCK_RECORDING:
+            return {
+                ...state,
+                recordingLocked: true
             }
         case Types.TOGGLE_LIVE_EXTERNAL: {
             const currentStatus = state.isExternalLive
@@ -166,6 +178,7 @@ const ControlsReducer = (state = defaultState, action) => {
                 videoEnabled: false,
                 displayModal: false,
                 constraints: null,
+                recordingLocked: false,
                 isElectron: false,
                 audio3DEnabled: true,
                 isScreenshare: false,
@@ -176,8 +189,11 @@ const ControlsReducer = (state = defaultState, action) => {
                 modalOpened: true
             }
         }
+        case Types.TOGGLE_ATTENDEES_CHAT: {
+            return { ...state, displayAttendeesList: ((state.displayAttendeesList && !state.displayAttendeesChat) ? false : state.displayAttendeesList) ,displayAttendeesChat: !state.displayAttendeesChat }
+        }
         case Types.TOGGLE_ATTENDEES_LIST: {
-            return { ...state, displayAttendeesList: !state.displayAttendeesList }
+            return { ...state, displayAttendeesList: !state.displayAttendeesList, displayAttendeesChat: ((!state.displayAttendeesList && state.displayAttendeesChat) ? false : state.displayAttendeesChat) }
         }
         default:
             return state
