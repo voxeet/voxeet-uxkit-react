@@ -26,7 +26,7 @@ module.exports = {
     "react-dom": true
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /.jsx?$/,
         loaders: ['babel-loader'],
