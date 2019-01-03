@@ -16,6 +16,7 @@
     "MARTIN Valentin <vmartin@voxeet.com>"
   ],
   "dependencies": {
+    "@voxeet/voxeet-web-sdk": "1.8.5",
     "autolinker": "^1.8.1",
     "bowser": "1.7.3",
     "classnames": "2.2.5",
