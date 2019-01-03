@@ -9,7 +9,7 @@ let strings = new LocalizedStrings({
    here: "link"
  },
  fr: {
-   here: "içi"
+   here: "ici"
  }
 });
 
