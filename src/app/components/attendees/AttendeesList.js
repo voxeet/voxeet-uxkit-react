@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Fragment, Component } from 'react'
 import PropTypes from 'prop-types'
 import LocalizedStrings from 'react-localization'
 import { connect } from 'react-redux'
@@ -100,6 +100,7 @@ class AttendeesList extends Component {
                         }
                     </div>
                     :
+                    <Fragment>
                     <div>
                         <div className="title-section">{LABELS.joined}</div>
                         <ul>
@@ -120,6 +121,23 @@ class AttendeesList extends Component {
                             })}
                         </ul>
                     </div>
+                    { participantsInactive.length > 0 &&
+                    <div>
+                        <div className="title-section">{LABELS.listener}</div>
+                        <ul>
+                            {participantsInactive.map((participant, i) => {
+                                return (
+                                    <li key={i}>
+                                        <span className="participant-details">
+                                            <img src={participant.avatarUrl || userPlaceholder} className="participant-avatar" />
+                                            <span className="participant-username">{participant.name}</span>
+                                        </span>
+                                    </li>)
+                                })}
+                            </ul>
+                    </div>
+                    }
+                    </Fragment>
                 }
 
 

@@ -42,7 +42,6 @@ class Speakers extends Component {
         const { participants, forceActiveSpeaker, disableForceActiveSpeaker, toggleMicrophone, isWidgetFullScreenOn, screenShareEnabled, screenShareStream, isAdmin, kickParticipant, isAdminActived, userIdStreamScreenShare, currentUser, isWebinar, isScreenshare, isElectron } = this.props
         const { activeSpeaker, forceActiveUserEnabled } = this.props.activeSpeakerStore
         let activeSpeakerChecker = activeSpeaker
-        let count = -1
         if (activeSpeakerChecker == null) {
           activeSpeakerChecker = participants[0]
         }
@@ -88,13 +87,12 @@ class Speakers extends Component {
                     {participants.length >= 1 &&
                         <ul className="list-items">
                             {participants.map((participant, i) => {
-                                count = count + 1
                                 return(<Speaker key={i}
                                     participant={participant}
                                     toggleMicrophone={toggleMicrophone}
                                     kickParticipant={kickParticipant}
                                     isAdmin={isAdmin}
-                                    nbParticipant={count}
+                                    nbParticipant={i}
                                     screenShareEnabled={screenShareEnabled}
                                     activeSpeaker={activeSpeakerChecker}
                                     forceActiveUserEnabled={forceActiveUserEnabled}

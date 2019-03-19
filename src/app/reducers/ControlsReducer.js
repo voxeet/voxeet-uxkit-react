@@ -1,5 +1,8 @@
 import { Types } from '../actions/ControlsActions'
 import modes from '../constants/DisplayModes'
+import AudioUnMute from '../../static/sounds/voxeet_Exit_Mute.mp3'
+import AudioMute from '../../static/sounds/voxeet_Enter_Mute.mp3'
+import CallRecorded from '../../static/sounds/call-recorded.mp3'
 
 const defaultState = {
     isWidgetOpened: false,
@@ -19,7 +22,7 @@ const defaultState = {
     isKickOnHangUpActived: false,
     recordingLocked: false,
     modalOpened: true,
-    displayActions: ["mute", "recording", "screenshare", "video", "live", "attendees", "chat"],
+    displayActions: ["mute", "recording", "screenshare", "video", "live", "attendees", "chat", "pstn"],
     displayModes: ["list", "tiles", "speaker"],
     mode: 'tiles',
     displayAttendeesList: false,
@@ -93,11 +96,14 @@ const ControlsReducer = (state = defaultState, action) => {
                 ...state,
                 recordingLocked: false
             }
-        case Types.LOCK_RECORDING:
+        case Types.LOCK_RECORDING: {
+            const audio = new Audio(CallRecorded)
+            audio.play()
             return {
                 ...state,
                 recordingLocked: true
             }
+        }
         case Types.TOGGLE_LIVE_EXTERNAL: {
             const currentStatus = state.isExternalLive
             return {
@@ -121,7 +127,7 @@ const ControlsReducer = (state = defaultState, action) => {
             }
         case Types.TOGGLE_MICROPHONE: {
             const currentStatus = state.isMuted
-            const audio = new Audio((!currentStatus ? '/sounds/voxeet_Exit_Mute.mp3' : '/sounds/voxeet_Enter_Mute.mp3'))
+            const audio = new Audio((!currentStatus ? AudioUnMute : AudioMute))
             audio.play()
             return {
                 ...state,
@@ -144,6 +150,10 @@ const ControlsReducer = (state = defaultState, action) => {
         }
         case Types.TOGGLE_RECORDING: {
             const currentStatus = state.isRecording
+            if (!currentStatus) {
+                const audio = new Audio(CallRecorded)
+                audio.play()
+            }
             return {
                 ...state,
                 isRecording: !currentStatus

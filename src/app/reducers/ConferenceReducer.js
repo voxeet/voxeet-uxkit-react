@@ -1,7 +1,9 @@
 import { Types } from '../actions/ConferenceActions'
+import AudioConferenceLeave from '../../static/sounds/voxeet_conference_exit.mp3'
 
 const defaultState = {
     conferenceId: null,
+    conferencePincode: null,
     initialized: false,
     connecting: false,
     isLive: false,
@@ -53,14 +55,18 @@ const ConferenceReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 conferenceId: action.payload.conferenceId,
+                conferencePincode: action.payload.conferencePincode,
                 connecting: false,
                 isJoined: true
             }
         }
         case Types.CONFERENCE_LEAVE: {
+            const audio = new Audio(AudioConferenceLeave)
+            audio.play()
             return {
                 ...state,
                 conferenceId: null,
+                conferencePincode: null,
                 initialized: false,
                 connecting: false,
                 isLive: false,

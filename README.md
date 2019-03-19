@@ -77,13 +77,15 @@ The Widget is translate in english and french. The language will be automaticall
 |`refreshTokenCallback`|func||Provide this function that return a promise with the refreshed token, when this one expire|
 |`conferenceAlias`|String||The conference you whant to join|
 |`chromeExtensionId`|String||Id of chrome screenshare extension, a message will be prompt when the user will try to screenshare (Inline installation is no longer supported)|
-|`displayActions`|Array|["mute" ,"recording", "screenshare", "video", "live", "attendees", "chat"]|You can disable some actions buttons. Example : displayActions={["mute", "video"]} will allow to video and mute button (Strings : "mute", "video", "screenshare", "recording", "live", "attendees", "chat")|
+|`displayActions`|Array|["mute" ,"recording", "screenshare", "video", "live", "attendees", "chat", "pstn"]|You can disable some actions buttons. Example : displayActions={["mute", "video"]} will allow to video and mute button (Strings : "mute", "video", "screenshare", "recording", "live", "attendees", "chat")|
 |`liveRecordingEnabled`|Boolean|false|Ability to record a conference in live. Generate an MP4 video of the conference. Can be retrieve by a webhook (a small delay might be necessary for process the video)|
 |`isWidget`|Boolean|true|Indicate if component used like widget or embedded in your app|
 |`chromeExtensionId`|String|null|The Id from your Chrome Web Extension to screenshare (needed only on Chrome)|
 |`isModal`|Boolean|false|Indicate if component displayed like modal|
 |`isWebinar`|Boolean|false|Launch the widget in Webinar mode, only admin can speak (Restriction in "tiles" mode)|
 |`autoJoin`|Boolean|false|Join automatically conference|
+|`videoCodec`|String|VP8|Specify video codec "H264" or "VP8" => H264 is needed for video on Safari|
+|`isListener`|Boolean|false|Enter in conference in listener mode|
 |`displayModes`|Array|["list", "tiles", "speaker"]|Indicate which mode is allowed (modes will be in the same order as the array)|
 |`isManualKickAllowed`|Boolean|false|Authorize admin (conference creator) to kick users in conference|
 |`isAdmin`|Boolean|false|Current user who join the conference is the admin|

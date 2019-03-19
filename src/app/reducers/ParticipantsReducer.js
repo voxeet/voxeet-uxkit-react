@@ -1,7 +1,7 @@
 import Sdk from '../sdk'
 import { Types } from '../actions/ParticipantActions'
 import { getOrganizedPosition, getRelativePosition } from '../libs/position';
-
+import AudioParticipantJoined from '../../static/sounds/voxeet_conference_join.mp3'
 import { STATUS_CONNECTING, STATUS_LEFT } from '../constants/ParticipantStatus'
 
 const defaultState = {
@@ -233,7 +233,9 @@ const ParticipantReducer = (state = defaultState, action) => {
 
         case Types.PARTICIPANT_JOINED: {
               const { userId } = action.payload;
+              const audio = new Audio(AudioParticipantJoined)
               if (Sdk.instance.userId === action.payload.userId) {
+                audio.play()
                 let currentUser = state.currentUser
                   if (action.payload.stream && action.payload.stream.getVideoTracks().length > 0) {
                       currentUser = {
@@ -288,7 +290,6 @@ const ParticipantReducer = (state = defaultState, action) => {
                     participantsConnect[i].y = position.posY
                 }
               }
-
               return {
                   ...state,
                   participants: [...participants]

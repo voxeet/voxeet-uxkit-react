@@ -42,7 +42,11 @@ module.exports = {
       },
       {
         test: /\.mp3$/,
-        loader: 'file-loader'
+        exclude: /node_modules/,
+        loader: 'file-loader',
+        options: {
+          name: 'sounds/[name].[ext]',
+        }
       },
       {
         test: /\.(jpg|jpeg|gif|png)$/,

@@ -26,10 +26,12 @@ import AttendeesChat from './attendees/AttendeesChat';
 let strings = new LocalizedStrings({
   en: {
     electronloading: "Voxeet is loading, please wait",
+    errorDuringJoin: "An error occured when joining the conference. Please make sure to allow access to your microphone.",
     browerNotSupported: "This browser is currently not supported."
   },
   fr: {
     electronloading: "Le client Voxeet va démarrer, veuillez patienter",
+    errorDuringJoin: "Une erreur est survenue lors de la connexion à la conference. Veuillez vérifier l'accès à votre microphone.",
     browerNotSupported: "Ce navigateur n'est pas pris en charge."
   }
 });
@@ -37,6 +39,7 @@ let strings = new LocalizedStrings({
 @connect((state) => {
   return {
     conferenceStore: state.voxeet.conference,
+    errorStore: state.voxeet.error,
     participantsStore: state.voxeet.participants
   }
 })
@@ -46,8 +49,7 @@ class ConferenceRoom extends Component {
     super(props)
     this.state = {
       isElectron: false
-    }
-  }
+    }  }
 
   replayConference(conferenceId) {
     const { isModal } = this.props
@@ -60,16 +62,15 @@ class ConferenceRoom extends Component {
   }
 
   componentDidMount() {
-    const { ttl, rtcpmode, mode, videoCodec, sdk, chromeExtensionId, videoRatio, broadcasterModeWebinar, liveRecordingEnabled, conferenceAlias, conferenceId, isDemo, constraints, displayModes, displayActions, consumerKey, consumerSecret, userInfo, autoJoin, isWidget, isManualKickAllowed, kickOnHangUp, handleOnConnect, isWebinar, handleOnLeave, conferenceReplayId, isAdmin, oauthToken, refreshTokenCallback, isElectron } = this.props
+    const { isListener, ttl, rtcpmode, mode, videoCodec, sdk, chromeExtensionId, videoRatio, broadcasterModeWebinar, liveRecordingEnabled, conferenceAlias, conferenceId, isDemo, constraints, displayModes, displayActions, consumerKey, consumerSecret, userInfo, autoJoin, isWidget, isManualKickAllowed, kickOnHangUp, handleOnConnect, isWebinar, handleOnLeave, conferenceReplayId, isAdmin, oauthToken, refreshTokenCallback, isElectron } = this.props
     if (sdk) { // Sdk must be already initialized
       Sdk.setSdk(sdk)
     } else {
       Sdk.create()
     }
-
     let initialized = null
     if (oauthToken != null) {
-      initialized = this.props.dispatch(ConferenceActions.initializeWithToken(oauthToken, userInfo, refreshTokenCallback))
+      initialized = this.props.dispatch(ConferenceActions.initializeWithToken(oauthToken, refreshTokenCallback, userInfo))
     } else {
       initialized = this.props.dispatch(ConferenceActions.initialize(consumerKey, consumerSecret, userInfo))
     }
@@ -82,14 +83,16 @@ class ConferenceRoom extends Component {
       this.props.dispatch(ParticipantActions.handleOnLeave(handleOnLeave))
     }
 
-    if (displayActions != null)  {
-      this.props.dispatch(ControlsActions.displayActionsAllowed(displayActions))
-    }
-
     if (displayModes != null && !isWebinar)  {
       this.props.dispatch(ControlsActions.displayModesAllowed(displayModes))
     }
 
+    if (isListener) {
+      this.props.dispatch(ControlsActions.displayActionsAllowed(["attendees", "chat"]))
+    } else if (displayActions != null)  {
+      this.props.dispatch(ControlsActions.displayActionsAllowed(displayActions))
+    }
+    
     if (conferenceReplayId != null) {
       initialized.then(() => {
         this.props.dispatch(ConferenceActions.subscribeConference(conferenceAlias))
@@ -138,9 +141,11 @@ class ConferenceRoom extends Component {
             liveRecording: liveRecordingEnabled
           }
         }
-        initialized.then(() => this.props.dispatch(ConferenceActions.joinWithConferenceId(conferenceId, constraintsUpdated, userInfo, videoRatio, isElectron)))
+        initialized.then(() => this.props.dispatch(ConferenceActions.joinWithConferenceId(conferenceId, constraintsUpdated, userInfo, videoRatio, isElectron, isListener)))
       } else if (autoJoin && conferenceReplayId == null) { // Autojoin when entering in fullscreen mode
-        initialized.then(() => this.props.dispatch(ConferenceActions.join(conferenceAlias, isAdmin, constraints, liveRecordingEnabled, ttl, rtcpmode, mode, videoCodec, userInfo, videoRatio, isElectron)))
+        initialized.then(() => {
+          this.props.dispatch(ConferenceActions.join(conferenceAlias, isAdmin, constraints, liveRecordingEnabled, ttl, rtcpmode, mode, videoCodec, userInfo, videoRatio, isElectron, isListener))
+        })
       }
       if (conferenceAlias != null) {
         initialized.then(() => this.props.dispatch(ConferenceActions.subscribeConference(conferenceAlias)))
@@ -151,7 +156,8 @@ class ConferenceRoom extends Component {
   render() {
     const { dispatch, options, isWidget, isModal, conferenceAlias, constraints, actionsButtons, attendeesList, attendeesChat, handleOnLeave, attendeesWaiting, broadcasterModeWebinar, isWebinar, isAdmin } = this.props
     const { screenShareEnabled } = this.props.participantsStore
-    const { isJoined, conferenceId, initialized, isReplaying, conferenceReplayId, isElectron, webinarLive, isDemo } = this.props.conferenceStore
+    const { isError } = this.props.errorStore
+    const { isJoined, conferenceId, initialized, isReplaying, conferenceReplayId, isElectron, webinarLive, isDemo, conferencePincode } = this.props.conferenceStore
     if (bowser.ios && bowser.chrome) {
         return (
           <div className="electron-message-container">
@@ -165,11 +171,25 @@ class ConferenceRoom extends Component {
             </div>
           </div>
         )
+    } else if (initialized && !isJoined && isError) {
+      return(
+          <div className="electron-message-container">
+            <div className="electron-center-container">
+              <div className="electron-logo-container">
+                <img src={Logo} />
+              </div>
+              <div className="electron-info-container">
+                {strings.errorDuringJoin}
+              </div>
+            </div>
+          </div>
+      )
     } else if ((isJoined || !isWidget ||  conferenceReplayId != null) && !isElectron) {
       return (
         <ConferenceRoomContainer
           forceFullscreen={(!isWidget || isModal)}
           isJoined={isJoined}
+          conferencePincode={conferencePincode}
           webinarLive={webinarLive}
           isAdmin={isAdmin}
           isDemo={isDemo}
@@ -206,6 +226,7 @@ class ConferenceRoom extends Component {
 
 ConferenceRoom.propTypes = {
   sdk: PropTypes.object,
+  isListener: PropTypes.bool,
   isManualKickAllowed: PropTypes.bool,
   kickOnHangUp: PropTypes.bool,
   isElectron: PropTypes.bool,
@@ -259,6 +280,7 @@ ConferenceRoom.defaultProps = {
   mode: 'standard',
   videoCodec: 'VP8',
   conferenceId: null,
+  isListener: false,
   isAdmin: false,
   displayModes: null,
   displayActions: null,

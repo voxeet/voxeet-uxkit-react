@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 try {
   require('os').networkInterfaces()
@@ -14,6 +15,7 @@ module.exports = {
     'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
     './src/app/index.js',
   ],
+  devtool: "source-map",
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
@@ -39,7 +41,10 @@ module.exports = {
       },
       {
         test: /\.mp3$/,
-        loader: 'file-loader'
+        loader: 'file-loader',
+        options: {
+          name: 'sounds/[name].[ext]',
+        }
       },
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
@@ -69,6 +74,7 @@ module.exports = {
         'NODE_ENV': `""`
       }
     }),
+    new CopyWebpackPlugin([{ from: './src/static',ignore: [ '*.html' ]}]),
     new HtmlWebpackPlugin({
       inject: true,
       template: 'src/static/index.html'

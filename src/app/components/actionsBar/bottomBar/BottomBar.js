@@ -63,6 +63,7 @@ BottomBar.propTypes = {
     toggleScreenShare: PropTypes.func.isRequired,
     toggleModal: PropTypes.func.isRequired,
     toggleMode: PropTypes.func.isRequired,
+    conferencePincode: PropTypes.string.isRequired,
     mode: PropTypes.string.isRequired,
 };
 

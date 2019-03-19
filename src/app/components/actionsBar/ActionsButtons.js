@@ -11,6 +11,7 @@ import {
     ToggleVideoButton,
     ToggleExternalLiveButton,
     ToggleSettingsButton,
+    TogglePSTN,
     ToggleAttendeesListButton,
     ToggleAttendeesChatButton
 } from './buttons'
@@ -23,7 +24,7 @@ class ActionsButtons extends Component {
 
     render() {
         const { isBottomBar, forceFullscreen, isMuted, isRecording, isWidgetFullScreenOn,
-            videoEnabled, displayModal,
+            videoEnabled, displayModal,conferencePincode, 
             toggleMicrophone, toggleRecording, toggleVideo, toggleScreenShare, toggleAttendeesList, attendeesListOpened, attendeesChatOpened, 
             toggleAttendeesChat, recordingLocked, toggleModal, toggleAudio3D, isWebinar, isAdmin, displayActions, leave, audio3DEnabled, isElectron, displayExternalLiveModal, isExternalLive, isScreenshare, isDemo } = this.props
 
@@ -103,6 +104,13 @@ class ActionsButtons extends Component {
 
                 </ul>
                 <ul className="controls-right">
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("pstn") > -1 && !isDemo &&
+                        <TogglePSTN
+                            conferencePincode={conferencePincode}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
+                    }
                     {isBottomBar && displayActions.indexOf("attendees") > -1  &&
                         <ToggleAttendeesListButton tooltipPlace='top' toggle={toggleAttendeesList} isBottomBar isOpen={attendeesListOpened}/>
                     }

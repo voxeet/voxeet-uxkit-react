@@ -108,7 +108,8 @@ class AttendeesChat extends Component {
                     <h1>{LABELS.attendees}</h1>
                 </div>
                 <ul id="chat-scrollbar">
-                {messages.map((message, i) => {
+                { 
+                messages.map((message, i) => {
                     let messageContent = this.urlify(message.content)
                     if (message.ownerId != currentUser.participant_id) {
                         return (
@@ -143,11 +144,12 @@ class AttendeesChat extends Component {
                                 </div>
                             </li>)
                     }
-                })}
+                })
+                }
                 </ul>
                 <div className="container-input-chat"> 
                     <input autoFocus placeholder={LABELS.placeholderChat} onChange={this.onContentChange} value={content} className="input-message"></input>
-                    <a onClick={() => this.sendMessage()}><div>{LABELS.sendMessage}</div></a>
+                    <a onClick={() => this.sendMessage()}>{LABELS.sendMessage}</a>
                 </div>
             </div>
         )

@@ -1,4 +1,4 @@
-import VoxeetSdk from '@voxeet/voxeet-web-sdk'
+import VoxeetSdk from "@voxeet/voxeet-web-sdk";
 
 export default class Sdk {
     constructor() { throw new Error("Don't instanciate !")}
@@ -7,8 +7,11 @@ export default class Sdk {
         if(!Sdk.instance) {
             Sdk.instance = new VoxeetSdk()
         }
-
         return Sdk.instance
+    }
+
+    static destroy() {
+        Sdk.instance = undefined
     }
 
     static setSdk(sdk) {

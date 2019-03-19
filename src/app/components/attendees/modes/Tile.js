@@ -12,11 +12,6 @@ class Tile extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         const checker = document.getElementById("video-" + this.props.nbParticipant + "-video-on")
-        // TODO Valentin: Fix
-        //   if ((checker != null && nextProps.participant.stream == null || checker == null && nextProps.participant.stream) || (this.props.mySelf && this.props.participant.name == null)) {
-        //     return true
-        //   }
-        // return true
         if ((checker != null && nextProps.participant.stream == null || checker == null && nextProps.participant.stream) || (this.props.mySelf && this.props.participant.name == null)) {
             return true
         }

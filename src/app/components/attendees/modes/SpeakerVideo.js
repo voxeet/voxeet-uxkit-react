@@ -34,7 +34,7 @@ class SpeakerVideo extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
       const checker = document.getElementById("video-" + this.props.nbParticipant + "-video-on")
-      if ((checker != null && nextProps.participant.stream == null || checker == null && nextProps.participant.stream) || (this.props.nbParticipant != nextProps.nbParticipant) || (this.props.mySelf && this.props.participant.name == null) || ((this.state.isSpeaking != nextState.isSpeaking) && !checker)) {
+      if (nextProps.participant != this.props.participant || (checker != null && nextProps.participant.stream == null || checker == null && nextProps.participant.stream) || (this.props.nbParticipant != nextProps.nbParticipant) || (this.props.mySelf && this.props.participant.name == null) || ((this.state.isSpeaking != nextState.isSpeaking) && !checker)) {
         return true
       }
       return false

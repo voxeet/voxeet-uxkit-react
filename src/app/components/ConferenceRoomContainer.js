@@ -62,13 +62,6 @@ class ConferenceRoomContainer extends Component {
         this.props.dispatch(TimerActions.startTime())
     }
 
-    componentDidMount() {
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true
-    }
-
     toggleWidget() {
         this.props.dispatch(ControlsActions.toggleWidget())
     }
@@ -182,7 +175,7 @@ class ConferenceRoomContainer extends Component {
     }
 
     render() {
-        const { isJoined, isModal, forceFullscreen, screenShareEnabled, actionsButtons, attendeesChat, attendeesList, isWebinar, isAdmin, webinarLive, attendeesWaiting, isDemo, broadcasterModeWebinar } = this.props
+        const { isJoined, isModal, forceFullscreen, screenShareEnabled, actionsButtons, attendeesChat, attendeesList, isWebinar, isAdmin, webinarLive, attendeesWaiting, isDemo, broadcasterModeWebinar, conferencePincode } = this.props
         const { errorMessage, isError } = this.props.errorStore
         const { isModalExternalLiveOpen } = this.state
         const { userStream } = this.props.participantsStore
@@ -261,6 +254,7 @@ class ConferenceRoomContainer extends Component {
                             isJoined={isJoined}
                             isWebinar={isWebinar}
                             isAdmin={isAdmin}
+                            conferencePincode={conferencePincode}
                             mode={mode}
                             isDemo={isDemo}
                             isElectron={isElectron}
@@ -330,6 +324,7 @@ ConferenceRoomContainer.propTypes = {
     screenShareEnabled: PropTypes.bool,
     handleOnLeave: PropTypes.func,
     conferenceId: PropTypes.string,
+    conferencePincode: PropTypes.string,
     attendeesList: PropTypes.func,
     attendeesChat: PropTypes.func,
     attendeesWaiting: PropTypes.func

@@ -18,11 +18,6 @@ class SpeakerActive extends Component {
         if ((!this.props.screenShareEnabled && nextProps.screenShareEnabled) || (this.props.screenShareEnabled && !nextProps.screenShareEnabled)) {
             return true
         }
-        //   const checker = document.getElementById("video-active-video-on")
-        //   if ((checker != null && nextProps.participant.stream == null || checker == null && nextProps.participant.stream) || (this.props.mySelf && this.props.participant.name == null) || (this.props.participant != nextProps.participant)) {
-        //     return true
-        //   }
-        // return true
         const checker = document.getElementById("video-active-video-on")
         if ((checker != null && nextProps.participant.stream == null || checker == null && nextProps.participant.stream) || (this.props.mySelf && this.props.participant.name == null) || (this.props.participant != nextProps.participant)) {
             return true
