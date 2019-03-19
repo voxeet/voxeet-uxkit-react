@@ -16,6 +16,7 @@
     "MARTIN Valentin <vmartin@voxeet.com>"
   ],
   "dependencies": {
+    "@voxeet/voxeet-web-sdk": "^1.9.0-alpha.16",
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.3.4",
     "autolinker": "^2.2.2",
@@ -63,7 +64,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "peerDependencies": {
-    "@voxeet/voxeet-web-sdk": "^1.9.0-alpha.10"
+    "@voxeet/voxeet-web-sdk": "^1.9.0-alpha.16"
   },
   "files": [
     "README.md",
