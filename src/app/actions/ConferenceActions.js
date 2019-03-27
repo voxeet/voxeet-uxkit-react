@@ -152,6 +152,7 @@ export class Actions {
               constraints.video = false
               constraints.audio = false
             }
+            if (!bowser.msie) {
               Sdk.instance.enumerateVideoDevices()
                 .then((devices) => {
                    if (devices.length == 0) {
@@ -164,6 +165,7 @@ export class Actions {
                      constraints.audio = false
                    }
               });
+            }
 
               if (constraints.video && videoRatio != null) {
                 constraints.video = videoRatio

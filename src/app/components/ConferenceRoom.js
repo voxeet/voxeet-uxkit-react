@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import bowser from 'bowser'
@@ -26,12 +26,14 @@ import AttendeesChat from './attendees/AttendeesChat';
 let strings = new LocalizedStrings({
   en: {
     electronloading: "Voxeet is loading, please wait",
-    errorDuringJoin: "An error occured when joining the conference. Please make sure to allow access to your microphone.",
+    errorPermissionDenied: "An error occured when joining the conference. Please make sure to allow access to your microphone.",
+    errorIE11: "A plugin is mandatory for IE11, please download and install the plugin. When the installation is complete, please refresh this page.",
     browerNotSupported: "This browser is currently not supported."
   },
   fr: {
     electronloading: "Le client Voxeet va démarrer, veuillez patienter",
-    errorDuringJoin: "Une erreur est survenue lors de la connexion à la conference. Veuillez vérifier l'accès à votre microphone.",
+    errorPermissionDenied: "Une erreur est survenue lors de la connexion à la conference. Veuillez vérifier l'accès à votre microphone.",
+    errorIE11: "Une extension est nécéssaire pour utiliser IE11. Téléchargez et installez l'extension suivante. Lorsque l'installation est terminée, actualisez cette page.",
     browerNotSupported: "Ce navigateur n'est pas pris en charge."
   }
 });
@@ -156,7 +158,7 @@ class ConferenceRoom extends Component {
   render() {
     const { dispatch, options, isWidget, isModal, conferenceAlias, constraints, actionsButtons, attendeesList, attendeesChat, handleOnLeave, attendeesWaiting, broadcasterModeWebinar, isWebinar, isAdmin } = this.props
     const { screenShareEnabled } = this.props.participantsStore
-    const { isError } = this.props.errorStore
+    const { errorMessage, isError } = this.props.errorStore
     const { isJoined, conferenceId, initialized, isReplaying, conferenceReplayId, isElectron, webinarLive, isDemo, conferencePincode } = this.props.conferenceStore
     if (bowser.ios && bowser.chrome) {
         return (
@@ -179,7 +181,17 @@ class ConferenceRoom extends Component {
                 <img src={Logo} />
               </div>
               <div className="electron-info-container">
-                {strings.errorDuringJoin}
+                { errorMessage == "NotAllowedError: Permission denied" &&
+                  strings.errorPermissionDenied
+                }
+                { bowser.msie &&
+                  <Fragment>
+                    {strings.errorIE11} 
+                    <div>
+                      <a download href="https://s3.amazonaws.com/voxeet-cdn/ie11/WebRTC+ActiveX+Setup.exe">Download</a>
+                    </div>
+                  </Fragment>
+                }
               </div>
             </div>
           </div>

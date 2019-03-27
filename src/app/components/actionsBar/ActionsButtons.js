@@ -74,7 +74,7 @@ class ActionsButtons extends Component {
                             tooltipPlace={isBottomBar ? 'top' : 'right'}
                         />
                     }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("screenshare") > -1 && !isDemo && !browser.safari &&
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("screenshare") > -1 && !isDemo && !browser.safari && !browser.msie &&
                         <ToggleScreenShareButton
                             screenShareEnabled={isScreenshare}
                             isElectron={isElectron}

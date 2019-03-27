@@ -1,6 +1,6 @@
 {
   "name": "@voxeet/react-components",
-  "version": "0.31.4",
+  "version": "0.32.1",
   "description": "",
   "main": "./dist/bundle.js",
   "scripts": {
@@ -15,12 +15,16 @@
     "GOURGUES Thomas <tgourgues@voxeet.com>",
     "MARTIN Valentin <vmartin@voxeet.com>"
   ],
+  "browserslist": [
+    "IE 11"
+  ],
   "dependencies": {
-    "@voxeet/voxeet-web-sdk": "^1.9.0",
+    "@voxeet/voxeet-web-sdk": "1.9.2-alpha.2",
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.3.4",
     "autolinker": "^2.2.2",
     "bowser": "1.9.4",
+    "browserslist": "^4.5.2",
     "classnames": "2.2.6",
     "css-element-queries": "1.1.1",
     "dompurify": "^1.0.8",
@@ -38,10 +42,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
-    "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/plugin-proposal-decorators": "^7.3.0",
-    "@babel/plugin-transform-arrow-functions": "^7.2.0",
-    "@babel/plugin-transform-classes": "^7.3.4",
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
     "@babel/plugin-transform-regenerator": "^7.3.4",
     "@babel/plugin-transform-runtime": "^7.3.4",
@@ -64,7 +65,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "peerDependencies": {
-    "@voxeet/voxeet-web-sdk": "^1.9.0"
+    "@voxeet/voxeet-web-sdk": "1.9.2-alpha.2"
   },
   "files": [
     "README.md",
