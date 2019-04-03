@@ -4,7 +4,7 @@ import ReactTooltip from 'react-tooltip'
 import LocalizedStrings from 'react-localization';
 import LayoutSpeaker from '../../../../static/images/newicons/icon-layout-speaker.svg';
 import LayoutTiles from '../../../../static/images/newicons/icon-layout-tile.svg';
-import Layout3D from '../../../../static/images/newicons/icon-layout-3d.svg';
+import Layout3D from '../../../../static/images/newicons/icon-layout-3D.svg';
 
 let strings = new LocalizedStrings({
  en:{

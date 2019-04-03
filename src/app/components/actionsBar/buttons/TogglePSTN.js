@@ -5,7 +5,7 @@ import ReactTooltip from 'react-tooltip'
 import LocalizedStrings from 'react-localization';
 import PhoneWhite from '../../../../static/images/icn_conf_live.png'
 import PhoneBlue from '../../../../static/images/icn_conf_live_primary.png'
-import pinCode from '../../../constants/pinCode'
+import pinCode from '../../../constants/PinCode'
 
 let strings = new LocalizedStrings({
  en:{

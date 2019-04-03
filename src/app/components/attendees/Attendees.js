@@ -13,8 +13,8 @@ import { BROADCAST_KICK, WEBINAR_LIVE } from '../../constants/BroadcastMessageTy
 
 import Modal from './modal/Modal'
 import AttendeesHeader from './AttendeesHeader'
-import OnBoardingMessage from './OnBoardingMessage/onBoardingMessage'
-import OnBoardingMessageWithAction from './OnBoardingMessage/OnBoardingMessageWithAction'
+import OnBoardingMessage from './onBoardingMessage/onBoardingMessage'
+import OnBoardingMessageWithAction from './onBoardingMessage/onBoardingMessageWithAction'
 import AttendeesWaitingWebinarPresenter from './AttendeesWaitingWebinarPresenter'
 import { List, ListWidget, Speakers, Tiles, View3D, Webinar, ToggleModeButton } from './modes'
 import AttendeesParticipantVideo from './AttendeesParticipantVideo'
