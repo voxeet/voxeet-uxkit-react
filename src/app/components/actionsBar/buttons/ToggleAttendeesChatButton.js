@@ -1,19 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import LocalizedStrings from 'react-localization';
+import { strings } from '../../../languages/localizedStrings';
 import { connect } from 'react-redux'
 import ChatOn from '../../../../static/images/newicons/icon-chat-on.svg'
 import ChatOff from '../../../../static/images/newicons/icon-chat-off.svg'
-
-const LABELS = new LocalizedStrings({
- en:{
-   chat: "Chat"
- },
- fr: {
-    chat: "Conversation"
- }
-});
 
 @connect((store) => {
     return {
@@ -25,33 +16,33 @@ class ToggleAttendeesChatButton extends Component {
     constructor(props) {
         super(props)
         this.state = {
-          hover: false
+            isMobile: (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)),
+            hover: false
         }
     }
 
     render() {
         const { isOpen, toggle, tooltipPlace, isBottomBar } = this.props
-        const { hover } = this.state
+        const { hover, isMobile } = this.state
         const { newMessage } = this.props.chatStore
         return (
             <li className={isOpen ? 'active' : ''}
-                onMouseEnter={() => this.setState({hover: true})}
-                onMouseLeave={() => this.setState({hover: false})}>
-
-                <a data-tip data-for="toggle-mute"
+                onMouseEnter={() => { !isMobile && this.setState({hover: true}) } }
+                onMouseLeave={() => { !isMobile && this.setState({hover: false})} }>
+                <a data-tip data-for="toggle-chat"
                     className={' ' + (isOpen ? 'on' : 'off')}
-                    title={LABELS.chat}
+                    title={strings.chat}
                     onClick={() => toggle()}>
                     <img src={(isOpen || hover) ? ChatOn : ChatOff} />
                     { isBottomBar &&
-                      <div><span>{LABELS.chat}</span></div>
+                      <div><span>{strings.chat}</span></div>
                     }
                     { newMessage &&
                         <span className="chat-badge"></span>
                     }
                 </a>
                 { !isBottomBar &&
-                  <ReactTooltip id="toggle-mute" place={tooltipPlace} effect="solid" className="tooltip">{LABELS.attendees}</ReactTooltip>
+                  <ReactTooltip id="toggle-chat" place={tooltipPlace} effect="solid" className="tooltip">{strings.chat}</ReactTooltip>
                 }
             </li>
         )

@@ -1,3 +1,13 @@
+@keyframes createBox {
+  from {
+    transform: scale(0);
+    top: -130px;
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 .vxt-bottom-bar{
     position: absolute;
     bottom: 0px;
@@ -18,14 +28,17 @@
         .controls-left {
           display: inline-block;
           text-align: left;
+          width: 29%;
         }
         .controls-center {
           display: inline-block;
           text-align:center;
+          width: 29%;
         }
         .controls-right {
           display: inline-block;
           text-align:right;
+          width: 42%;
         }
         .chat-badge {
           width: 10px;
@@ -76,6 +89,10 @@
                 cursor: unset;
               }
             }
+            .conversion-running:hover, .conversion-running:active {
+              background-color: unset;
+              cursor: auto;
+            }
             li{
                 display: inline-block;
                 width: 50px;
@@ -113,15 +130,17 @@
                   }
                 }
                 .bubble-tip {
+                  animation: createBox .25s;
                   background-color: #fff;
+                  top: -265px;
                   margin-left: -79px;
                   width: 190px;
                   height: 240px;
                   position: absolute;
-                  top: -265px;
                   border-radius: 4px;
                   padding: 8px;
                   font-family: @font-family;
+                  
                   .anchor-popup {
                     width: 0;
                     height: 0;
@@ -143,6 +162,28 @@
                   .icon-close:hover {
                     border:none;
                   }
+                  .pincode {
+                    font-weight: bold;
+                    margin-top: 5px;
+                    font-size: 14px!important;
+                    display: inline-block;
+                    width: auto;
+                    text-align: center;
+                    margin-left: 0;
+                  }
+                  p {
+                    font-size: 13px;
+                    text-align: left;
+                    line-height: 16px;
+                    margin-left: 8px;
+                    margin-top: 4px;
+                    margin-bottom: 8px;
+                  }
+                  select {
+                    height: 25px;
+                    width: 90%;
+                    margin: auto;
+                  }
                   span {
                     width: 85%;
                     display: block;
@@ -150,9 +191,11 @@
                     color: #000;
                     height: auto;
                     font-size: 15px;
-                    margin: auto;
+                    margin-left: 8px;
                     font-weight: 800;
-                    margin-bottom: 7px;
+                    margin: auto;
+                    margin-left: 7px;
+                    margin-top: -5px;
                   }
                   a:hover {
                     border: 1px solid @blueHover;
@@ -175,7 +218,12 @@
                     img {
                       width: 16px;
                       vertical-align: text-top;
+                      height: 16px;
                       margin-right: 5px;
+                      position: relative;
+                      left: auto;
+                      top: auto;
+                      transform: none;
                     }
                   }
                 }

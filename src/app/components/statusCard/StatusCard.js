@@ -10,30 +10,7 @@ import AttendeesHeaderTimer from '../attendees/AttendeesHeaderTimer'
 import AttendeesWaiting from '../attendees/AttendeesWaiting';
 import StatusCardParticipants from './StatusCardParticipants';
 import Modal from '../attendees/modal/Modal'
-import LocalizedStrings from 'react-localization';
-
-let strings = new LocalizedStrings({
- en:{
-   hangtight:"We're waiting for other callers to arrive.",
-   join: "Join",
-   incall: "In call with :",
-   joincall: "Join Call",
-   close: "Close",
-   expand: "Expand",
-   activecall: "Active call",
-   leavecall: "Leave call"
- },
- fr: {
-   hangtight:"Veuillez patienter, nous attendons d'autres participants.",
-   join: "Rejoindre",
-   incall: "En conférence avec :",
-   joincall: "Rejoindre la conférence",
-   close: "Fermer",
-   expand: "Agrandir",
-   activecall: "Conférence active",
-   leavecall: "Quitter la conférence"
- }
-});
+import { strings } from '../../languages/localizedStrings';
 
 @connect((state) => {
     return {

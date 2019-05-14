@@ -1,18 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import LocalizedStrings from 'react-localization';
-
-let strings = new LocalizedStrings({
- en:{
-   open: "Open",
-   close: "Close"
- },
- fr: {
-   open: "Ouvrir",
-   close: "Fermer"
- }
-});
+import { strings } from '../../languages/localizedStrings';
 
 class AttendeesToggleFullscreen extends Component {
     constructor(props) {

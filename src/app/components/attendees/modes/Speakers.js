@@ -1,22 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import LocalizedStrings from 'react-localization';
+import { strings } from '../../../languages/localizedStrings';
 import { Actions as ActiveSpeakerActions } from '../../../actions/ActiveSpeakerActions'
 
 import Speaker from './Speaker'
 import SpeakerActive from './SpeakerActive'
 import SpeakerVideo from './SpeakerVideo'
+import SpeakerDetails from './SpeakerDetails'
 import AttendeesParticipantBar from '../AttendeesParticipantBar'
-
-let strings = new LocalizedStrings({
- en:{
-   screensharerunning: "Happy Screen Sharing!"
- },
- fr: {
-   screensharerunning: "Partage d'écran en cours"
- }
-});
+import ScreenshareMode from './presentationMode/ScreenshareMode'
+import FilePresentationMode from './presentationMode/FilePresentationMode'
 
 @connect((store) => {
     return {
@@ -39,7 +33,7 @@ class Speakers extends Component {
     }
 
     render() {
-        const { participants, forceActiveSpeaker, disableForceActiveSpeaker, toggleMicrophone, isWidgetFullScreenOn, screenShareEnabled, screenShareStream, isAdmin, kickParticipant, isAdminActived, userIdStreamScreenShare, currentUser, isWebinar, isScreenshare, isElectron } = this.props
+        const { participants, forceActiveSpeaker, disableForceActiveSpeaker, forceFullscreen, toggleMicrophone, isWidgetFullScreenOn, screenShareEnabled, filePresentationEnabled, isFilePresentation, screenShareStream, isAdmin, kickParticipant, isAdminActived, userIdStreamScreenShare, currentUser, isWebinar, isScreenshare, isElectron } = this.props
         const { activeSpeaker, forceActiveUserEnabled } = this.props.activeSpeakerStore
         let activeSpeakerChecker = activeSpeaker
         if (activeSpeakerChecker == null) {
@@ -48,68 +42,70 @@ class Speakers extends Component {
         if (participants.length == 0) {
           activeSpeakerChecker = currentUser
         }
-
         return (
             <div className="SidebarSpeaker">
-                {(activeSpeakerChecker || screenShareEnabled) &&
-                  !isScreenshare ?
-                    <SpeakerActive
+                {((activeSpeakerChecker || screenShareEnabled) && !filePresentationEnabled) &&
+                    <ScreenshareMode
+                        participants={participants}
                         participant={activeSpeakerChecker}
-                        toggleMicrophone={toggleMicrophone}
-                        isWidgetFullScreenOn={isWidgetFullScreenOn}
-                        screenShareEnabled={screenShareEnabled}
-                        screenShareStream={screenShareStream}
+                        isAdmin={isAdmin}
+                        isAdminActived={isAdminActived}
+                        kickParticipant={kickParticipant}
                         isElectron={isElectron}
+                        toggleMicrophone={toggleMicrophone}
+                        isWidgetFullScreenOn={(forceFullscreen || isWidgetFullScreenOn)}
+                        screenShareEnabled={screenShareEnabled}
+                        filePresentationEnabled={filePresentationEnabled}
+                        currentUser={currentUser}
                         isScreenshare={isScreenshare}
-                        kickParticipant={kickParticipant}
-                        isAdmin={isAdmin}
-                        isAdminActived={isAdminActived}
-                    />
-                  :
-                  <div className="screenshare-current-user">
-                    <div className="screenshare-current-user-enable">
-                      {strings.screensharerunning}
-                    </div>
-                    <SpeakerActive
-                        participant={activeSpeakerChecker}
-                        toggleMicrophone={toggleMicrophone}
-                        isWidgetFullScreenOn={isWidgetFullScreenOn}
-                        screenShareEnabled={screenShareEnabled}
-                        isElectron={isElectron}
                         screenShareStream={screenShareStream}
-                        kickParticipant={kickParticipant}
+                    />
+                }
+                {  filePresentationEnabled && 
+                    <FilePresentationMode
+                        participants={participants}
+                        participant={activeSpeakerChecker}
                         isAdmin={isAdmin}
                         isAdminActived={isAdminActived}
+                        kickParticipant={kickParticipant}
+                        isElectron={isElectron}
+                        toggleMicrophone={toggleMicrophone}
+                        isWidgetFullScreenOn={(forceFullscreen || isWidgetFullScreenOn)}
+                        screenShareEnabled={screenShareEnabled}
+                        filePresentationEnabled={filePresentationEnabled}
+                        isFilePresentation={isFilePresentation}
+                        currentUser={currentUser}
+                        isScreenshare={isScreenshare}
+                        screenShareStream={screenShareStream}
                     />
-                  </div>
+
                 }
                 <div className="SidebarList">
-                    {participants.length >= 1 &&
-                        <ul className="list-items">
-                            {participants.map((participant, i) => {
-                                return(<Speaker key={i}
-                                    participant={participant}
-                                    toggleMicrophone={toggleMicrophone}
-                                    kickParticipant={kickParticipant}
-                                    isAdmin={isAdmin}
-                                    nbParticipant={i}
-                                    screenShareEnabled={screenShareEnabled}
-                                    activeSpeaker={activeSpeakerChecker}
-                                    forceActiveUserEnabled={forceActiveUserEnabled}
-                                    isAdminActived={isAdminActived}
-                                    isWidgetFullScreenOn={isWidgetFullScreenOn}
-                                    disableForceActiveSpeaker={disableForceActiveSpeaker}
-                                    forceActiveSpeaker={forceActiveSpeaker} />)
-                              }
-                          )}
-                          { !isWebinar && !isAdmin &&
-                            <li className={'item participant-available myself'}>
+                    <ul className="list-items">
+                        { (!isWebinar || (isWebinar && isAdmin)) &&
+                            <li className={'item small-item participant-available myself'}>
+                                <SpeakerDetails participant={currentUser} isWidgetFullScreenOn={isWidgetFullScreenOn} />
                                 <SpeakerVideo mySelf={true} participant={currentUser} />
-                                <AttendeesParticipantBar participant={currentUser} />
+                                {isWidgetFullScreenOn && <AttendeesParticipantBar participant={currentUser} />}
                             </li>
-                          }
-                        </ul>
-                    }
+                        }
+                        {participants.map((participant, i) => {
+                            return(<Speaker key={i}
+                                participant={participant}
+                                toggleMicrophone={toggleMicrophone}
+                                kickParticipant={kickParticipant}
+                                isAdmin={isAdmin}
+                                nbParticipant={i}
+                                screenShareEnabled={screenShareEnabled}
+                                activeSpeaker={activeSpeakerChecker}
+                                forceActiveUserEnabled={forceActiveUserEnabled}
+                                isAdminActived={isAdminActived}
+                                isWidgetFullScreenOn={isWidgetFullScreenOn}
+                                disableForceActiveSpeaker={disableForceActiveSpeaker}
+                                forceActiveSpeaker={forceActiveSpeaker} />)
+                            }
+                        )}
+                    </ul>
                 </div>
             </div>
         )
@@ -123,10 +119,13 @@ Speakers.propTypes = {
     userIdStreamScreenShare: PropTypes.string,
     isWebinar: PropTypes.bool.isRequired,
     isScreenshare: PropTypes.bool,
+    isFilePresentation: PropTypes.bool,
     toggleMicrophone: PropTypes.func.isRequired,
     isElectron: PropTypes.bool.isRequired,
     isWidgetFullScreenOn: PropTypes.bool.isRequired,
     screenShareEnabled: PropTypes.bool.isRequired,
+    filePresentationEnabled: PropTypes.bool.isRequired,
+    userIdFilePresentation: PropTypes.string,
     screenShareStream: PropTypes.object,
     userStream: PropTypes.object,
     kickParticipant: PropTypes.func.isRequired,

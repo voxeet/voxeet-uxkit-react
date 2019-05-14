@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 
 import Sdk from '../../../sdk'
 import AttendeesParticipantVideo from '../../attendees/AttendeesParticipantVideo';
-import ModalSettingsVuMeter from '../../attendees/modal/type/ModalSettingsVuMeter';
 import ModalJoinSettings from '../../modalJoin/ModalJoinSettings';
 import ModalJoinParticipants from '../../modalJoin/ModalJoinParticipants';
 
@@ -76,7 +75,7 @@ class LiveSettings extends Component {
                       {participantsConnected.length === 0 ?
                         <div className="empty">
                             <div className="logo" />
-                            <p>We're waiting for other callers to arrive.</p>
+                            <p>{strings.hangtight}</p>
                         </div>
                         :
                         <div className="participantsList">

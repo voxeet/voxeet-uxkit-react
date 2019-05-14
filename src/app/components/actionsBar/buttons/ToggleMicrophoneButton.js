@@ -1,34 +1,26 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import LocalizedStrings from 'react-localization';
+import { strings } from '../../../languages/localizedStrings';
 import MuteOn from '../../../../static/images/newicons/icon-mute-on.svg'
 import MuteOff from '../../../../static/images/newicons/icon-mute-off.svg'
-
-let strings = new LocalizedStrings({
- en:{
-   mute: "Mute"
- },
- fr: {
-   mute: "Muet"
- }
-});
 
 class ToggleMicrophoneButton extends Component {
     constructor(props) {
         super(props)
         this.state = {
-          hover: false
+            isMobile: (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)),
+            hover: false
         }
     }
 
     render() {
         const { isMuted, toggle, tooltipPlace, isBottomBar } = this.props
-        const { hover } = this.state
+        const { hover, isMobile } = this.state
         return (
             <li className={isMuted ? 'active' : ''}
-                onMouseEnter={() => this.setState({hover: true})}
-                onMouseLeave={() => this.setState({hover: false})}>
+                onMouseEnter={() => { !isMobile && this.setState({hover: true}) } }
+                onMouseLeave={() => { !isMobile && this.setState({hover: false})} }>
                 <a data-tip data-for="toggle-mute"
                     className={' ' + (isMuted ? 'on' : 'off')}
                     title={strings.mute}

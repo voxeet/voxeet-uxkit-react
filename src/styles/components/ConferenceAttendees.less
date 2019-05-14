@@ -11,8 +11,7 @@
     padding: 0;
     margin-left: auto;
     position: relative;
-    width: 245px;
-    transition: width ease-in-out 0.2s;
+    width: 350px;
     background-color: #000C31;
     .toggle-fullscreen {
       position: absolute;
@@ -189,9 +188,47 @@
         padding: 0px 5px 0px 5px;
       }
     }
+
+    .vxt-widget-mode-on & {
+        .sidebar-container {
+            .SidebarSpeaker {
+                .screenshare-current-user-enable {
+                    font-size: 15px;
+                }
+                .screenshare-current-user {
+                    height: 20%!important;
+                    position: relative!important;
+                    .stream-media {
+                        position: relative;
+                        top: 50%;
+                        transform: translateY(-50%);
+                    }
+                }
+            }
+        }
+    }
+    
     .vxt-widget-fullscreen-on & {
         width: auto;
         overflow: hidden;
+        transition: width ease-in-out 0.2s;
+        .sidebar-container {
+            transition: margin-right 250ms;
+            &.attendees-list-close {
+                width: auto;
+                margin-right: 0px;
+            }
+            &.attendees-list-opened {
+                width: auto;
+                margin-right: 350px;
+            }
+            .onboardingmessagewithaction {
+                width: 80%;
+            }
+            .onboardingmessage {
+                width: 80%!important;
+            }
+        }
     }
     /* Visual */
     //background-color: @sidebarBgColor;
@@ -357,13 +394,7 @@
         flex-direction: row;
         height: 100%;
         margin-left: 0;
-        margin-right: 0;
         width: 100%;
-
-        &.attendees-list-opened {
-            width: auto;
-            margin-right: 350px;
-        }
     }
     .Sidebar3D {
         margin-left: 0;
@@ -401,6 +432,7 @@
         /* Box model */
         display: flex;
         flex: 1;
+        overflow-y: scroll;
         .loading {
             justify-content: center;
             color: transparent;
@@ -457,8 +489,10 @@
             flex:none!important;
         }
         .stream-media {
-            min-width: 64px;
-            min-height: 64px;
+            min-width: 67px;
+            min-height: 67px;
+            margin-top: 10px;
+            background-color: #000;
             max-width: 80px;
             max-height: 110px;
             border-radius: 100%;
@@ -841,7 +875,6 @@
           }
         }
         .active-speaker {
-            padding: 15px 0px 0;
             position: relative;
             margin-bottom: 20px;
             .video-frame {
@@ -1024,7 +1057,7 @@
                     margin: auto;
                     width: max-content;
                     .myself {
-                      border-right: 0.8px solid #979797;
+                      border-left: 0.8px solid #979797;
                     }
                     .item {
                         &:hover {
@@ -1036,7 +1069,7 @@
                         flex-shrink: 1;
                         height: 135px;
                         width:194px;
-                        border-left: 0.8px solid #979797;
+                        border-right: 0.8px solid #979797;
                         overflow: hidden;
                         .participant-bar {
                           top:auto;
@@ -1137,11 +1170,24 @@
             vertical-align: middle; //width: 100%;
             max-width: 100%!important;
             padding-bottom: 26px;
+            object {
+                flex: 1;
+                height: 70%;
+                max-width: 100%;
+            }
             .video-participant {
-                max-width: 150px;
-                max-height: 150px;
+                max-width: 100%;
+                max-height: 100%;
                 vertical-align: middle;
                 width: 100%; //object-fit: fill;
+            }
+        }
+        .myself {
+            .video-participant {
+                -webkit-transform: scale(-1, 1);
+                transform: scale(-1, 1);
+                -webkit-transform-origin: 50% 50%;
+                transform-origin: 50% 50%;
             }
         }
         .preview-avatar {
@@ -1235,7 +1281,7 @@
                     font-size: 1rem;
                     margin: 0;
                     transition: all ease-in-out 0.085s;
-                    vertical-align: -3px;
+                    vertical-align: -2px;
                     &:hover {
                         color: #FFF;
                         cursor: pointer;
@@ -1387,52 +1433,6 @@
         left: 0;
         top: 0;
       }
-      .modal-thirdparty {
-        text-align: center;
-        .ul-external-live {
-          text-align:left;
-          list-style: none;
-          padding: 0px 10px 0px 0px;
-          li {
-            margin-top: 10px;
-            font-size: 14px;
-            div {
-              margin-top: 10px;
-              margin-left: 0px;
-            }
-            label {
-              padding: 5px;
-            }
-          }
-        }
-        input {
-          text-align: left;
-          width: 100%!important;
-          border-radius: 5px;
-          box-sizing: unset;
-          border-style: unset;
-          border: 1px solid #ccc;
-          padding: 4px;
-          font-size: 13px;
-          margin-left: 2px;
-        }
-        #password {
-          max-width: 75%;
-        }
-        button {
-          margin: auto;
-          position: absolute;
-          width: inherit;
-          padding: 5px;
-          margin-left: 14px;
-          border-radius: 5px;
-          border: none;
-          font-size: 12px;
-          background-color: #4380c1;
-          color: #fff;
-          cursor: pointer;
-        }
-      }
       .content{
           background-color: @white;
           position: absolute;
@@ -1563,6 +1563,25 @@
           }
       }
     }
+    .conference-empty-widget {
+        width: 100%;
+        padding: 0px;
+        text-align: center;
+        font-size: 15px;
+        position: absolute;
+        bottom: 40%;
+        p {
+          padding: 15px;
+          margin: auto;
+          max-width: 300px;
+          color: #fff;
+          border-radius: 8px;
+          background: -moz-linear-gradient(left, rgba(90,56,207,0.6) 0%, rgba(53,123,209,0.6) 100%); /* FF3.6-15 */
+          background: -webkit-linear-gradient(left, rgba(90,56,207,0.6) 0%,rgba(53,123,209,0.6) 100%); /* Chrome10-25,Safari5.1-6 */
+          background: linear-gradient(to right, rgba(90,56,207,0.6) 0%,rgba(53,123,209,0.6) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+          filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#995a38cf', endColorstr='#99357bd1',GradientType=1 ); /* IE6-9 */
+        }
+    }
     .conference-empty {
         width: 100%;
         padding: 0px;
@@ -1608,16 +1627,17 @@
         display: inline-block;
         font-family: @font-family-semibold;
         font-size: 0.8rem;
-        padding-left: 8px;
+        padding-left: 15px;
         font-size: 11px;
     }
     .participant-kick {
         flex:0!important;
-        margin-left: 12px;
+        margin-left: 5px;
         .icon-close {
             color: @mutedColor;
             display: inline-block;
-            vertical-align: middle;
+            font-size: 14px!important;
+            vertical-align: middle!important;
             &:hover {
                 cursor: pointer;
             }
@@ -1716,11 +1736,4 @@
 
 .sidebar-less {
   margin-left: 0px;
-}
-
-.webinar-mode {
-  text-align: center;
-  font-weight: 700;
-  padding: 10px 10px 10px 10px;
-  color: #fff;
 }

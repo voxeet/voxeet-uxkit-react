@@ -9,12 +9,15 @@ class ListWidget extends Component {
     }
 
     render() {
-        const { participants, toggleMicrophone, kickParticipant, isAdmin, isAdminActived } = this.props
+        const { participants, toggleMicrophone, kickParticipant, isAdmin, isAdminActived, currentUser, isWebinar } = this.props
         return (<div className="SidebarList">
             <ul className="list-items">
+                { (!isWebinar || (isWebinar && isAdmin)) &&
+                    <ListWidgetItem isAdminActived={isAdminActived} participant={currentUser} isAdmin={isAdmin} mySelf={true} />
+                }
                 {participants.map((participant, i) => {
                     if (participant.isConnected)
-                        return <ListWidgetItem isAdminActived={isAdminActived} participant={participant} isAdmin={isAdmin} key={i} kickParticipant={kickParticipant} toggleMicrophone={toggleMicrophone} />
+                        return <ListWidgetItem isAdminActived={isAdminActived} participant={participant} isAdmin={isAdmin} key={i} mySelf={false} kickParticipant={kickParticipant} toggleMicrophone={toggleMicrophone} />
                 })}
             </ul>
 
@@ -25,7 +28,9 @@ class ListWidget extends Component {
 
 ListWidget.propTypes = {
     participants: PropTypes.array.isRequired,
+    currentUser: PropTypes.object.isRequired,
     isAdmin: PropTypes.bool.isRequired,
+    isWebinar: PropTypes.bool.isRequired,
     isAdminActived: PropTypes.bool.isRequired,
     toggleMicrophone: PropTypes.func.isRequired,
     kickParticipant: PropTypes.func.isRequired,

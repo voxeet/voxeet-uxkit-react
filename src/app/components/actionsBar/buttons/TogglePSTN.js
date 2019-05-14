@@ -2,27 +2,17 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import browser from 'bowser';
 import ReactTooltip from 'react-tooltip'
-import LocalizedStrings from 'react-localization';
+import { strings } from '../../../languages/localizedStrings';
 import PhoneWhite from '../../../../static/images/icn_conf_live.png'
 import PhoneBlue from '../../../../static/images/icn_conf_live_primary.png'
 import pinCode from '../../../constants/PinCode'
-
-let strings = new LocalizedStrings({
- en:{
-    pincode: "Call-in",
-    pinCodeExplanations: "Call this number below and provide the conference pin code to join the conference via PSTN."
- },
- fr: {
-    pincode: "Call-in",
-    pinCodeExplanations: "Appelez un numéro ci-dessous et renseignez le code de la conference pour rejoindre la conference via RTCP."
- }
-});
 
 class TogglePSTN extends Component {
     constructor(props) {
         super(props)
         this.state = {
           opened: false,
+          isMobile: (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)),
           hover: false
         }
         this.togglePopUp = this.togglePopUp.bind(this)
@@ -63,11 +53,11 @@ class TogglePSTN extends Component {
 
     render() {
         const { toggle, tooltipPlace, isBottomBar, conferencePincode } = this.props
-        const { hover, opened } = this.state
+        const { hover, isMobile, opened } = this.state
         return (
             <li id="pincode-container" className={opened ? 'active' : ''}
-                onMouseEnter={() => this.setState({hover: true})}
-                onMouseLeave={() => this.setState({hover: false})}>
+                onMouseEnter={() => { !isMobile && this.setState({hover: true}) } }
+                onMouseLeave={() => { !isMobile && this.setState({hover: false})} }>
                 <a data-tip data-for="toggle-pincode"
                     className={'' + (opened ? 'on' : 'off')}
                     title={strings.screenshare}

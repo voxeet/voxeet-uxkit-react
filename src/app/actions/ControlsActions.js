@@ -5,13 +5,16 @@ export const Types = {
     TOGGLE_MODE: 'TOGGLE_MODE',
     TOGGLE_MICROPHONE: 'TOGGLE_MICROPHONE',
     TOGGLE_VIDEO: 'TOGGLE_VIDEO',
+    TOGGLE_AUDIO: 'TOGGLE_AUDIO',
     DISPLAY_MODES_ALLOWED: 'DISPLAY_MODES_ALLOWED',
     DISPLAY_ACTIONS_ALLOWED: 'DISPLAY_ACTIONS_ALLOWED',
+    SHARE_ACTIONS_ALLOWED: 'SHARE_ACTIONS_ALLOWED',
     TOGGLE_MODAL: 'TOGGLE_MODAL',
     FORCE_MODE: 'FORCE_MODE',
     TOGGLE_LIVE_EXTERNAL: 'TOGGLE_LIVE_EXTERNAL',
     ELECTRON_MODE_ACTIVATED: 'ELECTRON_MODE_ACTIVATED',
     TOGGLE_SCREEN_SHARE_MODE: 'TOGGLE_SCREEN_SHARE_MODE',
+    TOGGLE_FILE_PRESENTATION_MODE: 'TOGGLE_FILE_PRESENTATION_MODE',
     TOGGLE_AUDIO3D: 'TOGGLE_AUDIO3D',
     SET_CHROME_EXTENSION_ID: 'SET_CHROME_EXTENSION_ID',
     SET_VIDEO_RATIO: 'SET_VIDEO_RATIO',
@@ -23,6 +26,8 @@ export const Types = {
     RESET_WIDGET_CONTROLS: 'RESET_WIDGET_CONTROLS',
     TOGGLE_ATTENDEES_LIST: 'TOGGLE_ATTENDEES_LIST',
     TOGGLE_ATTENDEES_CHAT: 'TOGGLE_ATTENDEES_CHAT',
+    TOGGLE_ATTENDEES_SETTINGS: 'TOGGLE_ATTENDEES_SETTINGS',
+    TOGGLE_ATTENDEES_LIVE: 'TOGGLE_ATTENDEES_LIVE',
     UNLOCK_RECORDING: 'UNLOCK_RECORDING',
     LOCK_RECORDING: 'LOCK_RECORDING'
 }
@@ -92,6 +97,15 @@ export class Actions {
         }
     }
 
+    static toggleFilePresentationMode(isFilePresentation) {
+        return {
+            type: Types.TOGGLE_FILE_PRESENTATION_MODE,
+            payload: {
+              isFilePresentation
+            }
+        }
+    }
+
     static toggleMode() {
         return {
             type: Types.TOGGLE_MODE
@@ -131,11 +145,29 @@ export class Actions {
         }
     }
 
+    static shareActionsAllowed(shareActions) {
+        return {
+            type: Types.SHARE_ACTIONS_ALLOWED,
+            payload: {
+              shareActions: shareActions
+            }
+        }
+    }
+
     static displayActionsAllowed(displayActions) {
         return {
             type: Types.DISPLAY_ACTIONS_ALLOWED,
             payload: {
               displayActions: displayActions
+            }
+        }
+    }
+
+    static toggleAudio(state) {
+        return {
+            type: Types.TOGGLE_AUDIO,
+            payload: {
+                state: state
             }
         }
     }
@@ -194,6 +226,18 @@ export class Actions {
     static toggleAttendeesList(){
         return {
             type: Types.TOGGLE_ATTENDEES_LIST
+        }
+    }
+
+    static toggleAttendeesSettings(){
+        return {
+            type: Types.TOGGLE_ATTENDEES_SETTINGS
+        }
+    }
+
+    static toggleAttendeesLive(){
+        return {
+            type: Types.TOGGLE_ATTENDEES_LIVE
         }
     }
 

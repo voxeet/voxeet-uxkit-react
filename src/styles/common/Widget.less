@@ -18,11 +18,12 @@ a:hover {
   transition: all ease-in-out 0.2s;
   position: fixed;
   &.vxt-widget-opened {
-    width: 300px;
+    width: 405px;
   }
 
   &.vxt-widget-fullscreen-on {
     width: 100%;
+    overflow: hidden;
   }
 
 }
@@ -39,7 +40,8 @@ a:hover {
   z-index: 50;
   .bubble-tip {
     background-color: #fff;
-    margin-left: -79px;
+    animation: createBox .25s;
+    margin-left: -85px;
     width: 190px;
     border: 1px solid #ccc;
     height: 240px;
@@ -68,6 +70,29 @@ a:hover {
     }
     .icon-close:hover {
       border:none;
+    }
+    .pincode {
+      font-weight: bold;
+      margin-top: 5px;
+      font-size: 14px!important;
+      display: inline-block;
+      width: auto;
+      text-align: center;
+      margin-left: 0;
+    }
+    select {
+      height: 25px;
+      width: 90%;
+      margin: 15px auto auto auto;
+    }
+    p {
+      font-size: 13px;
+      text-align: left;
+      line-height: 16px;
+      margin-left: 8px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      color: #000;
     }
     span {
       width: 85%;
@@ -105,6 +130,10 @@ a:hover {
         width: 16px;
         vertical-align: text-top;
         margin-right: 5px;
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
       }
     }
   }

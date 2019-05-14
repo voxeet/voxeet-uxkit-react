@@ -10,8 +10,8 @@ const defaultState = {
     isReplaying: false,
     isElectron: false,
     isDemo: false,
-    webinarLive: false,
     conferenceReplayId: null,
+    hasLeft: false,
     time:0,
     isJoined: false,
 }
@@ -22,11 +22,6 @@ const ConferenceReducer = (state = defaultState, action) => {
           return {
               ...state,
               isElectron: true
-          }
-        case Types.CONFERENCE_WEBINAR_LIVE:
-          return {
-              ...state,
-              webinarLive: true
           }
         case Types.INCREMENT_TIME:
             return {
@@ -57,6 +52,7 @@ const ConferenceReducer = (state = defaultState, action) => {
                 conferenceId: action.payload.conferenceId,
                 conferencePincode: action.payload.conferencePincode,
                 connecting: false,
+                hasLeft: false,
                 isJoined: true
             }
         }
@@ -70,10 +66,10 @@ const ConferenceReducer = (state = defaultState, action) => {
                 initialized: false,
                 connecting: false,
                 isLive: false,
+                hasLeft: true,
                 isReplaying: false,
                 isElectron: false,
                 isDemo: false,
-                webinarLive: false,
                 conferenceReplayId: null,
                 time:0,
                 isJoined: false

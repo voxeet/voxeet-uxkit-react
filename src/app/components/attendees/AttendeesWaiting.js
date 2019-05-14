@@ -1,15 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import LocalizedStrings from 'react-localization';
-
-let strings = new LocalizedStrings({
- en:{
-   hangtight:"Hang Tight. We're waiting for other callers to arrive."
- },
- fr: {
-   hangtight:"Veuillez patienter, nous attendons d'autres participants."
- }
-});
+import { strings } from '../../languages/localizedStrings';
 
 class AttendeesWaiting extends Component {
     constructor(props) {
@@ -17,9 +8,9 @@ class AttendeesWaiting extends Component {
     }
 
     render() {
-
+        const {forceFullscreen, isWidgetFullScreenOn } = this.props
         return (
-            <div className="conference-empty">
+            <div className={(!forceFullscreen && !isWidgetFullScreenOn) ? "conference-empty-widget" : "conference-empty"}>
                 <p>{strings.hangtight}</p>
             </div>
         )
@@ -27,7 +18,8 @@ class AttendeesWaiting extends Component {
 }
 
 AttendeesWaiting.propTypes = {
-
+    forceFullscreen: PropTypes.bool,
+    isWidgetFullScreenOn: PropTypes.bool
 }
 
 export default AttendeesWaiting

@@ -76,14 +76,17 @@ The Widget is translate in english and french. The language will be automaticall
 |`oauthToken`|String||The oauth token retrieve from your backend (prevent using consumerKey/consumerSecret in frontend) ! Make sure to use this `refreshTokenCallback props of the widget too !|
 |`refreshTokenCallback`|func||Provide this function that return a promise with the refreshed token, when this one expire|
 |`conferenceAlias`|String||The conference you whant to join|
+|`logo`|String|Voxeet Logo|Display your logo inside the react components by using this props.|
 |`chromeExtensionId`|String||Id of chrome screenshare extension, a message will be prompt when the user will try to screenshare (Inline installation is no longer supported)|
-|`displayActions`|Array|["mute" ,"recording", "screenshare", "video", "live", "attendees", "chat", "pstn"]|You can disable some actions buttons. Example : displayActions={["mute", "video"]} will allow to video and mute button (Strings : "mute", "video", "screenshare", "recording", "live", "attendees", "chat")|
+|`displayActions`|Array|["mute" ,"recording", "share", "video", "live", "attendees", "chat", "pstn"]|You can disable some actions buttons. Example : displayActions={["mute", "video"]} will allow to video and mute button (Strings : "mute", "video", "share", "recording", "live", "attendees", "chat")|
+|`shareActions`|Array|["screenshare" ,"filepresentation"]|You can choose which button will be display, it's possible to do a screenshare, or a file presentation ! If you set the displayActions you need to add the 'share' button to allow actions !|
 |`liveRecordingEnabled`|Boolean|false|Ability to record a conference in live. Generate an MP4 video of the conference. Can be retrieve by a webhook (a small delay might be necessary for process the video)|
 |`isWidget`|Boolean|true|Indicate if component used like widget or embedded in your app|
 |`chromeExtensionId`|String|null|The Id from your Chrome Web Extension to screenshare (needed only on Chrome)|
 |`isModal`|Boolean|false|Indicate if component displayed like modal|
 |`isWebinar`|Boolean|false|Launch the widget in Webinar mode, only admin can speak (Restriction in "tiles" mode)|
 |`autoJoin`|Boolean|false|Join automatically conference|
+|`preConfig`|Boolean|false|Show a pop up before entering inside the Conference to configure your devices (audio, video)|
 |`videoCodec`|String|VP8|Specify video codec "H264" or "VP8" => H264 is needed for video on Safari|
 |`isListener`|Boolean|false|Enter in conference in listener mode|
 |`displayModes`|Array|["list", "tiles", "speaker"]|Indicate which mode is allowed (modes will be in the same order as the array)|
@@ -138,7 +141,6 @@ class ActionsButtons extends Component {
       leave,
       audio3DEnabled,
       isElectron,
-      displayExternalLiveModal,
       isExternalLive,
       isScreenshare,
       isDemo
@@ -190,7 +192,7 @@ class ActionsButtons extends Component {
                             tooltipPlace={isBottomBar ? 'top' : 'right'}
                         />
                     }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("screenshare") > -1 && !isDemo && !browser.safari &&
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("share") > -1 && !isDemo && !browser.safari &&
                         <ToggleScreenShareButton
                             screenShareEnabled={isScreenshare}
                             isElectron={isElectron}
@@ -244,7 +246,6 @@ ActionsButtons.propTypes = {
   isScreenshare: PropTypes.bool.isRequired,
   displayActions: PropTypes.array.isRequired,
   toggleAudio3D: PropTypes.func.isRequired,
-  displayExternalLiveModal: PropTypes.func.isRequired,
   isElectron: PropTypes.bool.isRequired,
   isExternalLive: PropTypes.bool.isRequired,
   audio3DEnabled: PropTypes.bool.isRequired,

@@ -1,17 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import LocalizedStrings from 'react-localization';
+import { strings } from '../../../languages/localizedStrings';
 import { connect } from 'react-redux'
 import { Actions as OnBoardingMessageActions } from '../../../actions/OnBoardingMessageActions'
-
-let strings = new LocalizedStrings({
- en:{
-   here: "link"
- },
- fr: {
-   here: "ici"
- }
-});
 
 @connect((state) => {
   return {

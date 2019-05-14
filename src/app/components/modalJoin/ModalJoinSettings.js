@@ -5,17 +5,8 @@ import { connect } from 'react-redux'
 
 import Sdk from '../../sdk'
 import AttendeesParticipantVideo from '../attendees/AttendeesParticipantVideo';
-import ModalSettingsVuMeter from '../attendees/modal/type/ModalSettingsVuMeter';
-import LocalizedStrings from 'react-localization';
-
-let strings = new LocalizedStrings({
- en:{
-   titlesettings:"Set preferred camera and microphone"
- },
- fr: {
-   titlesettings:"Configuration caméra et microphone"
- }
-});
+import AttendeesParticipantVuMeter from '../attendees/AttendeesParticipantVuMeter';
+import { strings } from '../../languages/localizedStrings';
 
 class ModalJoinSettings extends Component {
 
@@ -65,7 +56,7 @@ class ModalJoinSettings extends Component {
                   </select>
                 </div>
                 <div className="form-group">
-                  <ModalSettingsVuMeter />
+                  <AttendeesParticipantVuMeter />
                 </div>
                 <div className="form-group">
                   <label htmlFor="video">Video</label>

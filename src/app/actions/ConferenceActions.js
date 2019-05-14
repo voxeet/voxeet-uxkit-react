@@ -1,18 +1,21 @@
 import Sdk from '../sdk'
 import bowser from 'bowser'
+import Cookies from 'js-cookie'
+import { Actions as InputManagerActions } from './InputManagerActions'
 import { Actions as ErrorActions } from './ErrorActions'
 import { Actions as ControlsActions } from './ControlsActions'
 import { Actions as ParticipantActions } from './ParticipantActions'
 import { Actions as ConferenceActions } from './ConferenceActions'
+import { Actions as FilePresentationActions } from './FilePresentationActions'
 import { Actions as ChatActions } from './ChatActions'
 import { Actions as ParticipantWaitingActions } from './ParticipantWaitingActions'
 import { Actions as OnBoardingMessageActions } from './OnBoardingMessageActions'
 import { Actions as OnBoardingMessageWithActionActions } from './OnBoardingMessageWithActionActions'
 import { Actions as TimerActions } from './TimerActions'
-import LocalizedStrings from 'react-localization';
-import { getOrganizedPosition, getRelativePosition } from './../libs/position';
+import { strings } from '../languages/localizedStrings.js'
+import { getOrganizedPosition, getRelativePosition } from './../libs/position'
 import { STATUS_CONNECTING, STATUS_CONNECTED, STATUS_ON_AIR } from './../constants/ParticipantStatus'
-import { BROADCAST_KICK, BROADCAST_KICK_ADMIN_HANG_UP, WEBINAR_LIVE, CHAT_MESSAGE, RECORDING_STATE } from './../constants/BroadcastMessageType'
+import { BROADCAST_KICK, BROADCAST_KICK_ADMIN_HANG_UP, CHAT_MESSAGE, RECORDING_STATE } from './../constants/BroadcastMessageType'
 
 export const Types = {
     INITIALIZED_SUCCESS: 'INITIALIZED_SUCCESS',
@@ -21,40 +24,11 @@ export const Types = {
     CONFERENCE_JOINED: 'CONFERENCE_JOINED',
     CONFERENCE_DEMO: 'CONFERENCE_DEMO',
     CONFERENCE_ELECTRON: 'CONFERENCE_ELECTRON',
-    CONFERENCE_WEBINAR_LIVE: 'CONFERENCE_WEBINAR_LIVE',
     INCREMENT_TIME: 'INCREMENT_TIME',
     CONFERENCE_LEAVE: 'CONFERENCE_LEAVE',
     REPLAY_ENDED: 'REPLAY_ENDED',
     CONFERENCE_STATUS_UPDATED: 'CONFERENCE_STATUS_UPDATED'
 }
-
-let strings = new LocalizedStrings({
- en:{
-   installExtension: "Please install the screen share extension with this ",
-   noExtensionAvailable: "No Chrome Web Extension configure for screen share.",
-   microphoneOff: "Your microphone is muted.",
-   microphoneOn: "Your microphone is on.",
-   cameraOn: "Your camera is on.",
-   cameraOff: "Your camera is off.",
-   recordConferenceStart: "Your conference is being recorded.",
-   recordConferenceStop: "Your conference is no longer recorded.",
-   screenshareInProgress: "You cannot screenshare while another user is screensharing.",
-   recordConferenceStartBy: "Your conference is being recorded by "
- },
- fr: {
-   installExtension: "Veuillez installer cette extension ",
-   noExtensionAvailable: "Pas d'extension Chrome disponible pour le screenshare.",
-   microphoneOff: "Votre microphone est muet.",
-   microphoneOn: "Votre microphone est activé.",
-   cameraOn: "Votre caméra est activée.",
-   cameraOff: "Votre caméra est désactivée.",
-   recordConferenceStart: "Votre conference est enregistrée.",
-   recordConferenceStop: "Votre conference n'est plus enregistrée.",
-   screenshareInProgress: "Un partage d'écran est déjà en cours.",
-   recordConferenceStartBy: "Votre conference est enregistrée par ",
-   recordConferenceStopBy: "Votre conference n'est plus enregistrée par "
- }
-});
 
 export class Actions {
 
@@ -89,30 +63,54 @@ export class Actions {
     static subscribeConference(conferenceAlias) {
         return dispatch => {
             return Sdk.instance.subscribeConferenceStatus(conferenceAlias)
-                .then(res => {
-                  this._conferenceConnecting()
-                })
-                .catch(err => { this._throwErrorModal(err) })
+              .then(res => {this._conferenceConnecting()})
+              .catch(err => { this._throwErrorModal(err) })
         }
+    }
+
+    static startFilePresentation(file) {
+      return dispatch => {
+        return Sdk.instance.startFilePresentation(file)
+          .catch(err => { this._throwErrorModal(err) })
+      } 
+    }
+
+    static stopFilePresentation() {
+      return (dispatch, getState) => {
+        const { voxeet: { filePresentation } } = getState()
+        return Sdk.instance.stopFilePresentation(filePresentation.filePresentationId)
+          .catch(err => { this._throwErrorModal(err) })
+      } 
+    }
+
+    static updateFilePresentation(filePresentationId, position) {
+      return dispatch => {
+        return Sdk.instance.updateFilePresentation(filePresentationId, position)
+          .catch(err => { this._throwErrorModal(err) })
+      } 
+    }
+
+    static convertFile(file) {
+      return dispatch => {
+        dispatch(FilePresentationActions.fileConvertStart())
+        return Sdk.instance.convertFile(file)
+          .catch(err => { dispatch(FilePresentationActions.fileConvertStop()) })
+      } 
     }
 
     static joinExternalLive(url) {
         return (dispatch, getState) => {
             return Sdk.instance.liveStreaming.start({uri: url})
-            .then(res => {
-              // CAN SET "IS LIVE" TO WIDGET, ICON ?
-            })
-            .catch(err => { this._throwErrorModal(err) })
+              .then(res => {})
+              .catch(err => { this._throwErrorModal(err) })
         }
     }
 
     static stopExternalLive(url) {
         return (dispatch, getState) => {
             return Sdk.instance.liveStreaming.stop()
-            .then(res => {
-              // CAN SET "IS LIVE" TO WIDGET, ICON ?
-            })
-            .catch(err => { this._throwErrorModal(err) })
+              .then(res => { })
+              .catch(err => { this._throwErrorModal(err) })
         }
     }
 
@@ -122,7 +120,7 @@ export class Actions {
             dispatch(this._conferenceConnecting())
             const { voxeet: { participants } } = getState()
             return Sdk.instance.createDemoConference()
-            .then(function(res) {
+              .then(function(res) {
                 if (Sdk.instance.extensions.hasElectron()) {
                   dispatch(ConferenceActions.hasElectron())
                 } else {
@@ -131,11 +129,11 @@ export class Actions {
                   dispatch(ControlsActions.toggleWidget())
                   dispatch(ParticipantActions.triggerHandleOnConnect());
                 }
-            })
+              })
         }
     }
 
-    static join(conferenceAlias, isAdmin, constraints, liveRecordingEnabled, ttl, rtcpmode, mode, videoCodec, userInfoRaw, videoRatio, isElectron, isListener) {
+    static join(conferenceAlias, isAdmin, constraints, liveRecordingEnabled, ttl, rtcpmode, mode, videoCodec, userInfoRaw, videoRatio, isElectron, isListener, preConfigPayload) {
         return (dispatch, getState) => {
             dispatch(ParticipantActions.clearParticipantsList())
             dispatch(this._conferenceConnecting())
@@ -148,40 +146,96 @@ export class Actions {
                 admin: isAdmin
               }
             }
+
             if (participants.isWebinar && !isAdmin) {
               constraints.video = false
               constraints.audio = false
             }
-            if (!bowser.msie) {
-              Sdk.instance.enumerateVideoDevices()
-                .then((devices) => {
-                   if (devices.length == 0) {
-                     constraints.video = false
-                   }
-              });
-              Sdk.instance.enumerateAudioDevices()
-                .then((devices) => {
-                   if (devices.length == 0) {
-                     constraints.audio = false
-                   }
-              });
+
+            if (isListener || (participants.isWebinar && !isAdmin)) {
+              return Sdk.instance.listenConference(conferenceAlias)
+              .then(function(res) {
+                if (navigator.userAgent.match(/(iPod|iPhone|iPad)/) && navigator.userAgent.match(/AppleWebKit/)) {
+                  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                }
+                dispatch(ParticipantActions.saveCurrentUser(userInfo.name, userInfo.avatarUrl, userInfo.externalId));
+                dispatch(ConferenceActions._conferenceJoined(res.conferenceId, res.conferencePincode));
+                dispatch(ControlsActions.toggleWidget())
+                dispatch(ParticipantActions.triggerHandleOnConnect());
+              })
             }
 
-              if (constraints.video && videoRatio != null) {
-                constraints.video = videoRatio
-              }
+            if (preConfigPayload == null && !bowser.msie && !participants.isWebinar) {
+                let videoCookieExist = false
+                Sdk.instance.enumerateVideoDevices()
+                  .then((devices) => {
+                    devices.forEach(source => {
+                      if (Cookies.get('camera') == source.deviceId) videoCookieExist = true
+                    })
+                    if (devices.length == 0) {
+                      constraints.video = false
+                    } else {
+                      if (!videoCookieExist) {
+                          var date = new Date();
+                          date.setDate(date.getDate() + 365);
+                          Cookies.set('camera', devices[0].deviceId, { path: '/', expires: date });
+                          dispatch(InputManagerActions.inputVideoChange(devices[0].deviceId))
+                          if (constraints.video) {
+                            if (videoRatio != null) {
+                              constraints.video = { height: videoRatio.height, width: videoRatio.width, deviceId :{ exact:  devices[0].deviceId} }
+                            } else {
+                              constraints.video = { deviceId :{ exact:  devices[0].deviceId} }
+                            }
+                          }
+                      } else {
+                          if (constraints.video) {
+                            if (videoRatio != null) {
+                              constraints.video = { height: videoRatio.height, width: videoRatio.width, deviceId :{ exact: Cookies.get('camera')} }
+                            } else {
+                              constraints.video = { deviceId :{ exact: Cookies.get('camera')} }
+                            }
+                          }
+                          dispatch(InputManagerActions.inputVideoChange(Cookies.get('camera')))
+                      }
+                    }
 
-              if (isListener) {
-                return Sdk.instance.listenConference(conferenceAlias)
-                .then(function(res) {
-                  if (navigator.userAgent.match(/(iPod|iPhone|iPad)/) && navigator.userAgent.match(/AppleWebKit/)) {
-                    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-                  }
-                  dispatch(ConferenceActions._conferenceJoined(res.conferenceId, res.conferencePinCode));
-                  dispatch(ParticipantActions.saveCurrentUser(userInfo.name, userInfo.avatarUrl, userInfo.externalId));
-                  dispatch(ControlsActions.toggleWidget())
-                  dispatch(ParticipantActions.triggerHandleOnConnect());
-                })
+
+                });
+                if (constraints.audio) {
+                  let inputCookieExist = false
+                  Sdk.instance.enumerateAudioDevices()
+                    .then((devices) => {
+                      devices.forEach(source => {
+                        if (Cookies.get('input') == source.deviceId) inputCookieExist = true
+                      })
+                      if (devices.length == 0) {
+                        constraints.audio = false
+                      } else {
+                        if (!inputCookieExist) {
+                          constraints.audio = true
+                          dispatch(InputManagerActions.inputAudioChange(devices[0].deviceId))
+                        } else {
+                          constraints.audio = { deviceId :{ exact: Cookies.get('input')} }
+                          dispatch(InputManagerActions.inputAudioChange(Cookies.get('input')))
+                        }
+                      }
+                  });
+                }
+            } else {
+              if (preConfigPayload && preConfigPayload.videoEnabled) {
+                if (videoRatio != null) {
+                  constraints.video = { height: videoRatio.height, width: videoRatio.width, deviceId :{ exact:  preConfigPayload.videoDeviceSelected} }
+                } else {
+                  constraints.video = { deviceId :{ exact:  preConfigPayload.videoDeviceSelected} }
+                }
+              } else if (preConfigPayload) {
+                constraints.video = false
+              }
+              if (preConfigPayload && preConfigPayload.audioDeviceSelected && constraints.audio) constraints.audio = { deviceId :{ exact:  preConfigPayload.audioDeviceSelected} }
+            }
+
+            if (constraints.video && videoRatio != null && preConfigPayload == null) {
+              constraints.video = videoRatio
             }
             return Sdk.instance.createConference({alias: conferenceAlias, params : { liveRecording: liveRecordingEnabled, ttl: ttl, stats: 'true', rtcpmode: rtcpmode, mode: mode, videoCodec: videoCodec }})
               .then((data) => {
@@ -194,23 +248,48 @@ export class Actions {
                         if (Sdk.instance.extensions.hasElectron()) {
                           dispatch(ConferenceActions.hasElectron())
                         } else {
-                          dispatch(ConferenceActions._conferenceJoined(res.conferenceId, res.conferencePincode));
                           dispatch(ParticipantActions.saveCurrentUser(userInfo.name, userInfo.avatarUrl, userInfo.externalId));
+                          dispatch(ConferenceActions._conferenceJoined(res.conferenceId, res.conferencePincode));
                           dispatch(ControlsActions.toggleWidget())
                           dispatch(ControlsActions.saveConstraints(constraints))
                           dispatch(ParticipantActions.triggerHandleOnConnect());
+                          if (res.recordingStatus == "RECORDING") {
+                            dispatch(ControlsActions.lockRecording())
+                            dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.recordConferenceStart, 1000))
+                          }
                           if (constraints.video) {
                             dispatch(ControlsActions.toggleVideo(true))
                           }
+                          if (!constraints.audio) dispatch(ControlsActions.toggleAudio(false))
+                          if (bowser.chrome) {
+                            if (preConfigPayload != null) {
+                              if (preConfigPayload.outputDeviceSelected) Sdk.instance.selectAudioOutput(preConfigPayload.outputDeviceSelected).catch(err => {console.log(err)})
+                            } else {
+                              let outputCookieExist = false
+                              Sdk.instance.enumerateAudioDevices("output").then((devices) => {
+                                  devices.map((source, i) => {
+                                    if (Cookies.get('output') == source.deviceId) outputCookieExist = true
+                                  })
+                                  if (!outputCookieExist) {
+                                    var date = new Date();
+                                    date.setDate(date.getDate() + 365);
+                                    Cookies.set('output', devices[0].deviceId, { path: '/', expires: date });
+                                    dispatch(InputManagerActions.outputAudioChange(devices[0].deviceId))
+                                  } else {
+                                    dispatch(InputManagerActions.outputAudioChange(Cookies.get('output')))
+                                  }
+                              })
+                            }
+                          }
                         }
-                    }).catch(err => { dispatch(ErrorActions.onError(err)) })
+                    }).catch(err => { console.log(err);dispatch(ErrorActions.onError(err)) })
             })
-            .catch(err => { dispatch(ErrorActions.onError(err)) })
+            .catch(err => { console.log(err);dispatch(ErrorActions.onError(err)) })
         }
     }
 
 
-    static joinWithConferenceId(conferenceId, constraints, userInfo, videoRatio, isElectron, isListener) {
+    static joinWithConferenceId(conferenceId, constraints, userInfo, videoRatio, isElectron, isListener, preConfigPayload) {
         return (dispatch, getState) => {
             dispatch(ParticipantActions.clearParticipantsList())
             dispatch(this._conferenceConnecting())
@@ -219,22 +298,90 @@ export class Actions {
                 admin: participants.participants.length == 0 ? true : false
             }
 
-            if (participants.participants.length > 0 && participants.isWebinar) {
-              userInfo.type = 'listener';
-            }
-
-            if (constraints.video && videoRatio != null) {
-              constraints.video = videoRatio
+            if (participants.isWebinar && !isAdmin) {
+                constraints.video = false
+                constraints.audio = false
             }
 
             if (isListener) {
               return Sdk.instance.listenConference(conferenceId)
               .then(function(res) {
-                dispatch(ConferenceActions._conferenceJoined(res.conferenceId, res.conferencePinCode));
                 dispatch(ParticipantActions.saveCurrentUser(userInfo.name, userInfo.avatarUrl, userInfo.externalId));
+                dispatch(ConferenceActions._conferenceJoined(res.conferenceId, res.conferencePincode));
                 dispatch(ControlsActions.toggleWidget())
                 dispatch(ParticipantActions.triggerHandleOnConnect());
               })
+            }
+  
+            if (preConfigPayload == null && !bowser.msie) {
+              let videoCookieExist = false
+              Sdk.instance.enumerateVideoDevices()
+                .then((devices) => {
+                  devices.forEach(source => {
+                    if (Cookies.get('camera') == source.deviceId) videoCookieExist = true
+                  })
+                  if (devices.length == 0) {
+                    constraints.video = false
+                  } else {
+                    if (!videoCookieExist) {
+                        var date = new Date();
+                        date.setDate(date.getDate() + 365);
+                        Cookies.set('camera', devices[0].deviceId, { path: '/', expires: date });
+                        dispatch(InputManagerActions.inputVideoChange(devices[0].deviceId))
+                        if (constraints.video) {
+                          if (videoRatio != null) {
+                            constraints.video = { height: videoRatio.height, width: videoRatio.width, deviceId :{ exact:  devices[0].deviceId} }
+                          } else {
+                            constraints.video = { deviceId :{ exact:  devices[0].deviceId} }
+                          }
+                        }
+                    } else {
+                        if (constraints.video) {
+                          if (videoRatio != null) {
+                            constraints.video = { height: videoRatio.height, width: videoRatio.width, deviceId :{ exact: Cookies.get('camera')} }
+                          } else {
+                            constraints.video = { deviceId :{ exact: Cookies.get('camera')} }
+                          }
+                        }
+                        dispatch(InputManagerActions.inputVideoChange(Cookies.get('camera')))
+                    }
+                  }
+
+
+              });
+              if (constraints.audio) {
+                let inputCookieExist = false
+                Sdk.instance.enumerateAudioDevices()
+                  .then((devices) => {
+                    devices.forEach(source => {
+                      if (Cookies.get('input') == source.deviceId) inputCookieExist = true
+                    })
+                    if (devices.length == 0) {
+                      constraints.audio = false
+                    } else {
+                      if (!inputCookieExist) {
+                        constraints.audio = true
+                        dispatch(InputManagerActions.inputAudioChange(devices[0].deviceId))
+                      } else {
+                        constraints.audio = { deviceId :{ exact: Cookies.get('input')} }
+                        dispatch(InputManagerActions.inputAudioChange(Cookies.get('input')))
+                      }
+                    }
+                });
+              }
+            } else {
+              if (preConfigPayload.videoEnabled) {
+                if (videoRatio != null) {
+                  constraints.video = { height: videoRatio.height, width: videoRatio.width, deviceId :{ exact:  preConfigPayload.videoDeviceSelected} }
+                } else {
+                  constraints.video = { deviceId :{ exact:  preConfigPayload.videoDeviceSelected} }
+                }
+              }
+              if (preConfigPayload.audioDeviceSelected) constraints.audio = { deviceId :{ exact:  preConfigPayload.audioDeviceSelected} }
+            }
+
+            if (constraints.video && videoRatio != null && preConfigPayload == null) {
+              constraints.video = videoRatio
             }
 
             return Sdk.instance.joinConference(conferenceId, {
@@ -242,14 +389,39 @@ export class Actions {
                 'audio3D': (isElectron ? true : false),
                 user : userInfo,
             }).then(function(res) {
-                  dispatch(ConferenceActions._conferenceJoined(res.conferenceId, res.conferencePinCode))
                   dispatch(ParticipantActions.saveCurrentUser(userInfo.name, userInfo.avatarUrl, userInfo.externalId));
+                  dispatch(ConferenceActions._conferenceJoined(res.conferenceId, res.conferencePinCode))
                   dispatch(ControlsActions.toggleWidget())
                   dispatch(ControlsActions.saveConstraints(constraints))
                   dispatch(ParticipantActions.triggerHandleOnConnect());
+                  if (res.recordingStatus == "RECORDING") {
+                    dispatch(ControlsActions.lockRecording())
+                    dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.recordConferenceStart, 1000))
+                  }
+                  if (bowser.chrome) {
+                    if (preConfigPayload != null) {
+                      if (preConfigPayload.outputDeviceSelected) Sdk.instance.selectAudioOutput(preConfigPayload.outputDeviceSelected).catch(err => {console.log(err)})
+                    } else {
+                      let outputCookieExist = false
+                      Sdk.instance.enumerateAudioDevices("output").then((devices) => {
+                          devices.map((source, i) => {
+                            if (Cookies.get('output') == source.deviceId) outputCookieExist = true
+                          })
+                          if (!outputCookieExist) {
+                            var date = new Date();
+                            date.setDate(date.getDate() + 365);
+                            Cookies.set('output', devices[0].deviceId, { path: '/', expires: date });
+                            dispatch(InputManagerActions.outputAudioChange(devices[0].deviceId))
+                          } else {
+                            dispatch(InputManagerActions.outputAudioChange(Cookies.get('output')))
+                          }
+                      })
+                    }
+                  }
                   if (constraints.video) {
                     dispatch(ControlsActions.toggleVideo())
                   }
+                  if (!constraints.audio) dispatch(ControlsActions.toggleAudio(false))
             })
             .catch(err => { this._throwErrorModal(err) })
           }
@@ -311,15 +483,47 @@ export class Actions {
     static toggleMicrophone(userId) {
         return (dispatch, getState) => {
             if (!userId) userId = Sdk.instance.userId
-            const status = Sdk.instance.toggleMute(userId)
             const {
                 voxeet: {
                     controls
                 }
             } = getState()
+
+            let status = false
+            if (!controls.audioEnabled) {
+              let inputCookieExist = false
+              let constraints = { audio: true }
+              if (!bowser.msie) {
+                Sdk.instance.enumerateAudioDevices()
+                  .then((devices) => {
+                    devices.forEach(source => {
+                      if (Cookies.get('input') == source.deviceId) inputCookieExist = true
+                    })
+                    if (!inputCookieExist) {
+                      constraints.audio = true
+                      dispatch(InputManagerActions.inputAudioChange(devices[0].deviceId))
+                    } else {
+                      constraints.audio = { deviceId :{ exact: Cookies.get('input')} }
+                      dispatch(InputManagerActions.inputAudioChange(Cookies.get('input')))
+                    }
+                    status = Sdk.instance.startAudioForUser(Sdk.instance.userId, constraints).then(() => {
+                      dispatch(ControlsActions.toggleAudio(true))
+                    })
+                })
+              } else {
+                status = Sdk.instance.startAudioForUser(Sdk.instance.userId, constraints).then(() => {
+                  dispatch(ControlsActions.toggleAudio(true))
+                })
+              }
+            } else {
+              status = Sdk.instance.toggleMute(userId)
+            }
+
             if (userId === Sdk.instance.userId) {
                 dispatch(OnBoardingMessageActions.onBoardingDisplay(controls.isMuted ? strings.microphoneOn : strings.microphoneOff, 1000))
-                return dispatch(ControlsActions.toggleMicrophone())
+                if (controls.audioEnabled) {
+                  return dispatch(ControlsActions.toggleMicrophone())
+                }
             }
             return dispatch(ParticipantActions.onToogleMicrophone(userId, status))
         }
@@ -336,25 +540,34 @@ export class Actions {
         return (dispatch, getState) => {
             const {
                 voxeet: {
-                    controls
+                    controls,
+                    inputManager
                 }
             } = getState()
             if (!videoStarted) {
-                dispatch(ControlsActions.toggleVideo(true))
                 if (controls.videoRatio) {
-                  dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.cameraOn, 1000))
-                  return Sdk.instance.startVideoForUser(Sdk.instance.userId, controls.videoRatio)
-                    .catch(err => { this._throwErrorModal(err) })
+                    const payloadConstraints = {
+                        width: controls.videoRatio.width,
+                        height: controls.videoRatio.height,
+                        deviceId: inputManager.currentVideoDevice
+                    }
+                    dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.cameraOn, 1000))
+                    return Sdk.instance.startVideoForUser(Sdk.instance.userId, payloadConstraints)
+                        .then (() => { dispatch(ControlsActions.toggleVideo(true)) })
+                        .catch(err => { this._throwErrorModal(err) })
                 } else {
-                  dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.cameraOn, 1000))
-                  return Sdk.instance.startVideoForUser(Sdk.instance.userId)
-                    .catch(err => { this._throwErrorModal(err) })
+                    const payloadConstraints = {
+                        deviceId: inputManager.currentVideoDevice
+                    }
+                    dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.cameraOn, 1000))
+                    return Sdk.instance.startVideoForUser(Sdk.instance.userId, payloadConstraints)
+                        .then (() => { dispatch(ControlsActions.toggleVideo(true)) })
+                        .catch(err => { this._throwErrorModal(err) })
                 }
-
             } else {
-                dispatch(ControlsActions.toggleVideo(false))
                 dispatch(OnBoardingMessageActions.onBoardingDisplay(strings.cameraOff, 1000))
                 return Sdk.instance.stopVideoForUser(Sdk.instance.userId)
+                    .then (() => { dispatch(ControlsActions.toggleVideo(false)) })
                     .catch(err => { this._throwErrorModal(err) })
             }
         }
@@ -387,7 +600,7 @@ export class Actions {
                 return Sdk.instance.startScreenShare(type)
                 .catch(err => {
                   if (err.message == "Chrome Web Extension is not installed" && controls.chromeExtensionId != null) {
-                    dispatch(OnBoardingMessageWithActionActions.onBoardingMessageWithAction(strings.installExtension , "https://chrome.google.com/webstore/detail/" + controls.chromeExtensionId))
+                    dispatch(OnBoardingMessageWithActionActions.onBoardingMessageWithAction(strings.installExtension , "https://chrome.google.com/webstore/detail/" + controls.chromeExtensionId + "."))
                   } else if (err.message == "Chrome Web Extension is not installed" && controls.chromeExtensionId == null) {
                     dispatch(OnBoardingMessageWithActionActions.onBoardingMessageWithAction(strings.noExtensionAvailable, null, true))
                   } else if (err) {
@@ -409,14 +622,6 @@ export class Actions {
                     "userId": participant_id
                 }
                 return Sdk.instance.sendConferenceMessage(broadcastMessage).then(() => {}).catch(err => { this._throwErrorModal(err) })
-                break;
-            case WEBINAR_LIVE:
-            broadcastMessage = {
-                    "title": "Webinar_Live",
-                    "state": 1
-                }
-                const { voxeet: { conference } } = getState()
-                if (conference.webinarLive) return Sdk.instance.sendConferenceMessage(broadcastMessage).catch(err => { this._throwErrorModal(err) })
                 break;
             case RECORDING_STATE: 
                 broadcastMessage = {
@@ -519,31 +724,6 @@ export class Actions {
           }
         }
 
-        static _isWebinarMuted(userId) {
-            return (dispatch, getState) => {
-                const {
-                    voxeet: {
-                        conference,
-                        participants
-                    }
-                } = getState()
-                if (participants.isWebinar && !conference.webinarLive) Sdk.instance.muteUser(userId, true)
-            }
-        }
-
-        static _isWebinarUnmuted() {
-            return (dispatch, getState) => {
-                const {
-                    voxeet: {
-                        participants
-                    }
-                } = getState()
-                participants.participants.map((participant, i) => {
-                  Sdk.instance.muteUser(participant.participant_id, false)
-                })
-            }
-        }
-
     static _initializeListeners(dispatch) {
         return new Promise((resolve, reject) => {
               Sdk.instance.on('conferenceStatusUpdated', (status) => {
@@ -563,7 +743,6 @@ export class Actions {
 
             Sdk.instance.on('participantAdded', (userId, userInfo) => {
                 dispatch(ParticipantWaitingActions.onParticipantWaitingAdded(userId, userInfo))
-                dispatch(this.sendBroadcastMessage(WEBINAR_LIVE));
             })
 
             Sdk.instance.on('conferenceLeft', () => {
@@ -586,8 +765,47 @@ export class Actions {
               //console.log("MOS: ", ind.mos);
             });
 
+            Sdk.instance.on('fileConverted', (file) => {
+              if (file.imageCount > 0) {
+                dispatch(FilePresentationActions.fileConvertStop(file.fileId))
+                dispatch(this.startFilePresentation(file))
+
+                for (var i = 0; i < file.imageCount; i++) {
+                  Sdk.instance.getThumbnail(file.fileId, i).then((thumbUrl) => {
+                    dispatch(FilePresentationActions.addThumbnail(thumbUrl))
+                  })
+                }
+
+              } else {
+                dispatch(FilePresentationActions.fileConvertStop(null))
+                dispatch(OnBoardingMessageWithActionActions.onBoardingMessageWithAction(strings.errorFilePresentation, null, true))
+              }
+            });
+
+            Sdk.instance.on('filePresentationStarted', function(data) {
+              dispatch(ControlsActions.forceMode('speaker'))
+              if (Sdk.instance.userId === data.userId) {
+                dispatch(ControlsActions.toggleFilePresentationMode(true))
+              }
+              dispatch(ParticipantActions.onFilePresentationStarted(data.userId))
+              Sdk.instance.getImage(data.fileId, data.position).then((res) => {
+                dispatch(FilePresentationActions.startFilePresentation(data.fileId, res, data.position, data.imageCount))
+              })
+            });
+            
+            Sdk.instance.on('filePresentationUpdated', function(data) {
+              Sdk.instance.getImage(data.fileId, data.position).then((res) => {
+                dispatch(FilePresentationActions.updateFilePresentation(data.position, res))
+              })
+            }); 
+            
+            Sdk.instance.on('filePresentationStopped', function() {
+              dispatch(ParticipantActions.onFilePresentationStopped())
+              dispatch(ControlsActions.toggleFilePresentationMode(false))
+              dispatch(FilePresentationActions.stopFilePresentation())
+            });
+
             Sdk.instance.on('participantJoined', (userId, stream) => {
-                dispatch(this._isWebinarMuted(userId))
                 dispatch(this.checkIfUserJoined(userId, stream))
             })
 
@@ -626,10 +844,6 @@ export class Actions {
                           dispatch(ControlsActions.resetWidgetControls())
                         })
                       }
-                      break;
-                    case WEBINAR_LIVE:
-                      dispatch(this._webinarIsLive())
-                      dispatch(this._isWebinarUnmuted())
                       break;
                     case RECORDING_STATE: 
                       if (dataParsed.recordingRunning) {
@@ -678,12 +892,6 @@ export class Actions {
             } = getState()
             if (!controls.displayAttendeesChat) dispatch(ChatActions.newBadgeMessage())
         }
-    }
-
-    static _webinarIsLive() {
-      return {
-          type: Types.CONFERENCE_WEBINAR_LIVE
-      }
     }
 
     static _conferenceStatusUpdated(status) {

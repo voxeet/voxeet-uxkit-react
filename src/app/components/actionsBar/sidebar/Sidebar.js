@@ -81,6 +81,7 @@ Sidebar.propTypes = {
     toggleRecording: PropTypes.func.isRequired,
     toggleVideo: PropTypes.func.isRequired,
     toggleScreenShare: PropTypes.func.isRequired,
+    convertFilePresentation: PropTypes.func.isRequired,
     toggleModal: PropTypes.func.isRequired,
     toggleMode: PropTypes.func.isRequired,
 }

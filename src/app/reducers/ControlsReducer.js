@@ -9,10 +9,12 @@ const defaultState = {
     isWidgetFullScreenOn: false,
     isMuted: false,
     videoEnabled: false,
+    audioEnabled: true,
     displayModal: false,
     isElectron: false,
     audio3DEnabled: true,
     isScreenshare: false,
+    isFilePresentation: false,
     constraints: null,
     isRecording: false,
     videoRatio: null,
@@ -22,11 +24,15 @@ const defaultState = {
     isKickOnHangUpActived: false,
     recordingLocked: false,
     modalOpened: true,
-    displayActions: ["mute", "recording", "screenshare", "video", "live", "attendees", "chat", "pstn"],
-    displayModes: ["list", "tiles", "speaker"],
+    displayActions: ["mute", "recording", "share", "video", "live", "attendees", "chat", "pstn"],
+    shareActions: ["screenshare", "filepresentation"],
+    displayModes: ["tiles", "speaker", "list"],
     mode: 'tiles',
+    modeSaveBeforePresentation: 'tiles',
     displayAttendeesList: false,
-    displayAttendeesChat: false
+    displayAttendeesSettings: false,
+    displayAttendeesChat: false,
+    displayAttendeesLive: false
 }
 
 const ControlsReducer = (state = defaultState, action) => {
@@ -61,6 +67,13 @@ const ControlsReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 isScreenshare: action.payload.isScreenshare,
+                mode: action.payload.isScreenshare ? state.mode : state.displayModes[0]
+            }
+        case Types.TOGGLE_FILE_PRESENTATION_MODE:
+            return {
+                ...state,
+                isFilePresentation: action.payload.isFilePresentation,
+                mode: action.payload.isFilePresentation ? state.mode : state.displayModes[0]
             }
         case Types.TOGGLE_FULLSCREEN:
             const fullScreenStatus = !state.isWidgetFullScreenOn;
@@ -85,6 +98,11 @@ const ControlsReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 displayActions: action.payload.displayActions
+            }
+        case Types.SHARE_ACTIONS_ALLOWED:
+            return {
+                ...state,
+                shareActions: action.payload.shareActions
             }
         case Types.KICK_ON_HANG_UP:
             return {
@@ -139,6 +157,14 @@ const ControlsReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 videoEnabled: currentStatus
+            }
+        }
+        case Types.TOGGLE_AUDIO: {
+            const currentStatus = action.payload.state
+            return {
+                ...state,
+                audioEnabled: currentStatus,
+                isMuted: !currentStatus
             }
         }
         case Types.TOGGLE_MODAL: {
@@ -200,10 +226,40 @@ const ControlsReducer = (state = defaultState, action) => {
             }
         }
         case Types.TOGGLE_ATTENDEES_CHAT: {
-            return { ...state, displayAttendeesList: ((state.displayAttendeesList && !state.displayAttendeesChat) ? false : state.displayAttendeesList) ,displayAttendeesChat: !state.displayAttendeesChat }
+            return { 
+                ...state,
+                displayAttendeesChat: !state.displayAttendeesChat,
+                displayAttendeesList: false,
+                displayAttendeesLive: false,
+                displayAttendeesSettings: false
+            }
         }
         case Types.TOGGLE_ATTENDEES_LIST: {
-            return { ...state, displayAttendeesList: !state.displayAttendeesList, displayAttendeesChat: ((!state.displayAttendeesList && state.displayAttendeesChat) ? false : state.displayAttendeesChat) }
+            return { 
+                ...state, 
+                displayAttendeesList: !state.displayAttendeesList, 
+                displayAttendeesChat: false,
+                displayAttendeesLive: false,
+                displayAttendeesSettings: false 
+            }
+        }
+        case Types.TOGGLE_ATTENDEES_SETTINGS: {
+            return { 
+                ...state, 
+                displayAttendeesSettings: !state.displayAttendeesSettings, 
+                displayAttendeesChat: false,
+                displayAttendeesLive: false,
+                displayAttendeesList: false
+            }
+        }
+        case Types.TOGGLE_ATTENDEES_LIVE: {
+            return { 
+                ...state, 
+                displayAttendeesLive: !state.displayAttendeesLive, 
+                displayAttendeesChat: false,
+                displayAttendeesList: false,
+                displayAttendeesSettings: false 
+            }
         }
         default:
             return state

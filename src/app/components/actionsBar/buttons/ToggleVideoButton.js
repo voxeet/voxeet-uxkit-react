@@ -1,35 +1,27 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import LocalizedStrings from 'react-localization';
+import { strings } from '../../../languages/localizedStrings';
 import CameraOn from '../../../../static/images/newicons/icon-camera-on.svg'
 import CameraOff from '../../../../static/images/newicons/icon-camera-off.svg'
-
-let strings = new LocalizedStrings({
- en:{
-   video: "Video"
- },
- fr: {
-   video: "Caméra"
- }
-});
 
 class ToggleVideoButton extends Component {
     constructor(props) {
         super(props)
         this.state = {
+          isMobile: (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)),
           hover: false
         }
     }
 
     render() {
         const { videoEnabled, toggle, tooltipPlace, isBottomBar } = this.props
-        const { hover } = this.state
+        const { hover, isMobile } = this.state
 
         return (
             <li className={videoEnabled ? 'active' : ''}
-              onMouseEnter={() => this.setState({hover: true})}
-              onMouseLeave={() => this.setState({hover: false})}>
+              onMouseEnter={() => { !isMobile && this.setState({hover: true}) } }
+              onMouseLeave={() => { !isMobile && this.setState({hover: false})} }>
                 <a data-tip data-for="toggle-video"
                     title={strings.video}
                     onClick={() => toggle()}>

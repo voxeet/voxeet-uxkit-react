@@ -1,18 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import LocalizedStrings from 'react-localization';
-
-let strings = new LocalizedStrings({
- en:{
-   fullscreen:"FullScreen",
-   minimize: "Minimize"
- },
- fr: {
-   fullscreen:"Agrandir",
-   minimize: "Reduire"
- }
-});
+import { strings } from '../../../languages/localizedStrings';
 
 class ToggleFullScreenButton extends Component {
     constructor(props) {

@@ -1,6 +1,5 @@
 export const BROADCAST_KICK = 'Kick_Event'
 export const BROADCAST_KICK_ADMIN_HANG_UP = 'Kick_Admin_Hang_up'
-export const WEBINAR_LIVE = 'Webinar_Live'
 export const CHAT_MESSAGE = 'Chat_Message'
 export const RECORDING_STATE = "Recording_State"
 

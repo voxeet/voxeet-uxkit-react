@@ -24,10 +24,9 @@ class ActionsButtons extends Component {
 
     render() {
         const { isBottomBar, forceFullscreen, isMuted, isRecording, isWidgetFullScreenOn,
-            videoEnabled, displayModal,conferencePincode, 
-            toggleMicrophone, toggleRecording, toggleVideo, toggleScreenShare, toggleAttendeesList, attendeesListOpened, attendeesChatOpened, 
-            toggleAttendeesChat, recordingLocked, toggleModal, toggleAudio3D, isWebinar, isAdmin, displayActions, leave, audio3DEnabled, isElectron, displayExternalLiveModal, isExternalLive, isScreenshare, isDemo } = this.props
-
+            videoEnabled, displayModal,conferencePincode, convertFilePresentation, 
+            toggleMicrophone, screenShareEnabled, filePresentationEnabled, toggleRecording, toggleVideo, toggleScreenShare, attendeesSettingsOpened, toggleAttendeesSettings, toggleAttendeesList, attendeesListOpened, attendeesChatOpened, attendeesLiveOpened,
+            toggleAttendeesChat, toggleAttendeesLive, recordingLocked, toggleModal, toggleAudio3D, isWebinar, isAdmin, displayActions, shareActions, leave, audio3DEnabled, isElectron, displayExternalLiveModal, isExternalLive, isFilePresentation, isScreenshare, isDemo } = this.props
         return (
             <div>
                 <ul className="controls-left">
@@ -55,14 +54,6 @@ class ActionsButtons extends Component {
                             tooltipPlace={isBottomBar ? 'top' : 'right'}
                         />
                     }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || isWebinar && isAdmin) &&
-                        <ToggleSettingsButton
-                            displayModal={displayModal}
-                            toggle={toggleModal}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
                 </ul>
                 <ul className="controls-center">
                     {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("recording") > -1 && !isDemo &&
@@ -74,19 +65,16 @@ class ActionsButtons extends Component {
                             tooltipPlace={isBottomBar ? 'top' : 'right'}
                         />
                     }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("screenshare") > -1 && !isDemo && !browser.safari && !browser.msie &&
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("share") > -1 && !isDemo && shareActions.length > 0 &&
                         <ToggleScreenShareButton
-                            screenShareEnabled={isScreenshare}
+                            screenShareEnabled={screenShareEnabled}
+                            filePresentationEnabled={filePresentationEnabled}
+                            currentUserScreenShare={isScreenshare}
+                            currentUserFilePresentation={isFilePresentation}
                             isElectron={isElectron}
                             toggle={toggleScreenShare}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("live") > -1 && !isDemo &&
-                        <ToggleExternalLiveButton
-                            toggle={displayExternalLiveModal}
-                            isExternalLive={isExternalLive}
+                            convertFilePresentation={convertFilePresentation}
+                            shareActions={shareActions}
                             isBottomBar={isBottomBar}
                             tooltipPlace={isBottomBar ? 'top' : 'right'}
                         />
@@ -111,11 +99,28 @@ class ActionsButtons extends Component {
                             tooltipPlace={isBottomBar ? 'top' : 'right'}
                         />
                     }
-                    {isBottomBar && displayActions.indexOf("attendees") > -1  &&
-                        <ToggleAttendeesListButton tooltipPlace='top' toggle={toggleAttendeesList} isBottomBar isOpen={attendeesListOpened}/>
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("live") > -1 && !isDemo &&
+                        <ToggleExternalLiveButton
+                            attendeesLiveOpened={attendeesLiveOpened}
+                            toggle={toggleAttendeesLive}
+                            isExternalLive={isExternalLive}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
                     }
-                    {isBottomBar && displayActions.indexOf("chat") > -1  &&
-                        <ToggleAttendeesChatButton tooltipPlace='top' toggle={toggleAttendeesChat} isBottomBar isOpen={attendeesChatOpened}/>
+                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || isWebinar && isAdmin) &&
+                        <ToggleSettingsButton
+                            attendeesSettingsOpened={attendeesSettingsOpened}
+                            toggle={toggleAttendeesSettings}
+                            isBottomBar={isBottomBar}
+                            tooltipPlace={isBottomBar ? 'top' : 'right'}
+                        />
+                    }
+                    {displayActions.indexOf("attendees") > -1  &&
+                        <ToggleAttendeesListButton tooltipPlace={isBottomBar ? 'top' : 'right'} toggle={toggleAttendeesList} isBottomBar={isBottomBar} isOpen={attendeesListOpened}/>
+                    }
+                    {displayActions.indexOf("chat") > -1  &&
+                        <ToggleAttendeesChatButton tooltipPlace={isBottomBar ? 'top' : 'right'} toggle={toggleAttendeesChat} isBottomBar={isBottomBar} isOpen={attendeesChatOpened}/>
                     }
                 </ul>
             </div>
@@ -132,12 +137,13 @@ ActionsButtons.propTypes = {
     isAdmin: PropTypes.bool.isRequired,
     videoEnabled: PropTypes.bool.isRequired,
     screenShareEnabled: PropTypes.bool.isRequired,
+    filePresentationEnabled: PropTypes.bool.isRequired,
     displayModal: PropTypes.bool.isRequired,
     isScreenshare: PropTypes.bool.isRequired,
+    isFilePresentation: PropTypes.bool.isRequired,
     displayActions: PropTypes.array.isRequired,
     toggleAudio3D: PropTypes.func.isRequired,
     recordingLocked: PropTypes.bool.isRequired,
-    displayExternalLiveModal: PropTypes.func.isRequired,
     isElectron: PropTypes.bool.isRequired,
     isExternalLive: PropTypes.bool.isRequired,
     audio3DEnabled: PropTypes.bool.isRequired,
@@ -148,13 +154,18 @@ ActionsButtons.propTypes = {
     toggleRecording: PropTypes.func.isRequired,
     toggleVideo: PropTypes.func.isRequired,
     toggleScreenShare: PropTypes.func.isRequired,
+    convertFilePresentation: PropTypes.func.isRequired,
     toggleModal: PropTypes.func.isRequired,
     toggleMode: PropTypes.func.isRequired,
     mode: PropTypes.string.isRequired,
     toggleAttendeesList: PropTypes.func.isRequired,
     attendeesListOpened: PropTypes.bool.isRequired,
     toggleAttendeesChat: PropTypes.func.isRequired,
-    attendeesChatOpened: PropTypes.bool.isRequired
+    attendeesChatOpened: PropTypes.bool.isRequired,
+    toggleAttendeesSettings: PropTypes.func.isRequired,
+    attendeesSettingsOpened: PropTypes.bool.isRequired,
+    toggleAttendeesLive: PropTypes.func.isRequired,
+    attendeesLiveOpened: PropTypes.bool.isRequired
 }
 
 ActionsButtons.defaultProps = {

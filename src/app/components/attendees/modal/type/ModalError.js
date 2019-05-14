@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-
 import Sdk from '../../../../sdk'
-import AttendeesParticipantVideo from '../../AttendeesParticipantVideo';
-import ModalSettingsVuMeter from './ModalSettingsVuMeter';
 
 class ModalError extends Component {
 

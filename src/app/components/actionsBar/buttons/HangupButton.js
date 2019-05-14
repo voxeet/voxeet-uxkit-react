@@ -1,17 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import LocalizedStrings from 'react-localization';
+import { strings } from '../../../languages/localizedStrings';
 import Hangup from '../../../../static/images/newicons/icon-hang-up.svg'
-
-let strings = new LocalizedStrings({
- en:{
-   leave:"End"
- },
- fr: {
-   leave:"Quitter"
- }
-});
 
 class HangupButton extends Component {
     constructor(props) {

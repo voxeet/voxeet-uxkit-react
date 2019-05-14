@@ -1,15 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import LocalizedStrings from 'react-localization';
-
-let strings = new LocalizedStrings({
- en:{
-   hangtight:"Hang Tight. We're waiting for other presenters to arrive."
- },
- fr: {
-   hangtight:"Veuillez patienter, nous attendons l'intervenant."
- }
-});
+import { strings } from '../../languages/localizedStrings';
 
 class AttendeesWaitingWebinarListener extends Component {
     constructor(props) {

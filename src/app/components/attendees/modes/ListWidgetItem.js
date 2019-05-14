@@ -36,7 +36,7 @@ class ListWidgetItem extends Component {
     }
 
     render() {
-        const { participant, isAdmin, toggleMicrophone, kickParticipant, isAdminActived } = this.props
+        const { participant, isAdmin, toggleMicrophone, kickParticipant, isAdminActived, mySelf } = this.props
         return (
             <li className={'item ' + (participant.isConnected ? 'participant-available' : 'participant-offline')}>
                 <span className="participant-details">
@@ -49,7 +49,7 @@ class ListWidgetItem extends Component {
                     }
                     <span className="participant-username">{participant.name}</span>
                 </span>
-                <AttendeesParticipantMute participant={participant} toggleMicrophone={toggleMicrophone} />
+                { !mySelf && <AttendeesParticipantMute participant={participant} toggleMicrophone={toggleMicrophone} /> }
                 {
                   isAdmin && isAdminActived &&
                       <AttendeesKickParticipant participant={participant} kickParticipant={kickParticipant} />
@@ -63,8 +63,9 @@ ListWidgetItem.propTypes = {
     participant: PropTypes.object.isRequired,
     isAdmin: PropTypes.bool.isRequired,
     isAdminActived: PropTypes.bool.isRequired,
-    toggleMicrophone: PropTypes.func.isRequired,
-    kickParticipant: PropTypes.func.isRequired,
+    toggleMicrophone: PropTypes.func,
+    kickParticipant: PropTypes.func,
+    mySelf: PropTypes.bool.isRequired
 }
 
 export default ListWidgetItem

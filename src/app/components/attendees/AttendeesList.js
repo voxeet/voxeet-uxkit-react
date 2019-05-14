@@ -1,28 +1,9 @@
 import React, { Fragment, Component } from 'react'
 import PropTypes from 'prop-types'
-import LocalizedStrings from 'react-localization'
+import { strings } from '../../languages/localizedStrings';
 import { connect } from 'react-redux'
 
 import userPlaceholder from '../../../static/images/user-placeholder.png'
-
-const LABELS = new LocalizedStrings({
-    en: {
-        attendees: "Attendees",
-        joined: "Joined",
-        invited: "Waiting On",
-        presenter: "Presenter",
-        listener: "Listener",
-        left: "Left"
-    },
-    fr: {
-        attendees: "Participants",
-        joined: "En conférence",
-        invited: "En attente",
-        presenter: "Présentateur",
-        listener: "Auditeur",
-        left: "Déconnecté"
-    }
-});
 
 @connect((store) => {
     return {
@@ -34,27 +15,37 @@ const LABELS = new LocalizedStrings({
 class AttendeesList extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            runningAnimation: false
+        }
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if (this.props.attendeesListOpened == true && nextProps.attendeesListOpened == false) {
+            this.setState({ runningAnimation: true })
+            setTimeout(() => { this.setState({ runningAnimation: false })}, 250);
+        }
     }
 
     render() {
         const { participants, currentUser } = this.props.participantStore
-        const { isWebinar, isAdmin } = this.props
+        const { isWebinar, isAdmin, attendeesListOpened } = this.props
         const participantsConnected = participants.filter(p => p.isConnected)
         const participantsInvited = this.props.participantWaiting.participants.filter(p => (p.status == "Reserved"))
         const participantsInactive = this.props.participantWaiting.participants.filter(p => (p.status == "Inactive"))
         const participantsLeft = this.props.participantWaiting.participants.filter(p => (p.status == "Left"))
         return (
-            <div className="attendees-list">
+            <div className={this.state.runningAnimation ? "attendees-list attendees-list-out" : (attendeesListOpened ? "attendees-list": "attendees-list-hidden")}>
 
                 <div className="attendees-list-header">
-                    <h1>{LABELS.attendees}</h1>
+                    <h1>{strings.attendees}</h1>
                 </div>
 
                 { isWebinar ? 
                     <div>
                         {(participantsConnected.length > 0 || isAdmin) &&
                         <div>
-                            <div className="title-section">{LABELS.presenter}</div>
+                            <div className="title-section">{strings.presenter} <span>({participantsConnected.length + 1})</span></div>
                             <ul>
                                 { isAdmin &&
                                     <li>
@@ -79,7 +70,7 @@ class AttendeesList extends Component {
                         }
                         {(participantsInactive.length > 0 || !isAdmin) &&
                         <div>
-                            <div className="title-section">{LABELS.listener}</div>
+                            <div className="title-section">{strings.listener} <span>({participantsInactive.length + 1})</span></div>
                             <ul>
                                 { !isAdmin &&
                                 <li>
@@ -105,7 +96,7 @@ class AttendeesList extends Component {
                     :
                     <Fragment>
                     <div>
-                        <div className="title-section">{LABELS.joined}</div>
+                        <div className="title-section">{strings.joined} <span>({participantsConnected.length + 1})</span></div>
                         <ul>
                             <li>
                                 <span className="participant-details">
@@ -126,7 +117,7 @@ class AttendeesList extends Component {
                     </div>
                     { participantsInactive.length > 0 &&
                     <div>
-                        <div className="title-section">{LABELS.listener}</div>
+                        <div className="title-section">{strings.listener} <span>({participantsInactive.length})</span></div>
                         <ul>
                             {participantsInactive.map((participant, i) => {
                                 return (
@@ -146,7 +137,7 @@ class AttendeesList extends Component {
 
                 { participantsInvited.length > 0 &&
                     <div>
-                        <div className="title-section">{LABELS.invited}</div>
+                        <div className="title-section">{strings.invited} <span>({participantsInvited.length})</span></div>
                         <ul className="participant-invited">
                             {participantsInvited.map((participant, i) => {
                                 return (
@@ -164,7 +155,7 @@ class AttendeesList extends Component {
 
                 { participantsLeft.length > 0 &&
                     <div>
-                        <div className="title-section">{LABELS.left}</div>
+                        <div className="title-section">{strings.left} <span>({participantsLeft.length})</span></div>
                         <ul className="participant-invited">
                             {participantsLeft.map((participant, i) => {
                                 return (
@@ -186,6 +177,7 @@ class AttendeesList extends Component {
 }
 
 AttendeesList.propTypes = {
+    attendeesListOpened: PropTypes.bool.isRequired,
     isWebinar: PropTypes.bool.isRequired,
     isAdmin: PropTypes.bool.isRequired
 }

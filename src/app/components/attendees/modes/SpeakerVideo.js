@@ -15,17 +15,23 @@ class SpeakerVideo extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.mounted = false;
+        clearInterval(this._interval)
+    }
+
     componentDidMount() {
         const el = this.node
         const { participant } = this.props
+        this.mounted = true;
         this._interval = setInterval(() => {
             Sdk.instance.isUserSpeaking(participant.participant_id, (isSpeaking) => {
 
-                if (participant.isMuted && this.state.isSpeaking) {
+                if (participant.isMuted && this.state.isSpeaking && this.mounted) {
                     this.setState({isSpeaking:false})
                 }
 
-                if (this.state.isSpeaking !== isSpeaking && !participant.isMuted)
+                if (this.state.isSpeaking !== isSpeaking && !participant.isMuted && this.mounted)
                     this.setState({isSpeaking})
             })
         }, 300)

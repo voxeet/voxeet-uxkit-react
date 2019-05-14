@@ -13,6 +13,8 @@ const defaultState = {
     currentUser: null,
     userStreamScreenShare: null,
     userIdStreamScreenShare: null,
+    userIdFilePresentation: null,
+    filePresentationEnabled: false,
     screenShareEnabled: false,
     isSpeaking:false,
     isReplaying:false,
@@ -92,12 +94,6 @@ const ParticipantReducer = (state = defaultState, action) => {
               isSpeaking:false,
               isReplaying: false,
             }
-        }
-        case Types.TRIGGER_PARTICIPANTS_HANDLE_CONNECT: {
-          if (state.handleOnConnect != null) state.handleOnConnect()
-          return {
-              ...state,
-          }
         }
         case Types.PARTICIPANT_ADMIN:
           return {
@@ -431,6 +427,20 @@ const ParticipantReducer = (state = defaultState, action) => {
                 participants: [...participants]
             }
         }
+        case Types.FILE_PRESENTATION_STARTED: {
+          return {
+              ...state,
+              filePresentationEnabled: true,
+              userIdFilePresentation: action.payload.userId
+          }
+      }
+      case Types.FILE_PRESENTATION_STOPPED: {
+        return {
+            ...state,
+            filePresentationEnabled: false,
+            userIdFilePresentation: null
+        }
+    }
         case Types.SCREENSHARE_STARTED: {
             return {
                 ...state,

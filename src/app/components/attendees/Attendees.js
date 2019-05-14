@@ -15,10 +15,11 @@ import Modal from './modal/Modal'
 import AttendeesHeader from './AttendeesHeader'
 import OnBoardingMessage from './onBoardingMessage/onBoardingMessage'
 import OnBoardingMessageWithAction from './onBoardingMessage/onBoardingMessageWithAction'
-import AttendeesWaitingWebinarPresenter from './AttendeesWaitingWebinarPresenter'
-import { List, ListWidget, Speakers, Tiles, View3D, Webinar, ToggleModeButton } from './modes'
+import { List, ListWidget, Speakers, Tiles, View3D, ToggleModeButton } from './modes'
 import AttendeesParticipantVideo from './AttendeesParticipantVideo'
+import AttendeesSettings from './AttendeesSettings';
 import AttendeesToggleFullscreen from './AttendeesToggleFullscreen';
+import AttendeesLive from './AttendeesLive';
 
 @connect((store) => {
     return {
@@ -44,10 +45,6 @@ class Attendees extends Component {
     }
 
     componentDidMount() {
-        if (this.props.broadcasterModeWebinar == false && this.props.participantStore.isWebinar && this.props.participantStore.isAdmin && !this.props.webinarLive) {
-            this.props.dispatch(ConferenceActions._webinarIsLive())
-            this.props.dispatch(ConferenceActions.sendBroadcastMessage(WEBINAR_LIVE));
-        }
     }
 
     toggleMicrophone(participant_id) {
@@ -99,23 +96,21 @@ class Attendees extends Component {
     }
 
     renderParticipantList() {
-        return React.createElement(this.props.attendeesList, { ...this.props, isWebinar: this.props.participantStore.isWebinar, isAdmin: this.props.participantStore.isAdmin })
+        return React.createElement(this.props.attendeesList, { ...this.props, attendeesListOpened: this.props.attendeesListOpened, isWebinar: this.props.participantStore.isWebinar, isAdmin: this.props.participantStore.isAdmin })
     }
 
     renderChat() {
-        return React.createElement(this.props.attendeesChat, { ...this.props, participants: this.props.participantStore.participants, currentUser: this.props.participantStore.currentUser })
+        return React.createElement(this.props.attendeesChat, { ...this.props, attendeesChatOpened: this.props.attendeesChatOpened, participants: this.props.participantStore.participants, currentUser: this.props.participantStore.currentUser })
     }
 
     render() {
-        const { mode, forceFullscreen, toggleMode, toggleWidget, isWidgetOpened, webinarLive, modalExternalAction, isWidgetFullScreenOn, videoEnabled, isAdminActived, displayModes, isElectron, isScreenshare, broadcasterModeWebinar, attendeesListOpened, attendeesChatOpened } = this.props
-        const { participants, screenShareEnabled, isAdmin, isWebinar, userIdStreamScreenShare, userStreamScreenShare, userStream, currentUser } = this.props.participantStore
-
+        const { mode, forceFullscreen, toggleMode, toggleWidget, isWidgetOpened, toggleLive, isWidgetFullScreenOn, videoEnabled, isAdminActived, displayModes, isElectron, isScreenshare, isFilePresentation, attendeesListOpened, attendeesChatOpened,  attendeesSettingsOpened, attendeesLiveOpened } = this.props
+        const { participants, screenShareEnabled, filePresentationEnabled, isAdmin, isWebinar, userIdStreamScreenShare, userStreamScreenShare, userIdFilePresentation, userStream, currentUser } = this.props.participantStore
         const participantsConnected = participants.filter(p => p.isConnected)
         const participantWebinar = participants.filter(p => p.isAdmin)
-
         return (
             <div id="conference-attendees" className={isWidgetFullScreenOn ? "vxt-conference-attendees sidebar-less" : "vxt-conference-attendees"}>
-                {(isWidgetFullScreenOn || forceFullscreen) && !screenShareEnabled && (!isWebinar || (isWebinar && webinarLive)) && participantsConnected.length > 0 &&
+                {(isWidgetFullScreenOn || forceFullscreen) && !screenShareEnabled && !filePresentationEnabled && displayModes.length > 1 && (participantsConnected.length > 0 || isWebinar) &&
                     <ToggleModeButton
                         mode={mode}
                         isElectron={isElectron}
@@ -133,49 +128,43 @@ class Attendees extends Component {
                     <AttendeesHeader />
                 }
 
-                {isWebinar && isAdmin &&
-                    <Webinar
-                        isAdmin={isAdmin}
-                        isAdminActived={isAdminActived}
-                        kickParticipant={this.kickParticipant}
-                        toggleMicrophone={this.toggleMicrophone} />
-                }
-
                 <OnBoardingMessageWithAction
                 />
                 <OnBoardingMessage
                 />
 
-                {attendeesListOpened &&
+                <AttendeesSettings 
+                    videoEnabled={videoEnabled}
+                    attendeesSettingsOpened={this.props.attendeesSettingsOpened}
+                />
+
+
+                <AttendeesLive
+                    attendeesLiveOpened={this.props.attendeesLiveOpened}
+                    toggleLive={toggleLive}
+                />
+
+                {
                     this.renderParticipantList()
                 }
 
-                {attendeesChatOpened &&
+                {
                     this.renderChat()
                 }
 
-                <section className={`sidebar-container ${(attendeesListOpened || attendeesChatOpened) ? "attendees-list-opened" : ""}`}>
-                    {!webinarLive && isWebinar && isAdmin && broadcasterModeWebinar &&
-                        <AttendeesWaitingWebinarPresenter
-                            isModalSettings={true}
-                            toggleWebinarState={this.toggleWebinarState}
-                            toggleVideo={this.toggleVideo}
-                            modalExternalAction={modalExternalAction}
-                            videoEnabled={videoEnabled}
-                            userStream={userStream}
-                        />
-                    }
+                <section className={`sidebar-container ${(attendeesListOpened || attendeesChatOpened || attendeesSettingsOpened || attendeesLiveOpened) ? "attendees-list-opened" : "attendees-list-close"}`}>
 
-                    {!isWidgetFullScreenOn && !forceFullscreen &&
-                        participants.length > 0 &&
+                    {!isWidgetFullScreenOn && !forceFullscreen && !screenShareEnabled && !filePresentationEnabled &&
                         <ListWidget participants={isWebinar && !isAdmin ? participantWebinar : participants}
                             isAdmin={isAdmin}
+                            currentUser={currentUser}
                             isAdminActived={isAdminActived}
                             kickParticipant={this.kickParticipant}
+                            isWebinar={isWebinar}
                             toggleMicrophone={this.toggleMicrophone} />
                     }
 
-                    {mode === MODE_LIST && (forceFullscreen || isWidgetFullScreenOn) && participantsConnected.length > 0 && (displayModes.indexOf("list") > -1) && isElectron && !screenShareEnabled &&
+                    {mode === MODE_LIST && (forceFullscreen || isWidgetFullScreenOn) && participantsConnected.length > 0 && (displayModes.indexOf("list") > -1) && isElectron && !screenShareEnabled && !filePresentationEnabled &&
                         <View3D participants={isWebinar && !isAdmin ? participantWebinar : participants}
                             isAdmin={isAdmin}
                             isAdminActived={isAdminActived}
@@ -184,21 +173,21 @@ class Attendees extends Component {
                             saveUserPosition={this.saveUserPosition}
                             toggleMicrophone={this.toggleMicrophone} />
                     }
-                    {(mode === MODE_TILES) && (forceFullscreen || isWidgetFullScreenOn) /*&& participants.length > 0*/ && displayModes.indexOf("tiles") > -1 && !screenShareEnabled && currentUser != null &&
+                    {(mode === MODE_TILES) && (forceFullscreen || isWidgetFullScreenOn) && displayModes.indexOf("tiles") > -1 && !screenShareEnabled && !filePresentationEnabled && currentUser != null && (!isWebinar || (isWebinar && isAdmin) || (isWebinar && !isAdmin && participantsConnected.length > 0)) &&
                         <Tiles participants={isWebinar && !isAdmin ? participantWebinar : participants}
                             isAdmin={isAdmin}
                             isWebinar={isWebinar}
                             isAdminActived={isAdminActived}
-                            webinarLive={webinarLive}
                             currentUser={currentUser}
                             kickParticipant={this.kickParticipant}
                             toggleMicrophone={this.toggleMicrophone}
                             isWidgetFullScreenOn={(forceFullscreen || isWidgetFullScreenOn)} />
                     }
-                    {(mode === MODE_SPEAKER) && (forceFullscreen || isWidgetFullScreenOn) /*&& participantsConnected.length > 0*/ && displayModes.indexOf("speaker") > -1 &&
+                    {(mode === MODE_SPEAKER) && (displayModes.indexOf("speaker") > -1 || screenShareEnabled ||filePresentationEnabled) && currentUser != null && (!isWebinar || (isWebinar && isAdmin) || (isWebinar && !isAdmin && participantsConnected.length > 0)) &&
                         <Speakers participants={isWebinar && !isAdmin ? participantWebinar : participantsConnected}
                             isAdmin={isAdmin}
                             isAdminActived={isAdminActived}
+                            isFilePresentation={isFilePresentation}
                             isWebinar={isWebinar}
                             kickParticipant={this.kickParticipant}
                             userIdStreamScreenShare={userIdStreamScreenShare}
@@ -208,13 +197,15 @@ class Attendees extends Component {
                             toggleMicrophone={this.toggleMicrophone}
                             isWidgetFullScreenOn={(forceFullscreen || isWidgetFullScreenOn)}
                             screenShareEnabled={screenShareEnabled}
+                            filePresentationEnabled={filePresentationEnabled}
+                            userIdFilePresentation={userIdFilePresentation}
                             userStream={userStream}
                             currentUser={currentUser}
                             isScreenshare={isScreenshare}
                             screenShareStream={userStreamScreenShare}
                         />
                     }
-                    {participantsConnected.length === 0 && !isWebinar &&
+                    {participantsConnected.length === 0 && (!isWebinar || (isWebinar && !isAdmin)) && mode === MODE_TILES &&
                         this.renderWaiting()
                     }
 
@@ -227,13 +218,13 @@ class Attendees extends Component {
 Attendees.propTypes = {
     mode: PropTypes.string.isRequired,
     toggleMode: PropTypes.func.isRequired,
-    webinarLive: PropTypes.bool.isRequired,
-    modalExternalAction: PropTypes.func,
-    broadcasterModeWebinar: PropTypes.bool,
+    toggleLive: PropTypes.func,
     isWidgetOpened: PropTypes.bool.isRequired,
     toggleWidget: PropTypes.func.isRequired,
     attendeesListOpened: PropTypes.bool.isRequired,
     attendeesChatOpened: PropTypes.bool.isRequired,
+    attendeesSettingsOpened: PropTypes.bool.isRequired,
+    attendeesLiveOpened: PropTypes.bool.isRequired,
     forceFullscreen: PropTypes.bool,
     videoEnabled: PropTypes.bool,
     isWidgetFullScreenOn: PropTypes.bool,
@@ -242,6 +233,7 @@ Attendees.propTypes = {
     displayModes: PropTypes.array,
     isElectron: PropTypes.bool,
     isScreenshare: PropTypes.bool,
+    isFilePresentation: PropTypes.bool,
     attendeesWaiting: PropTypes.func,
     attendeesChat: PropTypes.func,
     attendeesList: PropTypes.func

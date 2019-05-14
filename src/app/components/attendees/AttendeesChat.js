@@ -3,24 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Actions as ChatActions } from '../../actions/ChatActions'
 import { Actions as ConferenceActions } from '../../actions/ConferenceActions'
-import LocalizedStrings from 'react-localization'
-import DOMPurify from "dompurify";
+import { strings } from '../../languages/localizedStrings';
 import Autolinker from "autolinker";
 import { CHAT_MESSAGE } from './../../constants/BroadcastMessageType'
 import userPlaceholder from '../../../static/images/user-placeholder.png'
-
-const LABELS = new LocalizedStrings({
-    en: {
-        attendees: "Chat",
-        placeholderChat: "Type message ...",
-        sendMessage: "Send Message"
-    },
-    fr: {
-        attendees: "Conversation",
-        placeholderChat: "Entrez votre message ...",
-        sendMessage: "Envoyer le message"
-    }
-});
+import AttendeesChatInputContainer from './AttendeesChatInputContainer';
 
 @connect((store) => {
     return {
@@ -32,38 +19,37 @@ class AttendeesChat extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            content: ""
+            runningAnimation: false
         }
-        this.onContentChange = this.onContentChange.bind(this)
-        this.escFunction = this.escFunction.bind(this)
+        this.sendMessage = this.sendMessage.bind(this)
     }
 
-    componentDidUpdate() {
-        var scrollBar = document.getElementById("chat-scrollbar");
-        scrollBar.scrollTop = scrollBar.scrollHeight;
+    componentDidUpdate(prevProps) {
+        if (this.props.attendeesChatOpened) {
+            var scrollBar = document.getElementById("chat-scrollbar");
+            if (scrollBar) scrollBar.scrollTop = scrollBar.scrollHeight;
+        }
+        if (this.props.attendeesChatOpened == true && prevProps.attendeesChatOpened == false) {
+            var contentInputChat = document.getElementById("contentInputChat");
+            setTimeout(() => { contentInputChat.focus() }, 250);
+        }
     }
 
     componentDidMount() {
-        document.addEventListener("keydown", this.escFunction, false);
         var scrollBar = document.getElementById("chat-scrollbar");
-        scrollBar.scrollTop = scrollBar.scrollHeight;
-        this.props.dispatch(ChatActions.resetBadgeMessage())
-      }
+        if (scrollBar) scrollBar.scrollTop = scrollBar.scrollHeight;
+    }
     
-      componentWillUnmount(){
-        document.removeEventListener("keydown", this.escFunction, false);
-      }
-
-    escFunction(event){
-        if (event.keyCode === 13) {
-            this.sendMessage()
+    componentWillUpdate(nextProps, nextState) {
+        if (this.props.attendeesChatOpened == true && nextProps.attendeesChatOpened == false) {
+            this.setState({ runningAnimation: true })
+            setTimeout(() => { this.setState({ runningAnimation: false })}, 250);
         }
     }
 
-    sendMessage() {
-        const { content } = this.state
+    sendMessage(content) {
         const { currentUser } = this.props
-        if (content.length > 0) {
+        if (content.trim().length > 0) {
             const payload = {
                 "content": content,
                 "time": Date.now(),
@@ -74,23 +60,15 @@ class AttendeesChat extends Component {
             }
             this.props.dispatch(ChatActions.addMessage(payload))
             this.props.dispatch(ConferenceActions.sendBroadcastMessage(CHAT_MESSAGE, null, payload))
-            this.setState({ content: "" });
         }
     }
 
-    onContentChange(e) {
-        let content = e.target.value;
-        this.setState({ content: content });
-    }
-
     urlify(text) {
-        const message = DOMPurify.sanitize(text)
-        .trim()
-        .replace(/(?:\r\n|\r|\n)/g, "<br />");
-        const autolinker = new Autolinker();
-        const matches = autolinker.parse(message);
-        const matchedUrls = matches.map(match => match.url);
-        const firstUrl = matches.find(match => match.url) || {};
+        const message = text.trim()
+        const autolinker = new Autolinker()
+        const matches = autolinker.parse(message)
+        const matchedUrls = matches.map(match => match.url)
+        const firstUrl = matches.find(match => match.url) || {}
         const autoLinkedMessage = {
           __html: Autolinker.link(message, { twitter: false, truncate: 40 })
         };
@@ -99,13 +77,13 @@ class AttendeesChat extends Component {
     
 
     render() {
-        const { participants, currentUser } = this.props
-        const { content } = this.state
+        const { participants, currentUser, attendeesChatOpened } = this.props
+        const { runningAnimation } = this.state
         const { messages } = this.props.chatStore
         return (
-            <div className="attendees-chat">
+            <div className={runningAnimation ? "attendees-chat attendees-chat-out" : (attendeesChatOpened ? "attendees-chat": "attendees-chat-hidden")}>
                 <div className="attendees-chat-header">
-                    <h1>{LABELS.attendees}</h1>
+                    <h1>{strings.chat}</h1>
                 </div>
                 <ul id="chat-scrollbar">
                 { 
@@ -147,16 +125,14 @@ class AttendeesChat extends Component {
                 })
                 }
                 </ul>
-                <div className="container-input-chat"> 
-                    <input autoFocus placeholder={LABELS.placeholderChat} onChange={this.onContentChange} value={content} className="input-message"></input>
-                    <a onClick={() => this.sendMessage()}>{LABELS.sendMessage}</a>
-                </div>
+                <AttendeesChatInputContainer sendMessage={this.sendMessage} />
             </div>
         )
     }
 }
 
 AttendeesChat.propTypes = {
+    attendeesChatOpened: PropTypes.bool.isRequired,
     participants: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired
 }

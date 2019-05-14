@@ -1,16 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import LocalizedStrings from 'react-localization';
+import { strings } from '../../../languages/localizedStrings';
 import Audio3DOn from '../../../../static/images/newicons/icon-3d-on.svg'
-
-let strings = new LocalizedStrings({
- en:{
-   audio: "3D Audio"
- },
- fr: {
-   audio: "Son 3D"
- }
-});
 
 class Toggle3DAudioButton extends Component {
     constructor(props) {

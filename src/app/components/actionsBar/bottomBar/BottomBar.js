@@ -37,12 +37,15 @@ class BottomBar extends Component {
 
 BottomBar.propTypes = {
     actionsButtons: PropTypes.func,
+    shareActions: PropTypes.array,
     screenShareEnabled: PropTypes.bool,
+    filePresentationEnabled: PropTypes.bool,
     forceFullscreen: PropTypes.bool.isRequired,
     isMuted: PropTypes.bool.isRequired,
     isWebinar: PropTypes.bool.isRequired,
     isAdmin: PropTypes.bool.isRequired,
     isScreenshare: PropTypes.bool.isRequired,
+    isFilePresentation:PropTypes.bool.isRequired,
     isJoined: PropTypes.bool.isRequired,
     videoEnabled: PropTypes.bool.isRequired,
     audio3DEnabled: PropTypes.bool.isRequired,
@@ -61,6 +64,7 @@ BottomBar.propTypes = {
     toggleRecording: PropTypes.func.isRequired,
     toggleVideo: PropTypes.func.isRequired,
     toggleScreenShare: PropTypes.func.isRequired,
+    convertFilePresentation: PropTypes.func.isRequired,
     toggleModal: PropTypes.func.isRequired,
     toggleMode: PropTypes.func.isRequired,
     conferencePincode: PropTypes.string.isRequired,

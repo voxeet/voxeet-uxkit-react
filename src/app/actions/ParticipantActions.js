@@ -13,12 +13,13 @@ export const Types = {
     PARTICIPANTS_SAVE: 'PARTICIPANTS_SAVE',
     WEBINAR_ACTIVATED: 'WEBINAR_ACTIVATED',
     PARTICIPANTS_RESET: 'PARTICIPANTS_RESET',
-    TRIGGER_PARTICIPANTS_HANDLE_CONNECT: 'TRIGGER_PARTICIPANTS_HANDLE_CONNECT',
     PARTICIPANT_SPEAK: 'PARTICIPANT_SPEAK',
     SAVE_CURRENT_USER: 'SAVE_CURRENT_USER',
     PARTICIPANT_TOGGLE_MICROPHONE: 'PARTICIPANT_TOGGLE_MICROPHONE',
     SCREENSHARE_STARTED: 'SCREENSHARE_STARTED',
     SCREENSHARE_STOPPED: 'SCREENSHARE_STOPPED',
+    FILE_PRESENTATION_STARTED: 'FILE_PRESENTATION_STARTED',
+    FILE_PRESENTATION_STOPPED: 'FILE_PRESENTATION_STOPPED',
     PARTICIPANT_3D_MOVE: 'PARTICIPANT_3D_MOVE',
     PARTICIPANT_ADMIN: 'PARTICIPANT_ADMIN',
     PARTICIPANT_ADDED_UPDATED: 'PARTICIPANT_ADDED_UPDATED',
@@ -49,8 +50,9 @@ export class Actions {
     }
 
     static triggerHandleOnConnect() {
-        return {
-            type: Types.TRIGGER_PARTICIPANTS_HANDLE_CONNECT
+        return (dispatch, getState) => {
+            const { voxeet: { participants } } = getState()
+            if (participants.handleOnConnect != null) participants.handleOnConnect()
         }
     }
 
@@ -170,6 +172,19 @@ export class Actions {
         return {
             type: Types.PARTICIPANT_LEFT,
             payload: { userId }
+        }
+    }
+
+    static onFilePresentationStarted(userId) {
+        return {
+            type: Types.FILE_PRESENTATION_STARTED,
+            payload: { userId }
+        }
+    }
+
+    static onFilePresentationStopped() {
+        return {
+            type: Types.FILE_PRESENTATION_STOPPED
         }
     }
 

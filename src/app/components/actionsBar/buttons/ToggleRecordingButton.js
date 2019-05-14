@@ -1,34 +1,26 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import LocalizedStrings from 'react-localization';
+import { strings } from '../../../languages/localizedStrings';
 import RecordingOn from '../../../../static/images/newicons/icon-record-on.svg'
 import RecordingOff from '../../../../static/images/newicons/icon-record-off.svg'
-
-let strings = new LocalizedStrings({
- en:{
-   record: "Recording"
- },
- fr: {
-   record: "Enregistrer"
- }
-});
 
 class ToggleRecordingButton extends Component {
     constructor(props) {
         super(props)
         this.state = {
-          hover: false
+            isMobile: (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)),
+            hover: false
         }
     }
 
     render() {
         const { isRecording, toggle, tooltipPlace, isBottomBar, recordingLocked } = this.props
-        const { hover } = this.state
+        const { hover, isMobile } = this.state
         return (
-            <li className={isRecording ? 'active' : ''}
-                onMouseEnter={() => this.setState({hover: true})}
-                onMouseLeave={() => this.setState({hover: false})}>
+            <li className={(isRecording || recordingLocked) ? 'active' : ''}
+                onMouseEnter={() => { !isMobile && this.setState({hover: true}) } }
+                onMouseLeave={() => { !isMobile && this.setState({hover: false})} }>
                 <a data-tip data-for="toggle-recording"
                     className={'' + ((isRecording || recordingLocked) ? 'on' : 'off')}
                     title={strings.record}

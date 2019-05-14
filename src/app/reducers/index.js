@@ -10,6 +10,7 @@ import OnBoardingMessageWithActionReducer from './OnBoardingMessageWithActionRed
 import ParticipantsReducer from './ParticipantsReducer'
 import ParticipantsWaitingReducer from './ParticipantsWaitingReducer'
 import ActiveSpeakerReducer from './ActiveSpeakerReducer'
+import FilePresentationReducer from './FilePresentationReducer'
 
 const reducers = combineReducers({
     error: ErrorReducer,
@@ -22,6 +23,7 @@ const reducers = combineReducers({
     participants: ParticipantsReducer,
     chat: ChatReducer,
     participantsWaiting: ParticipantsWaitingReducer,
+    filePresentation: FilePresentationReducer,
     activeSpeaker: ActiveSpeakerReducer,
 })
 

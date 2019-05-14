@@ -1,22 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import LocalizedStrings from 'react-localization';
-
-let strings = new LocalizedStrings({
- en:{
-   list: "List",
-   displaymode: "Display mode",
-   tile: "Tile",
-   speaker: "Speaker"
- },
- fr: {
-   list: "Liste",
-   displaymode: "Mode d'affichage",
-   tile: "Tuile",
-   speaker: "Locuteur"
- }
-});
+import { strings } from '../../../languages/localizedStrings';
 
 class ToggleModeButton extends Component {
 
