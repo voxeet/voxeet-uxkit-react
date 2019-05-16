@@ -10,6 +10,7 @@ import {
     ToggleRecordingButton,
     ToggleScreenShareButton,
     ToggleSettingsButton,
+    TogglePSTN,
     ToggleVideoButton,
     HangupButton,
     ToggleFullScreenButton,
@@ -40,6 +41,7 @@ module.exports = {
         Toggle3DAudioButton,
         ToggleExternalLiveButton,
         ToggleAttendeesChatButton,
+        TogglePSTN,
         ToggleAttendeesListButton
     }
 }

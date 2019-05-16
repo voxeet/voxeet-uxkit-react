@@ -21,6 +21,7 @@ import ConferencePreConfigContainer from './ConferencePreConfigContainer'
 import AttendeesWaiting from './attendees/AttendeesWaiting';
 import AttendeesList from './attendees/AttendeesList';
 import AttendeesChat from './attendees/AttendeesChat';
+import LoadingScreen from './attendees/LoadingScreen';
 
 @connect((state) => {
   return {
@@ -55,6 +56,10 @@ class ConferenceRoom extends Component {
     this.startConferenceWithParams(preConfigPayload)
     this.setState({ preConfig: false })
   }
+
+  renderLoading() {
+    return React.createElement(this.props.loadingScreen, { logo: this.props.logo })
+}
 
   startConferenceWithParams(preConfigPayload = null) {
     const { ttl, rtcpmode, shareActions, mode, videoCodec, sdk, chromeExtensionId, videoRatio, liveRecordingEnabled, conferenceAlias, conferenceId, isDemo, constraints, displayModes, displayActions, consumerKey, consumerSecret, userInfo, autoJoin, isWidget, isManualKickAllowed, kickOnHangUp, handleOnConnect, isWebinar, handleOnLeave, conferenceReplayId, isAdmin, oauthToken, refreshTokenCallback, isElectron, isListener } = this.props
@@ -208,19 +213,7 @@ class ConferenceRoom extends Component {
       )
     } else if ((isJoined || !isWidget ||  conferenceReplayId != null) && !isElectron) {
       if (!preConfig && !isJoined && !hasLeft) {
-        return (
-          <div className="electron-message-container">
-            <div className="electron-center-container">
-              <div className="electron-logo-container">
-                <img src={logo != null ? logo : Logo} />
-              </div>
-              <div id="loader-container"><div className="loader"></div></div>
-              <div className="electron-info-container">
-                {strings.electronloading}<span className="one">.</span><span className="two">.</span><span className="three">.</span>
-              </div>
-            </div>
-          </div>
-        )
+        return (this.renderLoading())
       }
       return (
         <ConferenceRoomContainer
@@ -242,19 +235,7 @@ class ConferenceRoom extends Component {
         />
       )
     } else if (isElectron) {
-      return (
-        <div className="electron-message-container">
-          <div className="electron-center-container">
-            <div className="electron-logo-container">
-              <img src={logo != null ? logo : Logo} />
-            </div>
-            <div id="loader-container"><div className="loader"></div></div>
-            <div className="electron-info-container">
-              {strings.electronloading}<span className="one">.</span><span className="two">.</span><span className="three">.</span>
-            </div>
-          </div>
-        </div>
-      )
+      return (this.renderLoading())
     }
     return (null)
   }
@@ -292,6 +273,7 @@ ConferenceRoom.propTypes = {
   actionsButtons: PropTypes.func,
   attendeesList: PropTypes.func,
   attendeesChat: PropTypes.func,
+  loadingScreen: PropTypes.func,
   handleOnLeave: PropTypes.func,
   refreshTokenCallback: PropTypes.func,
   liveRecordingEnabled: PropTypes.bool,
@@ -338,6 +320,7 @@ ConferenceRoom.defaultProps = {
   actionsButtons: ActionsButtons,
   attendeesList: AttendeesList,
   attendeesChat: AttendeesChat,
+  loadingScreen: LoadingScreen,
   attendeesWaiting: AttendeesWaiting
 }
 
