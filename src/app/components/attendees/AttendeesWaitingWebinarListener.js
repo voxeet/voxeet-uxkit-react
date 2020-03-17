@@ -1,24 +1,21 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { strings } from '../../languages/localizedStrings';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { strings } from "../../languages/localizedStrings";
 
 class AttendeesWaitingWebinarListener extends Component {
-    constructor(props) {
-        super(props)
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    render() {
-
-        return (
-            <div className="conference-empty">
-                <p>{strings.hangtight}</p>
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div className="conference-empty">
+        <p>{strings.hangtight}</p>
+      </div>
+    );
+  }
 }
 
-AttendeesWaitingWebinarListener.propTypes = {
+AttendeesWaitingWebinarListener.propTypes = {};
 
-}
-
-export default AttendeesWaitingWebinarListener
+export default AttendeesWaitingWebinarListener;

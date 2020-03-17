@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { strings } from "../../../../languages/localizedStrings";
 import SpeakerActive from "../SpeakerActive";
 
-class ScreenshareMode extends Component {
+class VideoPresentationMode extends Component {
   constructor(props) {
     super(props);
   }
@@ -14,8 +14,11 @@ class ScreenshareMode extends Component {
       participants,
       participant,
       toggleMicrophone,
+      isVideoPresentation,
+      videoPresentationEnabled,
       isWidgetFullScreenOn,
       screenShareEnabled,
+      isFilePresentation,
       filePresentationEnabled,
       screenShareStream,
       isAdmin,
@@ -27,55 +30,40 @@ class ScreenshareMode extends Component {
       isScreenshare,
       isElectron
     } = this.props;
-    return !isScreenshare ? (
+    return (
       <SpeakerActive
         participant={participant}
         toggleMicrophone={toggleMicrophone}
         isWidgetFullScreenOn={isWidgetFullScreenOn}
+        isFilePresentation={isFilePresentation}
         screenShareEnabled={screenShareEnabled}
         screenShareStream={screenShareStream}
         isElectron={isElectron}
-        isScreenshare={isScreenshare}
+        isVideoPresentation={isVideoPresentation}
+        videoPresentationEnabled={videoPresentationEnabled}
         kickParticipant={kickParticipant}
         isAdmin={isAdmin}
         isAdminActived={isAdminActived}
         mySelf={participants.length >= 1 ? false : true}
       />
-    ) : (
-      <div className="screenshare-current-user">
-        <div className="screenshare-current-user-enable">
-          {strings.screensharerunning}
-        </div>
-        <SpeakerActive
-          participant={participant}
-          toggleMicrophone={toggleMicrophone}
-          isWidgetFullScreenOn={isWidgetFullScreenOn}
-          screenShareEnabled={screenShareEnabled}
-          isElectron={isElectron}
-          screenShareStream={screenShareStream}
-          kickParticipant={kickParticipant}
-          isAdmin={isAdmin}
-          isAdminActived={isAdminActived}
-          mySelf={false}
-        />
-      </div>
     );
   }
 }
 
-ScreenshareMode.propTypes = {
+VideoPresentationMode.propTypes = {
   participants: PropTypes.array.isRequired,
   participant: PropTypes.object.isRequired,
   isScreenshare: PropTypes.bool,
+  videoPresentationEnabled: PropTypes.bool,
+  isVideoPresentation: PropTypes.bool,
   toggleMicrophone: PropTypes.func.isRequired,
   isElectron: PropTypes.bool.isRequired,
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
   screenShareEnabled: PropTypes.bool.isRequired,
-  filePresentationEnabled: PropTypes.bool.isRequired,
   screenShareStream: PropTypes.object,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired
 };
 
-export default ScreenshareMode;
+export default VideoPresentationMode;

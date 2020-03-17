@@ -1,43 +1,42 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import Sdk from '../../sdk'
+import Sdk from "../../sdk";
 
 class AttendeesSettingsVuMeter extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      level: 0
+    };
+  }
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            level: 0,
-        }
-    }
+  componentDidMount() {
+    this._interval = setInterval(() => {
+      Sdk.instance.getUserLevel(Sdk.instance.userId, level => {
+        this.setState({ level: Math.round(level * 24) });
+      });
+    }, 200);
+  }
 
-    componentDidMount() {
-        this._interval = setInterval(() => {
-            Sdk.instance.getUserLevel(Sdk.instance.userId, level => {
-                this.setState({ level: Math.round(level * 24) })
-            })
-        }, 200)
-    }
+  componentWillUnmount() {
+    clearInterval(this._interval);
+  }
 
-    componentWillUnmount() {
-        clearInterval(this._interval)
-    }
-
-    render() {
-        const { level } = this.state
-        return (
-            <ul className="loadbar">
-                {[...Array(24)].map((el, i) =>
-                    <li key={`loadbar_${i}`}>
-                        <div className={`bar ${(level >= i ? 'ins' : '')}`}></div>
-                    </li>
-                )}
-            </ul>
-        )
-    }
+  render() {
+    const { level } = this.state;
+    return (
+      <ul className="loadbar">
+        {[...Array(24)].map((el, i) => (
+          <li key={`loadbar_${i}`}>
+            <div className={`bar ${level >= i ? "ins" : ""}`}></div>
+          </li>
+        ))}
+      </ul>
+    );
+  }
 }
 
-AttendeesSettingsVuMeter.propTypes = {}
+AttendeesSettingsVuMeter.propTypes = {};
 
-export default AttendeesSettingsVuMeter
+export default AttendeesSettingsVuMeter;

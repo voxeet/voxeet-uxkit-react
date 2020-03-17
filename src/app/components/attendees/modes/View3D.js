@@ -1,56 +1,64 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import ReactDOM from 'react-dom'
-import View3DItem from './View3DItem'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "@voxeet/react-redux-5.1.1";
+import ReactDOM from "react-dom";
+import View3DItem from "./View3DItem";
 
 class View3D extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const {
+      toggleMicrophone,
+      setUserPosition,
+      kickParticipant,
+      isAdmin,
+      isAdminActived,
+      saveUserPosition,
+      participants
+    } = this.props;
+    const participantsConnected = [];
+    let size = 0;
+    for (var i = 0; i < participants.length; i++) {
+      if (participants[i].isConnected === true) {
+        size = size + 1;
+        participantsConnected.push(participants[i]);
+      }
     }
 
-    render() {
-        const { toggleMicrophone, setUserPosition, kickParticipant, isAdmin, isAdminActived, saveUserPosition, participants } = this.props
-        const participantsConnected = []
-        let size = 0;
-        for(var i = 0; i < participants.length; i++) {
-          if(participants[i].isConnected === true) {
-            size = size + 1
-            participantsConnected.push(participants[i])
-          }
-        }
-
-        return (
-            <div className="Sidebar3D" id="Sidebar3D">
-                {participantsConnected.map((participant, i) => {
-                        return (
-                            <View3DItem
-                                key={i}
-                                index={i}
-                                isAdmin={isAdmin}
-                                isAdminActived={isAdminActived}
-                                participant={participant}
-                                size={size}
-                                setUserPosition={setUserPosition}
-                                saveUserPosition={saveUserPosition}
-                                kickParticipant={kickParticipant}
-                                toggleMicrophone={toggleMicrophone}
-                            />
-                        )
-                })}
-            </div>
-        )
-    }
+    return (
+      <div className="Sidebar3D" id="Sidebar3D">
+        {participantsConnected.map((participant, i) => {
+          return (
+            <View3DItem
+              key={i}
+              index={i}
+              isAdmin={isAdmin}
+              isAdminActived={isAdminActived}
+              participant={participant}
+              size={size}
+              setUserPosition={setUserPosition}
+              saveUserPosition={saveUserPosition}
+              kickParticipant={kickParticipant}
+              toggleMicrophone={toggleMicrophone}
+            />
+          );
+        })}
+      </div>
+    );
+  }
 }
 
 View3D.propTypes = {
-    participants: PropTypes.array.isRequired,
-    toggleMicrophone: PropTypes.func.isRequired,
-    setUserPosition: PropTypes.func.isRequired,
-    saveUserPosition: PropTypes.func.isRequired,
-    kickParticipant: PropTypes.func.isRequired,
-    isAdmin: PropTypes.bool.isRequired,
-    isAdminActived: PropTypes.bool.isRequired,
-}
+  participants: PropTypes.array.isRequired,
+  toggleMicrophone: PropTypes.func.isRequired,
+  setUserPosition: PropTypes.func.isRequired,
+  saveUserPosition: PropTypes.func.isRequired,
+  kickParticipant: PropTypes.func.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
+  isAdminActived: PropTypes.bool.isRequired
+};
 
-export default View3D
+export default View3D;

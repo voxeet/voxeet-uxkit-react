@@ -1,40 +1,39 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ReactTooltip from 'react-tooltip'
-import Sdk from '../../../../sdk'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import ReactTooltip from "react-tooltip";
+import Sdk from "../../../../sdk";
 
 class ModalError extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
-    constructor(props) {
-        super(props)
-        this.state = {
-        }
-    }
+  componentDidMount() {}
 
-    componentDidMount() {
-    }
-
-    render() {
-        const { toggle, error } = this.props
-        const contentError = JSON.parse(error)
-        return (
-            <div>
-              <h3>Oops, an error occurred</h3>
-              <p>Error : {contentError.name}</p>
-              <div className="hint-text">
-                <p>If you are having problems, try restarting your browser and check your devices (Headphone and microphone)</p>
-              </div>
-            </div>
-        )
-    }
+  render() {
+    const { toggle, error } = this.props;
+    const contentError = JSON.parse(error);
+    return (
+      <div>
+        <h3>Oops, an error occurred</h3>
+        <p>Error : {contentError.name}</p>
+        <div className="hint-text">
+          <p>
+            If you are having problems, try restarting your browser and check
+            your devices (Headphone and microphone)
+          </p>
+        </div>
+      </div>
+    );
+  }
 }
 
-ModalError.defaultProps = {
-}
+ModalError.defaultProps = {};
 
 ModalError.propTypes = {
-    error: PropTypes.string,
-    toggle: PropTypes.func,
-}
+  error: PropTypes.string,
+  toggle: PropTypes.func
+};
 
-export default ModalError
+export default ModalError;

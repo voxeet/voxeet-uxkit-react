@@ -1,56 +1,57 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ReactTooltip from 'react-tooltip'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import ReactTooltip from "react-tooltip";
 
-import Sdk from '../../../sdk'
-import ModalError from './type/ModalError';
-import { strings } from '../../../languages/localizedStrings';
+import Sdk from "../../../sdk";
+import ModalError from "./type/ModalError";
+import { strings } from "../../../languages/localizedStrings";
 
 class Modal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
-    constructor(props) {
-        super(props)
-        this.state = {
-        }
-    }
+  componentDidMount() {}
 
-    componentDidMount() {
-    }
+  render() {
+    const { toggle, isModalError, error } = this.props;
 
-    render() {
-        const { toggle, isModalError, error } = this.props
-
-        return (
-          <div className="settings">
-              <div className="content">
-                  <span className="close">
-                        <a data-tip data-for="toggle-close"
-                          className='icon-close'
-                          onClick={() => toggle()}
-                          title={strings.close}>
-                      </a>
-                  </span>
-                  <ReactTooltip id="toggle-close" place="left" effect="solid" className="tooltip">{strings.close}</ReactTooltip>
-                    { isModalError &&
-                      <ModalError
-                        toggle={toggle}
-                        error={error}
-                      />
-                    }
-              </div>
-            </div>
-        )
-    }
+    return (
+      <div className="settings">
+        <div className="content">
+          <span className="close">
+            <a
+              data-tip
+              data-for="toggle-close"
+              className="icon-close"
+              onClick={() => toggle()}
+              title={strings.close}
+            ></a>
+          </span>
+          <ReactTooltip
+            id="toggle-close"
+            place="left"
+            effect="solid"
+            className="tooltip"
+          >
+            {strings.close}
+          </ReactTooltip>
+          {isModalError && <ModalError toggle={toggle} error={error} />}
+        </div>
+      </div>
+    );
+  }
 }
 
 Modal.defaultProps = {
-  isModalError: false,
-}
+  isModalError: false
+};
 
 Modal.propTypes = {
-    isModalError: PropTypes.bool,
-    error: PropTypes.string,
-    toggle: PropTypes.func,
-}
+  isModalError: PropTypes.bool,
+  error: PropTypes.string,
+  toggle: PropTypes.func
+};
 
-export default Modal
+export default Modal;

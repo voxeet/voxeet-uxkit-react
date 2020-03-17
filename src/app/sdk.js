@@ -1,20 +1,22 @@
 import VoxeetSdk from "@voxeet/voxeet-web-sdk";
 
 export default class Sdk {
-    constructor() { throw new Error("Don't instanciate !")}
+  constructor() {
+    throw new Error("Don't instanciate !");
+  }
 
-    static create() {
-        if(!Sdk.instance) {
-            Sdk.instance = new VoxeetSdk()
-        }
-        return Sdk.instance
+  static create() {
+    if (!Sdk.instance) {
+      Sdk.instance = new VoxeetSdk();
     }
+    return Sdk.instance;
+  }
 
-    static destroy() {
-        Sdk.instance = undefined
-    }
+  static destroy() {
+    Sdk.instance = undefined;
+  }
 
-    static setSdk(sdk) {
-        Sdk.instance = sdk
-    }
+  static setSdk(sdk) {
+    Sdk.instance = sdk;
+  }
 }

@@ -4,9 +4,59 @@ Voxeet React Components
 ## Installation
 
 ```
-npm i @voxeet/voxeet-web-sdk @voxeet/react-components --save
-yarn add @voxeet/voxeet-web-sdk @voxet/react-components
+npm i @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1.1@5.1.1 --save
+yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1.1@5.1.1
 ```
+
+## Changelog
+
+### 1.0.1
+#### Bug fixes
+- Fix possible CSS conflict with some classes
+- Move library target from `umd` to `commonjs2`
+
+### 1.0.0
+#### Features
+- Add support for `react-redux` v7.X, `VoxeetProvider` is now exposed inside the `react-components` to prevent version conflicts (Use the `VoxeetProvider` instead )
+#### Property update
+- `videoCodec` default is now `H264`
+
+### 0.36.7
+#### Features
+- New property `closeSessionAtHangUp`, option to choose if the session should be automatically close at hang up (default: true)
+
+### 0.36.6
+#### Features
+- Search engine for `invitedUsers` in order to find user easily in the `AttendeesList`
+
+### 0.36.3-0.36.5
+#### Features
+- New property `invitedUsers`, add the possibilidy to give an array of users who can be invited during the conference. (externalId mandatory)
+
+### 0.36.2
+#### Features
+- New property `pstnNumbers`, use http://cdn.voxeet.com/pstn/numbers to get phone numbers for PSTN and give an array of needed numbers in this property
+
+### 0.36.1
+#### Features
+- You can now disable sounds using `disableSounds` props
+- String customisation (See explanations below) with `customLocalizedStrings`
+#### Bug fixes
+- Fix camera truncated in speaker mode if the video is coming from mobile
+- Fix video presentation in widget mode
+
+### 0.35.0
+#### Features
+- Implementation of video presentation (If you use `shareActions` you can add `videopresentation`), a video can now be shared to other attendees. Only the video presenter can control the video, other attendees will receive actions (Play/Pause/Seek).
+- You can now customize "We're waiting for other callers to arrive." with component `attendeesWaiting`.
+- Automatically start a recording when joining a conference with `autoRecording` (if it's not already start).
+- Automatically start HLS when joining a conference with `autoHls` (if it's not already start).
+- When starting HLS in Live Broadcast right panel, a link is displayed to watch the live conference.
+
+#### Bug fixes
+- Pre-configuration screen, error if access denied to your devices (microphone and/or camera)
+- UI improvements
+- Responsive improvements
 
 ## Usage
 ### Reducer
@@ -26,11 +76,10 @@ const reducers = combineReducers({
 ```javascript
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
 import thunkMidleware from 'redux-thunk'
 import { combineReducers, createStore, applyMiddleware } from 'redux'
 
-import { ConferenceRoom, reducer as voxeetReducer } from '@voxeet/react-components'
+import { ConferenceRoom, VoxeetProvider, reducer as voxeetReducer } from '@voxeet/react-components'
 
 // Import Style
 import '@voxeet/react-components/dist/voxeet-react-components.css'; // Can you be customize, refer to https://github.com/voxeet/voxeet-assets-react-components
@@ -51,14 +100,14 @@ const settings = {
 }
 
 ReactDOM.render(
-  <Provider store={configureStore()}>
+  <VoxeetProvider store={configureStore()}>
     <ConferenceRoom
       isWidget
       consumerKey={settings.consumerKey}
       consumerSecret={settings.consumerSecret}
       conferenceAlias={settings.conferenceAlias}
     />
-  </Provider>,
+  </VoxeetProvider>,
   document.getElementById('app')
 )
 ```
@@ -79,18 +128,26 @@ The Widget is translate in english and french. The language will be automaticall
 |`logo`|String|Voxeet Logo|Display your logo inside the react components by using this props.|
 |`chromeExtensionId`|String||Id of chrome screenshare extension, a message will be prompt when the user will try to screenshare (Inline installation is no longer supported)|
 |`displayActions`|Array|["mute" ,"recording", "share", "video", "live", "attendees", "chat", "pstn"]|You can disable some actions buttons. Example : displayActions={["mute", "video"]} will allow to video and mute button (Strings : "mute", "video", "share", "recording", "live", "attendees", "chat")|
-|`shareActions`|Array|["screenshare" ,"filepresentation"]|You can choose which button will be display, it's possible to do a screenshare, or a file presentation ! If you set the displayActions you need to add the 'share' button to allow actions !|
+|`shareActions`|Array|["screenshare" ,"filepresentation", "videopresentation"]|You can choose which button will be display, it's possible to do a screenshare, file presentation or video presentation ! If you set the displayActions you need to add the 'share' button to allow actions.|
 |`liveRecordingEnabled`|Boolean|false|Ability to record a conference in live. Generate an MP4 video of the conference. Can be retrieve by a webhook (a small delay might be necessary for process the video)|
+|`disableSounds`|Boolean|false|Disable sounds during the conference (mute/unmute, record, conference join, conference left)|
+|`customLocalizedStrings`|Object|Custom strings, described below|
+|`pstnNumbers`|Array|Custom PSTN Numbers, you can find all numbers here : http://cdn.voxeet.com/pstn/numbers remove numbers that are not usefull and give an array to this props|
 |`isWidget`|Boolean|true|Indicate if component used like widget or embedded in your app|
 |`chromeExtensionId`|String|null|The Id from your Chrome Web Extension to screenshare (needed only on Chrome)|
+|`autoRecording`|Boolean|false|Automatically record the conference when joining the conference (if it's not already start)|
+|`autoHls`|Boolean|false|Automatically start Hls broadcast when the conference is created|
+|`closeSessionAtHangUp`|Boolean|true|Automatically close the session of the current user when hang up|
 |`isModal`|Boolean|false|Indicate if component displayed like modal|
+|`attendeesWaiting`|Component|AttendeesWaiting|Put your own waiting component (Waiting for other participants)|
 |`loadingScreen`|Component|LoadingScreen|Put your own loading screen instead of Voxeet loading screen|
 |`isWebinar`|Boolean|false|Launch the widget in Webinar mode, only admin can speak (Restriction in "tiles" mode)|
 |`autoJoin`|Boolean|false|Join automatically conference|
 |`preConfig`|Boolean|false|Show a pop up before entering inside the Conference to configure your devices (audio, video)|
-|`videoCodec`|String|VP8|Specify video codec "H264" or "VP8" => H264 is needed for video on Safari|
+|`videoCodec`|String|H264|Specify video codec "H264" or "VP8" => H264 is needed for video on Safari|
 |`isListener`|Boolean|false|Enter in conference in listener mode|
 |`displayModes`|Array|["list", "tiles", "speaker"]|Indicate which mode is allowed (modes will be in the same order as the array)|
+|`invitedUsers`|Array|[{name: "USERNAME", externalId:"EXTERNAL_ID", title: "TITLE"}]|Array of people who can be invited during the conference. If the other side, people need to be subscribe to the conference to receive the invitation|
 |`isManualKickAllowed`|Boolean|false|Authorize admin (conference creator) to kick users in conference|
 |`isAdmin`|Boolean|false|Current user who join the conference is the admin|
 |`kickOnHangUp`|Boolean|false|Kick all users when admin (conference creator) leave the conference|
@@ -110,7 +167,7 @@ The default control buttons component is below, you can customize it for you nee
 ```javascript
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import bowser from "bowser";
 import { Buttons } from "@voxeet/react-components";
 
 class ActionsButtons extends Component {
@@ -119,157 +176,209 @@ class ActionsButtons extends Component {
   }
 
   render() {
-    const { isBottomBar, 
-            forceFullscreen, 
-            isMuted, 
-            isRecording, 
-            isWidgetFullScreenOn,
-            videoEnabled, 
-            displayModal,
-            conferencePincode, 
-            convertFilePresentation, 
-            toggleMicrophone, 
-            screenShareEnabled, 
-            filePresentationEnabled, 
-            toggleRecording, 
-            toggleVideo, 
-            toggleScreenShare, 
-            attendeesSettingsOpened, 
-            toggleAttendeesSettings, 
-            toggleAttendeesList, 
-            attendeesListOpened, 
-            attendeesChatOpened, 
-            attendeesLiveOpened,
-            toggleAttendeesChat, 
-            toggleAttendeesLive, 
-            recordingLocked, 
-            toggleModal, 
-            toggleAudio3D, 
-            isWebinar, 
-            isAdmin, 
-            displayActions, 
-            shareActions, 
-            leave, 
-            audio3DEnabled, 
-            isElectron, 
-            displayExternalLiveModal, 
-            isExternalLive, 
-            isFilePresentation, 
-            isScreenshare, 
-            isDemo } = this.props;
+    const {
+      isBottomBar,
+      forceFullscreen,
+      isMuted,
+      isRecording,
+      isWidgetFullScreenOn,
+      toggleVideoPresentation,
+      videoEnabled,
+      isVideoPresentation,
+      videoPresentationEnabled,
+      displayModal,
+      conferencePincode,
+      convertFilePresentation,
+      isHlsLive,
+      toggleMicrophone,
+      screenShareEnabled,
+      filePresentationEnabled,
+      toggleRecording,
+      toggleVideo,
+      toggleScreenShare,
+      attendeesSettingsOpened,
+      toggleAttendeesSettings,
+      toggleAttendeesList,
+      attendeesListOpened,
+      attendeesChatOpened,
+      attendeesLiveOpened,
+      toggleAttendeesChat,
+      toggleAttendeesLive,
+      recordingLocked,
+      toggleModal,
+      toggleAudio3D,
+      isWebinar,
+      isAdmin,
+      displayActions,
+      shareActions,
+      leave,
+      audio3DEnabled,
+      isElectron,
+      displayExternalLiveModal,
+      isExternalLive,
+      currentUser,
+      isFilePresentation,
+      isScreenshare,
+      isDemo
+    } = this.props;
 
     return (
-            <div>
-                <ul className="controls-left">
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("mute") > -1 && !isDemo &&
-                        <ToggleMicrophoneButton
-                            isMuted={isMuted}
-                            toggle={toggleMicrophone}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("video") > -1 && !isDemo &&
-                        <ToggleVideoButton
-                            videoEnabled={videoEnabled}
-                            toggle={toggleVideo}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && isBottomBar && isElectron &&
-                        <Toggle3DAudioButton
-                            audio3DEnabled={audio3DEnabled}
-                            toggleAudio3D={toggleAudio3D}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                </ul>
-                <ul className="controls-center">
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("recording") > -1 && !isDemo &&
-                        <ToggleRecordingButton
-                            isRecording={isRecording}
-                            recordingLocked={recordingLocked}
-                            toggle={toggleRecording}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("share") > -1 && !isDemo && shareActions.length > 0 &&
-                        <ToggleScreenShareButton
-                            screenShareEnabled={screenShareEnabled}
-                            filePresentationEnabled={filePresentationEnabled}
-                            currentUserScreenShare={isScreenshare}
-                            currentUserFilePresentation={isFilePresentation}
-                            isElectron={isElectron}
-                            toggle={toggleScreenShare}
-                            convertFilePresentation={convertFilePresentation}
-                            shareActions={shareActions}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {isBottomBar && (!isWebinar || isWebinar && isAdmin) && !isDemo &&
-                        <li className="separator">
-                        </li>
-                    }
-                    {isBottomBar &&
-                        <HangUpButtonBottomBar
-                            leave={leave}
-                            tooltipPlace='top'
-                        />
-                    }
-
-                </ul>
-                <ul className="controls-right">
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("pstn") > -1 && !isDemo &&
-                        <TogglePSTN
-                            conferencePincode={conferencePincode}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("live") > -1 && !isDemo &&
-                        <ToggleExternalLiveButton
-                            attendeesLiveOpened={attendeesLiveOpened}
-                            toggle={toggleAttendeesLive}
-                            isExternalLive={isExternalLive}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || isWebinar && isAdmin) &&
-                        <ToggleSettingsButton
-                            attendeesSettingsOpened={attendeesSettingsOpened}
-                            toggle={toggleAttendeesSettings}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {displayActions.indexOf("attendees") > -1  &&
-                        <ToggleAttendeesListButton tooltipPlace={isBottomBar ? 'top' : 'right'} toggle={toggleAttendeesList} isBottomBar={isBottomBar} isOpen={attendeesListOpened}/>
-                    }
-                    {displayActions.indexOf("chat") > -1  &&
-                        <ToggleAttendeesChatButton tooltipPlace={isBottomBar ? 'top' : 'right'} toggle={toggleAttendeesChat} isBottomBar={isBottomBar} isOpen={attendeesChatOpened}/>
-                    }
-                </ul>
-            </div>
-        )
-    }
+      <div>
+        <ul className="controls-left">
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("mute") > -1 &&
+            !isDemo && (
+              <ToggleMicrophoneButton
+                isMuted={isMuted}
+                toggle={toggleMicrophone}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("video") > -1 &&
+            !isDemo && (
+              <ToggleVideoButton
+                videoEnabled={videoEnabled}
+                toggle={toggleVideo}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            isBottomBar &&
+            isElectron && (
+              <Toggle3DAudioButton
+                audio3DEnabled={audio3DEnabled}
+                toggleAudio3D={toggleAudio3D}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+        </ul>
+        <ul className="controls-center">
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("recording") > -1 &&
+            !isDemo && (
+              <ToggleRecordingButton
+                isRecording={isRecording}
+                recordingLocked={recordingLocked}
+                toggle={toggleRecording}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("share") > -1 &&
+            !isDemo &&
+            shareActions.length > 0 && (
+              <ToggleScreenShareButton
+                screenShareEnabled={screenShareEnabled}
+                filePresentationEnabled={filePresentationEnabled}
+                videoPresentationEnabled={videoPresentationEnabled}
+                currentUserScreenShare={isScreenshare}
+                currentUserFilePresentation={isFilePresentation}
+                currentUserVideoPresentation={isVideoPresentation}
+                isElectron={isElectron}
+                toggle={toggleScreenShare}
+                toggleVideoPresentation={toggleVideoPresentation}
+                convertFilePresentation={convertFilePresentation}
+                shareActions={shareActions}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {isBottomBar && (!isWebinar || (isWebinar && isAdmin)) && !isDemo && (
+            <li className="separator"></li>
+          )}
+          {isBottomBar && (
+            <HangUpButtonBottomBar leave={leave} tooltipPlace="top" />
+          )}
+        </ul>
+        <ul className="controls-right">
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("pstn") > -1 &&
+            !isDemo && (
+              <TogglePSTN
+                conferencePincode={conferencePincode}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("live") > -1 &&
+            !isDemo && (
+              <ToggleExternalLiveButton
+                attendeesLiveOpened={attendeesLiveOpened}
+                toggle={toggleAttendeesLive}
+                isExternalLive={isExternalLive}
+                isHlsLive={isHlsLive}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            !bowser.msie &&
+            !currentUser.isListener && (
+              <ToggleSettingsButton
+                attendeesSettingsOpened={attendeesSettingsOpened}
+                toggle={toggleAttendeesSettings}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {displayActions.indexOf("attendees") > -1 && (
+            <ToggleAttendeesListButton
+              tooltipPlace={isBottomBar ? "top" : "right"}
+              toggle={toggleAttendeesList}
+              isBottomBar={isBottomBar}
+              isOpen={attendeesListOpened}
+            />
+          )}
+          {displayActions.indexOf("chat") > -1 && (
+            <ToggleAttendeesChatButton
+              tooltipPlace={isBottomBar ? "top" : "right"}
+              toggle={toggleAttendeesChat}
+              isBottomBar={isBottomBar}
+              isOpen={attendeesChatOpened}
+            />
+          )}
+        </ul>
+      </div>
+    );
+  }
 }
 
 ActionsButtons.propTypes = {
     isBottomBar: PropTypes.bool.isRequired,
     forceFullscreen: PropTypes.bool.isRequired,
     isMuted: PropTypes.bool.isRequired,
+    currentUser: PropTypes.object.isRequired,
     isWebinar: PropTypes.bool.isRequired,
     isAdmin: PropTypes.bool.isRequired,
     videoEnabled: PropTypes.bool.isRequired,
     screenShareEnabled: PropTypes.bool.isRequired,
     filePresentationEnabled: PropTypes.bool.isRequired,
+    videoPresentationEnabled: PropTypes.bool.isRequired,
     displayModal: PropTypes.bool.isRequired,
     isScreenshare: PropTypes.bool.isRequired,
+    isVideoPresentation: PropTypes.bool.isRequired,
+    isHlsLive: PropTypes.bool.isRequired,
     isFilePresentation: PropTypes.bool.isRequired,
     displayActions: PropTypes.array.isRequired,
     toggleAudio3D: PropTypes.func.isRequired,
@@ -284,6 +393,7 @@ ActionsButtons.propTypes = {
     toggleRecording: PropTypes.func.isRequired,
     toggleVideo: PropTypes.func.isRequired,
     toggleScreenShare: PropTypes.func.isRequired,
+    toggleVideoPresentation: PropTypes.func.isRequired,
     convertFilePresentation: PropTypes.func.isRequired,
     toggleModal: PropTypes.func.isRequired,
     toggleMode: PropTypes.func.isRequired,
@@ -306,3 +416,111 @@ ActionsButtons.defaultProps = {
 export default ActionsButtons
 
 ```
+
+### Localized strings
+
+For english language (Be sure to use this keys to override default strings)
+
+```
+[en :{
+    electronloading: "Voxeet is loading, please wait",
+    error: "Error",
+    errorPermissionDeniedMicrophone:
+      "An error occured when joining the conference. Please make sure to allow access to your microphone.",
+    errorPermissionDeniedMicrophoneCamera:
+      "An error occured when joining the conference. Please make sure to allow access to your microphone and camera.",
+    errorIE11:
+      "A plugin is mandatory for IE11, please download and install the plugin. When the installation is complete, please refresh this page.",
+    browerNotSupported: "This browser is currently not supported.",
+    installExtension: "Please install the screen share extension with this ",
+    noExtensionAvailable: "No Chrome Web Extension configure for screen share.",
+    microphoneOff: "Your microphone is muted.",
+    microphoneOn: "Your microphone is on.",
+    cameraOn: "Your camera is on.",
+    cameraOff: "Your camera is off.",
+    recordConferenceStart: "Your conference is being recorded.",
+    recordConferenceStop: "Your conference is no longer recorded.",
+    screenshareInProgress:
+      "You cannot screenshare while another user is screensharing.",
+    recordConferenceStartBy: "Your conference is being recorded by ",
+    recordConferenceStopBy: "Your conference is no longer recorded by ",
+    conferenceAlreadyRecord:
+      "Your conference is already being recorded by an other attendee.",
+    leave: "End",
+    audio: "3D Audio",
+    chat: "Chat",
+    externalLive: "Live Broadcast",
+    fullscreen: "FullScreen",
+    minimize: "Minimize",
+    mute: "Mute",
+    displaymode: "Display mode",
+    pincode: "Call-in",
+    sendMessage: "Send",
+    pinCodeExplanations:
+      "Call this number below and provide the conference pin code to join the conference via PSTN.",
+    record: "Recording",
+    shareAlreadyStarted:
+      "Someone is already sharing. Please stop it before start a new one.",
+    share: "Share",
+    screenshare: "Share Screen",
+    screenshareEntireScreen: "Share entire screen",
+    screenshareAWindow: "Share a window",
+    screenshareOption: "Share options",
+    settings: "Settings",
+    open: "Open",
+    close: "Close",
+    video: "Video",
+    camera: "Camera",
+    liveCall: "Live is running",
+    linkHls: "See your live",
+    broadcastLive: "Diffusion en cours",
+    externalUrl: "Configure your stream",
+    externalPassword: "Enter your password from your live",
+    launchLive: "Start your stream",
+    stopLive: "Stop your live stream",
+    geturl: "Get your stream url (on Youtube or Facebook)",
+    getpwd: "Get your stream password (on Youtube or Facebook)",
+    enterhere: "Enter your informations here :",
+    titleSettings: "Set preferred camera and microphone",
+    problemSettings: "If you are having problems, try restarting your browser.",
+    saveSettings: "Your preferences will automatically save.",
+    screensharerunning: "Happy Screen Sharing!",
+    tile: "Tile",
+    list: "List",
+    speaker: "Speaker",
+    displaymode: "Display mode",
+    changelayout: "Change layout",
+    attendees: "Attendees",
+    here: "here",
+    hangtight: "We're waiting for other callers to arrive.",
+    join: "Join",
+    incall: "In call with :",
+    joincall: "Join Call",
+    expand: "Expand",
+    activecall: "Active call",
+    leavecall: "Leave call",
+    output: "Output",
+    input: "Input",
+    titlePreConfig: "Set up your devices",
+    presenter: "Attendees",
+    joined: "Joined",
+    invited: "Waiting on",
+    presenter: "Presenter",
+    listener: "Listener",
+    left: "Left",
+    noAudioDevice:
+      "No audio device detected. Please make sure to plug at least one microphone to access this conference.",
+    filepresentation: "Share a file",
+    prev: "Previous",
+    next: "Next",
+    errorFilePresentation:
+      "An error occured during the file presentation. Please check your file.",
+    videopresentation: "Share a video",
+    placeholderVideoPresentation: "Video URL",
+    startVideoPresentationAutoplay: "Start video",
+    invitedUsers: "Waiting for invitation",
+    inviteUser: "Invite"
+}]
+```
+
+More language can be added. Use an array prefixed with the correct language key. (en, fr, it, ...)

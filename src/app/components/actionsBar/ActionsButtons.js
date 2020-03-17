@@ -1,176 +1,261 @@
-import React, { Component } from 'react'
-import browser from 'bowser';
-import PropTypes from 'prop-types'
+import React, { Component } from "react";
+import bowser from "bowser";
+import PropTypes from "prop-types";
 
 import {
-    ToggleMicrophoneButton,
-    ToggleRecordingButton,
-    ToggleScreenShareButton,
-    Toggle3DAudioButton,
-    HangUpButtonBottomBar,
-    ToggleVideoButton,
-    ToggleExternalLiveButton,
-    ToggleSettingsButton,
-    TogglePSTN,
-    ToggleAttendeesListButton,
-    ToggleAttendeesChatButton
-} from './buttons'
+  ToggleMicrophoneButton,
+  ToggleRecordingButton,
+  ToggleScreenShareButton,
+  Toggle3DAudioButton,
+  HangUpButtonBottomBar,
+  ToggleVideoButton,
+  ToggleExternalLiveButton,
+  ToggleSettingsButton,
+  TogglePSTN,
+  ToggleAttendeesListButton,
+  ToggleAttendeesChatButton
+} from "./buttons";
 
 class ActionsButtons extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-    constructor(props) {
-        super(props)
-    }
-
-    render() {
-        const { isBottomBar, forceFullscreen, isMuted, isRecording, isWidgetFullScreenOn,
-            videoEnabled, displayModal,conferencePincode, convertFilePresentation, 
-            toggleMicrophone, screenShareEnabled, filePresentationEnabled, toggleRecording, toggleVideo, toggleScreenShare, attendeesSettingsOpened, toggleAttendeesSettings, toggleAttendeesList, attendeesListOpened, attendeesChatOpened, attendeesLiveOpened,
-            toggleAttendeesChat, toggleAttendeesLive, recordingLocked, toggleModal, toggleAudio3D, isWebinar, isAdmin, displayActions, shareActions, leave, audio3DEnabled, isElectron, displayExternalLiveModal, isExternalLive, isFilePresentation, isScreenshare, isDemo } = this.props
-        return (
-            <div>
-                <ul className="controls-left">
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("mute") > -1 && !isDemo &&
-                        <ToggleMicrophoneButton
-                            isMuted={isMuted}
-                            toggle={toggleMicrophone}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("video") > -1 && !isDemo &&
-                        <ToggleVideoButton
-                            videoEnabled={videoEnabled}
-                            toggle={toggleVideo}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && isBottomBar && isElectron &&
-                        <Toggle3DAudioButton
-                            audio3DEnabled={audio3DEnabled}
-                            toggleAudio3D={toggleAudio3D}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                </ul>
-                <ul className="controls-center">
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("recording") > -1 && !isDemo &&
-                        <ToggleRecordingButton
-                            isRecording={isRecording}
-                            recordingLocked={recordingLocked}
-                            toggle={toggleRecording}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("share") > -1 && !isDemo && shareActions.length > 0 &&
-                        <ToggleScreenShareButton
-                            screenShareEnabled={screenShareEnabled}
-                            filePresentationEnabled={filePresentationEnabled}
-                            currentUserScreenShare={isScreenshare}
-                            currentUserFilePresentation={isFilePresentation}
-                            isElectron={isElectron}
-                            toggle={toggleScreenShare}
-                            convertFilePresentation={convertFilePresentation}
-                            shareActions={shareActions}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {isBottomBar && (!isWebinar || isWebinar && isAdmin) && !isDemo &&
-                        <li className="separator">
-                        </li>
-                    }
-                    {isBottomBar &&
-                        <HangUpButtonBottomBar
-                            leave={leave}
-                            tooltipPlace='top'
-                        />
-                    }
-
-                </ul>
-                <ul className="controls-right">
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("pstn") > -1 && !isDemo &&
-                        <TogglePSTN
-                            conferencePincode={conferencePincode}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || (isWebinar && isAdmin)) && displayActions.indexOf("live") > -1 && !isDemo &&
-                        <ToggleExternalLiveButton
-                            attendeesLiveOpened={attendeesLiveOpened}
-                            toggle={toggleAttendeesLive}
-                            isExternalLive={isExternalLive}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {!isWidgetFullScreenOn && !forceFullscreen && (!isWebinar || isWebinar && isAdmin) &&
-                        <ToggleSettingsButton
-                            attendeesSettingsOpened={attendeesSettingsOpened}
-                            toggle={toggleAttendeesSettings}
-                            isBottomBar={isBottomBar}
-                            tooltipPlace={isBottomBar ? 'top' : 'right'}
-                        />
-                    }
-                    {displayActions.indexOf("attendees") > -1  &&
-                        <ToggleAttendeesListButton tooltipPlace={isBottomBar ? 'top' : 'right'} toggle={toggleAttendeesList} isBottomBar={isBottomBar} isOpen={attendeesListOpened}/>
-                    }
-                    {displayActions.indexOf("chat") > -1  &&
-                        <ToggleAttendeesChatButton tooltipPlace={isBottomBar ? 'top' : 'right'} toggle={toggleAttendeesChat} isBottomBar={isBottomBar} isOpen={attendeesChatOpened}/>
-                    }
-                </ul>
-            </div>
-        )
-
-    }
+  render() {
+    const {
+      isBottomBar,
+      forceFullscreen,
+      isMuted,
+      isRecording,
+      isWidgetFullScreenOn,
+      toggleVideoPresentation,
+      videoEnabled,
+      isVideoPresentation,
+      videoPresentationEnabled,
+      displayModal,
+      conferencePincode,
+      convertFilePresentation,
+      isHlsLive,
+      toggleMicrophone,
+      screenShareEnabled,
+      filePresentationEnabled,
+      toggleRecording,
+      toggleVideo,
+      toggleScreenShare,
+      attendeesSettingsOpened,
+      toggleAttendeesSettings,
+      toggleAttendeesList,
+      attendeesListOpened,
+      attendeesChatOpened,
+      attendeesLiveOpened,
+      toggleAttendeesChat,
+      toggleAttendeesLive,
+      recordingLocked,
+      toggleModal,
+      toggleAudio3D,
+      isWebinar,
+      isAdmin,
+      displayActions,
+      shareActions,
+      leave,
+      audio3DEnabled,
+      isElectron,
+      displayExternalLiveModal,
+      isExternalLive,
+      currentUser,
+      isFilePresentation,
+      isScreenshare,
+      isDemo
+    } = this.props;
+    return (
+      <div>
+        <ul className="controls-left">
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("mute") > -1 &&
+            !isDemo && (
+              <ToggleMicrophoneButton
+                isMuted={isMuted}
+                toggle={toggleMicrophone}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("video") > -1 &&
+            !isDemo && (
+              <ToggleVideoButton
+                videoEnabled={videoEnabled}
+                toggle={toggleVideo}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            isBottomBar &&
+            isElectron && (
+              <Toggle3DAudioButton
+                audio3DEnabled={audio3DEnabled}
+                toggleAudio3D={toggleAudio3D}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+        </ul>
+        <ul className="controls-center">
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("recording") > -1 &&
+            !isDemo && (
+              <ToggleRecordingButton
+                isRecording={isRecording}
+                recordingLocked={recordingLocked}
+                toggle={toggleRecording}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("share") > -1 &&
+            !isDemo &&
+            shareActions.length > 0 && (
+              <ToggleScreenShareButton
+                screenShareEnabled={screenShareEnabled}
+                filePresentationEnabled={filePresentationEnabled}
+                videoPresentationEnabled={videoPresentationEnabled}
+                currentUserScreenShare={isScreenshare}
+                currentUserFilePresentation={isFilePresentation}
+                currentUserVideoPresentation={isVideoPresentation}
+                isElectron={isElectron}
+                toggle={toggleScreenShare}
+                toggleVideoPresentation={toggleVideoPresentation}
+                convertFilePresentation={convertFilePresentation}
+                shareActions={shareActions}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {isBottomBar && (!isWebinar || (isWebinar && isAdmin)) && !isDemo && (
+            <li className="separator"></li>
+          )}
+          {isBottomBar && (
+            <HangUpButtonBottomBar leave={leave} tooltipPlace="top" />
+          )}
+        </ul>
+        <ul className="controls-right">
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("pstn") > -1 &&
+            !isDemo && (
+              <TogglePSTN
+                conferencePincode={conferencePincode}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            displayActions.indexOf("live") > -1 &&
+            !isDemo && (
+              <ToggleExternalLiveButton
+                attendeesLiveOpened={attendeesLiveOpened}
+                toggle={toggleAttendeesLive}
+                isExternalLive={isExternalLive}
+                isHlsLive={isHlsLive}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {!isWidgetFullScreenOn &&
+            !forceFullscreen &&
+            (!isWebinar || (isWebinar && isAdmin)) &&
+            !bowser.msie &&
+            !currentUser.isListener && (
+              <ToggleSettingsButton
+                attendeesSettingsOpened={attendeesSettingsOpened}
+                toggle={toggleAttendeesSettings}
+                isBottomBar={isBottomBar}
+                tooltipPlace={isBottomBar ? "top" : "right"}
+              />
+            )}
+          {displayActions.indexOf("attendees") > -1 && (
+            <ToggleAttendeesListButton
+              tooltipPlace={isBottomBar ? "top" : "right"}
+              toggle={toggleAttendeesList}
+              isBottomBar={isBottomBar}
+              isOpen={attendeesListOpened}
+            />
+          )}
+          {displayActions.indexOf("chat") > -1 && (
+            <ToggleAttendeesChatButton
+              tooltipPlace={isBottomBar ? "top" : "right"}
+              toggle={toggleAttendeesChat}
+              isBottomBar={isBottomBar}
+              isOpen={attendeesChatOpened}
+            />
+          )}
+        </ul>
+      </div>
+    );
+  }
 }
 
 ActionsButtons.propTypes = {
-    isBottomBar: PropTypes.bool.isRequired,
-    forceFullscreen: PropTypes.bool.isRequired,
-    isMuted: PropTypes.bool.isRequired,
-    isWebinar: PropTypes.bool.isRequired,
-    isAdmin: PropTypes.bool.isRequired,
-    videoEnabled: PropTypes.bool.isRequired,
-    screenShareEnabled: PropTypes.bool.isRequired,
-    filePresentationEnabled: PropTypes.bool.isRequired,
-    displayModal: PropTypes.bool.isRequired,
-    isScreenshare: PropTypes.bool.isRequired,
-    isFilePresentation: PropTypes.bool.isRequired,
-    displayActions: PropTypes.array.isRequired,
-    toggleAudio3D: PropTypes.func.isRequired,
-    recordingLocked: PropTypes.bool.isRequired,
-    isElectron: PropTypes.bool.isRequired,
-    isExternalLive: PropTypes.bool.isRequired,
-    audio3DEnabled: PropTypes.bool.isRequired,
-    isRecording: PropTypes.bool.isRequired,
-    isWidgetFullScreenOn: PropTypes.bool.isRequired,
-    toggleMicrophone: PropTypes.func.isRequired,
-    leave: PropTypes.func.isRequired,
-    toggleRecording: PropTypes.func.isRequired,
-    toggleVideo: PropTypes.func.isRequired,
-    toggleScreenShare: PropTypes.func.isRequired,
-    convertFilePresentation: PropTypes.func.isRequired,
-    toggleModal: PropTypes.func.isRequired,
-    toggleMode: PropTypes.func.isRequired,
-    mode: PropTypes.string.isRequired,
-    toggleAttendeesList: PropTypes.func.isRequired,
-    attendeesListOpened: PropTypes.bool.isRequired,
-    toggleAttendeesChat: PropTypes.func.isRequired,
-    attendeesChatOpened: PropTypes.bool.isRequired,
-    toggleAttendeesSettings: PropTypes.func.isRequired,
-    attendeesSettingsOpened: PropTypes.bool.isRequired,
-    toggleAttendeesLive: PropTypes.func.isRequired,
-    attendeesLiveOpened: PropTypes.bool.isRequired
-}
+  isBottomBar: PropTypes.bool.isRequired,
+  forceFullscreen: PropTypes.bool.isRequired,
+  isMuted: PropTypes.bool.isRequired,
+  currentUser: PropTypes.object.isRequired,
+  isWebinar: PropTypes.bool.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
+  videoEnabled: PropTypes.bool.isRequired,
+  screenShareEnabled: PropTypes.bool.isRequired,
+  filePresentationEnabled: PropTypes.bool.isRequired,
+  videoPresentationEnabled: PropTypes.bool.isRequired,
+  displayModal: PropTypes.bool.isRequired,
+  isScreenshare: PropTypes.bool.isRequired,
+  isVideoPresentation: PropTypes.bool.isRequired,
+  isHlsLive: PropTypes.bool.isRequired,
+  isFilePresentation: PropTypes.bool.isRequired,
+  displayActions: PropTypes.array.isRequired,
+  toggleAudio3D: PropTypes.func.isRequired,
+  recordingLocked: PropTypes.bool.isRequired,
+  isElectron: PropTypes.bool.isRequired,
+  isExternalLive: PropTypes.bool.isRequired,
+  audio3DEnabled: PropTypes.bool.isRequired,
+  isRecording: PropTypes.bool.isRequired,
+  isWidgetFullScreenOn: PropTypes.bool.isRequired,
+  toggleMicrophone: PropTypes.func.isRequired,
+  leave: PropTypes.func.isRequired,
+  toggleRecording: PropTypes.func.isRequired,
+  toggleVideo: PropTypes.func.isRequired,
+  toggleScreenShare: PropTypes.func.isRequired,
+  toggleVideoPresentation: PropTypes.func.isRequired,
+  convertFilePresentation: PropTypes.func.isRequired,
+  toggleModal: PropTypes.func.isRequired,
+  toggleMode: PropTypes.func.isRequired,
+  mode: PropTypes.string.isRequired,
+  toggleAttendeesList: PropTypes.func.isRequired,
+  attendeesListOpened: PropTypes.bool.isRequired,
+  toggleAttendeesChat: PropTypes.func.isRequired,
+  attendeesChatOpened: PropTypes.bool.isRequired,
+  toggleAttendeesSettings: PropTypes.func.isRequired,
+  attendeesSettingsOpened: PropTypes.bool.isRequired,
+  toggleAttendeesLive: PropTypes.func.isRequired,
+  attendeesLiveOpened: PropTypes.bool.isRequired
+};
 
 ActionsButtons.defaultProps = {
-    isBottomBar: false,
-    forceFullscreen: false
-}
+  isBottomBar: false,
+  forceFullscreen: false
+};
 
-export default ActionsButtons
+export default ActionsButtons;

@@ -1,24 +1,23 @@
-import { Types } from '../actions/ErrorActions'
-
+import { Types } from "../actions/ErrorActions";
 
 const defaultState = {
-    errorMessage: null,
-    isError: false,
-}
+  errorMessage: null,
+  isError: false
+};
 
 const ErrorReducer = (state = defaultState, action) => {
-    switch (action.type) {
-        case Types.ERROR:
-            return {
-                ...state,
-                isError: true,
-                errorMessage: action.payload.error
-            }
-        case Types.CLEAR_ERROR:
-          return defaultState
-        default:
-            return state
-    }
-}
+  switch (action.type) {
+    case Types.ERROR:
+      return {
+        ...state,
+        isError: true,
+        errorMessage: action.payload.error
+      };
+    case Types.CLEAR_ERROR:
+      return defaultState;
+    default:
+      return state;
+  }
+};
 
-export default ErrorReducer
+export default ErrorReducer;

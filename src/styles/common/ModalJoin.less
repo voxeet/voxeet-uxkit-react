@@ -17,139 +17,140 @@
 
 .modal-join .content {
   background-color: #fff;
-    margin: 2% auto;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
-    background-color: @white;
-    margin: 2% auto;
-    padding: 20px;
-    border-radius: 5px;
-    width: 500px;
-    box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+  margin: 2% auto;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
+  background-color: @white;
+  margin: 2% auto;
+  padding: 20px;
+  border-radius: 5px;
+  width: 500px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
 
-    h3 {
-      margin-bottom: 32px!important;
+  h3 {
+    margin-bottom: 32px !important;
+  }
+
+  h3,
+  p {
+    text-align: center;
+  }
+  p {
+    font-size: 11px;
+    margin: 0;
+    color: #7f7f7f;
+    font-family: @font-family-medium;
+  }
+
+  .form-group {
+    display: flex;
+    width: 100%;
+    label {
+      font-weight: bold;
+      text-align: right;
+      padding-right: 10px;
+      width: 30%;
+      padding-top: 3px;
+    }
+    select {
+      float: right;
+      background-color: transparent;
+      border: 1px solid #c2c2c2;
+      height: 29px;
+      font-size: 14px;
+      width: 50%;
     }
 
-    h3,
-    p {
-        text-align: center;
-    }
-    p {
-        font-size: 11px;
-        margin: 0;
-        color: #7f7f7f;
-        font-family: @font-family;
-    }
-
-    .form-group {
-        display: flex;
-        width: 100%;
-        label {
-            font-weight: bold;
-            text-align: right;
-            padding-right: 10px;
-            width: 30%;
-            padding-top: 3px;
-        }
-        select {
-            float:right;
-            background-color: transparent;
-            border: 1px solid #C2C2C2;
-            height: 29px;
-            font-size: 14px;
-            width: 50%;
-        }
-
-        &.no-margin {
-            margin: 0;
-        }
-    }
-
-    .hint-text {
-        margin-top: 32px;
-    }
-
-    .close {
-        float: right;
-        font-weight: bold;
-        color: @sidebarSubtitleColor;
-        margin: -10px 10px 0 0;
-        a {
-            cursor: pointer;
-            text-decoration: none;
-            position: absolute;
-            &:hover{
-              color: darken(@sidebarSubtitleColor, 6%);
-            }
-        }
-    }
-
-    .video {
-        width: 100%;
-        min-height: 280px;
-        background-color: #000;
-        text-align: center;
-        border-radius: 5px;
-        max-width: 95%;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        margin: 15px auto 15px auto;
-        position: relative;
-        .btn {
-            position: absolute;
-            margin-top: 120px;
-            width: 100%;
-            .icon-camera-video {
-                height: 30px;
-                width: 30px;
-                line-height: 30px;
-                background: @secondaryColor;
-                padding: 15px;
-                border-radius: 50%;
-                color:@white;
-                &:hover{
-                    cursor: pointer;
-                    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-                    background: darken(@secondaryColor, 6%);
-                }
-            }
-        }
-    }
-
-    .loadbar {
-        list-style:none;
-        width: 70%;
-        float:right;
-        margin-bottom: 32px;
-        margin-left: 30%;
-        padding: 0 0 0 10px;
-        li {
-            float:left;
-            position:relative;
-            width: 10px;
-            height: 20px;
-            margin-left:1px;
-            background:#E5E5E5;
-            border-radius:10px;
-
-            &:first-child {
-                margin-left:0;
-            }
-
-            >.ins {
-                background-color: lighten(@primaryColor, 10%);
-                width: 10px;
-                height: 20px;
-                border-radius:10px;
-            }
-        }
+    &.no-margin {
+      margin: 0;
     }
   }
 
-[class^="icon-"], [class*=" icon-"] {
-  font-family: 'icomoon' !important;
+  .hint-text {
+    margin-top: 32px;
+  }
+
+  .close {
+    float: right;
+    font-weight: bold;
+    color: @sidebarSubtitleColor;
+    margin: -10px 10px 0 0;
+    a {
+      cursor: pointer;
+      text-decoration: none;
+      position: absolute;
+      &:hover {
+        color: darken(@sidebarSubtitleColor, 6%);
+      }
+    }
+  }
+
+  .video {
+    width: 100%;
+    min-height: 280px;
+    background-color: #000;
+    text-align: center;
+    border-radius: 5px;
+    max-width: 95%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin: 15px auto 15px auto;
+    position: relative;
+    .btn {
+      position: absolute;
+      margin-top: 120px;
+      width: 100%;
+      .icon-camera-video {
+        height: 30px;
+        width: 30px;
+        line-height: 30px;
+        background: @secondaryColor;
+        padding: 15px;
+        border-radius: 50%;
+        color: @white;
+        &:hover {
+          cursor: pointer;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+          background: darken(@secondaryColor, 6%);
+        }
+      }
+    }
+  }
+
+  .loadbar {
+    list-style: none;
+    width: 70%;
+    float: right;
+    margin-bottom: 32px;
+    margin-left: 30%;
+    padding: 0 0 0 10px;
+    li {
+      float: left;
+      position: relative;
+      width: 10px;
+      height: 20px;
+      margin-left: 1px;
+      background: #e5e5e5;
+      border-radius: 10px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      > .ins {
+        background-color: lighten(@primaryColor, 10%);
+        width: 10px;
+        height: 20px;
+        border-radius: 10px;
+      }
+    }
+  }
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  font-family: "icomoon" !important;
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -164,25 +165,25 @@
   font-size: 11px;
   margin: 0;
   color: #7f7f7f;
-  font-family: @font-family;
+  font-family: @font-family-medium;
 }
 
 .modal-join .content .close {
-    float: right;
-    font-weight: bold;
-    color: #c7c7c7;
-    margin: -10px 10px 0 0;
+  float: right;
+  font-weight: bold;
+  color: #c7c7c7;
+  margin: -10px 10px 0 0;
 }
 
 .modal-join .content .close a {
-    cursor: pointer;
-    text-decoration: none;
-    position: absolute;
+  cursor: pointer;
+  text-decoration: none;
+  position: absolute;
 }
 
 .modal-join-participants {
   list-style-type: none;
-  padding:0;
+  padding: 0;
 }
 
 .modal-join-participant-name {
