@@ -3,7 +3,7 @@ import bowser from "bowser";
 import PropTypes from "prop-types";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import ReactTooltip from "react-tooltip";
-import Sdk from "../../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import Cookies from "js-cookie";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
@@ -39,7 +39,7 @@ class AttendeesSettings extends Component {
       this.props.controlsStore.audioEnabled !=
         nextProps.controlsStore.audioEnabled
     ) {
-      Sdk.instance.enumerateAudioDevices().then(devices => {
+      VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
         if (this.props.inputManager.currentAudioDevice != "") {
           let exist = false;
           devices.map((device, i) => {
@@ -64,7 +64,7 @@ class AttendeesSettings extends Component {
         });
       });
 
-      Sdk.instance.enumerateAudioDevices("output").then(devices => {
+      VoxeetSDK.mediaDevice.enumerateAudioDevices("output").then(devices => {
         if (this.props.inputManager.currentOutputDevice != "") {
           let exist = false;
           devices.map((device, i) => {
@@ -91,7 +91,7 @@ class AttendeesSettings extends Component {
         });
       });
 
-      Sdk.instance.enumerateVideoDevices().then(devices => {
+      VoxeetSDK.mediaDevice.enumerateVideoDevices().then(devices => {
         if (this.props.inputManager.currentVideoDevice != "") {
           let exist = false;
           devices.map((device, i) => {
@@ -119,7 +119,7 @@ class AttendeesSettings extends Component {
   }
 
   componentDidMount() {
-    Sdk.instance.enumerateAudioDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
       if (this.props.inputManager.currentAudioDevice != "") {
         let exist = false;
         devices.map((device, i) => {
@@ -144,7 +144,7 @@ class AttendeesSettings extends Component {
       });
     });
 
-    Sdk.instance.enumerateAudioDevices("output").then(devices => {
+    VoxeetSDK.mediaDevice.enumerateAudioDevices("output").then(devices => {
       if (this.props.inputManager.currentOutputDevice != "") {
         let exist = false;
         devices.map((device, i) => {
@@ -169,7 +169,7 @@ class AttendeesSettings extends Component {
       });
     });
 
-    Sdk.instance.enumerateVideoDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateVideoDevices().then(devices => {
       if (this.props.inputManager.currentVideoDevice != "") {
         let exist = false;
         devices.map((device, i) => {
@@ -208,7 +208,7 @@ class AttendeesSettings extends Component {
   }
 
   setOutputDevice(e) {
-    Sdk.instance.selectAudioOutput(e.target.value);
+    VoxeetSDK.mediaDevice.selectAudioOutput(e.target.value);
     var date = new Date();
     date.setDate(date.getDate() + 365);
     Cookies.set("output", e.target.value, { path: "/", expires: date });
@@ -217,12 +217,12 @@ class AttendeesSettings extends Component {
 
   setAudioDevice(e) {
     e.persist();
-    Sdk.instance.selectAudioInput(e.target.value).then(() => {
+    VoxeetSDK.mediaDevice.selectAudioInput(e.target.value).then(() => {
       var date = new Date();
       date.setDate(date.getDate() + 365);
       Cookies.set("input", e.target.value, { path: "/", expires: date });
       if (this.props.microphoneMuted) {
-        Sdk.instance.toggleMute(Sdk.instance.userId);
+        VoxeetSDK.conference.toggleMute(VoxeetSDK.session.participant);
       }
     });
     this.props.dispatch(InputManagerActions.inputAudioChange(e.target.value));
@@ -231,7 +231,7 @@ class AttendeesSettings extends Component {
   setVideoDevice(e) {
     const { videoEnabled } = this.props;
     if (videoEnabled) {
-      Sdk.instance.selectVideoInput(e.target.value);
+      VoxeetSDK.mediaDevice.selectVideoInput(e.target.value);
     }
     var date = new Date();
     date.setDate(date.getDate() + 365);

@@ -3,13 +3,12 @@ import { connect } from "@voxeet/react-redux-5.1.1";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import { strings } from "../languages/localizedStrings";
-import Sdk from "../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../actions/ParticipantActions";
 import Logo from "../../static/images/logo.svg";
-import StatusButton from "./statusButton/StatusButton";
 import ActionsButtons from "./actionsBar/ActionsButtons";
 
 import Modal from "./attendees/modal/Modal";
@@ -30,11 +29,11 @@ import { setPstnNumbers } from "../constants/PinCode";
     participantsStore: state.voxeet.participants
   };
 })
+
 class ConferenceRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isElectron: false,
       preConfig:
         !props.isListener &&
         !bowser.msie &&
@@ -84,6 +83,7 @@ class ConferenceRoom extends Component {
       videoRatio,
       liveRecordingEnabled,
       conferenceAlias,
+      pinCode,
       conferenceId,
       isDemo,
       closeSessionAtHangUp,
@@ -106,17 +106,13 @@ class ConferenceRoom extends Component {
       isAdmin,
       oauthToken,
       disableSounds,
+      simulcast,
       invitedUsers,
       refreshTokenCallback,
-      isElectron,
       isListener
     } = this.props;
-    if (sdk) {
-      Sdk.setSdk(sdk);
-    } else {
-      Sdk.create();
-    }
     let initialized = null;
+    var pinCodeTmp = pinCode;
     if (oauthToken != null) {
       initialized = this.props.dispatch(
         ConferenceActions.initializeWithToken(
@@ -137,6 +133,12 @@ class ConferenceRoom extends Component {
 
     if (pstnNumbers != null) {
       setPstnNumbers(pstnNumbers);
+    }
+
+    if (pinCodeTmp != null) {
+      if (pinCodeTmp.length != 8 || !/^\d+$/.test(pinCodeTmp)) {
+        pinCodeTmp = "";
+      }
     }
 
     if (handleOnLeave != null) {
@@ -208,11 +210,6 @@ class ConferenceRoom extends Component {
         this.props.dispatch(ControlsActions.disableSounds());
       }
 
-      if (isElectron) {
-        // Launch widget in Electron mode
-        this.props.dispatch(ControlsActions.electronModeActivated());
-      }
-
       if (kickOnHangUp) {
         // activate kick everybody on hangup
         this.props.dispatch(ControlsActions.isKickOnHangUpActived());
@@ -222,11 +219,13 @@ class ConferenceRoom extends Component {
         ControlsActions.closeSessionAtHangUp(closeSessionAtHangUp)
       );
 
+      ControlsActions.setSimulcast(simulcast);
+
       if (isDemo) {
         initialized.then(() =>
           this.props.dispatch(ConferenceActions.joinDemo())
         );
-      } else if (autoJoin && conferenceId != null) {
+      } /*else if (autoJoin && conferenceId != null) {
         const constraintsUpdated = {
           video: constraints.video,
           audio: constraints.audio,
@@ -241,15 +240,15 @@ class ConferenceRoom extends Component {
               constraintsUpdated,
               userInfo,
               videoRatio,
-              isElectron,
               isListener,
               preConfigPayload,
               autoRecording,
-              autoHls
+              autoHls,
+              pinCodeTmp
             )
           )
         );
-      } else if (autoJoin && conferenceReplayId == null) {
+      } */else if (autoJoin && conferenceReplayId == null) {
         // Autojoin when entering in fullscreen mode
         initialized.then(() => {
           this.props.dispatch(
@@ -264,21 +263,18 @@ class ConferenceRoom extends Component {
               videoCodec,
               userInfo,
               videoRatio,
-              isElectron,
               isListener,
               preConfigPayload,
               autoRecording,
-              autoHls
+              autoHls,
+              pinCodeTmp,
+              simulcast
             )
           );
         });
       }
       if (conferenceAlias != null) {
-        initialized.then(() =>
-          this.props.dispatch(
-            ConferenceActions.subscribeConference(conferenceAlias)
-          )
-        );
+        //initialized.then(() => this.props.dispatch(ConferenceActions.subscribeConference(conferenceAlias)))
       }
     }
   }
@@ -321,7 +317,6 @@ class ConferenceRoom extends Component {
       initialized,
       isReplaying,
       conferenceReplayId,
-      isElectron,
       isDemo,
       conferencePincode,
       hasLeft
@@ -329,12 +324,12 @@ class ConferenceRoom extends Component {
     const { errorMessage, isError } = this.props.errorStore;
     if (bowser.ios && bowser.chrome) {
       return (
-        <div className="electron-message-container">
-          <div className="electron-center-container">
-            <div className="electron-logo-container">
+        <div className="voxeet-loading-message-container">
+          <div className="voxeet-loading-center-container">
+            <div className="voxeet-loading-logo-container">
               <img src={logo != null ? logo : Logo} />
             </div>
-            <div className="electron-info-container">
+            <div className="voxeet-loading-info-container">
               {strings.browerNotSupported}
             </div>
           </div>
@@ -342,12 +337,12 @@ class ConferenceRoom extends Component {
       );
     } else if (initialized && !isJoined && isError) {
       return (
-        <div className="electron-message-container">
-          <div className="electron-center-container">
-            <div className="electron-logo-container">
+        <div className="voxeet-loading-message-container">
+          <div className="voxeet-loading-center-container">
+            <div className="voxeet-loading-logo-container">
               <img src={logo != null ? logo : Logo} />
             </div>
-            <div className="electron-info-container">
+            <div className="voxeet-loading-info-container">
               {errorMessage == "NotAllowedError: Permission denied" &&
                 strings.errorPermissionDeniedMicrophone}
               {bowser.msie && (
@@ -365,6 +360,23 @@ class ConferenceRoom extends Component {
               )}
             </div>
           </div>
+          <div className="voxeet-loading-info-container">
+            {errorMessage == "NotAllowedError: Permission denied" &&
+              strings.errorPermissionDenied}
+            {bowser.msie && (
+              <Fragment>
+                {strings.errorIE11}
+                <div>
+                  <a
+                    download
+                    href="https://s3.amazonaws.com/voxeet-cdn/ie11/WebRTC+ActiveX+Setup.exe"
+                  >
+                    Download
+                  </a>
+                </div>
+              </Fragment>
+            )}
+          </div>
         </div>
       );
     } else if (preConfig) {
@@ -377,8 +389,7 @@ class ConferenceRoom extends Component {
         />
       );
     } else if (
-      (isJoined || !isWidget || conferenceReplayId != null) &&
-      !isElectron
+      (isJoined || !isWidget || conferenceReplayId != null)
     ) {
       if (!preConfig && !isJoined && !hasLeft) {
         return this.renderLoading();
@@ -403,8 +414,6 @@ class ConferenceRoom extends Component {
           attendeesWaiting={attendeesWaiting}
         />
       );
-    } else if (isElectron) {
-      return this.renderLoading();
     }
     return null;
   }
@@ -415,7 +424,6 @@ ConferenceRoom.propTypes = {
   isListener: PropTypes.bool,
   isManualKickAllowed: PropTypes.bool,
   kickOnHangUp: PropTypes.bool,
-  isElectron: PropTypes.bool,
   consumerKey: PropTypes.string,
   consumerSecret: PropTypes.string,
   oauthToken: PropTypes.string,
@@ -429,6 +437,7 @@ ConferenceRoom.propTypes = {
   isWidget: PropTypes.bool,
   isAdmin: PropTypes.bool,
   ttl: PropTypes.number,
+  simulcast: PropTypes.bool,
   rtcpmode: PropTypes.string,
   mode: PropTypes.string,
   videoCodec: PropTypes.string,
@@ -444,6 +453,7 @@ ConferenceRoom.propTypes = {
   constraints: PropTypes.object,
   videoRatio: PropTypes.object,
   autoJoin: PropTypes.bool,
+  pinCode: PropTypes.string,
   actionsButtons: PropTypes.func,
   attendeesList: PropTypes.func,
   attendeesChat: PropTypes.func,
@@ -472,10 +482,11 @@ ConferenceRoom.defaultProps = {
   closeSessionAtHangUp: true,
   handleOnLeave: null,
   isDemo: false,
+  pinCode: "",
   isManualKickAllowed: false,
   liveRecordingEnabled: false,
   ttl: 0,
-  isElectron: false,
+  simulcast: false,
   rtcpmode: "worst",
   mode: "standard",
   videoCodec: "H264",

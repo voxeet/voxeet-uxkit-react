@@ -50,8 +50,7 @@ class SpeakerActive extends Component {
       kickParticipant,
       isAdminActived,
       userStream,
-      isScreenshare,
-      isElectron
+      isScreenshare
     } = this.props;
     const photoUrl = participant.avatarUrl || userPlaceholder;
     return (
@@ -62,7 +61,7 @@ class SpeakerActive extends Component {
         <div
           className={"video-frame " + (screenShareEnabled && "screen-share")}
         >
-          {screenShareEnabled && !isScreenshare && !isElectron && (
+          {screenShareEnabled && !isScreenshare && (
             <ToggleFullScreenScreenShare
               toggle={this.toggleScreenShareFullScreen}
             />
@@ -133,7 +132,6 @@ SpeakerActive.propTypes = {
   screenShareEnabled: PropTypes.bool,
   filePresentationEnabled: PropTypes.bool,
   videoPresentationEnabled: PropTypes.bool,
-  isElectron: PropTypes.bool,
   screenShareStream: PropTypes.object,
   userStream: PropTypes.object,
   kickParticipant: PropTypes.func.isRequired,

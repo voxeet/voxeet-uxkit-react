@@ -11,15 +11,15 @@ class LoadingScreen extends Component {
   render() {
     const { logo } = this.props;
     return (
-      <div className="electron-message-container">
-        <div className="electron-center-container">
-          <div className="electron-logo-container">
+      <div className="voxeet-loading-message-container">
+        <div className="voxeet-loading-center-container">
+          <div className="voxeet-loading-logo-container">
             <img src={logo != null ? logo : Logo} />
           </div>
           <div id="loader-container">
             <div className="loader"></div>
           </div>
-          <div className="electron-info-container">
+          <div className="voxeet-loading-info-container">
             {strings.electronloading}
             <span className="one">.</span>
             <span className="two">.</span>

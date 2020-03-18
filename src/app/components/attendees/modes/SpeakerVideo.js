@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Sdk from "../../../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 
 import userPlaceholder from "../../../../static/images/user-placeholder.png";
 
@@ -24,7 +24,7 @@ class SpeakerVideo extends Component {
     const { participant } = this.props;
     this.mounted = true;
     this._interval = setInterval(() => {
-      Sdk.instance.isUserSpeaking(participant.participant_id, isSpeaking => {
+      VoxeetSDK.conference.isSpeaking(participant.participant_id, isSpeaking => {
         if (participant.isMuted && this.state.isSpeaking && this.mounted) {
           this.setState({ isSpeaking: false });
         }

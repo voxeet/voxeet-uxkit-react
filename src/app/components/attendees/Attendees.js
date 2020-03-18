@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import PropTypes from "prop-types";
 import bowser from "bowser";
-import Sdk from "../../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
@@ -14,8 +14,7 @@ import {
   MODE_SPEAKER
 } from "../../constants/DisplayModes";
 import {
-  BROADCAST_KICK,
-  WEBINAR_LIVE
+  BROADCAST_KICK
 } from "../../constants/BroadcastMessageType";
 
 import Modal from "./modal/Modal";
@@ -33,7 +32,6 @@ import {
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
-import AttendeesLive from "./AttendeesLive";
 
 @connect(store => {
   return {
@@ -47,7 +45,6 @@ class Attendees extends Component {
     this.toggleMicrophone = this.toggleMicrophone.bind(this);
     this.kickParticipant = this.kickParticipant.bind(this);
     this.toggleVideo = this.toggleVideo.bind(this);
-    this.toggleWebinarState = this.toggleWebinarState.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.toggleErrorModal = this.toggleErrorModal.bind(this);
     this.forceActiveSpeaker = this.forceActiveSpeaker.bind(this);
@@ -59,13 +56,8 @@ class Attendees extends Component {
 
   componentDidMount() {}
 
-  toggleMicrophone(participant_id) {
-    this.props.dispatch(ConferenceActions.toggleMicrophone(participant_id));
-  }
-
-  toggleWebinarState() {
-    this.props.dispatch(ConferenceActions._webinarIsLive());
-    this.props.dispatch(ConferenceActions.sendBroadcastMessage(WEBINAR_LIVE));
+  toggleMicrophone(participant_id, isMuted) {
+    this.props.dispatch(ConferenceActions.toggleMicrophone(participant_id, isMuted));
   }
 
   toggleErrorModal() {
@@ -93,11 +85,11 @@ class Attendees extends Component {
 
   setUserPosition(participant_id, positionRelative, position, moved) {
     this.props.dispatch(ParticipantActions.user3DMoved(participant_id, moved));
-    Sdk.instance.setUserPosition(
+    /*VoxeetSDK.setUserPosition(
       participant_id,
       positionRelative.x,
       -positionRelative.y
-    );
+    );*/
   }
 
   toggleModal() {
@@ -144,19 +136,15 @@ class Attendees extends Component {
       toggleMode,
       toggleWidget,
       isWidgetOpened,
-      toggleLive,
-      toggleLiveHls,
       isWidgetFullScreenOn,
       videoEnabled,
       isAdminActived,
       displayModes,
-      isElectron,
       isScreenshare,
       isFilePresentation,
       attendeesListOpened,
       attendeesChatOpened,
       attendeesSettingsOpened,
-      attendeesLiveOpened,
       conferenceId,
       isVideoPresentation
     } = this.props;
@@ -193,7 +181,6 @@ class Attendees extends Component {
           (participantsConnected.length > 0 || isWebinar) && (
             <ToggleModeButton
               mode={mode}
-              isElectron={isElectron}
               toggleMode={toggleMode}
             />
           )}
@@ -217,13 +204,6 @@ class Attendees extends Component {
           />
         )}
 
-        <AttendeesLive
-          attendeesLiveOpened={this.props.attendeesLiveOpened}
-          toggleLive={toggleLive}
-          toggleLiveHls={toggleLiveHls}
-          conferenceId={conferenceId}
-        />
-
         {this.renderParticipantList()}
 
         {this.renderChat()}
@@ -232,8 +212,7 @@ class Attendees extends Component {
           className={`sidebar-container ${
             attendeesListOpened ||
             attendeesChatOpened ||
-            attendeesSettingsOpened ||
-            attendeesLiveOpened
+            attendeesSettingsOpened
               ? "attendees-list-opened"
               : "attendees-list-close"
           }`}
@@ -260,7 +239,6 @@ class Attendees extends Component {
             (forceFullscreen || isWidgetFullScreenOn) &&
             participantsConnected.length > 0 &&
             displayModes.indexOf("list") > -1 &&
-            isElectron &&
             !screenShareEnabled &&
             !filePresentationEnabled &&
             !videoPresentationEnabled && (
@@ -327,7 +305,6 @@ class Attendees extends Component {
                 kickParticipant={this.kickParticipant}
                 userIdStreamScreenShare={userIdStreamScreenShare}
                 forceActiveSpeaker={this.forceActiveSpeaker}
-                isElectron={isElectron}
                 disableForceActiveSpeaker={this.disableForceActiveSpeaker}
                 toggleMicrophone={this.toggleMicrophone}
                 isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
@@ -357,21 +334,17 @@ Attendees.propTypes = {
   mode: PropTypes.string.isRequired,
   conferenceId: PropTypes.string,
   toggleMode: PropTypes.func.isRequired,
-  toggleLive: PropTypes.func,
-  toggleLiveHls: PropTypes.func,
   isWidgetOpened: PropTypes.bool.isRequired,
   toggleWidget: PropTypes.func.isRequired,
   attendeesListOpened: PropTypes.bool.isRequired,
   attendeesChatOpened: PropTypes.bool.isRequired,
   attendeesSettingsOpened: PropTypes.bool.isRequired,
-  attendeesLiveOpened: PropTypes.bool.isRequired,
   forceFullscreen: PropTypes.bool,
   videoEnabled: PropTypes.bool,
   isWidgetFullScreenOn: PropTypes.bool,
   displayModal: PropTypes.bool,
   isAdminActived: PropTypes.bool,
   displayModes: PropTypes.array,
-  isElectron: PropTypes.bool,
   isScreenshare: PropTypes.bool,
   isVideoPresentation: PropTypes.bool,
   videoPresentationEnabled: PropTypes.bool,

@@ -24,7 +24,7 @@ class AttendeesParticipantMute extends Component {
           }
           onClick={e => {
             e.stopPropagation();
-            toggleMicrophone(participant.participant_id);
+            toggleMicrophone(participant.participant_id, participant.isMuted);
           }}
         >
           <img src={participant.isMuted ? IconMuteSoundOn : IconMuteSoundOff} />

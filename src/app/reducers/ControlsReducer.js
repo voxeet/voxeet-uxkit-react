@@ -11,7 +11,6 @@ const defaultState = {
   videoEnabled: false,
   audioEnabled: true,
   displayModal: false,
-  isElectron: false,
   audio3DEnabled: true,
   isScreenshare: false,
   isFilePresentation: false,
@@ -21,19 +20,17 @@ const defaultState = {
   isRecording: false,
   videoRatio: null,
   chromeExtensionId: null,
-  isExternalLive: false,
-  isHlsLive: false,
   isAdminActived: false,
   disableSounds: false,
   isKickOnHangUpActived: false,
   recordingLocked: false,
+  simulcast: false,
   modalOpened: true,
   displayActions: [
     "mute",
     "recording",
     "share",
     "video",
-    "live",
     "attendees",
     "chat",
     "pstn"
@@ -44,8 +41,7 @@ const defaultState = {
   modeSaveBeforePresentation: "tiles",
   displayAttendeesList: false,
   displayAttendeesSettings: false,
-  displayAttendeesChat: false,
-  displayAttendeesLive: false
+  displayAttendeesChat: false
 };
 
 const ControlsReducer = (state = defaultState, action) => {
@@ -61,6 +57,12 @@ const ControlsReducer = (state = defaultState, action) => {
         ...state,
         disableSounds: true
       };
+    }
+    case Types.SET_SIMULCAST: {
+      return {
+        ...state,
+        simulcast: action.payload.simulcast
+      }
     }
     case Types.FORCE_MODE:
       return {
@@ -154,32 +156,16 @@ const ControlsReducer = (state = defaultState, action) => {
         recordingLocked: true
       };
     }
-    case Types.TOGGLE_LIVE_EXTERNAL: {
-      const currentStatus = state.isExternalLive;
-      return {
-        ...state,
-        isExternalLive: !currentStatus
-      };
-    }
-    case Types.TOGGLE_LIVE_HLS: {
-      const currentStatus = state.isHlsLive;
-      return {
-        ...state,
-        isHlsLive: !currentStatus
-      };
-    }
     case Types.TOGGLE_MODE:
       let currentModeIndex = state.displayModes.findIndex(
         m => m === state.mode
       );
       if (
         currentModeIndex + 1 == state.displayModes.length ||
-        (!state.isElectron &&
-          state.displayModes[currentModeIndex + 1] == "list")
+          state.displayModes[currentModeIndex + 1] == "list"
       ) {
         currentModeIndex = 0;
         if (
-          !state.isElectron &&
           state.displayModes[currentModeIndex] == "list"
         ) {
           currentModeIndex++;
@@ -235,12 +221,6 @@ const ControlsReducer = (state = defaultState, action) => {
         isRecording: !currentStatus
       };
     }
-    case Types.ELECTRON_MODE_ACTIVATED: {
-      return {
-        ...state,
-        isElectron: true
-      };
-    }
     case Types.TOGGLE_AUDIO3D: {
       const currentStatus = state.audio3DEnabled;
       return {
@@ -265,7 +245,6 @@ const ControlsReducer = (state = defaultState, action) => {
         displayModal: false,
         constraints: null,
         recordingLocked: false,
-        isElectron: false,
         audio3DEnabled: true,
         isScreenshare: false,
         isRecording: false,
@@ -280,7 +259,6 @@ const ControlsReducer = (state = defaultState, action) => {
         ...state,
         displayAttendeesChat: !state.displayAttendeesChat,
         displayAttendeesList: false,
-        displayAttendeesLive: false,
         displayAttendeesSettings: false
       };
     }
@@ -289,7 +267,6 @@ const ControlsReducer = (state = defaultState, action) => {
         ...state,
         displayAttendeesList: !state.displayAttendeesList,
         displayAttendeesChat: false,
-        displayAttendeesLive: false,
         displayAttendeesSettings: false
       };
     }
@@ -298,17 +275,7 @@ const ControlsReducer = (state = defaultState, action) => {
         ...state,
         displayAttendeesSettings: !state.displayAttendeesSettings,
         displayAttendeesChat: false,
-        displayAttendeesLive: false,
         displayAttendeesList: false
-      };
-    }
-    case Types.TOGGLE_ATTENDEES_LIVE: {
-      return {
-        ...state,
-        displayAttendeesLive: !state.displayAttendeesLive,
-        displayAttendeesChat: false,
-        displayAttendeesList: false,
-        displayAttendeesSettings: false
       };
     }
     default:

@@ -559,12 +559,12 @@ class ConferencePreConfigContainer extends Component {
                         </form>
                       </div>
                     ) : (
-                      <div className="electron-message-container">
-                        <div className="electron-center-container">
-                          <div className="electron-logo-container">
+                      <div className="voxeet-loading-message-container">
+                        <div className="voxeet-loading-center-container">
+                          <div className="voxeet-loading-logo-container">
                             <img src={logo != null ? logo : Logo} />
                           </div>
-                          <div className="electron-info-container">{error}</div>
+                          <div className="voxeet-loading-info-container">{error}</div>
                         </div>
                       </div>
                     )}

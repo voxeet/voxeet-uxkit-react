@@ -8,9 +8,6 @@ import {
   VoxeetProvider,
   reducer as voxeetReducer
 } from "./VoxeetReactComponents";
-import StatusButton from "./components/statusButton/StatusButton";
-import ReplayButton from "./components/statusButton/ReplayButton";
-import StatusCard from "./components/statusCard/StatusCard";
 
 const reducers = combineReducers({
   voxeet: voxeetReducer

@@ -2,7 +2,7 @@ import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import { strings } from "../../languages/localizedStrings";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import Sdk from "../../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import userPlaceholder from "../../../static/images/user-placeholder.png";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
 
@@ -62,8 +62,9 @@ class AttendeesList extends Component {
   inviteUserSelected(externalId) {
     const tmpArray = [];
     tmpArray.push(externalId);
+    const test = {"externalIds": tmpArray}
     this.props.dispatch(ParticipantActions.userInvited(externalId));
-    Sdk.instance.invite(Sdk.instance.conference.conferenceId, tmpArray);
+    VoxeetSDK.notification.invite(VoxeetSDK.conference.current, test);
   }
 
   render() {

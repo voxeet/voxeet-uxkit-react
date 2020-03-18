@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
-import Sdk from "../../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import userPlaceholder from "../../../static/images/user-placeholder.png";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 
@@ -19,7 +19,7 @@ class AttendeesParticipantVuMeter extends Component {
     const el = this.node;
     const { participant } = this.props;
     this._interval = setInterval(() => {
-      Sdk.instance.isUserSpeaking(participant.participant_id, isSpeaking => {
+      VoxeetSDK.conference.isSpeaking(VoxeetSDK.conference.participants.get(participant.participant_id), isSpeaking => {
         if (participant.isMuted && this.state.isSpeaking) {
           this.setState({ isSpeaking: false });
         }

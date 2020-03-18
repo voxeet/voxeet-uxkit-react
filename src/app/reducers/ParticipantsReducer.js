@@ -1,4 +1,4 @@
-import Sdk from "../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Types } from "../actions/ParticipantActions";
 import { getOrganizedPosition, getRelativePosition } from "../libs/position";
 import AudioParticipantJoined from "../../static/sounds/voxeet_conference_join.mp3";
@@ -87,7 +87,7 @@ const ParticipantReducer = (state = defaultState, action) => {
       let currentUser = state.currentUser;
       currentUser = {
         name: action.payload.name,
-        participant_id: Sdk.instance.userId,
+        participant_id: VoxeetSDK.session.participant.id,
         avatarUrl: action.payload.avatarUrl,
         externalId: action.payload.externalId,
         isConnected: true,
@@ -151,7 +151,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     }
     case Types.PARTICIPANT_ADDED: {
       const userInfo = action.payload.userInfo;
-      if (Sdk.instance.userId != action.payload.user) {
+      if (VoxeetSDK.session.participant.id != action.payload.user) {
         let participants = state.participants;
         const index = participants.findIndex(
           p => p.participant_id === action.payload.userId
@@ -171,6 +171,10 @@ const ParticipantReducer = (state = defaultState, action) => {
             x: -1,
             y: -1
           });
+        } else {
+          participants[index].name = userInfo.name;
+          participants[index].avatarUrl = userInfo.avatarUrl;
+          participants[index].metadata = userInfo.metadata;
         }
         return {
           ...state,
@@ -179,110 +183,9 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       return state;
     }
-    case Types.PARTICIPANT_ADDED_UPDATED: {
-      const participantInfo = action.payload.participantInfo;
-      let participants = state.participants;
-      if (Sdk.instance.userId != action.payload.userId) {
-        let replayParticipantTmp = state.replayParticipantTmp;
-        const index = participants.findIndex(
-          p => p.participant_id === action.payload.userId
-        );
-        if (state.isReplaying) {
-          if (
-            participantInfo.status == "LEFT" ||
-            participantInfo.status != "RESERVED" ||
-            participantInfo.status == "CANCELED" ||
-            participantInfo.status == "ATTENDED" ||
-            participantInfo.status == "DECLINE"
-          ) {
-            const tmpParticipants = [];
-            replayParticipantTmp.map((el, i) => {
-              if (el.participant_id != action.payload.userId) {
-                tmpParticipants.push(el);
-              }
-            });
-            return {
-              ...state,
-              replayParticipantTmp: [...tmpParticipants]
-            };
-          }
-          let exist = false;
-          replayParticipantTmp.map((el, i) => {
-            if (el.participant_id == action.payload.userId) {
-              exist = true;
-            }
-          });
-          if (!exist) {
-            replayParticipantTmp.push({
-              participant_id: action.payload.userId,
-              name: participantInfo.name,
-              isAdmin: participantInfo.isAdmin,
-              avatarUrl: participantInfo.avatarUrl,
-              externalId: participantInfo.externalId,
-              isConnected: true,
-              status: STATUS_CONNECTING,
-              isMuted: false,
-              x: -1,
-              y: -1
-            });
-          }
-        } else {
-          if (
-            index === -1 &&
-            participantInfo.status != "LEFT" &&
-            participantInfo.status != "RESERVED" &&
-            participantInfo.status != "CANCELED" &&
-            participantInfo.status != "ATTENDED" &&
-            participantInfo.status != "DECLINE"
-          ) {
-            participants.push({
-              participant_id: action.payload.userId,
-              name: participantInfo.name,
-              isAdmin: participantInfo.isAdmin,
-              avatarUrl: participantInfo.avatarUrl,
-              externalId: participantInfo.externalId,
-              isConnected: true,
-              status: STATUS_CONNECTING,
-              isMuted: false,
-              x: -1,
-              y: -1
-            });
-          } else if (
-            participantInfo.status == "LEFT" ||
-            participantInfo.status == "ATTENDED" ||
-            participantInfo.status == "RESERVED" ||
-            participantInfo.status == "CANCELED" ||
-            participantInfo.status == "DECLINE"
-          ) {
-            const tmpParticipants = [];
-            participants.map((el, i) => {
-              if (i != index) {
-                tmpParticipants.push(el);
-              }
-            });
-            return {
-              ...state,
-              participants: [...tmpParticipants]
-            };
-          } else {
-            participants[index].status = participantInfo.status;
-            participants[index].name = participantInfo.name;
-            participants[index].avatarUrl = participantInfo.avatarUrl;
-            participants[index].externalId = participantInfo.externalId;
-          }
-          return {
-            ...state,
-            participants: [...participants]
-          };
-        }
-      }
-
-      return state;
-    }
-
     case Types.PARTICIPANT_JOINED: {
       const { userId } = action.payload;
-      if (Sdk.instance.userId === action.payload.userId) {
+      if (VoxeetSDK.session.participant.id === action.payload.userId) {
         if (!action.payload.disableSounds) {
           const audio = new Audio(AudioParticipantJoined);
           audio.play();
@@ -348,11 +251,11 @@ const ParticipantReducer = (state = defaultState, action) => {
             position.posX,
             position.posY
           );
-          Sdk.instance.setUserPosition(
+          /*VoxeetSDK.setUserPosition(
             participantsConnect[i].participant_id,
             relativePosition.x,
             relativePosition.y
-          );
+          );*/
           participantsConnect[i].x = position.posX;
           participantsConnect[i].y = position.posY;
         }
@@ -365,7 +268,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     case Types.PARTICIPANT_UPDATED:
       const { userId } = action.payload;
       const participants = state.participants;
-      if (Sdk.instance.userId === action.payload.userId) {
+      if (VoxeetSDK.session.participant.id === action.payload.userId) {
         let currentUser = state.currentUser;
         if (
           action.payload.stream &&
@@ -411,7 +314,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     case Types.PARTICIPANT_STATUS_UPDATED: {
       const userInfo = action.payload.userInfo;
       const status = action.payload.status;
-      if (Sdk.instance.userId != action.payload.userId) {
+      if (VoxeetSDK.session.participant.id != action.payload.userId) {
         let participants = state.participants;
         const index = participants.findIndex(
           p => p.participant_id === action.payload.userId
@@ -425,7 +328,14 @@ const ParticipantReducer = (state = defaultState, action) => {
             externalId: userInfo.externalId,
             metadata: userInfo.metadata,
             isAdmin: userInfo.metadata.admin === "true",
-            isConnected: true,
+            isConnected:
+              status == "Left" ||
+              status == "Left" ||
+              status == "Warning" ||
+              status == "Error" ||
+              status == "Reserved"
+                ? false
+                : true,
             status: status,
             stream: null,
             isMuted: false,
@@ -440,13 +350,14 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       return state;
     }
+
     case Types.PARTICIPANT_LEFT: {
       const participants = state.participants;
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
 
-      if (Sdk.instance.userId === action.payload.userId)
+      if (VoxeetSDK.session.participant.id === action.payload.userId)
         return { ...state, participants: [] };
 
       if (index === -1) return state;
@@ -456,14 +367,14 @@ const ParticipantReducer = (state = defaultState, action) => {
       participants[index].x = -1;
       participants[index].y = -1;
 
-      const size = participants.filter(
+      /*const size = participants.filter(
         participant => participant.isConnected === true
       ).length;
       const participantsConnect = participants.filter(
         participant => participant.isConnected === true
-      );
+      );*/
 
-      for (var i = 0; i < participantsConnect.length; i++) {
+      /*for (var i = 0; i < participantsConnect.length; i++) {
         if (!participantsConnect[i].isMoved) {
           const height = window.innerHeight - 85;
           const width = window.innerWidth;
@@ -480,7 +391,7 @@ const ParticipantReducer = (state = defaultState, action) => {
             position.posX,
             position.posY
           );
-          Sdk.instance.setUserPosition(
+          VoxeetSDK.setUserPosition(
             participantsConnect[i].participant_id,
             relativePosition.x,
             relativePosition.y
@@ -488,7 +399,7 @@ const ParticipantReducer = (state = defaultState, action) => {
           participantsConnect[i].x = position.posX;
           participantsConnect[i].y = position.posY;
         }
-      }
+      }*/
 
       return {
         ...state,

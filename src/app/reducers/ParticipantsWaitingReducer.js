@@ -1,5 +1,5 @@
 import { Types } from "../actions/ParticipantWaitingActions";
-import Sdk from "../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import {
   STATUS_CONNECTING,
   STATUS_LEFT,
@@ -15,7 +15,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
   switch (action.type) {
     case Types.PARTICIPANT_WAITING_ADDED: {
       const userInfo = action.payload.userInfo;
-      if (Sdk.instance.userId != action.payload.userId) {
+      if (VoxeetSDK.session.participant.id != action.payload.userId) {
         let participants = state.participants;
         const index = participants.findIndex(
           p => p.participant_id === action.payload.userId
@@ -23,9 +23,9 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
         if (index === -1) {
           participants.push({
             participant_id: action.payload.userId,
-            name: userInfo.name,
-            avatarUrl: userInfo.avatarUrl,
-            externalId: userInfo.externalId,
+            name: userInfo.info.name,
+            avatarUrl: userInfo.info.avatarUrl,
+            externalId: userInfo.info.externalId,
             stream: null,
             metadata: userInfo.metadata,
             isAdmin: userInfo.metadata.admin === "true",
@@ -49,7 +49,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
         p => p.participant_id === action.payload.userId
       );
 
-      if (Sdk.instance.userId === action.payload.userId) return { ...state };
+      if (VoxeetSDK.session.participant.id === action.payload.userId) return { ...state };
 
       if (index === -1) return state;
       participants[index].status = action.payload.status;
@@ -72,7 +72,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
         p => p.participant_id === action.payload.userId
       );
 
-      if (Sdk.instance.userId === action.payload.userId) return { ...state };
+      if (VoxeetSDK.session.participant.id === action.payload.userId) return { ...state };
 
       if (index === -1) return state;
       if (action.payload.stream != null)
@@ -88,7 +88,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
         p => p.participant_id === action.payload.userId
       );
 
-      if (Sdk.instance.userId === action.payload.userId) return { ...state };
+      if (VoxeetSDK.session.participant.id === action.payload.userId) return { ...state };
 
       if (index === -1) return state;
       if (action.payload.stream != null)
@@ -104,7 +104,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
         p => p.participant_id === action.payload.userId
       );
 
-      if (Sdk.instance.userId === action.payload.userId)
+      if (VoxeetSDK.session.participant.id === action.payload.userId)
         return { ...state, participants: [] };
 
       if (index === -1) return state;

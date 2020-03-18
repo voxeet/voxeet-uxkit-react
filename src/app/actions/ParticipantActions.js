@@ -182,16 +182,6 @@ export class Actions {
     };
   }
 
-  static onParticipantAddedOrUpdated(userId, participantInfo) {
-    return {
-      type: Types.PARTICIPANT_ADDED_UPDATED,
-      payload: {
-        userId,
-        participantInfo
-      }
-    };
-  }
-
   static onParticipantLeft(userId) {
     return {
       type: Types.PARTICIPANT_LEFT,

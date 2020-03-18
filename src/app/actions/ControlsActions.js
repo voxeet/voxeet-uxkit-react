@@ -10,9 +10,6 @@ export const Types = {
   SHARE_ACTIONS_ALLOWED: "SHARE_ACTIONS_ALLOWED",
   TOGGLE_MODAL: "TOGGLE_MODAL",
   FORCE_MODE: "FORCE_MODE",
-  TOGGLE_LIVE_EXTERNAL: "TOGGLE_LIVE_EXTERNAL",
-  TOGGLE_LIVE_HLS: "TOGGLE_LIVE_HLS",
-  ELECTRON_MODE_ACTIVATED: "ELECTRON_MODE_ACTIVATED",
   TOGGLE_SCREEN_SHARE_MODE: "TOGGLE_SCREEN_SHARE_MODE",
   TOGGLE_FILE_PRESENTATION_MODE: "TOGGLE_FILE_PRESENTATION_MODE",
   TOGGLE_VIDEO_PRESENTATION_MODE: "TOGGLE_VIDEO_PRESENTATION_MODE",
@@ -28,11 +25,11 @@ export const Types = {
   TOGGLE_ATTENDEES_LIST: "TOGGLE_ATTENDEES_LIST",
   TOGGLE_ATTENDEES_CHAT: "TOGGLE_ATTENDEES_CHAT",
   TOGGLE_ATTENDEES_SETTINGS: "TOGGLE_ATTENDEES_SETTINGS",
-  TOGGLE_ATTENDEES_LIVE: "TOGGLE_ATTENDEES_LIVE",
   UNLOCK_RECORDING: "UNLOCK_RECORDING",
   DISABLE_SOUNDS: "DISABLE_SOUNDS",
   LOCK_RECORDING: "LOCK_RECORDING",
-  CLOSE_SESSION_HANG_UP: "CLOSE_SESSION_HANG_UP"
+  CLOSE_SESSION_HANG_UP: "CLOSE_SESSION_HANG_UP",
+  SET_SIMULCAST: "SET_SIMULCAST"
 };
 
 export class Actions {
@@ -40,6 +37,15 @@ export class Actions {
     return {
       type: Types.TOGGLE_WIDGET
     };
+  }
+
+  static setSimulcast(simulcast) {
+    return {
+      type: Types.SET_SIMULCAST,
+      payload: {
+        simulcast: simulcast
+      }
+    }
   }
 
   static toggleFullScreen() {
@@ -99,18 +105,6 @@ export class Actions {
     };
   }
 
-  static toggleLiveExternal() {
-    return {
-      type: Types.TOGGLE_LIVE_EXTERNAL
-    };
-  }
-
-  static toggleLiveHls() {
-    return {
-      type: Types.TOGGLE_LIVE_HLS
-    };
-  }
-
   static toggleScreenShareMode(isScreenshare) {
     return {
       type: Types.TOGGLE_SCREEN_SHARE_MODE,
@@ -159,12 +153,6 @@ export class Actions {
   static isKickOnHangUpActived() {
     return {
       type: Types.KICK_ON_HANG_UP
-    };
-  }
-
-  static electronModeActivated() {
-    return {
-      type: Types.ELECTRON_MODE_ACTIVATED
     };
   }
 
@@ -264,12 +252,6 @@ export class Actions {
   static toggleAttendeesSettings() {
     return {
       type: Types.TOGGLE_ATTENDEES_SETTINGS
-    };
-  }
-
-  static toggleAttendeesLive() {
-    return {
-      type: Types.TOGGLE_ATTENDEES_LIVE
     };
   }
 

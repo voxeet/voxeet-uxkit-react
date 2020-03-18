@@ -24,8 +24,7 @@ class ScreenshareMode extends Component {
       userIdStreamScreenShare,
       currentUser,
       isWebinar,
-      isScreenshare,
-      isElectron
+      isScreenshare
     } = this.props;
     return !isScreenshare ? (
       <SpeakerActive
@@ -34,7 +33,6 @@ class ScreenshareMode extends Component {
         isWidgetFullScreenOn={isWidgetFullScreenOn}
         screenShareEnabled={screenShareEnabled}
         screenShareStream={screenShareStream}
-        isElectron={isElectron}
         isScreenshare={isScreenshare}
         kickParticipant={kickParticipant}
         isAdmin={isAdmin}
@@ -51,7 +49,6 @@ class ScreenshareMode extends Component {
           toggleMicrophone={toggleMicrophone}
           isWidgetFullScreenOn={isWidgetFullScreenOn}
           screenShareEnabled={screenShareEnabled}
-          isElectron={isElectron}
           screenShareStream={screenShareStream}
           kickParticipant={kickParticipant}
           isAdmin={isAdmin}
@@ -68,7 +65,6 @@ ScreenshareMode.propTypes = {
   participant: PropTypes.object.isRequired,
   isScreenshare: PropTypes.bool,
   toggleMicrophone: PropTypes.func.isRequired,
-  isElectron: PropTypes.bool.isRequired,
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
   screenShareEnabled: PropTypes.bool.isRequired,
   filePresentationEnabled: PropTypes.bool.isRequired,

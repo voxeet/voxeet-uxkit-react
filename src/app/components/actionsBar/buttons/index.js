@@ -6,9 +6,6 @@ export { default as TogglePSTN } from "./TogglePSTN";
 export { default as HangUpButtonBottomBar } from "./HangUpButtonBottomBar";
 export { default as ToggleRecordingButton } from "./ToggleRecordingButton";
 export { default as Toggle3DAudioButton } from "./Toggle3DAudioButton";
-export {
-  default as ToggleExternalLiveButton
-} from "./ToggleExternalLiveButton";
 export { default as ToggleScreenShareButton } from "./ToggleScreenShareButton";
 export { default as ToggleSettingsButton } from "./ToggleSettingsButton";
 export { default as ToggleSidebarButton } from "./ToggleSidebarButton";

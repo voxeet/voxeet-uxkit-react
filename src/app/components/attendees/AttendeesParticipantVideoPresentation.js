@@ -5,7 +5,7 @@ import { strings } from "../../languages/localizedStrings";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import { Actions as VideoPresentationActions } from "../../actions/VideoPresentationActions";
 import ReactPlayer from "react-player";
-import Sdk from "../../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import bowser from "bowser";
 
 @connect(store => {
@@ -35,13 +35,13 @@ class AttendeesParticipantVideoPresentation extends Component {
   onSeek(seconds) {
     const { isVideoPresentation } = this.props;
     if (isVideoPresentation)
-      Sdk.instance.videoPresentation.seek(seconds * 1000);
+      VoxeetSDK.videoPresentation.seek(seconds * 1000);
   }
 
   onPause() {
     const { isVideoPresentation } = this.props;
     if (isVideoPresentation)
-      Sdk.instance.videoPresentation.pause(
+      VoxeetSDK.videoPresentation.pause(
         this.videoPresentation.getCurrentTime() * 1000
       );
   }
@@ -50,7 +50,7 @@ class AttendeesParticipantVideoPresentation extends Component {
     const { isVideoPresentation } = this.props;
     this.setState | { safariAutoplay: false };
     if (isVideoPresentation)
-      Sdk.instance.videoPresentation.play(
+      VoxeetSDK.videoPresentation.play(
         this.videoPresentation.getCurrentTime() * 1000
       );
   }

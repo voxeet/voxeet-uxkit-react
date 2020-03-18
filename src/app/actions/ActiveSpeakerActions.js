@@ -1,4 +1,4 @@
-import Sdk from "../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 
 export const Types = {
   START_ACTIVE_SPEAKER: "START_ACTIVE_SPEAKER",
@@ -24,7 +24,7 @@ export class Actions {
           if (!activeSpeaker.forceActiveUserEnabled) {
             for (let participant of participants.participants) {
               if (participant.participant_id)
-                Sdk.instance.isUserSpeaking(
+                VoxeetSDK.conference.isSpeaking(
                   participant.participant_id,
                   status => {
                     participant.isSpeaking = status;

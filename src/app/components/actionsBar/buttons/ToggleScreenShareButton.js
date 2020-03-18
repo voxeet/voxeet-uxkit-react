@@ -37,8 +37,8 @@ class ToggleScreenShareButton extends Component {
     );
   }
 
-  toggleScreenShare(type) {
-    this.props.toggle(type);
+  toggleScreenShare() {
+    this.props.toggle("screenshare");
     this.setState({
       opened: !this.state.opened,
       openedVideoPresentation: false
@@ -104,7 +104,6 @@ class ToggleScreenShareButton extends Component {
       toggleVideoPresentation,
       tooltipPlace,
       isBottomBar,
-      isElectron,
       filePresentationEnabled,
       currentUserFilePresentation,
       currentUserVideoPresentation,
@@ -212,35 +211,20 @@ class ToggleScreenShareButton extends Component {
             ></a>
             <span className="title">{strings.screenshareOption}</span>
             {shareActions.indexOf("screenshare") > -1 &&
-              !browser.safari &&
               !browser.msie && (
                 <div>
-                  {browser.firefox ? (
-                    <Fragment>
-                      <a onClick={() => this.toggleScreenShare(["screen"])}>
-                        <img src={EntireScreenShareOff} />
-                        {strings.screenshareEntireScreen}
-                      </a>
-                      <a onClick={() => this.toggleScreenShare(["window"])}>
-                        <img src={WindowScreenShareOff} />
-                        {strings.screenshareAWindow}
-                      </a>
-                    </Fragment>
-                  ) : (
-                    <Fragment>
-                      <a
-                        onClick={() =>
-                          this.toggleScreenShare(["screen", "window"])
-                        }
-                      >
-                        <img src={EntireScreenShareOff} />
-                        {strings.screenshare}
-                      </a>
-                    </Fragment>
-                  )}
+                  <Fragment>
+                    <a
+                      onClick={() =>
+                        this.toggleScreenShare()
+                      }
+                    >
+                      <img src={EntireScreenShareOff} />
+                      {strings.screenshare}
+                    </a>
+                  </Fragment>
                 </div>
               )}
-
             {shareActions.indexOf("filepresentation") > -1 && (
               <Fragment>
                 <a onClick={this.handleClickFilePresentation}>
@@ -295,7 +279,7 @@ ToggleScreenShareButton.propTypes = {
   convertFilePresentation: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired,
   toggleVideoPresentation: PropTypes.func.isRequired,
-  isElectron: PropTypes.bool.isRequired,
+
   tooltipPlace: PropTypes.string.isRequired,
   isBottomBar: PropTypes.bool.isRequired
 };

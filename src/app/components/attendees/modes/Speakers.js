@@ -52,7 +52,6 @@ class Speakers extends Component {
       currentUser,
       isWebinar,
       isScreenshare,
-      isElectron,
       videoPresentationEnabled,
       isVideoPresentation
     } = this.props;
@@ -78,7 +77,6 @@ class Speakers extends Component {
               isAdmin={isAdmin}
               isAdminActived={isAdminActived}
               kickParticipant={kickParticipant}
-              isElectron={isElectron}
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
               screenShareEnabled={screenShareEnabled}
@@ -95,7 +93,6 @@ class Speakers extends Component {
             isAdmin={isAdmin}
             isAdminActived={isAdminActived}
             kickParticipant={kickParticipant}
-            isElectron={isElectron}
             toggleMicrophone={toggleMicrophone}
             isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
             screenShareEnabled={screenShareEnabled}
@@ -113,7 +110,6 @@ class Speakers extends Component {
             isAdmin={isAdmin}
             isAdminActived={isAdminActived}
             kickParticipant={kickParticipant}
-            isElectron={isElectron}
             toggleMicrophone={toggleMicrophone}
             isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
             screenShareEnabled={screenShareEnabled}
@@ -180,7 +176,6 @@ Speakers.propTypes = {
   isFilePresentation: PropTypes.bool,
   isVideoPresentation: PropTypes.bool,
   toggleMicrophone: PropTypes.func.isRequired,
-  isElectron: PropTypes.bool.isRequired,
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
   screenShareEnabled: PropTypes.bool.isRequired,
   filePresentationEnabled: PropTypes.bool.isRequired,

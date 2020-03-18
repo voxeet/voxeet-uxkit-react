@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
-import Sdk from "../../../../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 
 class ModalError extends Component {
   constructor(props) {

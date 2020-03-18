@@ -1,4 +1,4 @@
-import Sdk from "../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import bowser from "bowser";
 
 export const Types = {

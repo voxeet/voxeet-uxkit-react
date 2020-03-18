@@ -27,8 +27,7 @@ class VideoPresentationMode extends Component {
       userIdStreamScreenShare,
       currentUser,
       isWebinar,
-      isScreenshare,
-      isElectron
+      isScreenshare
     } = this.props;
     return (
       <SpeakerActive
@@ -38,7 +37,6 @@ class VideoPresentationMode extends Component {
         isFilePresentation={isFilePresentation}
         screenShareEnabled={screenShareEnabled}
         screenShareStream={screenShareStream}
-        isElectron={isElectron}
         isVideoPresentation={isVideoPresentation}
         videoPresentationEnabled={videoPresentationEnabled}
         kickParticipant={kickParticipant}
@@ -57,7 +55,6 @@ VideoPresentationMode.propTypes = {
   videoPresentationEnabled: PropTypes.bool,
   isVideoPresentation: PropTypes.bool,
   toggleMicrophone: PropTypes.func.isRequired,
-  isElectron: PropTypes.bool.isRequired,
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
   screenShareEnabled: PropTypes.bool.isRequired,
   screenShareStream: PropTypes.object,

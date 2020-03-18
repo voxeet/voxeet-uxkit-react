@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="21px" height="18px" viewBox="0 0 21 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
     <title>icon-video-off</title>
     <desc>Created with Sketch.</desc>
-    <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Conference-Share-Screen" transform="translate(-536.000000, -871.000000)">
             <g id="share-popup" transform="translate(496.000000, 617.000000)">
                 <g id="btn-share-video" transform="translate(30.000000, 244.000000)">
                     <g id="icon-video-off" transform="translate(10.000000, 10.000000)">
-                        <rect id="icon_screen" stroke="#000A38" stroke-width="2" x="1" y="1" width="19" height="16" rx="2.07407407"></rect>
+                        <path d="M1,2.06482887 L1,15.9351711 C1,16.5194576 1.48111727,17 2.07103282,17 L18.9289672,17 C19.519872,17 20,16.5216624 20,15.9351711 L20,2.06482887 C20,1.48054244 19.5188827,1 18.9289672,1 L2.07103282,1 C1.48012803,1 1,1.47833764 1,2.06482887 Z" id="icon_screen" stroke="#000A38" stroke-width="2"></path>
                         <polygon id="Triangle" fill="#000A38" fill-rule="nonzero" transform="translate(11.000000, 9.000000) rotate(90.000000) translate(-11.000000, -9.000000) " points="11 5 15 13 7 13"></polygon>
                     </g>
                 </g>

@@ -1,4 +1,4 @@
-import Sdk from "../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import bowser from "bowser";
 import Cookies from "js-cookie";
 import { Actions as InputManagerActions } from "./InputManagerActions";
@@ -33,27 +33,23 @@ export const Types = {
   CONFERENCE_REPLAYING: "CONFERENCE_REPLAYING",
   CONFERENCE_JOINED: "CONFERENCE_JOINED",
   CONFERENCE_DEMO: "CONFERENCE_DEMO",
-  CONFERENCE_ELECTRON: "CONFERENCE_ELECTRON",
   INCREMENT_TIME: "INCREMENT_TIME",
   CONFERENCE_LEAVE: "CONFERENCE_LEAVE",
-  REPLAY_ENDED: "REPLAY_ENDED",
-  CONFERENCE_STATUS_UPDATED: "CONFERENCE_STATUS_UPDATED"
+  REPLAY_ENDED: "REPLAY_ENDED"
 };
 
 export class Actions {
-  static initialize(consumerKey, consumerSecret, userInfo) {
+  static initialize(consumerKey, consumerSecret) {
     return dispatch => {
       return this._initializeListeners(dispatch)
-        .then(
-          () =>
-            Sdk.instance.userId ||
-            Sdk.instance
-              .initialize(consumerKey, consumerSecret, userInfo)
-              .catch(err => {
-                this._throwErrorModal(err);
-              })
-        )
-        .then(userId => dispatch(this._sdkInitializedSuccessful(userId)))
+        .then(() => {
+          VoxeetSDK.initialize(consumerKey, consumerSecret).catch(err => {
+            this._throwErrorModal(err);
+          });
+        })
+        .then(userId => {
+          dispatch(this._sdkInitializedSuccessful(userId));
+        })
         .catch(err => {
           dispatch(ErrorActions.onError(err));
         });
@@ -63,16 +59,12 @@ export class Actions {
   static initializeWithToken(token, refreshTokenCallback, userInfo) {
     return dispatch => {
       return this._initializeListeners(dispatch)
-        .then(
-          () =>
-            Sdk.instance.userId ||
-            Sdk.instance
-              .initializeToken(token, userInfo, () => {
-                return refreshTokenCallback();
-              })
-              .catch(err => {
-                this._throwErrorModal(err);
-              })
+        .then(() =>
+          VoxeetSDK.initializeToken(token, userInfo, () => {
+            return refreshTokenCallback();
+          }).catch(err => {
+            this._throwErrorModal(err);
+          })
         )
         .then(userId => dispatch(this._sdkInitializedSuccessful(userId)))
         .catch(err => {
@@ -90,8 +82,7 @@ export class Actions {
 
   static subscribeConference(conferenceAlias) {
     return dispatch => {
-      return Sdk.instance
-        .subscribeConferenceStatus(conferenceAlias)
+      return VoxeetSDK.subscribeConferenceStatus(conferenceAlias)
         .then(res => {
           this._conferenceConnecting();
         })
@@ -101,25 +92,9 @@ export class Actions {
     };
   }
 
-  static startLiveHls() {
-    return (dispatch, getState) => {
-      return Sdk.instance.liveStreaming.start({ hls: true }).catch(err => {
-        this._throwErrorModal(err);
-      });
-    };
-  }
-
-  static stopLiveHls() {
-    return (dispatch, getState) => {
-      return Sdk.instance.liveStreaming.stop({ hls: true }).catch(err => {
-        this._throwErrorModal(err);
-      });
-    };
-  }
-
   static startFilePresentation(file) {
     return dispatch => {
-      return Sdk.instance.startFilePresentation(file).catch(err => {
+      return VoxeetSDK.filePresentation.start(file).catch(err => {
         this._throwErrorModal(err);
       });
     };
@@ -130,8 +105,8 @@ export class Actions {
       const {
         voxeet: { filePresentation }
       } = getState();
-      return Sdk.instance
-        .stopFilePresentation(filePresentation.filePresentationId)
+      return VoxeetSDK.filePresentation
+        .stop(filePresentation.filePresentationId)
         .catch(err => {
           this._throwErrorModal(err);
         });
@@ -140,42 +115,18 @@ export class Actions {
 
   static updateFilePresentation(filePresentationId, position) {
     return dispatch => {
-      return Sdk.instance
-        .updateFilePresentation(filePresentationId, position)
-        .catch(err => {
-          this._throwErrorModal(err);
-        });
+      return VoxeetSDK.filePresentation.update(position).catch(err => {
+        this._throwErrorModal(err);
+      });
     };
   }
 
   static convertFile(file) {
     return dispatch => {
       dispatch(FilePresentationActions.fileConvertStart());
-      return Sdk.instance.convertFile(file).catch(err => {
+      return VoxeetSDK.filePresentation.convert(file).catch(err => {
         dispatch(FilePresentationActions.fileConvertStop());
       });
-    };
-  }
-
-  static joinExternalLive(url) {
-    return (dispatch, getState) => {
-      return Sdk.instance.liveStreaming
-        .start({ uri: url })
-        .then(res => {})
-        .catch(err => {
-          this._throwErrorModal(err);
-        });
-    };
-  }
-
-  static stopExternalLive(url) {
-    return (dispatch, getState) => {
-      return Sdk.instance.liveStreaming
-        .stop()
-        .then(res => {})
-        .catch(err => {
-          this._throwErrorModal(err);
-        });
     };
   }
 
@@ -186,8 +137,8 @@ export class Actions {
       const {
         voxeet: { participants }
       } = getState();
-      return Sdk.instance.createDemoConference().then(function(res) {
-        if (Sdk.instance.extensions.hasElectron()) {
+      return VoxeetSDK.createDemoConference().then(function(res) {
+        if (VoxeetSDK.extensions.hasElectron()) {
           dispatch(ConferenceActions.hasElectron());
         } else {
           dispatch(
@@ -218,11 +169,12 @@ export class Actions {
     videoCodec,
     userInfoRaw,
     videoRatio,
-    isElectron,
     isListener,
     preConfigPayload,
     autoRecording,
-    autoHls
+    autoHls,
+    pinCode,
+    simulcast
   ) {
     return (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
@@ -245,57 +197,57 @@ export class Actions {
       };
 
       if (isListener || (participants.isWebinar && !isAdmin)) {
-        return Sdk.instance
-          .createConference({
-            alias: conferenceAlias,
-            params: {
-              liveRecording: liveRecordingEnabled,
-              ttl: ttl,
-              stats: "true",
-              rtcpMode: rtcpmode,
-              mode: mode,
-              videoCodec: videoCodec
-            }
-          })
-          .then(data => {
-            return Sdk.instance
-              .joinConference(data.conferenceId, {
-                constraints: { audio: false, video: false },
-                user: { userInfo, type: "listener" }
-              })
-              .then(function(res) {
-                if (
-                  navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-                  navigator.userAgent.match(/AppleWebKit/)
-                ) {
-                  navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                    video: false
-                  });
-                }
-                dispatch(
-                  ParticipantActions.saveCurrentUser(
-                    userInfo.name,
-                    userInfo.avatarUrl,
-                    userInfo.externalId,
-                    true
-                  )
-                );
-                dispatch(
-                  ConferenceActions._conferenceJoined(
-                    res.conferenceId,
-                    res.conferencePincode
-                  )
-                );
-                dispatch(ControlsActions.toggleWidget());
-                dispatch(ParticipantActions.triggerHandleOnConnect());
-              });
-          });
+        return VoxeetSDK.session.open(userInfo).then(() => {
+          return VoxeetSDK.conference
+            .create({
+              alias: conferenceAlias,
+              params: {
+                liveRecording: liveRecordingEnabled,
+                ttl: ttl,
+                stats: "true",
+                rtcpMode: rtcpmode,
+                mode: mode,
+                videoCodec: videoCodec,
+                pincode: pinCode
+              }
+            })
+            .then(conference => {
+              return VoxeetSDK.conference
+                .join(conference, {
+                  constraints: { audio: false, video: false },
+                  simulcast: simulcast
+                })
+                .then(function(res) {
+                  if (
+                    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+                    navigator.userAgent.match(/AppleWebKit/)
+                  ) {
+                    navigator.mediaDevices.getUserMedia({
+                      audio: true,
+                      video: false
+                    });
+                  }
+                  dispatch(
+                    ParticipantActions.saveCurrentUser(
+                      userInfo.name,
+                      userInfo.avatarUrl,
+                      userInfo.externalId,
+                      true
+                    )
+                  );
+                  dispatch(
+                    ConferenceActions._conferenceJoined(res.id, pinCode)
+                  );
+                  dispatch(ControlsActions.toggleWidget());
+                  dispatch(ParticipantActions.triggerHandleOnConnect());
+                });
+            });
+        });
       }
 
       if (preConfigPayload == null && !bowser.msie && !participants.isWebinar) {
         let videoCookieExist = false;
-        Sdk.instance.enumerateVideoDevices().then(devices => {
+        VoxeetSDK.mediaDevice.enumerateVideoDevices().then(devices => {
           devices.forEach(source => {
             if (Cookies.get("camera") == source.deviceId)
               videoCookieExist = true;
@@ -348,7 +300,7 @@ export class Actions {
         });
         if (constraints.audio) {
           let inputCookieExist = false;
-          Sdk.instance.enumerateAudioDevices().then(devices => {
+          VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
             devices.forEach(source => {
               if (Cookies.get("input") == source.deviceId)
                 inputCookieExist = true;
@@ -370,6 +322,129 @@ export class Actions {
                 );
               }
             }
+          });
+
+          return VoxeetSDK.session.open(userInfo).then(() => {
+            return VoxeetSDK.conference
+              .create({
+                alias: conferenceAlias,
+                params: {
+                  liveRecording: liveRecordingEnabled,
+                  ttl: ttl,
+                  stats: "true",
+                  rtcpMode: rtcpmode,
+                  mode: mode,
+                  videoCodec: videoCodec,
+                  pincode: pinCode
+                }
+              })
+              .then(conference => {
+                return VoxeetSDK.conference
+                  .join(conference, {
+                    constraints,
+                    simulcast: simulcast,
+                    audio3D: false
+                  })
+                  .then(res => {
+                    if (conference.isNew && autoHls) {
+                      dispatch(ConferenceActions.startLiveHls());
+                      dispatch(ControlsActions.toggleLiveHls());
+                    }
+
+                    dispatch(
+                      ParticipantActions.saveCurrentUser(
+                        userInfo.name,
+                        userInfo.avatarUrl,
+                        userInfo.externalId
+                      )
+                    );
+                    dispatch(
+                      ConferenceActions._conferenceJoined(res.id, pinCode)
+                    );
+                    dispatch(ControlsActions.toggleWidget());
+                    dispatch(ControlsActions.saveConstraints(constraints));
+                    dispatch(ParticipantActions.triggerHandleOnConnect());
+                    if (res.recordingStatus == "RECORDING") {
+                      dispatch(ControlsActions.lockRecording());
+                      dispatch(
+                        OnBoardingMessageActions.onBoardingDisplay(
+                          strings.recordConferenceStart,
+                          1000
+                        )
+                      );
+                    } else if (autoRecording) {
+                      dispatch(
+                        ConferenceActions.toggleRecording(res.id, false)
+                      );
+                      dispatch(
+                        ConferenceActions.sendBroadcastMessage(
+                          RECORDING_STATE,
+                          null,
+                          {
+                            name: userInfo.name,
+                            userId: userInfo.participant_id,
+                            recordingRunning: true
+                          }
+                        )
+                      );
+                    }
+                    if (constraints.video) {
+                      dispatch(ControlsActions.toggleVideo(true));
+                    }
+                    if (!constraints.audio)
+                      dispatch(ControlsActions.toggleAudio(false));
+                    if (bowser.chrome) {
+                      if (preConfigPayload != null) {
+                        if (preConfigPayload.outputDeviceSelected)
+                          VoxeetSDK.mediaDevice
+                            .selectAudioOutput(
+                              preConfigPayload.outputDeviceSelected
+                            )
+                            .catch(err => {
+                              console.log(err);
+                            });
+                      } else {
+                        let outputCookieExist = false;
+                        VoxeetSDK.mediaDevice
+                          .enumerateAudioDevices("output")
+                          .then(devices => {
+                            devices.map((source, i) => {
+                              if (Cookies.get("output") == source.deviceId)
+                                outputCookieExist = true;
+                            });
+                            if (!outputCookieExist) {
+                              var date = new Date();
+                              date.setDate(date.getDate() + 365);
+                              Cookies.set("output", devices[0].deviceId, {
+                                path: "/",
+                                expires: date
+                              });
+                              dispatch(
+                                InputManagerActions.outputAudioChange(
+                                  devices[0].deviceId
+                                )
+                              );
+                            } else {
+                              dispatch(
+                                InputManagerActions.outputAudioChange(
+                                  Cookies.get("output")
+                                )
+                              );
+                            }
+                          });
+                      }
+                    }
+                    //}
+                  })
+                  .catch(err => {
+                    console.log(err);
+                    dispatch(ErrorActions.onError(err));
+                  });
+              })
+              .catch(err => {
+                console.log(err);
+                dispatch(ErrorActions.onError(err));
+              });
           });
         }
       } else {
@@ -402,366 +477,126 @@ export class Actions {
         constraints.video = videoRatio;
       }
       if (bowser.msie) constraints.video = false;
-      return Sdk.instance
-        .createConference({
-          alias: conferenceAlias,
-          params: {
-            liveRecording: liveRecordingEnabled,
-            ttl: ttl,
-            stats: "true",
-            rtcpMode: rtcpmode,
-            mode: mode,
-            videoCodec: videoCodec
-          }
-        })
-        .then(data => {
-          return Sdk.instance
-            .joinConference(data.conferenceId, {
-              constraints,
-              audio3D: isElectron ? true : false,
-              user: userInfo
-            })
-            .then(res => {
-              if (data.isNew && autoHls) {
-                dispatch(ConferenceActions.startLiveHls());
-                dispatch(ControlsActions.toggleLiveHls());
-              }
-              if (Sdk.instance.extensions.hasElectron()) {
-                dispatch(ConferenceActions.hasElectron());
-              } else {
-                dispatch(
-                  ParticipantActions.saveCurrentUser(
-                    userInfo.name,
-                    userInfo.avatarUrl,
-                    userInfo.externalId
-                  )
-                );
-                dispatch(
-                  ConferenceActions._conferenceJoined(
-                    res.conferenceId,
-                    res.conferencePincode
-                  )
-                );
-                dispatch(ControlsActions.toggleWidget());
-                dispatch(ControlsActions.saveConstraints(constraints));
-                dispatch(ParticipantActions.triggerHandleOnConnect());
-                if (res.recordingStatus == "RECORDING") {
-                  dispatch(ControlsActions.lockRecording());
+      return VoxeetSDK.session.open(userInfo).then(() => {
+        return VoxeetSDK.conference
+          .create({
+            alias: conferenceAlias,
+            params: {
+              liveRecording: liveRecordingEnabled,
+              ttl: ttl,
+              stats: "true",
+              rtcpMode: rtcpmode,
+              mode: mode,
+              videoCodec: videoCodec,
+              pincode: pinCode
+            }
+          })
+          .then(conference => {
+            return VoxeetSDK.conference
+              .join(conference, {
+                constraints,
+                simulcast: simulcast,
+                audio3D: false
+              })
+              .then(res => {
+                if (conference.isNew && autoHls) {
+                  dispatch(ConferenceActions.startLiveHls());
+                  dispatch(ControlsActions.toggleLiveHls());
+                }
+                if (VoxeetSDK.extensions.hasElectron()) {
+                  dispatch(ConferenceActions.hasElectron());
+                } else {
                   dispatch(
-                    OnBoardingMessageActions.onBoardingDisplay(
-                      strings.recordConferenceStart,
-                      1000
+                    ParticipantActions.saveCurrentUser(
+                      userInfo.name,
+                      userInfo.avatarUrl,
+                      userInfo.externalId
                     )
                   );
-                } else if (autoRecording) {
                   dispatch(
-                    ConferenceActions.toggleRecording(res.conferenceId, false)
+                    ConferenceActions._conferenceJoined(res.id, pinCode)
                   );
-                  dispatch(
-                    ConferenceActions.sendBroadcastMessage(
-                      RECORDING_STATE,
-                      null,
-                      {
-                        name: userInfo.name,
-                        userId: userInfo.participant_id,
-                        recordingRunning: true
-                      }
-                    )
-                  );
-                }
-                if (constraints.video) {
-                  dispatch(ControlsActions.toggleVideo(true));
-                }
-                if (!constraints.audio)
-                  dispatch(ControlsActions.toggleAudio(false));
-                if (bowser.chrome) {
-                  if (preConfigPayload != null) {
-                    if (preConfigPayload.outputDeviceSelected)
-                      Sdk.instance
-                        .selectAudioOutput(
+                  dispatch(ControlsActions.toggleWidget());
+                  dispatch(ControlsActions.saveConstraints(constraints));
+                  dispatch(ParticipantActions.triggerHandleOnConnect());
+                  if (res.recordingStatus == "RECORDING") {
+                    dispatch(ControlsActions.lockRecording());
+                    dispatch(
+                      OnBoardingMessageActions.onBoardingDisplay(
+                        strings.recordConferenceStart,
+                        1000
+                      )
+                    );
+                  } else if (autoRecording) {
+                    dispatch(ConferenceActions.toggleRecording(res.id, false));
+                    dispatch(
+                      ConferenceActions.sendBroadcastMessage(
+                        RECORDING_STATE,
+                        null,
+                        {
+                          name: userInfo.name,
+                          userId: userInfo.participant_id,
+                          recordingRunning: true
+                        }
+                      )
+                    );
+                  }
+                  if (constraints.video) {
+                    dispatch(ControlsActions.toggleVideo(true));
+                  }
+                  if (!constraints.audio)
+                    dispatch(ControlsActions.toggleAudio(false));
+                  if (bowser.chrome) {
+                    if (preConfigPayload != null) {
+                      if (preConfigPayload.outputDeviceSelected)
+                        VoxeetSDK.selectAudioOutput(
                           preConfigPayload.outputDeviceSelected
-                        )
-                        .catch(err => {
+                        ).catch(err => {
                           console.log(err);
                         });
-                  } else {
-                    let outputCookieExist = false;
-                    Sdk.instance
-                      .enumerateAudioDevices("output")
-                      .then(devices => {
-                        devices.map((source, i) => {
-                          if (Cookies.get("output") == source.deviceId)
-                            outputCookieExist = true;
-                        });
-                        if (!outputCookieExist) {
-                          var date = new Date();
-                          date.setDate(date.getDate() + 365);
-                          Cookies.set("output", devices[0].deviceId, {
-                            path: "/",
-                            expires: date
+                    } else {
+                      let outputCookieExist = false;
+                      VoxeetSDK.mediaDevice
+                        .enumerateAudioDevices("output")
+                        .then(devices => {
+                          devices.map((source, i) => {
+                            if (Cookies.get("output") == source.deviceId)
+                              outputCookieExist = true;
                           });
-                          dispatch(
-                            InputManagerActions.outputAudioChange(
-                              devices[0].deviceId
-                            )
-                          );
-                        } else {
-                          dispatch(
-                            InputManagerActions.outputAudioChange(
-                              Cookies.get("output")
-                            )
-                          );
-                        }
-                      });
+                          if (!outputCookieExist) {
+                            var date = new Date();
+                            date.setDate(date.getDate() + 365);
+                            Cookies.set("output", devices[0].deviceId, {
+                              path: "/",
+                              expires: date
+                            });
+                            dispatch(
+                              InputManagerActions.outputAudioChange(
+                                devices[0].deviceId
+                              )
+                            );
+                          } else {
+                            dispatch(
+                              InputManagerActions.outputAudioChange(
+                                Cookies.get("output")
+                              )
+                            );
+                          }
+                        });
+                    }
                   }
                 }
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              dispatch(ErrorActions.onError(err));
-            });
-        })
-        .catch(err => {
-          console.log(err);
-          dispatch(ErrorActions.onError(err));
-        });
-    };
-  }
-
-  static joinWithConferenceId(
-    conferenceId,
-    constraints,
-    userInfo,
-    videoRatio,
-    isElectron,
-    isListener,
-    preConfigPayload,
-    autoRecording
-  ) {
-    return (dispatch, getState) => {
-      dispatch(ChatActions.clearMessages());
-      dispatch(ParticipantActions.clearParticipantsList());
-      dispatch(this._conferenceConnecting());
-      const {
-        voxeet: { participants }
-      } = getState();
-      userInfo.params = {
-        admin: participants.participants.length == 0 ? true : false
-      };
-
-      if (participants.isWebinar && !isAdmin) {
-        constraints.video = false;
-        constraints.audio = false;
-      }
-
-      if (isListener) {
-        return Sdk.instance.listenConference(conferenceId).then(function(res) {
-          dispatch(
-            ParticipantActions.saveCurrentUser(
-              userInfo.name,
-              userInfo.avatarUrl,
-              userInfo.externalId
-            )
-          );
-          dispatch(
-            ConferenceActions._conferenceJoined(
-              res.conferenceId,
-              res.conferencePincode
-            )
-          );
-          dispatch(ControlsActions.toggleWidget());
-          dispatch(ParticipantActions.triggerHandleOnConnect());
-        });
-      }
-
-      if (preConfigPayload == null && !bowser.msie) {
-        let videoCookieExist = false;
-        Sdk.instance.enumerateVideoDevices().then(devices => {
-          devices.forEach(source => {
-            if (Cookies.get("camera") == source.deviceId)
-              videoCookieExist = true;
-          });
-          if (devices.length == 0) {
-            constraints.video = false;
-          } else {
-            if (!videoCookieExist) {
-              var date = new Date();
-              date.setDate(date.getDate() + 365);
-              Cookies.set("camera", devices[0].deviceId, {
-                path: "/",
-                expires: date
-              });
-              dispatch(
-                InputManagerActions.inputVideoChange(devices[0].deviceId)
-              );
-              if (constraints.video) {
-                if (videoRatio != null) {
-                  constraints.video = {
-                    height: videoRatio.height,
-                    width: videoRatio.width,
-                    deviceId: { exact: devices[0].deviceId }
-                  };
-                } else {
-                  constraints.video = {
-                    deviceId: { exact: devices[0].deviceId }
-                  };
-                }
-              }
-            } else {
-              if (constraints.video) {
-                if (videoRatio != null) {
-                  constraints.video = {
-                    height: videoRatio.height,
-                    width: videoRatio.width,
-                    deviceId: { exact: Cookies.get("camera") }
-                  };
-                } else {
-                  constraints.video = {
-                    deviceId: { exact: Cookies.get("camera") }
-                  };
-                }
-              }
-              dispatch(
-                InputManagerActions.inputVideoChange(Cookies.get("camera"))
-              );
-            }
-          }
-        });
-        if (constraints.audio) {
-          let inputCookieExist = false;
-          Sdk.instance.enumerateAudioDevices().then(devices => {
-            devices.forEach(source => {
-              if (Cookies.get("input") == source.deviceId)
-                inputCookieExist = true;
-            });
-            if (devices.length == 0) {
-              constraints.audio = false;
-            } else {
-              if (!inputCookieExist) {
-                constraints.audio = true;
-                dispatch(
-                  InputManagerActions.inputAudioChange(devices[0].deviceId)
-                );
-              } else {
-                constraints.audio = {
-                  deviceId: { exact: Cookies.get("input") }
-                };
-                dispatch(
-                  InputManagerActions.inputAudioChange(Cookies.get("input"))
-                );
-              }
-            }
-          });
-        }
-      } else {
-        if (preConfigPayload.videoEnabled) {
-          if (videoRatio != null) {
-            constraints.video = {
-              height: videoRatio.height,
-              width: videoRatio.width,
-              deviceId: { exact: preConfigPayload.videoDeviceSelected }
-            };
-          } else {
-            constraints.video = {
-              deviceId: { exact: preConfigPayload.videoDeviceSelected }
-            };
-          }
-        }
-        if (preConfigPayload.audioDeviceSelected)
-          constraints.audio = {
-            deviceId: { exact: preConfigPayload.audioDeviceSelected }
-          };
-      }
-
-      if (constraints.video && videoRatio != null && preConfigPayload == null) {
-        constraints.video = videoRatio;
-      }
-
-      return Sdk.instance
-        .joinConference(conferenceId, {
-          constraints,
-          audio3D: isElectron ? true : false,
-          user: userInfo
-        })
-        .then(function(res) {
-          dispatch(
-            ParticipantActions.saveCurrentUser(
-              userInfo.name,
-              userInfo.avatarUrl,
-              userInfo.externalId
-            )
-          );
-          dispatch(
-            ConferenceActions._conferenceJoined(
-              res.conferenceId,
-              res.conferencePinCode
-            )
-          );
-          dispatch(ControlsActions.toggleWidget());
-          dispatch(ControlsActions.saveConstraints(constraints));
-          dispatch(ParticipantActions.triggerHandleOnConnect());
-          if (res.recordingStatus == "RECORDING") {
-            dispatch(ControlsActions.lockRecording());
-            dispatch(
-              OnBoardingMessageActions.onBoardingDisplay(
-                strings.recordConferenceStart,
-                1000
-              )
-            );
-          } else if (autoRecording) {
-            dispatch(
-              ConferenceActions.toggleRecording(res.conferenceId, false)
-            );
-            dispatch(
-              ConferenceActions.sendBroadcastMessage(RECORDING_STATE, null, {
-                name: userInfo.name,
-                userId: userInfo.participant_id,
-                recordingRunning: true
               })
-            );
-          }
-          if (bowser.chrome) {
-            if (preConfigPayload != null) {
-              if (preConfigPayload.outputDeviceSelected)
-                Sdk.instance
-                  .selectAudioOutput(preConfigPayload.outputDeviceSelected)
-                  .catch(err => {
-                    console.log(err);
-                  });
-            } else {
-              let outputCookieExist = false;
-              Sdk.instance.enumerateAudioDevices("output").then(devices => {
-                devices.map((source, i) => {
-                  if (Cookies.get("output") == source.deviceId)
-                    outputCookieExist = true;
-                });
-                if (!outputCookieExist) {
-                  var date = new Date();
-                  date.setDate(date.getDate() + 365);
-                  Cookies.set("output", devices[0].deviceId, {
-                    path: "/",
-                    expires: date
-                  });
-                  dispatch(
-                    InputManagerActions.outputAudioChange(devices[0].deviceId)
-                  );
-                } else {
-                  dispatch(
-                    InputManagerActions.outputAudioChange(Cookies.get("output"))
-                  );
-                }
+              .catch(err => {
+                console.log(err);
+                dispatch(ErrorActions.onError(err));
               });
-            }
-          }
-          if (constraints.video) {
-            dispatch(ControlsActions.toggleVideo());
-          }
-          if (!constraints.audio) dispatch(ControlsActions.toggleAudio(false));
-        })
-        .catch(err => {
-          this._throwErrorModal(err);
-        });
+          })
+          .catch(err => {
+            console.log(err);
+            dispatch(ErrorActions.onError(err));
+          });
+      });
     };
   }
 
@@ -770,8 +605,7 @@ export class Actions {
       dispatch(this._conferenceReplaying(conferenceId));
       dispatch(ParticipantActions.onParticipantSave());
       dispatch(ParticipantActions.clearParticipantsList());
-      return Sdk.instance
-        .replayConference(conferenceId, 0)
+      return VoxeetSDK.replayConference(conferenceId, 0)
         .then(res => {
           dispatch(ControlsActions.toggleWidget());
           dispatch(ParticipantActions.triggerHandleOnConnect());
@@ -780,12 +614,6 @@ export class Actions {
         .catch(err => {
           this._throwErrorModal(err);
         });
-    };
-  }
-
-  static hasElectron() {
-    return {
-      type: Types.CONFERENCE_ELECTRON
     };
   }
 
@@ -800,13 +628,13 @@ export class Actions {
       const {
         voxeet: { controls }
       } = getState();
-      return Sdk.instance.leaveConference().then(() => {
+      return VoxeetSDK.conference.leave().then(() => {
         dispatch(TimerActions.stopTime());
         dispatch(ConferenceActions._conferenceLeave());
         dispatch(ConferenceActions._conferenceLeave(controls.disableSounds));
         if (controls.closeSessionAtHangUp) {
           this._removeListeners().then(() => {
-            Sdk.instance.closeSession().then(() => {
+            VoxeetSDK.session.close().then(() => {
               Sdk.destroy();
             });
           });
@@ -824,19 +652,23 @@ export class Actions {
     };
   }
 
-  static toggleMicrophone(userId) {
+  static toggleMicrophone(userId, isMuted) {
     return (dispatch, getState) => {
-      if (!userId) userId = Sdk.instance.userId;
       const {
         voxeet: { controls }
       } = getState();
-
-      let status = false;
+      let user = VoxeetSDK.session.participant;
+      if (!userId) {
+        userId = VoxeetSDK.session.participant.id;
+        isMuted = controls.isMuted;
+      } else {
+        user = VoxeetSDK.conference.participants.get(userId);
+      }
       if (!controls.audioEnabled) {
         let inputCookieExist = false;
         let constraints = { audio: true };
         if (!bowser.msie) {
-          Sdk.instance.enumerateAudioDevices().then(devices => {
+          VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
             devices.forEach(source => {
               if (Cookies.get("input") == source.deviceId)
                 inputCookieExist = true;
@@ -852,24 +684,26 @@ export class Actions {
                 InputManagerActions.inputAudioChange(Cookies.get("input"))
               );
             }
-            status = Sdk.instance
-              .startAudioForUser(Sdk.instance.userId, constraints)
-              .then(() => {
-                dispatch(ControlsActions.toggleAudio(true));
-              });
-          });
-        } else {
-          status = Sdk.instance
-            .startAudioForUser(Sdk.instance.userId, constraints)
-            .then(() => {
+            VoxeetSDK.startAudioForUser(
+              VoxeetSDK.session.participant,
+              constraints
+            ).then(() => {
               dispatch(ControlsActions.toggleAudio(true));
             });
+          });
+        } else {
+          VoxeetSDK.startAudioForUser(
+            VoxeetSDK.session.participant,
+            constraints
+          ).then(() => {
+            dispatch(ControlsActions.toggleAudio(true));
+          });
         }
       } else {
-        status = Sdk.instance.toggleMute(userId);
+        VoxeetSDK.conference.mute(user, isMuted ? false : true);
       }
 
-      if (userId === Sdk.instance.userId) {
+      if (userId === VoxeetSDK.session.participant.id) {
         dispatch(
           OnBoardingMessageActions.onBoardingDisplay(
             controls.isMuted ? strings.microphoneOn : strings.microphoneOff,
@@ -880,17 +714,15 @@ export class Actions {
           return dispatch(ControlsActions.toggleMicrophone());
         }
       }
-      return dispatch(ParticipantActions.onToogleMicrophone(userId, status));
+      return dispatch(ParticipantActions.onToogleMicrophone(userId));
     };
   }
 
   static toggleAudio3D(audio3DEnabled) {
     return dispatch => {
-      return Sdk.instance.conference.rtc
-        .enable3DAudio(audio3DEnabled)
-        .then(() => {
-          dispatch(ControlsActions.toggleAudio3D());
-        });
+      return VoxeetSDK.conference.rtc.enable3DAudio(audio3DEnabled).then(() => {
+        dispatch(ControlsActions.toggleAudio3D());
+      });
     };
   }
 
@@ -906,8 +738,8 @@ export class Actions {
             height: controls.videoRatio.height,
             deviceId: inputManager.currentVideoDevice
           };
-          return Sdk.instance
-            .startVideoForUser(Sdk.instance.userId, payloadConstraints)
+          return VoxeetSDK.conference
+            .startVideo(VoxeetSDK.session.participant, payloadConstraints)
             .then(() => {
               dispatch(
                 OnBoardingMessageActions.onBoardingDisplay(
@@ -924,8 +756,8 @@ export class Actions {
           const payloadConstraints = {
             deviceId: inputManager.currentVideoDevice
           };
-          return Sdk.instance
-            .startVideoForUser(Sdk.instance.userId, payloadConstraints)
+          return VoxeetSDK.conference
+            .startVideo(VoxeetSDK.session.participant, payloadConstraints)
             .then(() => {
               dispatch(
                 OnBoardingMessageActions.onBoardingDisplay(
@@ -940,8 +772,8 @@ export class Actions {
             });
         }
       } else {
-        return Sdk.instance
-          .stopVideoForUser(Sdk.instance.userId)
+        return VoxeetSDK.conference
+          .stopVideo(VoxeetSDK.session.participant)
           .then(() => {
             dispatch(ControlsActions.toggleVideo(false));
             dispatch(
@@ -974,14 +806,14 @@ export class Actions {
       } = getState();
       const videoPresentationEnabled = !participants.videoPresentationEnabled;
       if (videoPresentationEnabled) {
-        return Sdk.instance.videoPresentation.start(url);
+        return VoxeetSDK.videoPresentation.start(url);
       } else {
-        return Sdk.instance.videoPresentation.stop();
+        return VoxeetSDK.videoPresentation.stop();
       }
     };
   }
 
-  static toggleScreenShare(type) {
+  static toggleScreenShare() {
     return (dispatch, getState) => {
       const {
         voxeet: { participants, controls }
@@ -997,7 +829,7 @@ export class Actions {
         );
       }
       if (enableScreenShare)
-        return Sdk.instance.startScreenShare(type).catch(err => {
+        return VoxeetSDK.conference.startScreenShare().catch(err => {
           if (
             err.message == "Chrome Web Extension is not installed" &&
             controls.chromeExtensionId != null
@@ -1031,7 +863,7 @@ export class Actions {
             );
           }
         });
-      else return Sdk.instance.stopScreenShare();
+      else return VoxeetSDK.conference.stopScreenShare();
     };
   }
 
@@ -1044,8 +876,8 @@ export class Actions {
             title: "Kick_Event",
             userId: participant_id
           };
-          return Sdk.instance
-            .sendConferenceMessage(broadcastMessage)
+          return VoxeetSDK.command
+            .send(broadcastMessage)
             .then(() => {})
             .catch(err => {
               this._throwErrorModal(err);
@@ -1058,8 +890,8 @@ export class Actions {
             name: chat_payload.name,
             userId: chat_payload.userId
           };
-          return Sdk.instance
-            .sendConferenceMessage(broadcastMessage)
+          return VoxeetSDK.command
+            .send(broadcastMessage)
             .then(() => {
               dispatch();
             })
@@ -1077,8 +909,8 @@ export class Actions {
             name: chat_payload.name,
             ownerId: chat_payload.ownerId
           };
-          return Sdk.instance
-            .sendConferenceMessage(broadcastMessage)
+          return VoxeetSDK.command
+            .send(broadcastMessage)
             .then(() => {
               dispatch();
             })
@@ -1089,10 +921,10 @@ export class Actions {
         case BROADCAST_KICK_ADMIN_HANG_UP:
           broadcastMessage = {
             title: "Kick_Admin_Hang_up",
-            ownerId: Sdk.instance.userId
+            ownerId: VoxeetSDK.session.participant.id
           };
-          return Sdk.instance
-            .sendConferenceMessage(broadcastMessage)
+          return VoxeetSDK.command
+            .send(broadcastMessage)
             .then(() => {})
             .catch(err => {
               this._throwErrorModal(err);
@@ -1107,8 +939,8 @@ export class Actions {
   static toggleRecording(conferenceId, isRecording) {
     return dispatch => {
       if (!isRecording) {
-        return Sdk.instance
-          .startRecording()
+        return VoxeetSDK.recording
+          .start()
           .then(() => {
             sessionStorage.setItem("conferenceId", conferenceId);
             window.dispatchEvent(new Event("storage"));
@@ -1124,8 +956,8 @@ export class Actions {
             this._throwErrorModal(err);
           });
       } else {
-        return Sdk.instance
-          .stopRecording()
+        return VoxeetSDK.recording
+          .stop()
           .then(() => {
             dispatch(
               OnBoardingMessageActions.onBoardingDisplay(
@@ -1182,22 +1014,8 @@ export class Actions {
       const index = participants.participants.findIndex(
         p => p.participant_id === userId
       );
-      if (index == -1) {
-        const {
-          voxeet: { participantsWaiting }
-        } = getState();
-        const index = participantsWaiting.participants.findIndex(
-          p => p.participant_id === userId
-        );
-        dispatch(
-          ParticipantActions.onParticipantStatusUpdated(
-            userId,
-            participantsWaiting.participants[index],
-            "Connecting"
-          )
-        );
-      }
-      dispatch(ParticipantActions.onParticipantUpdated(userId, stream));
+      if (index != -1 || VoxeetSDK.session.participant.id == userId)
+        dispatch(ParticipantActions.onParticipantUpdated(userId, stream));
     };
   }
 
@@ -1236,34 +1054,17 @@ export class Actions {
 
   static _removeListeners(dispatch) {
     return new Promise((resolve, reject) => {
-      Sdk.instance.removeAllListeners();
+      VoxeetSDK.conference.removeAllListeners();
+      VoxeetSDK.session.removeAllListeners();
+      VoxeetSDK.videoPresentation.removeAllListeners();
+      VoxeetSDK.filePresentation.removeAllListeners();
+      VoxeetSDK.command.removeAllListeners();
     });
   }
 
   static _initializeListeners(dispatch) {
     return new Promise((resolve, reject) => {
-      Sdk.instance.on("conferenceStatusUpdated", status => {
-        if (status.participants !== null) {
-          status.participants.map((el, i) => {
-            const participantInfo = {
-              userId: el.userId,
-              status: el.status,
-              avatarUrl: el.metadata.externalPhotoUrl,
-              isAdmin: el.metadata.admin === "true",
-              name: el.metadata.externalName
-            };
-          });
-        }
-        dispatch(this._conferenceStatusUpdated(status));
-      });
-
-      Sdk.instance.on("participantAdded", (userId, userInfo) => {
-        dispatch(
-          ParticipantWaitingActions.onParticipantWaitingAdded(userId, userInfo)
-        );
-      });
-
-      Sdk.instance.on("conferenceLeft", () => {
+      VoxeetSDK.conference.on("left", () => {
         dispatch(this.handleLeave());
         dispatch(ControlsActions.resetWidgetControls());
         dispatch(this.conferenceEnded());
@@ -1272,7 +1073,7 @@ export class Actions {
         dispatch(ParticipantWaitingActions.onParticipantWaitingReset());
       });
 
-      Sdk.instance.on("conferenceEnded", () => {
+      VoxeetSDK.conference.on("ended", () => {
         dispatch(this.handleLeave());
         dispatch(this.conferenceEnded());
         dispatch(ControlsActions.resetWidgetControls());
@@ -1280,20 +1081,12 @@ export class Actions {
         dispatch(ParticipantActions.onParticipantReset());
       });
 
-      Sdk.instance.on("qualityIndicators", function(ind) {
-        //console.log("MOS: ", ind.mos);
-      });
-
-      Sdk.instance.on("fileConverted", file => {
-        if (file.imageCount > 0) {
-          dispatch(FilePresentationActions.fileConvertStop(file.fileId));
-          dispatch(this.startFilePresentation(file));
-
-          for (var i = 0; i < file.imageCount; i++) {
-            Sdk.instance.getThumbnail(file.fileId, i).then(thumbUrl => {
-              dispatch(FilePresentationActions.addThumbnail(thumbUrl));
-            });
-          }
+      VoxeetSDK.filePresentation.on("converted", filePresentation => {
+        if (filePresentation.imageCount > 0) {
+          dispatch(
+            FilePresentationActions.fileConvertStop(filePresentation.id)
+          );
+          dispatch(this.startFilePresentation(filePresentation));
         } else {
           dispatch(FilePresentationActions.fileConvertStop(null));
           dispatch(
@@ -1306,81 +1099,119 @@ export class Actions {
         }
       });
 
-      Sdk.instance.on("filePresentationStarted", function(data) {
+      VoxeetSDK.filePresentation.on("started", filePresentation => {
         dispatch(ControlsActions.forceMode("speaker"));
-        if (Sdk.instance.userId === data.userId) {
+        if (VoxeetSDK.session.participant.id === filePresentation.owner.id) {
           dispatch(ControlsActions.toggleFilePresentationMode(true));
         }
-        dispatch(ParticipantActions.onFilePresentationStarted(data.userId));
-        Sdk.instance.getImage(data.fileId, data.position).then(res => {
-          dispatch(
-            FilePresentationActions.startFilePresentation(
-              data.fileId,
-              res,
-              data.position,
-              data.imageCount
-            )
-          );
-        });
+
+        for (var i = 0; i < filePresentation.imageCount; i++) {
+          VoxeetSDK.filePresentation.thumbnail(i).then(thumbUrl => {
+            dispatch(FilePresentationActions.addThumbnail(thumbUrl));
+          });
+        }
+        dispatch(
+          ParticipantActions.onFilePresentationStarted(
+            filePresentation.owner.id
+          )
+        );
+        VoxeetSDK.filePresentation
+          .image(filePresentation.position)
+          .then(res => {
+            dispatch(
+              FilePresentationActions.startFilePresentation(
+                filePresentation.id,
+                res,
+                filePresentation.position,
+                filePresentation.imageCount
+              )
+            );
+          });
       });
 
-      Sdk.instance.on("filePresentationUpdated", function(data) {
-        Sdk.instance.getImage(data.fileId, data.position).then(res => {
-          dispatch(
-            FilePresentationActions.updateFilePresentation(data.position, res)
-          );
-        });
+      VoxeetSDK.filePresentation.on("updated", filePresentation => {
+        VoxeetSDK.filePresentation
+          .image(filePresentation.position)
+          .then(res => {
+            dispatch(
+              FilePresentationActions.updateFilePresentation(
+                filePresentation.position,
+                res
+              )
+            );
+          });
       });
 
-      Sdk.instance.on("filePresentationStopped", function() {
+      VoxeetSDK.filePresentation.on("stopped", () => {
         dispatch(ParticipantActions.onFilePresentationStopped());
         dispatch(ControlsActions.toggleFilePresentationMode(false));
         dispatch(FilePresentationActions.stopFilePresentation());
       });
 
-      Sdk.instance.on("participantJoined", (userId, stream) => {
+      VoxeetSDK.conference.on("participantAdded", userInfo => {
         dispatch(
-          ParticipantWaitingActions.onParticipantWaitingJoined(userId, stream)
+          ParticipantWaitingActions.onParticipantWaitingAdded(
+            userInfo.id,
+            userInfo
+          )
         );
-        dispatch(this.checkIfUserJoined(userId, stream));
       });
 
-      Sdk.instance.on("participantUpdated", (userId, stream) => {
+      VoxeetSDK.conference.on("streamAdded", (user, stream) => {
+        if (stream.type === "ScreenShare") {
+          dispatch(ControlsActions.forceMode("speaker"));
+          if (VoxeetSDK.session.participant.id === user.id) {
+            dispatch(ControlsActions.toggleScreenShareMode(true));
+          }
+          dispatch(ParticipantActions.onScreenShareStarted(user.id, stream));
+        } else {
+          dispatch(
+            ParticipantWaitingActions.onParticipantWaitingJoined(
+              user.id,
+              stream
+            )
+          );
+          dispatch(this.checkIfUserJoined(user.id, stream));
+        }
+      });
+
+      VoxeetSDK.conference.on("streamUpdated", (user, stream) => {
         dispatch(
-          ParticipantWaitingActions.onParticipantWaitingUpdated(userId, stream)
+          ParticipantWaitingActions.onParticipantWaitingUpdated(user.id, stream)
         );
-        dispatch(this.checkIfUpdateUser(userId, stream));
+        dispatch(this.checkIfUpdateUser(user.id, stream));
       });
 
-      Sdk.instance.on("participantLeft", userId => {
-        dispatch(ParticipantWaitingActions.onParticipantWaitingLeft(userId));
-        dispatch(ParticipantActions.onParticipantLeft(userId));
+      VoxeetSDK.conference.on("streamRemoved", (user, stream) => {
+        if (stream.type === "ScreenShare") {
+          dispatch(ParticipantActions.onScreenShareStopped());
+          dispatch(ControlsActions.toggleScreenShareMode(false));
+        } else {
+          dispatch(ParticipantWaitingActions.onParticipantWaitingLeft(user.id));
+          dispatch(ParticipantActions.onParticipantLeft(user.id));
+        }
       });
 
-      Sdk.instance.on("participantStatusUpdated", (userId, status) => {
-        dispatch(this.checkIfUpdateStatusUser(userId, status));
-      });
-
-      Sdk.instance.videoPresentation.on("started", data => {
+      VoxeetSDK.videoPresentation.on("started", data => {
         dispatch(ControlsActions.forceMode("speaker"));
-        if (Sdk.instance.userId === data.userId) {
+        if (VoxeetSDK.session.participant.id === data.ownerId) {
           dispatch(ControlsActions.toggleVideoPresentationMode(true));
         }
-        dispatch(ParticipantActions.onVideoPresentationStarted(data.userId));
+        dispatch(ParticipantActions.onVideoPresentationStarted(data.ownerId));
         dispatch(VideoPresentationActions.startVideoPresentation(data.url));
         setTimeout(() => {
           dispatch(VideoPresentationActions.seek(data.timestamp / 1000));
         }, 200);
       });
 
-      Sdk.instance.videoPresentation.on("stopped", data => {
+      VoxeetSDK.videoPresentation.on("stopped", data => {
         dispatch(ParticipantActions.onVideoPresentationStopped());
         dispatch(ControlsActions.toggleVideoPresentationMode(false));
         dispatch(VideoPresentationActions.stopVideoPresentation());
       });
 
-      Sdk.instance.videoPresentation.on("play", data => {
-        if (Sdk.instance.userId != data.userId) {
+      VoxeetSDK.videoPresentation.on("played", data => {
+        if (VoxeetSDK.session.participant.id != data.ownerId) {
           dispatch(VideoPresentationActions.play());
           setTimeout(() => {
             dispatch(VideoPresentationActions.seek(data.timestamp / 1000));
@@ -1388,36 +1219,23 @@ export class Actions {
         }
       });
 
-      Sdk.instance.videoPresentation.on("pause", data => {
-        if (Sdk.instance.userId != data.userId) {
+      VoxeetSDK.videoPresentation.on("paused", data => {
+        if (VoxeetSDK.session.participant.id != data.ownerId) {
           dispatch(VideoPresentationActions.pause());
         }
       });
 
-      Sdk.instance.videoPresentation.on("seek", data => {
-        if (Sdk.instance.userId != data.userId) {
+      VoxeetSDK.videoPresentation.on("seek", data => {
+        if (VoxeetSDK.session.participant.id != data.ownerId) {
           dispatch(VideoPresentationActions.seek(data.timestamp / 1000));
         }
       });
 
-      Sdk.instance.on("screenShareStarted", (userId, stream) => {
-        dispatch(ControlsActions.forceMode("speaker"));
-        if (Sdk.instance.userId === userId) {
-          dispatch(ControlsActions.toggleScreenShareMode(true));
-        }
-        dispatch(ParticipantActions.onScreenShareStarted(userId, stream));
-      });
-
-      Sdk.instance.on("screenShareStopped", () => {
-        dispatch(ParticipantActions.onScreenShareStopped());
-        dispatch(ControlsActions.toggleScreenShareMode(false));
-      });
-
-      Sdk.instance.on("messageReceived", data => {
-        const dataParsed = JSON.parse(data);
+      VoxeetSDK.command.on("received", (participant, message) => {
+        const dataParsed = JSON.parse(message);
         switch (dataParsed.title) {
           case BROADCAST_KICK:
-            if (Sdk.instance.userId === dataParsed.userId) {
+            if (VoxeetSDK.session.participant.id === dataParsed.userId) {
               dispatch(this.leave()).then(() => {
                 dispatch(ControlsActions.resetWidgetControls());
               });
@@ -1447,7 +1265,7 @@ export class Actions {
             dispatch(ChatActions.addMessage(dataParsed));
             break;
           case BROADCAST_KICK_ADMIN_HANG_UP:
-            if (Sdk.instance.userId != dataParsed.ownerId) {
+            if (VoxeetSDK.session.participant.id != dataParsed.ownerId) {
               dispatch(this.leave()).then(() => {
                 dispatch(ControlsActions.resetWidgetControls());
               });
@@ -1481,15 +1299,6 @@ export class Actions {
     };
   }
 
-  static _conferenceStatusUpdated(status) {
-    return {
-      type: Types.CONFERENCE_STATUS_UPDATED,
-      payload: {
-        status
-      }
-    };
-  }
-
   static _conferenceReplaying(conferenceReplayId) {
     return {
       type: Types.CONFERENCE_REPLAYING,
@@ -1515,7 +1324,7 @@ export class Actions {
     };
   }
 
-  static _conferenceLeave(disableSounds) {
+  static _conferenceLeave(disableSounds = true) {
     return {
       type: Types.CONFERENCE_LEAVE,
       payload: {

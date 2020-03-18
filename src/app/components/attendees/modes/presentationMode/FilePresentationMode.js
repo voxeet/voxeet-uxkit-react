@@ -25,8 +25,7 @@ class FilePresentationMode extends Component {
       userIdStreamScreenShare,
       currentUser,
       isWebinar,
-      isScreenshare,
-      isElectron
+      isScreenshare
     } = this.props;
     return (
       <SpeakerActive
@@ -36,7 +35,6 @@ class FilePresentationMode extends Component {
         isFilePresentation={isFilePresentation}
         screenShareEnabled={screenShareEnabled}
         screenShareStream={screenShareStream}
-        isElectron={isElectron}
         isScreenshare={isScreenshare}
         filePresentationEnabled={filePresentationEnabled}
         kickParticipant={kickParticipant}
@@ -54,7 +52,6 @@ FilePresentationMode.propTypes = {
   isScreenshare: PropTypes.bool,
   isFilePresentation: PropTypes.bool,
   toggleMicrophone: PropTypes.func.isRequired,
-  isElectron: PropTypes.bool.isRequired,
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
   screenShareEnabled: PropTypes.bool.isRequired,
   filePresentationEnabled: PropTypes.bool.isRequired,

@@ -9,10 +9,9 @@ import { Actions as TimerActions } from "../actions/TimerActions";
 import { Actions as ErrorActions } from "../actions/ErrorActions";
 import { Actions as ChatActions } from "../actions/ChatActions";
 import { Actions as OnBoardingMessageActions } from "../actions/OnBoardingMessageActions";
-import Sdk from "../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import {
   BROADCAST_KICK_ADMIN_HANG_UP,
-  WEBINAR_LIVE,
   RECORDING_STATE
 } from "../constants/BroadcastMessageType";
 
@@ -51,12 +50,9 @@ class ConferenceRoomContainer extends Component {
     this.toggleModal = this.toggleModal.bind(this);
     this.toggleErrorModal = this.toggleErrorModal.bind(this);
     this.getSidebarClasses = this.getSidebarClasses.bind(this);
-    this.toggleLive = this.toggleLive.bind(this);
-    this.toggleLiveHls = this.toggleLiveHls.bind(this);
     this.toggleAttendeesList = this.toggleAttendeesList.bind(this);
     this.toggleAttendeesChat = this.toggleAttendeesChat.bind(this);
     this.toggleAttendeesSettings = this.toggleAttendeesSettings.bind(this);
-    this.toggleAttendeesLive = this.toggleAttendeesLive.bind(this);
     this.props.dispatch(TimerActions.startTime());
   }
 
@@ -132,8 +128,8 @@ class ConferenceRoomContainer extends Component {
       isScreenshare,
       isVideoPresentation
     } = this.props.controlsStore;
-    if (isScreenshare || type != null) {
-      this.props.dispatch(ConferenceActions.toggleScreenShare(type));
+    if (isScreenshare || type == "screenshare") {
+      this.props.dispatch(ConferenceActions.toggleScreenShare());
     } else if (isFilePresentation) {
       this.props.dispatch(ConferenceActions.stopFilePresentation());
     } else if (isVideoPresentation) {
@@ -166,36 +162,6 @@ class ConferenceRoomContainer extends Component {
     this.props.dispatch(ControlsActions.toggleMode());
   }
 
-  toggleLiveHls() {
-    const { isHlsLive } = this.props.controlsStore;
-    if (isHlsLive) {
-      this.props.dispatch(ConferenceActions.stopLiveHls()).then(() => {
-        this.props.dispatch(ControlsActions.toggleLiveHls());
-      });
-    } else {
-      this.props.dispatch(ConferenceActions.startLiveHls()).then(() => {
-        this.props.dispatch(ControlsActions.toggleLiveHls());
-      });
-    }
-  }
-  toggleLive(url, password) {
-    const { isExternalLive } = this.props.controlsStore;
-    if (isExternalLive) {
-      this.props.dispatch(ConferenceActions.stopExternalLive()).then(() => {
-        this.props.dispatch(ControlsActions.toggleLiveExternal());
-      });
-    } else {
-      if (url.slice(-1) != "/") {
-        url = url + "/";
-      }
-      const entireUrl = url + password;
-      this.props
-        .dispatch(ConferenceActions.joinExternalLive(entireUrl))
-        .then(() => {
-          this.props.dispatch(ControlsActions.toggleLiveExternal());
-        });
-    }
-  }
   toggleAudio3D() {
     const { audio3DEnabled } = this.props.controlsStore;
     this.props.dispatch(ConferenceActions.toggleAudio3D(!audio3DEnabled));
@@ -203,10 +169,6 @@ class ConferenceRoomContainer extends Component {
 
   toggleAttendeesList() {
     this.props.dispatch(ControlsActions.toggleAttendeesList());
-  }
-
-  toggleAttendeesLive() {
-    this.props.dispatch(ControlsActions.toggleAttendeesLive());
   }
 
   toggleAttendeesSettings() {
@@ -272,9 +234,6 @@ class ConferenceRoomContainer extends Component {
       displayActions,
       shareActions,
       audio3DEnabled,
-      isElectron,
-      isExternalLive,
-      isHlsLive,
       isFilePresentation,
       isScreenshare,
       isVideoPresentation,
@@ -282,8 +241,7 @@ class ConferenceRoomContainer extends Component {
       displayModes,
       displayAttendeesList,
       displayAttendeesChat,
-      displayAttendeesSettings,
-      displayAttendeesLive
+      displayAttendeesSettings
     } = this.props.controlsStore;
     return (
       <div
@@ -305,7 +263,6 @@ class ConferenceRoomContainer extends Component {
               isWebinar={isWebinar}
               isAdmin={isAdmin}
               shareActions={shareActions}
-              isElectron={isElectron}
               mode={mode}
               forceFullscreen={forceFullscreen}
               leave={this.leaveConference}
@@ -323,8 +280,6 @@ class ConferenceRoomContainer extends Component {
               isVideoPresentation={isVideoPresentation}
               videoPresentationEnabled={videoPresentationEnabled}
               isMuted={isMuted}
-              isExternalLive={isExternalLive}
-              isHlsLive={isHlsLive}
               videoEnabled={videoEnabled}
               toggleAudio3D={this.toggleAudio3D}
               audio3DEnabled={audio3DEnabled}
@@ -333,14 +288,12 @@ class ConferenceRoomContainer extends Component {
               isFilePresentation={isFilePresentation}
               toggleMicrophone={this.toggleMicrophone}
               toggleRecording={this.toggleRecording}
-              toggleAttendeesLive={this.toggleAttendeesLive}
               toggleScreenShare={this.toggleScreenShare}
               toggleVideoPresentation={this.toggleVideoPresentation}
               toggleAttendeesList={this.toggleAttendeesList}
               toggleAttendeesChat={this.toggleAttendeesChat}
               attendeesChatOpened={displayAttendeesChat}
               attendeesListOpened={displayAttendeesList}
-              attendeesLiveOpened={displayAttendeesLive}
               toggleAttendeesSettings={this.toggleAttendeesSettings}
               attendeesSettingsOpened={displayAttendeesSettings}
               convertFilePresentation={this.convertFilePresentation}
@@ -359,22 +312,18 @@ class ConferenceRoomContainer extends Component {
               forceFullscreen={forceFullscreen}
               toggleWidget={this.toggleWidget}
               isWidgetOpened={isWidgetOpened}
-              toggleLive={this.toggleLive.bind(this)}
-              toggleLiveHls={this.toggleLiveHls.bind(this)}
               isModalExternalLive={true}
               videoEnabled={videoEnabled}
               isWidgetFullScreenOn={isWidgetFullScreenOn}
               displayModal={displayModal}
               isAdminActived={isAdminActived}
               displayModes={displayModes}
-              isElectron={isElectron}
               isScreenshare={isScreenshare}
               isVideoPresentation={isVideoPresentation}
               isFilePresentation={isFilePresentation}
               attendeesWaiting={attendeesWaiting}
               attendeesListOpened={displayAttendeesList}
               attendeesChatOpened={displayAttendeesChat}
-              attendeesLiveOpened={displayAttendeesLive}
               attendeesSettingsOpened={displayAttendeesSettings}
               attendeesChat={attendeesChat}
               attendeesList={attendeesList}
@@ -389,7 +338,6 @@ class ConferenceRoomContainer extends Component {
               conferencePincode={conferencePincode}
               mode={mode}
               isDemo={isDemo}
-              isElectron={isElectron}
               displayActions={displayActions}
               shareActions={shareActions}
               leave={this.leaveConference}
@@ -405,8 +353,6 @@ class ConferenceRoomContainer extends Component {
               isWidgetOpened={isWidgetOpened}
               isMuted={isMuted}
               isVideoPresentation={isVideoPresentation}
-              isExternalLive={isExternalLive}
-              isHlsLive={isHlsLive}
               videoEnabled={videoEnabled}
               audio3DEnabled={audio3DEnabled}
               displayModal={displayModal}
@@ -420,8 +366,6 @@ class ConferenceRoomContainer extends Component {
               toggleModal={this.toggleModal}
               toggleMode={this.toggleMode}
               toggleAttendeesList={this.toggleAttendeesList}
-              attendeesLiveOpened={displayAttendeesLive}
-              toggleAttendeesLive={this.toggleAttendeesLive}
               attendeesListOpened={displayAttendeesList}
               toggleAttendeesChat={this.toggleAttendeesChat}
               attendeesChatOpened={displayAttendeesChat}

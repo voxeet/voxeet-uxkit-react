@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { connect } from "@voxeet/react-redux-5.1.1";
 
-import Sdk from "../../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import AttendeesParticipantVideo from "../attendees/AttendeesParticipantVideo";
 import AttendeesParticipantVuMeter from "../attendees/AttendeesParticipantVuMeter";
 import { strings } from "../../languages/localizedStrings";
@@ -18,21 +18,21 @@ class ModalJoinSettings extends Component {
   }
 
   setAudioDevice(e) {
-    Sdk.instance.selectAudioInput(e.target.value).then(() => {});
+    VoxeetSDK.mediaDevice.selectAudioInput(e.target.value).then(() => {});
   }
 
   setVideoDevice(e) {
-    Sdk.instance.selectVideoInput(e.target.value).then(() => {});
+    VoxeetSDK.mediaDevice.selectVideoInput(e.target.value).then(() => {});
   }
 
   componentDidMount() {
-    Sdk.instance.enumerateAudioDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
       this.setState({
         audioDevices: devices
       });
     });
 
-    Sdk.instance.enumerateVideoDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateVideoDevices().then(devices => {
       this.setState({
         videoDevices: devices
       });

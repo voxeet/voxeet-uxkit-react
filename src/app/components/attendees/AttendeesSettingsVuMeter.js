@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import Sdk from "../../sdk";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 
 class AttendeesSettingsVuMeter extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class AttendeesSettingsVuMeter extends Component {
 
   componentDidMount() {
     this._interval = setInterval(() => {
-      Sdk.instance.getUserLevel(Sdk.instance.userId, level => {
+      VoxeetSDK.conference.audioLevel(VoxeetSDK.session.participant, level => {
         this.setState({ level: Math.round(level * 24) });
       });
     }, 200);

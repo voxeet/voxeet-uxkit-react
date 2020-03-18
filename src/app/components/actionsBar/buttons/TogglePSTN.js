@@ -103,15 +103,19 @@ class TogglePSTN extends Component {
                 <span className="pincode">{conferencePincode}</span>
               </p>
               <p>{strings.pinCodeExplanations}</p>
-              <select>
-                {pinCode.map((code, i) => {
-                  return (
-                    <option key={i}>
-                      {this.country2emoji(code.Code)} {code.Number}
-                    </option>
-                  );
-                })}
-              </select>
+              { pinCode.length > 0 ?
+                <select>
+                  {pinCode.map((code, i) => {
+                    return (
+                      <option key={i}>
+                        {this.country2emoji(code.Code)} {code.Number}
+                      </option>
+                    );
+                  })}
+                </select>
+              :
+                  <div className="no-pstn-numbers">{strings.noPstnNumbers}</div>
+              }
             </div>
 
             <div className="anchor-popup"></div>
@@ -133,7 +137,7 @@ class TogglePSTN extends Component {
 }
 
 TogglePSTN.propTypes = {
-  conferencePincode: PropTypes.string.isRequired,
+  conferencePincode: PropTypes.string,
   tooltipPlace: PropTypes.string.isRequired,
   isBottomBar: PropTypes.bool.isRequired
 };

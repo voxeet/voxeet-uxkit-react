@@ -58,7 +58,6 @@ BottomBar.propTypes = {
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
   toggleWidget: PropTypes.func.isRequired,
   toggleFullScreen: PropTypes.func.isRequired,
-  isElectron: PropTypes.bool.isRequired,
   leave: PropTypes.func.isRequired,
   isDemo: PropTypes.bool.isRequired,
   toggleMicrophone: PropTypes.func.isRequired,

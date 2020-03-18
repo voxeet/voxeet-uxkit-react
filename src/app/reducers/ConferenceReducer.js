@@ -8,7 +8,6 @@ const defaultState = {
   connecting: false,
   isLive: false,
   isReplaying: false,
-  isElectron: false,
   isDemo: false,
   conferenceReplayId: null,
   hasLeft: false,
@@ -18,11 +17,6 @@ const defaultState = {
 
 const ConferenceReducer = (state = defaultState, action) => {
   switch (action.type) {
-    case Types.CONFERENCE_ELECTRON:
-      return {
-        ...state,
-        isElectron: true
-      };
     case Types.INCREMENT_TIME:
       return {
         ...state,
@@ -70,7 +64,6 @@ const ConferenceReducer = (state = defaultState, action) => {
         isLive: false,
         hasLeft: true,
         isReplaying: false,
-        isElectron: false,
         isDemo: false,
         conferenceReplayId: null,
         time: 0,
@@ -84,17 +77,9 @@ const ConferenceReducer = (state = defaultState, action) => {
         time: 0,
         conferenceReplayId: null,
         isReplaying: false,
-        isElectron: false,
         isJoined: false
       };
     }
-    case Types.CONFERENCE_STATUS_UPDATED:
-      return {
-        ...state,
-        connecting: false,
-        initialized: true,
-        isLive: action.payload.status.isLive
-      };
     case Types.INITIALIZED_SUCCESS:
       return {
         ...state,

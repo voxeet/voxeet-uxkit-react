@@ -2,6 +2,7 @@ import LocalizedStrings from "react-localization";
 
 export const strings = new LocalizedStrings({
   en: {
+    noPstnNumbers: "There is no PSTN numbers...",
     electronloading: "Voxeet is loading, please wait",
     error: "Error",
     errorPermissionDeniedMicrophone:
@@ -101,6 +102,7 @@ export const strings = new LocalizedStrings({
     inviteUser: "Invite"
   },
   fr: {
+    noPstnNumbers: "Pas de numéro PSTN ...",
     electronloading: "Le client Voxeet va démarrer, veuillez patienter",
     error: "Erreur",
     errorPermissionDeniedMicrophone:

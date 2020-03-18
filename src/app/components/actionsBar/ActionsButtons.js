@@ -9,7 +9,6 @@ import {
   Toggle3DAudioButton,
   HangUpButtonBottomBar,
   ToggleVideoButton,
-  ToggleExternalLiveButton,
   ToggleSettingsButton,
   TogglePSTN,
   ToggleAttendeesListButton,
@@ -35,7 +34,6 @@ class ActionsButtons extends Component {
       displayModal,
       conferencePincode,
       convertFilePresentation,
-      isHlsLive,
       toggleMicrophone,
       screenShareEnabled,
       filePresentationEnabled,
@@ -47,9 +45,7 @@ class ActionsButtons extends Component {
       toggleAttendeesList,
       attendeesListOpened,
       attendeesChatOpened,
-      attendeesLiveOpened,
       toggleAttendeesChat,
-      toggleAttendeesLive,
       recordingLocked,
       toggleModal,
       toggleAudio3D,
@@ -59,9 +55,7 @@ class ActionsButtons extends Component {
       shareActions,
       leave,
       audio3DEnabled,
-      isElectron,
       displayExternalLiveModal,
-      isExternalLive,
       currentUser,
       isFilePresentation,
       isScreenshare,
@@ -94,17 +88,6 @@ class ActionsButtons extends Component {
                 tooltipPlace={isBottomBar ? "top" : "right"}
               />
             )}
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            isBottomBar &&
-            isElectron && (
-              <Toggle3DAudioButton
-                audio3DEnabled={audio3DEnabled}
-                toggleAudio3D={toggleAudio3D}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
         </ul>
         <ul className="controls-center">
           {!isWidgetFullScreenOn &&
@@ -133,7 +116,6 @@ class ActionsButtons extends Component {
                 currentUserScreenShare={isScreenshare}
                 currentUserFilePresentation={isFilePresentation}
                 currentUserVideoPresentation={isVideoPresentation}
-                isElectron={isElectron}
                 toggle={toggleScreenShare}
                 toggleVideoPresentation={toggleVideoPresentation}
                 convertFilePresentation={convertFilePresentation}
@@ -153,24 +135,10 @@ class ActionsButtons extends Component {
           {!isWidgetFullScreenOn &&
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
-            displayActions.indexOf("pstn") > -1 &&
+            displayActions.indexOf("pstn") > -1 && conferencePincode.length > 0 &&
             !isDemo && (
               <TogglePSTN
                 conferencePincode={conferencePincode}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            (!isWebinar || (isWebinar && isAdmin)) &&
-            displayActions.indexOf("live") > -1 &&
-            !isDemo && (
-              <ToggleExternalLiveButton
-                attendeesLiveOpened={attendeesLiveOpened}
-                toggle={toggleAttendeesLive}
-                isExternalLive={isExternalLive}
-                isHlsLive={isHlsLive}
                 isBottomBar={isBottomBar}
                 tooltipPlace={isBottomBar ? "top" : "right"}
               />
@@ -223,13 +191,10 @@ ActionsButtons.propTypes = {
   displayModal: PropTypes.bool.isRequired,
   isScreenshare: PropTypes.bool.isRequired,
   isVideoPresentation: PropTypes.bool.isRequired,
-  isHlsLive: PropTypes.bool.isRequired,
   isFilePresentation: PropTypes.bool.isRequired,
   displayActions: PropTypes.array.isRequired,
   toggleAudio3D: PropTypes.func.isRequired,
   recordingLocked: PropTypes.bool.isRequired,
-  isElectron: PropTypes.bool.isRequired,
-  isExternalLive: PropTypes.bool.isRequired,
   audio3DEnabled: PropTypes.bool.isRequired,
   isRecording: PropTypes.bool.isRequired,
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
@@ -248,9 +213,7 @@ ActionsButtons.propTypes = {
   toggleAttendeesChat: PropTypes.func.isRequired,
   attendeesChatOpened: PropTypes.bool.isRequired,
   toggleAttendeesSettings: PropTypes.func.isRequired,
-  attendeesSettingsOpened: PropTypes.bool.isRequired,
-  toggleAttendeesLive: PropTypes.func.isRequired,
-  attendeesLiveOpened: PropTypes.bool.isRequired
+  attendeesSettingsOpened: PropTypes.bool.isRequired
 };
 
 ActionsButtons.defaultProps = {
