@@ -1,6 +1,6 @@
 {
   "name": "@voxeet/react-components",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "",
   "main": "./dist/bundle.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "IE 11"
   ],
   "dependencies": {
-    "@voxeet/voxeet-web-sdk": "1.9.9",
+    "@voxeet/voxeet-web-sdk": "2.1.1",
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.3.4",
     "autolinker": "^2.2.2",
@@ -72,7 +72,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "peerDependencies": {
-    "@voxeet/voxeet-web-sdk": "1.9.9"
+    "@voxeet/voxeet-web-sdk": "2.1.1"
   },
   "files": [
     "README.md",
