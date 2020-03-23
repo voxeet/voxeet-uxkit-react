@@ -13,9 +13,7 @@ import {
   MODE_TILES,
   MODE_SPEAKER
 } from "../../constants/DisplayModes";
-import {
-  BROADCAST_KICK
-} from "../../constants/BroadcastMessageType";
+import { BROADCAST_KICK } from "../../constants/BroadcastMessageType";
 
 import Modal from "./modal/Modal";
 import AttendeesHeader from "./AttendeesHeader";
@@ -57,7 +55,9 @@ class Attendees extends Component {
   componentDidMount() {}
 
   toggleMicrophone(participant_id, isMuted) {
-    this.props.dispatch(ConferenceActions.toggleMicrophone(participant_id, isMuted));
+    this.props.dispatch(
+      ConferenceActions.toggleMicrophone(participant_id, isMuted)
+    );
   }
 
   toggleErrorModal() {
@@ -163,7 +163,6 @@ class Attendees extends Component {
       currentUser
     } = this.props.participantStore;
     const participantsConnected = participants.filter(p => p.isConnected);
-    const participantWebinar = participants.filter(p => p.isAdmin);
     return (
       <div
         id="conference-attendees"
@@ -179,10 +178,7 @@ class Attendees extends Component {
           !filePresentationEnabled &&
           displayModes.length > 1 &&
           (participantsConnected.length > 0 || isWebinar) && (
-            <ToggleModeButton
-              mode={mode}
-              toggleMode={toggleMode}
-            />
+            <ToggleModeButton mode={mode} toggleMode={toggleMode} />
           )}
 
         {isWidgetFullScreenOn && !forceFullscreen && (
@@ -223,9 +219,7 @@ class Attendees extends Component {
             !filePresentationEnabled &&
             !videoPresentationEnabled && (
               <ListWidget
-                participants={
-                  isWebinar && !isAdmin ? participantWebinar : participants
-                }
+                participants={participants}
                 isAdmin={isAdmin}
                 currentUser={currentUser}
                 isAdminActived={isAdminActived}
@@ -243,9 +237,7 @@ class Attendees extends Component {
             !filePresentationEnabled &&
             !videoPresentationEnabled && (
               <View3D
-                participants={
-                  isWebinar && !isAdmin ? participantWebinar : participants
-                }
+                participants={participants}
                 isAdmin={isAdmin}
                 isAdminActived={isAdminActived}
                 kickParticipant={this.kickParticipant}
@@ -268,9 +260,7 @@ class Attendees extends Component {
               (isWebinar && isAdmin) ||
               (isWebinar && !isAdmin && participantsConnected.length > 0)) && (
               <Tiles
-                participants={
-                  isWebinar && !isAdmin ? participantWebinar : participants
-                }
+                participants={participants}
                 isAdmin={isAdmin}
                 isWebinar={isWebinar}
                 isAdminActived={isAdminActived}
@@ -293,11 +283,7 @@ class Attendees extends Component {
               (isWebinar && isAdmin) ||
               (isWebinar && !isAdmin && participantsConnected.length > 0)) && (
               <Speakers
-                participants={
-                  isWebinar && !isAdmin
-                    ? participantWebinar
-                    : participantsConnected
-                }
+                participants={participants}
                 isAdmin={isAdmin}
                 isAdminActived={isAdminActived}
                 isFilePresentation={isFilePresentation}

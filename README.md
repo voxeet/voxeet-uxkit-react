@@ -9,6 +9,12 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 2.0.1
+
+#### Bug fixes
+
+- Fix webinar compatibility with SDK V2.X
+
 ### 2.0.0
 
 - Compatibility with Voxeet Web SDK V2.X (Not working with SDK V1.X)

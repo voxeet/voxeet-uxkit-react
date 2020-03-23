@@ -184,16 +184,9 @@ export class Actions {
         voxeet: { participants }
       } = getState();
       let userInfo = {
-        type:
-          (participants.isWebinar && !isAdmin) || isListener
-            ? "listener"
-            : "user",
         name: userInfoRaw.name,
         externalId: userInfoRaw.externalId,
-        avatarUrl: userInfoRaw.avatarUrl,
-        params: {
-          admin: isAdmin
-        }
+        avatarUrl: userInfoRaw.avatarUrl
       };
 
       if (isListener || (participants.isWebinar && !isAdmin)) {
@@ -207,40 +200,60 @@ export class Actions {
                 stats: "true",
                 rtcpMode: rtcpmode,
                 mode: mode,
-                videoCodec: videoCodec,
-                pincode: pinCode
-              }
+                videoCodec: videoCodec
+              },
+              pinCode: pinCode
             })
             .then(conference => {
-              return VoxeetSDK.conference
-                .join(conference, {
-                  constraints: { audio: false, video: false },
-                  simulcast: simulcast
-                })
-                .then(function(res) {
-                  if (
-                    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-                    navigator.userAgent.match(/AppleWebKit/)
-                  ) {
-                    navigator.mediaDevices.getUserMedia({
-                      audio: true,
-                      video: false
-                    });
-                  }
-                  dispatch(
-                    ParticipantActions.saveCurrentUser(
-                      userInfo.name,
-                      userInfo.avatarUrl,
-                      userInfo.externalId,
-                      true
-                    )
-                  );
-                  dispatch(
-                    ConferenceActions._conferenceJoined(res.id, pinCode)
-                  );
-                  dispatch(ControlsActions.toggleWidget());
-                  dispatch(ParticipantActions.triggerHandleOnConnect());
-                });
+              if ((participants.isWebinar && !isAdmin) || isListener) {
+                return VoxeetSDK.conference
+                  .listen(conference)
+                  .then(function(res) {
+                    dispatch(
+                      ParticipantActions.saveCurrentUser(
+                        userInfo.name,
+                        userInfo.avatarUrl,
+                        userInfo.externalId,
+                        true
+                      )
+                    );
+                    dispatch(
+                      ConferenceActions._conferenceJoined(res.id, pinCode)
+                    );
+                    dispatch(ControlsActions.toggleWidget());
+                    dispatch(ParticipantActions.triggerHandleOnConnect());
+                  });
+              } else {
+                return VoxeetSDK.conference
+                  .join(conference, {
+                    constraints: { audio: false, video: false },
+                    simulcast: simulcast
+                  })
+                  .then(function(res) {
+                    if (
+                      navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+                      navigator.userAgent.match(/AppleWebKit/)
+                    ) {
+                      navigator.mediaDevices.getUserMedia({
+                        audio: true,
+                        video: false
+                      });
+                    }
+                    dispatch(
+                      ParticipantActions.saveCurrentUser(
+                        userInfo.name,
+                        userInfo.avatarUrl,
+                        userInfo.externalId,
+                        true
+                      )
+                    );
+                    dispatch(
+                      ConferenceActions._conferenceJoined(res.id, pinCode)
+                    );
+                    dispatch(ControlsActions.toggleWidget());
+                    dispatch(ParticipantActions.triggerHandleOnConnect());
+                  });
+              }
             });
         });
       }
@@ -334,9 +347,9 @@ export class Actions {
                   stats: "true",
                   rtcpMode: rtcpmode,
                   mode: mode,
-                  videoCodec: videoCodec,
-                  pincode: pinCode
-                }
+                  videoCodec: videoCodec
+                },
+                pinCode: pinCode
               })
               .then(conference => {
                 return VoxeetSDK.conference
@@ -487,9 +500,9 @@ export class Actions {
               stats: "true",
               rtcpMode: rtcpmode,
               mode: mode,
-              videoCodec: videoCodec,
-              pincode: pinCode
-            }
+              videoCodec: videoCodec
+            },
+            pinCode: pinCode
           })
           .then(conference => {
             return VoxeetSDK.conference
