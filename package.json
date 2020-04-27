@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack-dev-server -d --hot --inline --history-api-fallback --content-base ./src/static",
     "build": "webpack --config webpack.config.prod.js --progress",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "get-version": "echo $npm_package_version"
   },
   "keywords": [],
   "author": "Voxeet",
