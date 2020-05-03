@@ -29,7 +29,6 @@ jobs:
           yarn install
       env:
           NODE_AUTH_TOKEN: ${{ secrets.NEXUS_AUTH_TOKEN }}
-          NODE_ENV: ${{ matrix.voxeet_env }}
 
     - uses: rlespinasse/github-slug-action@master
 
