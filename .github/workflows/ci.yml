@@ -45,6 +45,7 @@ jobs:
 
     - name: build and publish
       run: |
+          npm list
           yarn publish
       env:
           NODE_AUTH_TOKEN: ${{ secrets.NEXUS_AUTH_TOKEN }}
