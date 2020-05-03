@@ -22,24 +22,26 @@ jobs:
         node-version: 12
         registry-url: 'https://stg-gke-eu.voxeet.net/nexus/repository/npm-group/'
         always-auth: true
-    - name: install dependencies
-      run: |
-          sed -i 's/-production"/-${{ env.NODE_ENV }}"/' package.json
-          yarn install
-      env:
-          NODE_AUTH_TOKEN: ${{ secrets.NEXUS_AUTH_TOKEN }}
-          NODE_ENV: ${{ matrix.voxeet_env }}
+
     - uses: rlespinasse/github-slug-action@master
 
     - name: set snapshot version
       if: endsWith(github.ref, '/master') != true
       run: |
-          yarn version --no-git-tag-version --new-version $(npm --silent run get-version)-${{ env.GITHUB_REF_SLUG }}-${{ env.GITHUB_SHA_SHORT }}-${{ env.NODE_ENV }}
+          yarn version --no-git-tag-version --new-version $(npm --silent run get-version)-${{ env.GITHUB_REF_SLUG }}-${{ env.GITHUB_SHA_SHORT }}-${{ matrix.voxeet_env }}
 
     - name: set release version
       if: endsWith(github.ref, '/master')
       run: |
-          yarn version --no-git-tag-version --new-version $(npm --silent run get-version)-${{ env.NODE_ENV }}
+          yarn version --no-git-tag-version --new-version $(npm --silent run get-version)-${{ matrix.voxeet_env }}
+
+    - name: install dependencies
+      run: |
+          sed -i 's/-production"/-${{ matrix.voxeet_env }}"/' package.json
+          yarn install
+      env:
+          NODE_AUTH_TOKEN: ${{ secrets.NEXUS_AUTH_TOKEN }}
+          NODE_ENV: ${{ matrix.voxeet_env }}
 
     - name: build and publish
       run: |
