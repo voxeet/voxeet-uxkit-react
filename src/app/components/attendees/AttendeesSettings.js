@@ -35,15 +35,15 @@ class AttendeesSettings extends Component {
   componentDidUpdate(nextProps, nextState) {
     if (
       this.props.controlsStore.videoEnabled !=
-        nextProps.controlsStore.videoEnabled ||
+      nextProps.controlsStore.videoEnabled ||
       this.props.controlsStore.audioEnabled !=
-        nextProps.controlsStore.audioEnabled
+      nextProps.controlsStore.audioEnabled
     ) {
       VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
         if (this.props.inputManager.currentAudioDevice != "") {
           let exist = false;
           devices.map((device, i) => {
-            if (device.deviceId == this.props.inputManager.currentAudioDevice) {
+            if (device.deviceId == this.props.inputManager.currentAudioDevice && device.deviceId != "") {
               exist = true;
             }
           });
@@ -52,7 +52,9 @@ class AttendeesSettings extends Component {
             date.setDate(date.getDate() + 365);
             Cookies.set("input", devices[0].deviceId, {
               path: "/",
-              expires: date
+              expires: date,
+              secure: true,
+              sameSite: 'none'
             });
             this.props.dispatch(
               InputManagerActions.inputAudioChange(devices[0].deviceId)
@@ -69,7 +71,7 @@ class AttendeesSettings extends Component {
           let exist = false;
           devices.map((device, i) => {
             if (
-              device.deviceId == this.props.inputManager.currentOutputDevice
+              device.deviceId == this.props.inputManager.currentOutputDevice && device.deviceId != ""
             ) {
               exist = true;
             }
@@ -79,7 +81,9 @@ class AttendeesSettings extends Component {
             date.setDate(date.getDate() + 365);
             Cookies.set("output", devices[0].deviceId, {
               path: "/",
-              expires: date
+              expires: date,
+              secure: true,
+              sameSite: 'none'
             });
             this.props.dispatch(
               InputManagerActions.outputAudioChange(devices[0].deviceId)
@@ -95,7 +99,7 @@ class AttendeesSettings extends Component {
         if (this.props.inputManager.currentVideoDevice != "") {
           let exist = false;
           devices.map((device, i) => {
-            if (device.deviceId == this.props.inputManager.currentVideoDevice) {
+            if (device.deviceId == this.props.inputManager.currentVideoDevice && device.deviceId != "") {
               exist = true;
             }
           });
@@ -104,7 +108,9 @@ class AttendeesSettings extends Component {
             date.setDate(date.getDate() + 365);
             Cookies.set("camera", devices[0].deviceId, {
               path: "/",
-              expires: date
+              expires: date,
+              secure: true,
+              sameSite: 'none'
             });
             this.props.dispatch(
               InputManagerActions.inputVideoChange(devices[0].deviceId)
@@ -123,7 +129,7 @@ class AttendeesSettings extends Component {
       if (this.props.inputManager.currentAudioDevice != "") {
         let exist = false;
         devices.map((device, i) => {
-          if (device.deviceId == this.props.inputManager.currentAudioDevice) {
+          if (device.deviceId == this.props.inputManager.currentAudioDevice && device.deviceId != "") {
             exist = true;
           }
         });
@@ -132,7 +138,9 @@ class AttendeesSettings extends Component {
           date.setDate(date.getDate() + 365);
           Cookies.set("input", devices[0].deviceId, {
             path: "/",
-            expires: date
+            expires: date,
+            secure: true,
+            sameSite: 'none'
           });
           this.props.dispatch(
             InputManagerActions.inputAudioChange(devices[0].deviceId)
@@ -148,7 +156,7 @@ class AttendeesSettings extends Component {
       if (this.props.inputManager.currentOutputDevice != "") {
         let exist = false;
         devices.map((device, i) => {
-          if (device.deviceId == this.props.inputManager.currentOutputDevice) {
+          if (device.deviceId == this.props.inputManager.currentOutputDevice && device.deviceId != "") {
             exist = true;
           }
         });
@@ -157,7 +165,9 @@ class AttendeesSettings extends Component {
           date.setDate(date.getDate() + 365);
           Cookies.set("output", devices[0].deviceId, {
             path: "/",
-            expires: date
+            expires: date,
+            secure: true,
+            sameSite: 'none'
           });
           this.props.dispatch(
             InputManagerActions.outputAudioChange(devices[0].deviceId)
@@ -173,7 +183,7 @@ class AttendeesSettings extends Component {
       if (this.props.inputManager.currentVideoDevice != "") {
         let exist = false;
         devices.map((device, i) => {
-          if (device.deviceId == this.props.inputManager.currentVideoDevice) {
+          if (device.deviceId == this.props.inputManager.currentVideoDevice && device.deviceId != "") {
             exist = true;
           }
         });
@@ -182,7 +192,9 @@ class AttendeesSettings extends Component {
           date.setDate(date.getDate() + 365);
           Cookies.set("camera", devices[0].deviceId, {
             path: "/",
-            expires: date
+            expires: date,
+            secure: true,
+            sameSite: 'none'
           });
           this.props.dispatch(
             InputManagerActions.inputVideoChange(devices[0].deviceId)
@@ -211,7 +223,12 @@ class AttendeesSettings extends Component {
     VoxeetSDK.mediaDevice.selectAudioOutput(e.target.value);
     var date = new Date();
     date.setDate(date.getDate() + 365);
-    Cookies.set("output", e.target.value, { path: "/", expires: date });
+    Cookies.set("output", e.target.value, {
+      path: "/",
+      expires: date,
+      secure: true,
+      sameSite: 'none'
+    });
     this.props.dispatch(InputManagerActions.outputAudioChange(e.target.value));
   }
 
@@ -220,7 +237,12 @@ class AttendeesSettings extends Component {
     VoxeetSDK.mediaDevice.selectAudioInput(e.target.value).then(() => {
       var date = new Date();
       date.setDate(date.getDate() + 365);
-      Cookies.set("input", e.target.value, { path: "/", expires: date });
+      Cookies.set("input", e.target.value, {
+        path: "/",
+        expires: date,
+        secure: true,
+        sameSite: 'none'
+      });
       if (this.props.microphoneMuted) {
         VoxeetSDK.conference.toggleMute(VoxeetSDK.session.participant);
       }
@@ -235,7 +257,12 @@ class AttendeesSettings extends Component {
     }
     var date = new Date();
     date.setDate(date.getDate() + 365);
-    Cookies.set("camera", e.target.value, { path: "/", expires: date });
+    Cookies.set("camera", e.target.value, {
+      path: "/",
+      expires: date,
+      secure: true,
+      sameSite: 'none'
+    });
     this.props.dispatch(InputManagerActions.inputVideoChange(e.target.value));
   }
 
@@ -252,8 +279,8 @@ class AttendeesSettings extends Component {
           this.state.runningAnimation
             ? "attendees-settings attendees-settings-out"
             : attendeesSettingsOpened
-            ? "attendees-settings"
-            : "attendees-settings-hidden"
+              ? "attendees-settings"
+              : "attendees-settings-hidden"
         }
       >
         <div className="attendees-settings-header">
@@ -263,32 +290,13 @@ class AttendeesSettings extends Component {
         <div className="settings">
           <div className="content">
             <form>
-              <div className="form-group">
-                <label htmlFor="video">Microphone</label>
-                <select
-                  name="audio"
-                  value={currentAudioDevice}
-                  className="form-control"
-                  onChange={this.setAudioDevice}
-                >
-                  {this.state.audioDevices.map((device, i) => (
-                    <option key={i} value={device.deviceId}>
-                      {device.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                <AttendeesSettingsVuMeter />
-              </div>
-
               {bowser.chrome && (
                 <div className="form-group form-output">
-                  <label htmlFor="output">Sound Output</label>
+                  {/* <label htmlFor="output">Sound Output</label> */}
                   <select
                     name="output"
                     value={currentOutputDevice}
-                    className="form-control"
+                    className="form-control select-audio-output"
                     onChange={this.setOutputDevice}
                     disabled={false}
                   >
@@ -301,11 +309,11 @@ class AttendeesSettings extends Component {
                 </div>
               )}
               <div className="form-group last">
-                <label htmlFor="video">Camera</label>
+                {/* <label htmlFor="video">Camera</label> */}
                 <select
                   name="video"
                   value={currentVideoDevice}
-                  className="form-control"
+                  className="form-control select-video-device"
                   onChange={this.setVideoDevice}
                   disabled={false}
                 >
@@ -315,6 +323,24 @@ class AttendeesSettings extends Component {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="form-group">
+                {/* <label htmlFor="video">Microphone</label> */}
+                <select
+                  name="audio"
+                  value={currentAudioDevice}
+                  className="form-control select-audio-input"
+                  onChange={this.setAudioDevice}
+                >
+                  {this.state.audioDevices.map((device, i) => (
+                    <option key={i} value={device.deviceId}>
+                      {device.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <AttendeesSettingsVuMeter />
               </div>
               <div className="hint-text">
                 <p>{strings.problemSettings}</p>

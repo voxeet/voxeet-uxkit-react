@@ -18,7 +18,7 @@ const FilePresentationReducer = (state = defaultState, action) => {
         fileConverted: true
       };
     case Types.FILE_PRESENTATION_ADD_THUMB: {
-      let thumbnails = state.thumbnails;
+      let thumbnails = [...state.thumbnails];
       thumbnails.push(action.payload.thumbUrl);
       return {
         ...state,

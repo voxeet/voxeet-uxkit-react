@@ -114,7 +114,7 @@ class PreConfigVuMeter extends Component {
     const { level } = this.state;
     return (
       <ul className="loadbar">
-        {[...Array(20)].map((el, i) => (
+        {[...Array(22)].map((el, i) => (
           <li key={`loadbar_${i}`}>
             <div className={`bar ${level >= i ? "ins" : ""}`}></div>
           </li>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="13px" viewBox="0 0 21 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>icon-camera</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon-camera" fill="#00AFEF">
+            <path d="M15.1888436,9.00646273 L15.1888436,11.4989229 C15.1888436,12.3278759 14.5235347,13 13.7029871,13 L1.48585653,13 C0.665308893,13 0,12.3278759 0,11.4989229 L0,1.50027697 C0,0.672124084 0.665308893,0 1.48585653,0 L13.7029871,0 C14.5235347,0 15.1888436,0.672124084 15.1888436,1.50027697 L15.1888436,4.41281467 L19.4499887,1.04499292 C20.0859923,0.542500154 21,1.01538746 21,1.84754108 L21,11.5717363 C21,12.4038899 20.0859923,12.8775774 19.4499887,12.3742845 L15.1888436,9.00646273 Z"></path>
+        </g>
+    </g>
+</svg>

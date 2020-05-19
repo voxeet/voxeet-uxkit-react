@@ -9,6 +9,19 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 2.1.0
+
+#### Features
+
+- A new UI and mobile layout.
+- Compatibility with the SDK 2.x.
+
+#### Bug fixes
+
+- Updated audio output.
+- Fixed an issue with the `sameSite` cookie warning.
+- Fixed an issue with the update of the participants list.
+
 ### 2.0.1
 
 #### Bug fixes
@@ -38,8 +51,8 @@ This version only work with Voxeet SDK V2 (Please contact us to use it)
 [
   {
     Code: "US",
-    Number: "YOUR_PSTN_NUMBER"
-  }
+    Number: "YOUR_PSTN_NUMBER",
+  },
 ];
 ```
 
@@ -126,7 +139,7 @@ A redux reducer needs to be added to your store.
 import { reducer as voxeetReducer } from "@voxeet/react-components";
 
 const reducers = combineReducers({
-  voxeet: voxeetReducer
+  voxeet: voxeetReducer,
 });
 ```
 
@@ -141,14 +154,14 @@ import { combineReducers, createStore, applyMiddleware } from "redux";
 import {
   ConferenceRoom,
   VoxeetProvider,
-  reducer as voxeetReducer
+  reducer as voxeetReducer,
 } from "@voxeet/react-components";
 
 // Import Style
 import "@voxeet/react-components/dist/voxeet-react-components.css"; // Can you be customize, refer to https://github.com/voxeet/voxeet-assets-react-components
 
 const reducers = combineReducers({
-  voxeet: voxeetReducer
+  voxeet: voxeetReducer,
 });
 
 const configureStore = () =>
@@ -157,7 +170,7 @@ const configureStore = () =>
 const settings = {
   consumerKey: "consumerKey",
   consumerSecret: "consumerSecret",
-  conferenceAlias: "Sample"
+  conferenceAlias: "Sample",
 };
 
 ReactDOM.render(
@@ -251,7 +264,6 @@ class ActionsButtons extends Component {
       displayModal,
       conferencePincode,
       convertFilePresentation,
-      isHlsLive,
       toggleMicrophone,
       screenShareEnabled,
       filePresentationEnabled,
@@ -263,26 +275,29 @@ class ActionsButtons extends Component {
       toggleAttendeesList,
       attendeesListOpened,
       attendeesChatOpened,
-      attendeesLiveOpened,
       toggleAttendeesChat,
-      toggleAttendeesLive,
       recordingLocked,
       toggleModal,
       toggleAudio3D,
+      participants,
       isWebinar,
       isAdmin,
       displayActions,
       shareActions,
       leave,
       audio3DEnabled,
-      isElectron,
       displayExternalLiveModal,
-      isExternalLive,
       currentUser,
       isFilePresentation,
       isScreenshare,
-      isDemo
+      isDemo,
     } = this.props;
+    let nbParticipants = 0;
+    if (participants && participants.length) {
+      nbParticipants = participants.filter((p) => p.isConnected).length;
+    }
+    if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
+      nbParticipants += 1;
 
     return (
       <div>
@@ -307,17 +322,6 @@ class ActionsButtons extends Component {
               <ToggleVideoButton
                 videoEnabled={videoEnabled}
                 toggle={toggleVideo}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            isBottomBar &&
-            isElectron && (
-              <Toggle3DAudioButton
-                audio3DEnabled={audio3DEnabled}
-                toggleAudio3D={toggleAudio3D}
                 isBottomBar={isBottomBar}
                 tooltipPlace={isBottomBar ? "top" : "right"}
               />
@@ -350,7 +354,6 @@ class ActionsButtons extends Component {
                 currentUserScreenShare={isScreenshare}
                 currentUserFilePresentation={isFilePresentation}
                 currentUserVideoPresentation={isVideoPresentation}
-                isElectron={isElectron}
                 toggle={toggleScreenShare}
                 toggleVideoPresentation={toggleVideoPresentation}
                 convertFilePresentation={convertFilePresentation}
@@ -382,20 +385,6 @@ class ActionsButtons extends Component {
           {!isWidgetFullScreenOn &&
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
-            displayActions.indexOf("live") > -1 &&
-            !isDemo && (
-              <ToggleExternalLiveButton
-                attendeesLiveOpened={attendeesLiveOpened}
-                toggle={toggleAttendeesLive}
-                isExternalLive={isExternalLive}
-                isHlsLive={isHlsLive}
-                isBottomBar={isBottomBar}
-                tooltipPlace={isBottomBar ? "top" : "right"}
-              />
-            )}
-          {!isWidgetFullScreenOn &&
-            !forceFullscreen &&
-            (!isWebinar || (isWebinar && isAdmin)) &&
             !bowser.msie &&
             !currentUser.isListener && (
               <ToggleSettingsButton
@@ -407,6 +396,7 @@ class ActionsButtons extends Component {
             )}
           {displayActions.indexOf("attendees") > -1 && (
             <ToggleAttendeesListButton
+              nbParticipants={nbParticipants}
               tooltipPlace={isBottomBar ? "top" : "right"}
               toggle={toggleAttendeesList}
               isBottomBar={isBottomBar}
@@ -463,12 +453,12 @@ ActionsButtons.propTypes = {
   toggleAttendeesChat: PropTypes.func.isRequired,
   attendeesChatOpened: PropTypes.bool.isRequired,
   toggleAttendeesSettings: PropTypes.func.isRequired,
-  attendeesSettingsOpened: PropTypes.bool.isRequired
+  attendeesSettingsOpened: PropTypes.bool.isRequired,
 };
 
 ActionsButtons.defaultProps = {
   isBottomBar: false,
-  forceFullscreen: false
+  forceFullscreen: false,
 };
 
 export default ActionsButtons;
@@ -479,7 +469,7 @@ export default ActionsButtons;
 For english language (Be sure to use this keys to override default strings)
 
 ```
-[en :{
+[en: {
     noPstnNumbers: "There is no PSTN numbers...",
     electronloading: "Voxeet is loading, please wait",
     error: "Error",
@@ -506,7 +496,9 @@ For english language (Be sure to use this keys to override default strings)
       "Your conference is already being recorded by an other attendee.",
     leave: "End",
     audio: "3D Audio",
+    audioTitle: "Audio",
     chat: "Chat",
+    nameConversation: "Name this conversation",
     externalLive: "Live Broadcast",
     fullscreen: "FullScreen",
     minimize: "Minimize",
@@ -516,14 +508,14 @@ For english language (Be sure to use this keys to override default strings)
     sendMessage: "Send",
     pinCodeExplanations:
       "Call this number below and provide the conference pin code to join the conference via PSTN.",
-    record: "Recording",
+    record: "Record",
     shareAlreadyStarted:
       "Someone is already sharing. Please stop it before start a new one.",
     share: "Share",
     screenshare: "Share Screen",
-    screenshareEntireScreen: "Share entire screen",
-    screenshareAWindow: "Share a window",
-    screenshareOption: "Share options",
+    screenshareEntireScreen: "Share Entire Screen",
+    screenshareAWindow: "Share a Window",
+    screenshareOption: "Share Options",
     settings: "Settings",
     open: "Open",
     close: "Close",
@@ -549,6 +541,8 @@ For english language (Be sure to use this keys to override default strings)
     displaymode: "Display mode",
     changelayout: "Change layout",
     attendees: "Attendees",
+    participantsHeder: "Participants ",
+    invitedHeder: "Invited",
     here: "here",
     hangtight: "We're waiting for other callers to arrive.",
     join: "Join",
@@ -560,6 +554,7 @@ For english language (Be sure to use this keys to override default strings)
     output: "Output",
     input: "Input",
     titlePreConfig: "Set up your devices",
+    addParticipant: "Add Participant",
     presenter: "Attendees",
     joined: "Joined",
     invited: "Waiting on",
@@ -568,17 +563,17 @@ For english language (Be sure to use this keys to override default strings)
     left: "Left",
     noAudioDevice:
       "No audio device detected. Please make sure to plug at least one microphone to access this conference.",
-    filepresentation: "Share a file",
+    filepresentation: "Share a File",
     prev: "Previous",
     next: "Next",
     errorFilePresentation:
       "An error occured during the file presentation. Please check your file.",
-    videopresentation: "Share a video",
+    videopresentation: "Share a Video",
     placeholderVideoPresentation: "Video URL",
     startVideoPresentationAutoplay: "Start video",
     invitedUsers: "Waiting for invitation",
     inviteUser: "Invite"
-}]
+  }]
 ```
 
 More language can be added. Use an array prefixed with the correct language key. (en, fr, it, ...)

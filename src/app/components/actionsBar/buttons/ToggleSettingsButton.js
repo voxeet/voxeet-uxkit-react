@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
-import settings from "../../../../static/images/newicons/settings.svg";
-import SettingsOn from "../../../../static/images/newicons/icon-settings-on.svg";
-import SettingsOff from "../../../../static/images/newicons/icon-settings-off.svg";
+import SettingsOn from "../../../../static/images/icons/btn-settings-on.svg";
+import SettingsOff from "../../../../static/images/icons/btn-settings-off.svg";
 
 class ToggleSettingsButton extends Component {
   constructor(props) {

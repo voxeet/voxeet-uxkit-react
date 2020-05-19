@@ -15,6 +15,8 @@ class Tile extends Component {
     );
     if (
       (checker != null && nextProps.participant.stream == null) ||
+      (checker != null && !nextProps.participant.stream.active) ||
+      (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
       (checker == null && nextProps.participant.stream) ||
       (this.props.mySelf && this.props.participant.name == null)
     ) {
@@ -46,7 +48,7 @@ class Tile extends Component {
           "video-" +
           nbParticipant +
           "-video-" +
-          (participant.stream ? "on" : "off")
+          (participant.stream && participant.stream.active && participant.stream.getVideoTracks().length > 0? "on" : "off")
         }
       >
         <TileVideo
@@ -82,7 +84,6 @@ Tile.propTypes = {
   mySelf: PropTypes.bool.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   nbParticipant: PropTypes.number,
-  isAdmin: PropTypes.bool.isRequired
 };
 
 export default Tile;

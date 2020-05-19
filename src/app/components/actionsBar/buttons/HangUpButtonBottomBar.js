@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { strings } from "../../../languages/localizedStrings";
-import Hangup from "../../../../static/images/newicons/icon-hang-up.svg";
+import Hangup from "../../../../static/images/icons/btn-hang-up.svg";
 
 class HangUpButtonBottomBar extends Component {
   constructor(props) {

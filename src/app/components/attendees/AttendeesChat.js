@@ -102,13 +102,25 @@ class AttendeesChat extends Component {
       >
         <div className="attendees-chat-header">
           <h1>{strings.chat}</h1>
+          {/* <a
+              className="icon-close"
+              title="Close"
+              currentitem="false"
+              onClick={() => this.togglePopUp()}
+            ></a> */}
         </div>
+        {/* <div className="attendees-chat-header name-conversation-heder">
+          <h3 className='white'>#</h3>
+          <h3 className='name-conversation'>{strings.nameConversation}</h3>
+        </div> */}
         <ul id="chat-scrollbar">
           {messages.map((message, i) => {
+            let time = new Intl.DateTimeFormat('en-US', {hour: '2-digit', minute: '2-digit'}).format(message.time);
             let messageContent = this.urlify(message.content);
             if (message.ownerId != currentUser.participant_id) {
               return (
                 <li key={i}>
+                  <div className='chat-time'>{time}</div>
                   <div className="chat-container">
                     <div>
                       <img src={message.avatarUrl} />
@@ -126,6 +138,7 @@ class AttendeesChat extends Component {
             } else {
               return (
                 <li key={i}>
+                <div className='chat-time'>{time}</div>
                   <div className="chat-container-myself">
                     <div>
                       <span className="chat-name-myself">{message.name}</span>

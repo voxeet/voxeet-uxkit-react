@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import IconMuteSoundOff from "../../../static/images/newicons/icon-mute-sound-off.svg";
-import IconMuteSoundOn from "../../../static/images/newicons/icon-mute-sound-on.svg";
+import IconMuteSoundOff from "../../../static/images/icons/icon-mute-sound-off.svg";
+import IconMuteSoundOn from "../../../static/images/icons/icon-mute-sound-on.svg";
 
 @connect(store => {
   return {

@@ -11,6 +11,7 @@
 .vxt-bottom-bar {
   position: absolute;
   bottom: 0px;
+  font-family: 'DINNextLTPro-Regular';
   transform: translate(-50%, -50%);
   -webkit-backface-visibility: hidden;
   -webkit-transform: translateZ(0);
@@ -22,23 +23,24 @@
     transition: all 0.5s ease;*/
   opacity: 1;
   width: 100%;
-  background-color: @secondaryColor;
+  border-top: 2px solid #3E44FE;
+  background-color: @bottomBarBg;
   text-align: center;
   .vxt-bottom-bar-actions {
     .controls-left {
       display: inline-block;
       text-align: left;
-      width: 29%;
+      width: 35%;
     }
     .controls-center {
       display: inline-block;
       text-align: center;
-      width: 29%;
+      width: 30%;
     }
     .controls-right {
       display: inline-block;
       text-align: right;
-      width: 42%;
+      width: 35%;
     }
     .chat-badge {
       width: 10px;
@@ -79,7 +81,8 @@
         }
       }
       .separator {
-        display: inline-block;
+        display: none;
+        // display: inline-block;
         width: 1px;
         height: 50px;
         background-color: #979797;
@@ -124,7 +127,7 @@
         &.active {
           //background: @mutedColor;
           //color: @dangerColor;
-          background-color: #fff;
+          // background-color: #fff;
           border-radius: 50%;
           cursor: pointer;
           > .icon-gear {
@@ -138,23 +141,23 @@
         }
         .bubble-tip {
           animation: createBox 0.25s;
-          background-color: #fff;
-          top: -265px;
-          margin-left: -79px;
-          width: 190px;
-          height: 240px;
+          background-color: #212330;
+          top: -305px;
+          margin-left: -98px;
+          width: 240px;
+          height: 280px;
           position: absolute;
           border-radius: 4px;
           padding: 8px;
-          font-family: @font-family-medium;
+          font-family: 'DINNextLTPro-Regular';
 
           .anchor-popup {
             width: 0;
             height: 0;
             border-left: 5px solid transparent;
             border-right: 5px solid transparent;
-            border-top: 6px solid #fff;
-            left: calc(50% - 3px);
+            border-top: 6px solid #212330;
+            left: calc(50% - 8px);
             position: absolute;
             bottom: -6px;
           }
@@ -162,16 +165,21 @@
             position: absolute;
             border: none;
             right: 15px;
+            top: 15px;
             width: auto;
             color: #ccc;
-            font-size: 9px;
+            font-size: 12px;
+            line-height: 12px;
+            background: none;
           }
           .icon-close:hover {
             border: none;
+            background: none;
           }
           .no-pstn-numbers {
             font-size: 13px;
             margin-top: 16px;
+            color: #979797;
           }
           .pincode {
             font-weight: bold;
@@ -189,6 +197,7 @@
             margin-left: 8px;
             margin-top: 4px;
             margin-bottom: 8px;
+            color: #979797;
           }
           select {
             height: 25px;
@@ -199,38 +208,42 @@
             width: 85%;
             display: block;
             text-align: left;
-            color: #000;
+            color: #fff;
             height: auto;
-            font-size: 15px;
+            font-size: 20px;
             margin-left: 8px;
             font-weight: 800;
+            font-family: 'DINNextLTPro-Bold';
             margin: auto;
             margin-left: 7px;
-            margin-top: -5px;
+            margin-top: 10px;
+            margin-bottom: 15px;
           }
           a:hover {
-            border: 1px solid @blueHover;
-            color: @blueHover;
+            background-image: linear-gradient(225deg, #AA33FF, #3E44FE);
+            //border: 1px solid @blueHover;
+            color: #fff;
           }
           a {
-            border: 1px solid #ccc;
+            //border: 1px solid #ccc;
+            background: #fff;
             width: 85%;
             margin: auto;
-            border-radius: 4px;
+            border-radius: 50px;
             display: block;
             text-align: left;
             color: #000;
-            font-size: 12px;
+            font-size: 16px;
             height: auto;
-            padding-left: 8px;
-            height: 28px;
-            line-height: 28px;
-            margin-bottom: 8px;
+            padding-left: 14px;
+            height: 40px;
+            line-height: 40px;
+            margin-bottom: 15px;
             img {
-              width: 16px;
+              width: 20px;
               vertical-align: text-top;
-              height: 16px;
-              margin-right: 5px;
+              height: 20px;
+              margin-right: 8px;
               position: relative;
               left: auto;
               top: auto;
@@ -239,22 +252,22 @@
           }
         }
         .bubble-video-presentation {
-          top: -145px;
+          top: -175px;
           margin-left: -93px;
           width: 220px;
-          height: 120px;
+          height: 150px;
           #video-presentation-input {
             text-align: left;
             box-shadow: none;
             background: #fff;
             outline: 0;
-            width: 85%;
+            width: 88%;
             border-radius: 3px;
             font-size: 11px;
             border: 1px solid #ccc;
             margin-top: 10px;
             padding-left: 4px;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             line-height: 20px;
           }
           button {
@@ -262,7 +275,8 @@
             border: none;
             font-size: 11px;
             padding: 5px 0px 5px 0px;
-            background-image: linear-gradient(225deg, #c0e249 0%, #48d57c 100%);
+            background-image: linear-gradient(225deg, #AA33FF 0%, #3E44FE 100%);
+            //background-image: linear-gradient(225deg, #c0e249 0%, #48d57c 100%);
             color: #fff;
             border-radius: 4px;
             cursor: pointer;
@@ -270,19 +284,36 @@
         }
         a {
           img {
-            width: 28px;
+            width: 50px;
             vertical-align: middle;
+            position: relative;
           }
           div {
             position: absolute;
-            font-size: 10px;
+            font-size: 12px;
             width: 65px;
             margin-left: -9px;
             bottom: 8px;
             line-height: 11px;
             color: #fff;
             white-space: nowrap;
-            font-family: @font-family-medium;
+            font-family: 'DINNextLTPro-Regular';
+          }
+          .attendees-number {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            line-height: 24px;
+            margin-left: -7px;
+            margin-top: 14px;
+            z-index: 1;
+            font-size: 16px;
+            background: #13141C;
+            border-radius: 50px;
+
+            &.active {
+              background: #3E44FE;
+            }
           }
           height: 50px;
           width: 50px;

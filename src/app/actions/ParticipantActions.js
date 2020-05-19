@@ -25,7 +25,8 @@ export const Types = {
   PARTICIPANT_3D_MOVE: "PARTICIPANT_3D_MOVE",
   PARTICIPANT_ADMIN: "PARTICIPANT_ADMIN",
   PARTICIPANT_ADDED_UPDATED: "PARTICIPANT_ADDED_UPDATED",
-  USER_INVITED: "USER_INVITED"
+  USER_INVITED: "USER_INVITED",
+  PARTICIPANT_QUALITY_UPDATED: "PARTICIPANT_QUALITY_UPDATED"
 };
 
 export class Actions {
@@ -167,6 +168,27 @@ export class Actions {
       payload: {
         userId,
         stream
+      }
+    };
+  }
+
+  static onParticipantQualityUpdated(indicators) {
+    let quality={};
+
+    for (let [key, value] of indicators) {
+      let update = {audio:0, video: 0}
+      if(value) {
+        if(!isNaN(value.audio))
+          update.audio = value.audio;
+        if(!isNaN(value.video))
+          update.video = value.video;
+      }
+      quality[key] = update;
+    }
+    return {
+      type: Types.PARTICIPANT_QUALITY_UPDATED,
+      payload: {
+        quality
       }
     };
   }

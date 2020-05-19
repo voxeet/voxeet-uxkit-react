@@ -1,0 +1,188 @@
+@font-face {
+	font-family: "DINNextLTPro-Black";
+	font-style: normal;
+	src:
+		local("DINNextLTPro-Black"),
+		url("./DINNextLTPro-Black.otf") format("opentype");
+	unicode-range: "U+0000-00FF", "U+0131", "U+0152-0153", "U+02C6", "U+02DA", "U+02DC", "U+2000-206F", "U+2074", "U+20AC", "U+2212", "U+2215", "U+E0FF", "U+EFFD", "U+F000";
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-BlackCondensed';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-BlackCondensed'),
+		url('./DINNextLTPro-BlackCondensed.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-BlackItalic';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-BlackItalic'),
+		url('./DINNextLTPro-BlackItalic.otf') format("opentype");
+    unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-Bold';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-Bold'),
+		url('./DINNextLTPro-Bold.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-BoldCondensed';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-BoldCondensed'),
+		url('./DINNextLTPro-BoldCondensed.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-BoldItalic';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-BoldItalic'),
+		url('./DINNextLTPro-BoldItalic.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-Condensed';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-Condensed'),
+		url('./DINNextLTPro-Condensed.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-Heavy';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-Heavy'),
+		url('./DINNextLTPro-Heavy.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-HeavyCondensed';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-HeavyCondensed'),
+		url('./DINNextLTPro-HeavyCondensed.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-HeavyItalic';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-HeavyItalic'),
+		url('./DINNextLTPro-HeavyItalic.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-Italic';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-Italic'),
+		url('./DINNextLTPro-Italic.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-Light';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-Light'),
+		url('./DINNextLTPro-Light.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-LightCondensed';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-LightCondensed'),
+		url('./DINNextLTPro-LightCondensed.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-LightItalic';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-LightItalic'),
+		url('./DINNextLTPro-LightItalic.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-Medium';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-Medium'),
+		url('./DINNextLTPro-Medium.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-MediumCond';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-MediumCond'),
+		url('./DINNextLTPro-MediumCond.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-MediumItalic';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-MediumItalic'),
+		url('./DINNextLTPro-MediumItalic.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-Regular';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-Regular'),
+		url('./DINNextLTPro-Regular.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-UltraLight';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-UltraLight'),
+		url('./DINNextLTPro-UltraLight.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-UltraLightCond';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-UltraLightCond'),
+		url('./DINNextLTPro-UltraLightCond.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}
+
+@font-face {
+	font-family: 'DINNextLTPro-UltraLightIt';
+	font-style: normal;
+	src:
+		local('DINNextLTPro-UltraLightIt'),
+		url('./DINNextLTPro-UltraLightIt.otf') format("opentype");
+        unicode-range: 'U+0000-00FF', 'U+0131', 'U+0152-0153', 'U+02C6', 'U+02DA', 'U+02DC', 'U+2000-206F', 'U+2074', 'U+20AC', 'U+2212', 'U+2215', 'U+E0FF', 'U+EFFD', 'U+F000';
+}

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
-import ListOn from "../../../../static/images/newicons/icon-participants-on.svg";
-import ListOff from "../../../../static/images/newicons/icon-participants-off.svg";
+import ListOn from "../../../../static/images/icons/btn-participant-on.svg";
+import ListOff from "../../../../static/images/icons/btn-participant-off.svg";
 
 class ToggleAttendeesListButton extends Component {
   constructor(props) {
@@ -17,8 +17,9 @@ class ToggleAttendeesListButton extends Component {
   }
 
   render() {
-    const { isOpen, toggle, tooltipPlace, isBottomBar } = this.props;
+    const { isOpen, toggle, tooltipPlace, isBottomBar, nbParticipants } = this.props;
     const { hover, isMobile } = this.state;
+
     return (
       <li
         className={isOpen ? "active" : ""}
@@ -36,6 +37,7 @@ class ToggleAttendeesListButton extends Component {
           title={strings.attendees}
           onClick={() => toggle()}
         >
+          <span className={"attendees-number" + (isOpen || hover ? " active" : '')}>{nbParticipants}</span>
           <img src={isOpen || hover ? ListOn : ListOff} />
           {isBottomBar && (
             <div>

@@ -58,7 +58,7 @@ class ListWidgetItem extends Component {
         }
       >
         <span className="participant-details">
-          {participant.stream ? (
+          {participant.stream && participant.stream.active && participant.stream.getVideoTracks().length > 0 ? (
             <div className="stream-media bubble-widget">
               <AttendeesParticipantVideo
                 width="200"

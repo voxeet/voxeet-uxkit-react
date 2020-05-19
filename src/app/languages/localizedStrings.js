@@ -28,7 +28,9 @@ export const strings = new LocalizedStrings({
       "Your conference is already being recorded by an other attendee.",
     leave: "End",
     audio: "3D Audio",
+    audioTitle: "Audio",
     chat: "Chat",
+    nameConversation: "Name this conversation",
     externalLive: "Live Broadcast",
     fullscreen: "FullScreen",
     minimize: "Minimize",
@@ -38,14 +40,14 @@ export const strings = new LocalizedStrings({
     sendMessage: "Send",
     pinCodeExplanations:
       "Call this number below and provide the conference pin code to join the conference via PSTN.",
-    record: "Recording",
+    record: "Record",
     shareAlreadyStarted:
       "Someone is already sharing. Please stop it before start a new one.",
     share: "Share",
     screenshare: "Share Screen",
-    screenshareEntireScreen: "Share entire screen",
-    screenshareAWindow: "Share a window",
-    screenshareOption: "Share options",
+    screenshareEntireScreen: "Share Entire Screen",
+    screenshareAWindow: "Share a Window",
+    screenshareOption: "Share Options",
     settings: "Settings",
     open: "Open",
     close: "Close",
@@ -71,6 +73,8 @@ export const strings = new LocalizedStrings({
     displaymode: "Display mode",
     changelayout: "Change layout",
     attendees: "Attendees",
+    participantsHeder: "Participants ",
+    invitedHeder: "Invited",
     here: "here",
     hangtight: "We're waiting for other callers to arrive.",
     join: "Join",
@@ -82,6 +86,7 @@ export const strings = new LocalizedStrings({
     output: "Output",
     input: "Input",
     titlePreConfig: "Set up your devices",
+    addParticipant: "Add Participant",
     presenter: "Attendees",
     joined: "Joined",
     invited: "Waiting on",
@@ -90,12 +95,12 @@ export const strings = new LocalizedStrings({
     left: "Left",
     noAudioDevice:
       "No audio device detected. Please make sure to plug at least one microphone to access this conference.",
-    filepresentation: "Share a file",
+    filepresentation: "Share a File",
     prev: "Previous",
     next: "Next",
     errorFilePresentation:
       "An error occured during the file presentation. Please check your file.",
-    videopresentation: "Share a video",
+    videopresentation: "Share a Video",
     placeholderVideoPresentation: "Video URL",
     startVideoPresentationAutoplay: "Start video",
     invitedUsers: "Waiting for invitation",
@@ -128,7 +133,9 @@ export const strings = new LocalizedStrings({
       "Votre conference est déjà enregistrée par un autre participant.",
     leave: "Quitter",
     audio: "Son 3D",
+    audioTitle: "Audio", // !!!
     chat: "Conversation",
+    nameConversation: "Name this conversation", // !!!
     externalLive: "Diffusion direct",
     fullscreen: "Agrandir",
     minimize: "Reduire",
@@ -175,6 +182,8 @@ export const strings = new LocalizedStrings({
     displaymode: "Display mode",
     changelayout: "Changer mode d'affichage",
     attendees: "Participants",
+    participantsHeder: "Participants", // !!!
+    invitedHeder: "Invited", // !!!
     here: "ici",
     hangtight: "Nous attendons d'autres participants.",
     join: "Rejoindre",
@@ -186,6 +195,7 @@ export const strings = new LocalizedStrings({
     output: "Sortie audio",
     input: "Entrée audio",
     titlePreConfig: "Configuration de vos périphériques",
+    addParticipant: "Add Participant", // !!!
     presenter: "Participants",
     joined: "En conférence",
     invited: "En attente",

@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
-import LayoutSpeaker from "../../../../static/images/newicons/icon-layout-speaker.svg";
-import LayoutTiles from "../../../../static/images/newicons/icon-layout-tile.svg";
-import Layout3D from "../../../../static/images/newicons/icon-layout-3D.svg";
+import LayoutSpeaker from "../../../../static/images/icons/icon-layout-speaker.svg";
+import LayoutTiles from "../../../../static/images/icons/icon-layout-tile.svg";
+import Layout3D from "../../../../static/images/icons/icon-layout-3D.svg";
+import LayoutArrow from "../../../../static/images/icons/carat-down.svg";
 
 class ToggleModeButton extends Component {
   constructor(props) {
@@ -46,6 +47,9 @@ class ToggleModeButton extends Component {
         >
           <img src={this.getModeIcon(mode)} />
         </a>
+        <div className='layout-arrow'>
+          <img src={LayoutArrow} />
+        </div>
       </div>
     );
   }

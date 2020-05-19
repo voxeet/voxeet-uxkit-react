@@ -8,7 +8,6 @@ import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../actions/ParticipantActions";
-import Logo from "../../static/images/logo.svg";
 import ActionsButtons from "./actionsBar/ActionsButtons";
 
 import Modal from "./attendees/modal/Modal";
@@ -22,14 +21,13 @@ import AttendeesChat from "./attendees/AttendeesChat";
 import LoadingScreen from "./attendees/LoadingScreen";
 import { setPstnNumbers } from "../constants/PinCode";
 
-@connect(state => {
+@connect((state) => {
   return {
     conferenceStore: state.voxeet.conference,
     errorStore: state.voxeet.error,
-    participantsStore: state.voxeet.participants
+    participantsStore: state.voxeet.participants,
   };
 })
-
 class ConferenceRoom extends Component {
   constructor(props) {
     super(props);
@@ -42,7 +40,7 @@ class ConferenceRoom extends Component {
         ) &&
         (!props.isWebinar || (props.isWebinar && props.isAdmin))
           ? props.preConfig
-          : false
+          : false,
     };
     this.handleJoin = this.handleJoin.bind(this);
     this.startConferenceWithParams = this.startConferenceWithParams.bind(this);
@@ -65,7 +63,7 @@ class ConferenceRoom extends Component {
 
   renderLoading() {
     return React.createElement(this.props.loadingScreen, {
-      logo: this.props.logo
+      logo: this.props.logo,
     });
   }
 
@@ -109,21 +107,17 @@ class ConferenceRoom extends Component {
       simulcast,
       invitedUsers,
       refreshTokenCallback,
-      isListener
+      isListener,
     } = this.props;
     let initialized = null;
     var pinCodeTmp = pinCode;
     if (oauthToken != null) {
       initialized = this.props.dispatch(
-        ConferenceActions.initializeWithToken(
-          oauthToken,
-          refreshTokenCallback,
-          userInfo
-        )
+        ConferenceActions.initializeWithToken(oauthToken, refreshTokenCallback)
       );
     } else {
       initialized = this.props.dispatch(
-        ConferenceActions.initialize(consumerKey, consumerSecret, userInfo)
+        ConferenceActions.initialize(consumerKey, consumerSecret)
       );
     }
 
@@ -248,7 +242,10 @@ class ConferenceRoom extends Component {
             )
           )
         );
-      } */else if (autoJoin && conferenceReplayId == null) {
+      } */ else if (
+        autoJoin &&
+        conferenceReplayId == null
+      ) {
         // Autojoin when entering in fullscreen mode
         initialized.then(() => {
           this.props.dispatch(
@@ -280,6 +277,9 @@ class ConferenceRoom extends Component {
   }
 
   componentDidMount() {
+    // Print UXKit Version
+    console.log("UXKit Version: " + __VERSION__);
+
     const { preConfig } = this.state;
     const { isWebinar, isAdmin } = this.props;
     if (!preConfig) {
@@ -303,12 +303,12 @@ class ConferenceRoom extends Component {
       attendeesWaiting,
       isWebinar,
       isAdmin,
-      logo
+      logo,
     } = this.props;
     const {
       screenShareEnabled,
       filePresentationEnabled,
-      videoPresentationEnabled
+      videoPresentationEnabled,
     } = this.props.participantsStore;
     const { preConfig } = this.state;
     const {
@@ -319,7 +319,7 @@ class ConferenceRoom extends Component {
       conferenceReplayId,
       isDemo,
       conferencePincode,
-      hasLeft
+      hasLeft,
     } = this.props.conferenceStore;
     const { errorMessage, isError } = this.props.errorStore;
     if (bowser.ios && bowser.chrome) {
@@ -327,7 +327,7 @@ class ConferenceRoom extends Component {
         <div className="voxeet-loading-message-container">
           <div className="voxeet-loading-center-container">
             <div className="voxeet-loading-logo-container">
-              <img src={logo != null ? logo : Logo} />
+              {logo != null ? <img src={logo} /> : <div className="ddloader" />}
             </div>
             <div className="voxeet-loading-info-container">
               {strings.browerNotSupported}
@@ -340,7 +340,7 @@ class ConferenceRoom extends Component {
         <div className="voxeet-loading-message-container">
           <div className="voxeet-loading-center-container">
             <div className="voxeet-loading-logo-container">
-              <img src={logo != null ? logo : Logo} />
+              {logo != null ? <img src={logo} /> : <div className="ddloader" />}
             </div>
             <div className="voxeet-loading-info-container">
               {errorMessage == "NotAllowedError: Permission denied" &&
@@ -388,9 +388,7 @@ class ConferenceRoom extends Component {
           handleJoin={this.handleJoin}
         />
       );
-    } else if (
-      (isJoined || !isWidget || conferenceReplayId != null)
-    ) {
+    } else if (isJoined || !isWidget || conferenceReplayId != null) {
       if (!preConfig && !isJoined && !hasLeft) {
         return this.renderLoading();
       }
@@ -465,7 +463,7 @@ ConferenceRoom.propTypes = {
   disableSounds: PropTypes.bool,
   customLocalizedStrings: PropTypes.object,
   handleOnConnect: PropTypes.func,
-  attendeesWaiting: PropTypes.func
+  attendeesWaiting: PropTypes.func,
 };
 
 ConferenceRoom.defaultProps = {
@@ -504,18 +502,18 @@ ConferenceRoom.defaultProps = {
   userInfo: {
     name: "Guest " + Math.floor(Math.random() * 100 + 1),
     externalId: "",
-    avatarUrl: ""
+    avatarUrl: "",
   },
   customLocalizedStrings: null,
   constraints: {
     audio: true,
-    video: false
+    video: false,
   },
   actionsButtons: ActionsButtons,
   attendeesList: AttendeesList,
   attendeesChat: AttendeesChat,
   loadingScreen: LoadingScreen,
-  attendeesWaiting: AttendeesWaiting
+  attendeesWaiting: AttendeesWaiting,
 };
 
 export default ConferenceRoom;

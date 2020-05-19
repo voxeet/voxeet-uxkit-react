@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25px" height="25px" viewBox="0 0 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>icon-mute-sound-on</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="user_label_dark-muted" transform="translate(-149.000000, -3.000000)">
+            <g id="icon-mute-sound-on">
+                <g transform="translate(149.000000, 3.000000)">
+                    <circle id="Oval" fill="#EB1000" fill-rule="nonzero" cx="12.5" cy="12.5" r="12.5"></circle>
+                    <g id="Speaker" transform="translate(4.000000, 5.000000)" stroke="#FFFFFF" stroke-width="1.25">
+                        <path d="M9.0719,0.5671 L4.7169,4.2401 L1.7049,4.2401 C1.0399,4.2401 0.4999,4.7851 0.4999,5.4591 L0.4999,10.3341 C0.4999,11.0061 1.0399,11.5521 1.7049,11.5521 L4.7169,11.5521 L9.0719,15.2251 C9.2569,15.3801 9.5349,15.2481 9.5349,15.0051 L9.5349,0.7861 C9.5349,0.5441 9.2569,0.4121 9.0719,0.5671 M14.8571,14.1404 C16.1691,12.3534 16.8641,10.2294 16.8641,7.9974 C16.8641,5.7664 16.1701,3.6424 14.8581,1.8564 M12.3471,12.2954 C13.2661,11.0454 13.7521,9.5594 13.7521,7.9974 C13.7521,6.4364 13.2661,4.9504 12.3481,3.7004" id="icon-mute-sound-off"></path>
+                    </g>
+                    <path d="M5.4999,5.5 L19.8571,19.8572" id="Line" stroke="#FFFFFF" stroke-width="1.5"></path>
+                    <path d="M6.4999,4.5 L20.8571,18.8572" id="Line---red" stroke="#DB2020" stroke-width="1.5"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

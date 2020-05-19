@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
-import Hangup from "../../../../static/images/newicons/icon-hang-up.svg";
+import Hangup from "../../../../static/images/icons/btn-hang-up.svg";
 
 class HangupButton extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class HangupButton extends Component {
       <li data-tip data-for="end-call">
         <a
           onClick={() => leave()}
-          className="hang-up-btn icon-phone-end-call"
+          className="hang-up-btn"
           title={strings.leave}
         >
           <img src={Hangup} />

@@ -220,7 +220,7 @@ class ConferenceRoomContainer extends Component {
     } = this.props;
     const { errorMessage, isError } = this.props.errorStore;
     const { isModalExternalLiveOpen } = this.state;
-    const { userStream, currentUser } = this.props.participantsStore;
+    const { userStream, currentUser, participants } = this.props.participantsStore;
     const {
       mode,
       videoEnabled,
@@ -243,6 +243,7 @@ class ConferenceRoomContainer extends Component {
       displayAttendeesChat,
       displayAttendeesSettings
     } = this.props.controlsStore;
+
     return (
       <div
         id="vxt-widget-container"
@@ -264,6 +265,7 @@ class ConferenceRoomContainer extends Component {
               isAdmin={isAdmin}
               shareActions={shareActions}
               mode={mode}
+              participants={participants}
               forceFullscreen={forceFullscreen}
               leave={this.leaveConference}
               isDemo={isDemo}
@@ -332,6 +334,7 @@ class ConferenceRoomContainer extends Component {
           {isJoined && (isWidgetFullScreenOn || forceFullscreen) && (
             <BottomBar
               isJoined={isJoined}
+              participants={participants}
               isWebinar={isWebinar}
               currentUser={currentUser}
               isAdmin={isAdmin}

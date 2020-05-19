@@ -4,7 +4,6 @@ import { Actions as InputManagerActions } from "../actions/InputManagerActions";
 import AttendeesParticipantVideo from "./attendees/AttendeesParticipantVideo";
 import PropTypes from "prop-types";
 import Cookies from "js-cookie";
-import Logo from "../../static/images/logo.svg";
 import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import AudioTest from "../../static/sounds/voxeet_reaching_out.mp3";
@@ -83,7 +82,7 @@ class ConferencePreConfigContainer extends Component {
             let resultVideo = new Array();
             /* GET SOURCES */
             sources.forEach(source => {
-              if (source.kind === "videoinput") {
+              if (source.kind === "videoinput" && source.deviceId != "") {
                 resultVideo.push(source);
               }
             });
@@ -120,7 +119,12 @@ class ConferencePreConfigContainer extends Component {
         });
         var date = new Date();
         date.setDate(date.getDate() + 365);
-        Cookies.set("input", deviceId, { path: "/", expires: date });
+        Cookies.set("input", deviceId, {
+          path: "/",
+          expires: date,
+          secure: true,
+          sameSite: 'none'
+        });
         if (this.state.videoDeviceSelected != null)
           navigator.attachMediaStream(this.video, stream);
       });
@@ -131,7 +135,12 @@ class ConferencePreConfigContainer extends Component {
     this.props.dispatch(InputManagerActions.outputAudioChange(deviceId));
     var date = new Date();
     date.setDate(date.getDate() + 365);
-    Cookies.set("output", deviceId, { path: "/", expires: date });
+    Cookies.set("output", deviceId, {
+      path: "/",
+      expires: date,
+      secure: true,
+      sameSite: 'none'
+    });
     this.setState({ outputDeviceSelected: deviceId });
   }
 
@@ -153,7 +162,12 @@ class ConferencePreConfigContainer extends Component {
         });
         var date = new Date();
         date.setDate(date.getDate() + 365);
-        Cookies.set("camera", deviceId, { path: "/", expires: date });
+        Cookies.set("camera", deviceId, {
+          path: "/",
+          expires: date,
+          secure: true,
+          sameSite: 'none'
+        });
         navigator.attachMediaStream(this.video, stream);
       });
   }
@@ -168,20 +182,20 @@ class ConferencePreConfigContainer extends Component {
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
       navigator.mediaDevices
         .enumerateDevices()
-        .then(function(sources) {
+        .then(function (sources) {
           /* GET SOURCES */
           sources.forEach(source => {
-            if (source.kind === "videoinput") {
+            if (source.kind === "videoinput" && source.deviceId != "") {
               if (Cookies.get("camera") == source.deviceId)
                 videoCookieExist = true;
               resultVideo.push(source);
             }
-            if (source.kind === `audioinput`) {
+            if (source.kind === `audioinput` && source.deviceId != "") {
               if (Cookies.get("input") == source.deviceId)
                 inputCookieExist = true;
               resultAudio.push(source);
             }
-            if (source.kind === "audiooutput") {
+            if (source.kind === "audiooutput" && source.deviceId != "") {
               if (Cookies.get("output") == source.deviceId)
                 outputCookieExist = true;
               resultAudioOutput.push(source);
@@ -212,17 +226,17 @@ class ConferencePreConfigContainer extends Component {
 
                   /* GET SOURCES */
                   sources.forEach(source => {
-                    if (source.kind === "videoinput") {
+                    if (source.kind === "videoinput" && source.deviceId != "") {
                       if (Cookies.get("camera") == source.deviceId)
                         videoCookieExist = true;
                       resultVideo.push(source);
                     }
-                    if (source.kind === `audioinput`) {
+                    if (source.kind === `audioinput` && source.deviceId != "") {
                       if (Cookies.get("input") == source.deviceId)
                         inputCookieExist = true;
                       resultAudio.push(source);
                     }
-                    if (source.kind === "audiooutput") {
+                    if (source.kind === "audiooutput" && source.deviceId != "") {
                       if (Cookies.get("output") == source.deviceId)
                         outputCookieExist = true;
                       resultAudioOutput.push(source);
@@ -236,7 +250,9 @@ class ConferencePreConfigContainer extends Component {
                       date.setDate(date.getDate() + 365);
                       Cookies.set("output", resultAudioOutput[0].deviceId, {
                         path: "/",
-                        expires: date
+                        expires: date,
+                        secure: true,
+                        sameSite: 'none'
                       });
                       this.props.dispatch(
                         InputManagerActions.outputAudioChange(
@@ -267,7 +283,9 @@ class ConferencePreConfigContainer extends Component {
                       date.setDate(date.getDate() + 365);
                       Cookies.set("camera", resultVideo[0].deviceId, {
                         path: "/",
-                        expires: date
+                        expires: date,
+                        secure: true,
+                        sameSite: 'none'
                       });
                       this.props.dispatch(
                         InputManagerActions.inputVideoChange(
@@ -300,7 +318,9 @@ class ConferencePreConfigContainer extends Component {
                       date.setDate(date.getDate() + 365);
                       Cookies.set("input", resultAudio[0].deviceId, {
                         path: "/",
-                        expires: date
+                        expires: date,
+                        secure: true,
+                        sameSite: 'none'
                       });
                       this.props.dispatch(
                         InputManagerActions.inputAudioChange(
@@ -338,10 +358,10 @@ class ConferencePreConfigContainer extends Component {
                         video:
                           resultVideo.length > 0 && this.state.videoEnabled
                             ? {
-                                deviceId: {
-                                  exact: this.state.videoDeviceSelected
-                                }
+                              deviceId: {
+                                exact: this.state.videoDeviceSelected
                               }
+                            }
                             : false
                       })
                       .then(stream => {
@@ -422,158 +442,161 @@ class ConferencePreConfigContainer extends Component {
       error,
       loading
     } = this.state;
+
     return (
       <Fragment>
         {loading ? (
           this.renderLoading()
         ) : (
-          <div id="vxt-widget-container" className="vxt-widget-modal">
-            <aside className={"vxt-widget-container vxt-widget-fullscreen-on"}>
-              <div
-                id="conference-attendees"
-                className={"vxt-conference-attendees vxt-conference-preconfig"}
-              >
-                <div className="settings-preconfig-container">
-                  <div className="settings-preconfig">
-                    {error == null ? (
-                      <div className="content">
-                        <h3>{strings.titlePreConfig}</h3>
-                        <form>
-                          <div className="content-first-container">
-                            {audioEnabled && (
-                              <div>
+            <div id="vxt-widget-container" className="vxt-widget-modal">
+              <aside className={"vxt-widget-container vxt-widget-fullscreen-on"}>
+                <div
+                  id="conference-attendees"
+                  className={"vxt-conference-attendees vxt-conference-preconfig"}
+                >
+                  <div className="settings-preconfig-container">
+                    <div className="settings-preconfig">
+                      {error == null ? (
+                        <div className="content">
+                          <h3>{strings.titlePreConfig}</h3>
+                          <form>
+                            <div className="content-second-container">
+                              {!window.voxeetNodeModule && (
+                                <div className="video" onClick={this.toggleVideo}>
+                                  <video
+                                    className="video-participant"
+                                    width="360"
+                                    id="video-settings"
+                                    playsInline
+                                    height="280"
+                                    ref={ref => (this.video = ref)}
+                                    autoPlay
+                                    muted
+                                  />
+                                </div>
+                              )}
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="video">{strings.camera}</label>
+                              <select
+                                name="video"
+                                value={
+                                  videoDeviceSelected != null
+                                    ? videoDeviceSelected
+                                    : ""
+                                }
+                                className="form-control select-video-device"
+                                disabled={this.state.videoEnabled ? false : true}
+                                onChange={this.setVideoDevice}
+                              >
+                                {this.state.videoDevices.map((device, i) => (
+                                  <option key={i} value={device.deviceId}>
+                                    {device.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div className="content-first-container">
+                              {bowser.chrome && (
                                 <div className="form-group">
-                                  <label htmlFor="video">{strings.input}</label>
+                                  <label htmlFor="video">{strings.output}</label>
                                   <select
-                                    name="audio"
-                                    className="form-control"
+                                    name="output"
+                                    className="form-control select-audio-output"
                                     value={
-                                      audioDeviceSelected != null
-                                        ? audioDeviceSelected
+                                      outputDeviceSelected != null
+                                        ? outputDeviceSelected
                                         : ""
                                     }
                                     disabled={false}
-                                    onChange={this.setAudioDevice}
+                                    onChange={this.setOutputDevice}
                                   >
-                                    {this.state.audioDevices.map(
-                                      (device, i) => (
-                                        <option key={i} value={device.deviceId}>
-                                          {device.label}
-                                        </option>
-                                      )
-                                    )}
+                                    {this.state.outputDevices.map((device, i) => (
+                                      <option key={i} value={device.deviceId}>
+                                        {device.label}
+                                      </option>
+                                    ))}
                                   </select>
                                 </div>
-                                <div className="form-group">
-                                  <PreConfigVuMeter
-                                    stream={this.state.userStream}
-                                  />
+                              )}
+                              {audioEnabled && (
+                                <div>
+                                  <div className="form-group">
+                                    <label htmlFor="video">{strings.input}</label>
+                                    <select
+                                      name="audio"
+                                      className="form-control select-audio-input"
+                                      value={
+                                        audioDeviceSelected != null
+                                          ? audioDeviceSelected
+                                          : ""
+                                      }
+                                      disabled={false}
+                                      onChange={this.setAudioDevice}
+                                    >
+                                      {this.state.audioDevices.map(
+                                        (device, i) => (
+                                          <option key={i} value={device.deviceId}>
+                                            {device.label}
+                                          </option>
+                                        )
+                                      )}
+                                    </select>
+                                  </div>
+                                  <div className="form-group">
+                                    <PreConfigVuMeter
+                                      stream={this.state.userStream}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                            )}
-                            {bowser.chrome && (
-                              <div className="form-group">
-                                <label htmlFor="video">{strings.output}</label>
-                                <select
-                                  name="output"
-                                  className="form-control"
-                                  value={
-                                    outputDeviceSelected != null
-                                      ? outputDeviceSelected
-                                      : ""
-                                  }
-                                  disabled={false}
-                                  onChange={this.setOutputDevice}
-                                >
-                                  {this.state.outputDevices.map((device, i) => (
-                                    <option key={i} value={device.deviceId}>
-                                      {device.label}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="content-second-container">
-                            {!window.voxeetNodeModule && (
-                              <div className="video" onClick={this.toggleVideo}>
-                                <video
-                                  className="video-participant"
-                                  width="360"
-                                  id="video-settings"
-                                  playsInline
-                                  height="280"
-                                  ref={ref => (this.video = ref)}
-                                  autoPlay
-                                  muted
+                              )}
+                            </div>
+                            <div className="form-group group-enable">
+                              <div>
+                                <input
+                                  id="videoEnabled"
+                                  name="videoEnabled"
+                                  type="checkbox"
+                                  onChange={this.handleInputChange}
+                                  checked={this.state.videoEnabled}
                                 />
+                                <label htmlFor="videoEnabled">
+                                  {strings.video}
+                                </label>
                               </div>
-                            )}
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="video">{strings.camera}</label>
-                            <select
-                              name="video"
-                              value={
-                                videoDeviceSelected != null
-                                  ? videoDeviceSelected
-                                  : ""
-                              }
-                              className="form-control"
-                              disabled={this.state.videoEnabled ? false : true}
-                              onChange={this.setVideoDevice}
-                            >
-                              {this.state.videoDevices.map((device, i) => (
-                                <option key={i} value={device.deviceId}>
-                                  {device.label}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-
-                          <div className="form-group group-enable">
+                            </div>
                             <div>
-                              <input
-                                id="videoEnabled"
-                                name="videoEnabled"
-                                type="checkbox"
-                                onChange={this.handleInputChange}
-                                checked={this.state.videoEnabled}
-                              />
-                              <label htmlFor="videoEnabled">
-                                {strings.video}
-                              </label>
+                              <button
+                                type="button"
+                                disabled={this.state.lockJoin}
+                                className="start-conference"
+                                onClick={this.handleJoin}
+                              >
+                                {strings.joincall}
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      ) : (
+                          <div className="voxeet-loading-message-container">
+                            <div className="voxeet-loading-center-container">
+                              <div className="voxeet-loading-logo-container">
+                                {logo != null ?
+                                  <img src={logo} />
+                                  :
+                                  <div className='ddloader' />
+                                }
+                              </div>
+                              <div className="voxeet-loading-info-container">{error}</div>
                             </div>
                           </div>
-                          <div>
-                            <button
-                              type="button"
-                              disabled={this.state.lockJoin}
-                              className="start-conference"
-                              onClick={this.handleJoin}
-                            >
-                              {strings.joincall}
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                    ) : (
-                      <div className="voxeet-loading-message-container">
-                        <div className="voxeet-loading-center-container">
-                          <div className="voxeet-loading-logo-container">
-                            <img src={logo != null ? logo : Logo} />
-                          </div>
-                          <div className="voxeet-loading-info-container">{error}</div>
-                        </div>
-                      </div>
-                    )}
+                        )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </aside>
-          </div>
-        )}
+              </aside>
+            </div>
+          )}
       </Fragment>
     );
   }

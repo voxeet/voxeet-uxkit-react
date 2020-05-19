@@ -31,7 +31,6 @@ module.exports = {
     ToggleVideoButton,
     HangupButton,
     ToggleFullScreenButton,
-    ToggleModeButton,
     HangUpButtonBottomBar,
     Toggle3DAudioButton,
     ToggleAttendeesChatButton,

@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import ChatOn from "../../../../static/images/newicons/icon-chat-on.svg";
-import ChatOff from "../../../../static/images/newicons/icon-chat-off.svg";
+import ChatOn from "../../../../static/images/icons/btn-chat-on.svg";
+import ChatOff from "../../../../static/images/icons/btn-chat-off.svg";
 
 @connect(store => {
   return {
