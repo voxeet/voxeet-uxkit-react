@@ -1,6 +1,6 @@
 {
   "name": "@voxeet/react-components",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "",
   "main": "./dist/bundle.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "IE 11"
   ],
   "dependencies": {
-    "@voxeet/voxeet-web-sdk": "2.1.1",
+    "@voxeet/voxeet-web-sdk": "2.3.0",
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.3.4",
     "autolinker": "^2.2.2",
@@ -31,7 +31,6 @@
     "express": "^4.16.4",
     "immutable": "3.8.2",
     "js-cookie": "^2.2.0",
-    "prettier": "^1.18.2",
     "prop-types": "15.6.2",
     "react": "16.9.0",
     "react-dom": "16.9.0",
@@ -46,7 +45,7 @@
     "redux-thunk": "2.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
+    "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "7.4.0",
     "@babel/plugin-proposal-decorators": "^7.3.0",
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
@@ -55,7 +54,6 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
-    "prettier-webpack-plugin": "^1.2.0",
     "copy-webpack-plugin": "^4.2.0",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
@@ -73,7 +71,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "peerDependencies": {
-    "@voxeet/voxeet-web-sdk": "2.1.1"
+    "@voxeet/voxeet-web-sdk": "2.3.0"
   },
   "files": [
     "README.md",

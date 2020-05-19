@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>btn-mute-on</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="btn-mute-on">
+            <g>
+                <circle id="bg" fill="#13141C" cx="25" cy="25" r="25"></circle>
+                <path d="M25.5,29.7011349 C22.2254849,29.7011349 19.5625,27.1505653 19.5625,24.0158662 L19.5625,14.6852687 C19.5625,11.5518591 22.2254849,9 25.5,9 C28.7745151,9 31.4375,11.5518591 31.4375,14.6852687 L31.4375,24.0158662 C31.4375,27.1505653 28.7745151,29.7011349 25.5,29.7011349 Z M35,21.7919294 L35,24.2659541 C35,28.6248299 31.9715909,32.2204293 27.1917614,32.6594709 L27.1917614,40.268264 C27.1917614,40.6719804 26.8252841,41 26.3693182,41 L24.3011364,41 C23.8480114,41 23.4786932,40.6719804 23.4786932,40.268264 L23.4786932,32.6228841 C18.8579545,32.0526347 16,28.5239008 16,24.2659541 L16,21.7919294" id="mic" stroke="#FFFFFF" stroke-width="1.5"></path>
+                <path d="M13.25,12.25 L37.75,36.75" id="line-white" stroke="#FFFFFF" stroke-width="1.5"></path>
+                <path d="M14.25,11.25 L38.75,35.75" id="line-blue" stroke="#13141C" stroke-width="1.5"></path>
+            </g>
+        </g>
+    </g>
+</svg>

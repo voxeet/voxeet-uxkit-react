@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import browser from "bowser";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
-import PhoneWhite from "../../../../static/images/icn_conf_live.png";
-import PhoneBlue from "../../../../static/images/icn_conf_live_primary.png";
+import PhoneOff from "../../../../static/images/icons/btn-dialin-off.svg";
+import PhoneOn from "../../../../static/images/icons/btn-dialin-on.svg";
 import { pinCode } from "../../../constants/PinCode";
 
 class TogglePSTN extends Component {
@@ -81,7 +81,7 @@ class TogglePSTN extends Component {
           title={strings.pincode}
           onClick={() => this.togglePopUp()}
         >
-          <img src={hover || opened ? PhoneBlue : PhoneWhite} />
+          <img src={hover || opened ? PhoneOn : PhoneOff} />
           {isBottomBar && (
             <div>
               <span>{strings.pincode}</span>

@@ -122,7 +122,7 @@ class Speakers extends Component {
         )}
         <div className="SidebarList">
           <ul className="list-items">
-            {((!isWebinar && !currentUser.isListener) ||
+            {((!isWebinar && !currentUser.isListener && currentUser.isConnected) ||
               (isWebinar && isAdmin)) && (
               <li
                 className={"item small-item participant-available myself-item"}
@@ -138,25 +138,26 @@ class Speakers extends Component {
               </li>
             )}
             {participants.map((participant, i) => {
-              return (
-                <Speaker
-                  key={i}
-                  participant={participant}
-                  toggleMicrophone={toggleMicrophone}
-                  kickParticipant={kickParticipant}
-                  isAdmin={isAdmin}
-                  nbParticipant={i}
-                  userIdStreamScreenShare={userIdStreamScreenShare}
-                  userIdFilePresentation={userIdFilePresentation}
-                  userIdVideoPresentation={userIdVideoPresentation}
-                  screenShareEnabled={screenShareEnabled}
-                  activeSpeaker={activeSpeakerChecker}
-                  forceActiveUserEnabled={forceActiveUserEnabled}
-                  isAdminActived={isAdminActived}
-                  isWidgetFullScreenOn={isWidgetFullScreenOn}
-                  disableForceActiveSpeaker={disableForceActiveSpeaker}
-                  forceActiveSpeaker={forceActiveSpeaker}
-                />
+              if (participant.isConnected)
+                return (
+                  <Speaker
+                    key={i}
+                    participant={participant}
+                    toggleMicrophone={toggleMicrophone}
+                    kickParticipant={kickParticipant}
+                    isAdmin={isAdmin}
+                    nbParticipant={i}
+                    userIdStreamScreenShare={userIdStreamScreenShare}
+                    userIdFilePresentation={userIdFilePresentation}
+                    userIdVideoPresentation={userIdVideoPresentation}
+                    screenShareEnabled={screenShareEnabled}
+                    activeSpeaker={activeSpeakerChecker}
+                    forceActiveUserEnabled={forceActiveUserEnabled}
+                    isAdminActived={isAdminActived}
+                    isWidgetFullScreenOn={isWidgetFullScreenOn}
+                    disableForceActiveSpeaker={disableForceActiveSpeaker}
+                    forceActiveSpeaker={forceActiveSpeaker}
+                  />
               );
             })}
           </ul>

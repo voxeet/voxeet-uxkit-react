@@ -25,6 +25,8 @@ class SpeakerActive extends Component {
     const checker = document.getElementById("video-active-video-on");
     if (
       (checker != null && nextProps.participant.stream == null) ||
+      (checker != null && !nextProps.participant.stream.active) ||
+      (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
       (checker == null && nextProps.participant.stream) ||
       (this.props.mySelf && this.props.participant.name == null) ||
       this.props.participant != nextProps.participant
@@ -55,7 +57,8 @@ class SpeakerActive extends Component {
     const photoUrl = participant.avatarUrl || userPlaceholder;
     return (
       <div
-        id={"video-active-video-" + (participant.stream ? "on" : "off")}
+        id={"video-active-video-" + (participant.stream && participant.stream.active
+           && participant.stream.getVideoTracks().length > 0 ? "on" : "off")}
         className="active-speaker"
       >
         <div
@@ -92,7 +95,7 @@ class SpeakerActive extends Component {
 
           {!filePresentationEnabled && !videoPresentationEnabled && (
             <Fragment>
-              {screenShareEnabled || participant.stream ? (
+              {screenShareEnabled || (participant.stream && participant.stream.active && participant.stream.getVideoTracks().length > 0) ? (
                 <div
                   className={mySelf ? "stream-media myself" : "stream-media"}
                 >

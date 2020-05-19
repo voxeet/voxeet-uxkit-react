@@ -16,7 +16,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
     case Types.PARTICIPANT_WAITING_ADDED: {
       const userInfo = action.payload.userInfo;
       if (VoxeetSDK.session.participant.id != action.payload.userId) {
-        let participants = state.participants;
+        let participants = [...state.participants];
         const index = participants.findIndex(
           p => p.participant_id === action.payload.userId
         );
@@ -44,7 +44,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
       return state;
     }
     case Types.PARTICIPANT_WAITING_STATUS_UPDATED: {
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
@@ -67,7 +67,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
       };
     }
     case Types.PARTICIPANT_WAITING_UPDATED: {
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
@@ -83,7 +83,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
       };
     }
     case Types.PARTICIPANT_WAITING_JOINED: {
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
@@ -99,7 +99,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
       };
     }
     case Types.PARTICIPANT_WAITING_LEFT: {
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );

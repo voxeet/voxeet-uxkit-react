@@ -26,7 +26,7 @@ class Tiles extends Component {
     let count = -1;
     return (
       <div className="SidebarTiles" data-number-user={nbParticipants}>
-        <div className="tiles-list">
+        <div className={"tiles-list list" + nbParticipants}>
           {((!isWebinar && !currentUser.isListener) ||
             (isWebinar && isAdmin)) && (
             <Tile

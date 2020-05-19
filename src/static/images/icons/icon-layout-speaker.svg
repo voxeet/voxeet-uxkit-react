@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="18px" viewBox="0 0 22 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>icon-layout-speaker</title>
+    <desc>Created with Sketch.</desc>
+    <g id="PC-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="conference-speaker-dark" transform="translate(-1361.000000, -30.000000)" stroke="#FFFFFF">
+            <g id="btn-layout" transform="translate(1230.000000, 20.000000)">
+                <g id="icon_view-speaker" transform="translate(131.000000, 10.000000)">
+                    <g id="btn-layout-speaker">
+                        <rect id="Rectangle-2" stroke-width="0.789473684" x="0.394736842" y="0.394736842" width="5.21052632" height="4.21052632"></rect>
+                        <rect id="Path" stroke-width="0.789473684" x="8.39473684" y="0.394736842" width="5.21052632" height="4.21052632"></rect>
+                        <rect id="Path" stroke-width="0.789473684" x="16.3947368" y="0.394736842" width="5.21052632" height="4.21052632"></rect>
+                        <rect id="Path" stroke-width="0.789473684" x="0.394736842" y="7.39473684" width="21.2105263" height="10.2105263"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

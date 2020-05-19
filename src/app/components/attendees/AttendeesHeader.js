@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 
 import AttendeesHeaderTimer from "./AttendeesHeaderTimer";
 import { strings } from "../../languages/localizedStrings";
-import LiveIndicator from "../../../static/images/newicons/LiveIndicator.png";
+import LiveIndicatorOn from "../../../static/images/icons/btn-live-on.svg";
+import LiveIndicatorOff from "../../../static/images/icons/btn-live-off.svg";
 
 class AttendeesHeader extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class AttendeesHeader extends Component {
       <header>
         <div>
           <div className="live-indicator">
-            <img src={LiveIndicator} />
+            <img src={LiveIndicatorOn} />
           </div>
           <h1>{strings.liveCall}</h1>
           <div className="timer-container">

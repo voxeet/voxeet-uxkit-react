@@ -5,13 +5,17 @@ import ReactTooltip from "react-tooltip";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import { Actions as OnBoardingMessageActions } from "../../../actions/OnBoardingMessageActions";
 import { strings } from "../../../languages/localizedStrings";
-import screenshare from "../../../../static/images/newicons/screenshare.svg";
-import ShareScreenOn from "../../../../static/images/newicons/icon-share-screen-on.svg";
-import ShareScreenOff from "../../../../static/images/newicons/icon-share-screen-off.svg";
-import EntireScreenShareOff from "../../../../static/images/newicons/icon-screen-off.svg";
-import WindowScreenShareOff from "../../../../static/images/newicons/icon-window-off.svg";
-import FileShareOff from "../../../../static/images/newicons/icon-file-off.svg";
-import VideoShareOff from "../../../../static/images/newicons/icon-video-off.svg";
+import ShareScreenOn from "../../../../static/images/icons/btn-share-screen-on.svg";
+import ShareScreenOff from "../../../../static/images/icons/btn-share-screen-off.svg";
+import EntireScreenShareOn from "../../../../static/images/icons/icon-entire-screen.svg";
+import EntireScreenShareOff from "../../../../static/images/icons/icon-entire-screen-hover.svg";
+import FileShareOn from "../../../../static/images/icons/icon-file.svg";
+import FileShareOff from "../../../../static/images/icons/icon-file-hover.svg";
+import VideoShareOn from "../../../../static/images/icons/icon-video.svg";
+import VideoShareOff from "../../../../static/images/icons/icon-video-hover.svg";
+import WindowShareOn from "../../../../static/images/icons/icon-window.svg";
+import WindowShareOff from "../../../../static/images/icons/icon-window-hover.svg";
+import dolbyLogo from "../../../../static/images/DDLoader.gif";
 
 @connect(store => {
   return {
@@ -24,7 +28,14 @@ class ToggleScreenShareButton extends Component {
     this.state = {
       opened: false,
       contentUrlVideoPresentation: "",
-      openedVideoPresentation: false
+      openedVideoPresentation: false,
+      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      ),
+      hover_screen: false,
+      hover_window: false,
+      hover_file: false,
+      hover_video: false
     };
     this.togglePopUp = this.togglePopUp.bind(this);
     this.handleClickFilePresentation = this.handleClickFilePresentation.bind(
@@ -114,7 +125,12 @@ class ToggleScreenShareButton extends Component {
     const {
       opened,
       openedVideoPresentation,
-      contentUrlVideoPresentation
+      contentUrlVideoPresentation,
+      isMobile,
+      hover_screen,
+      hover_window,
+      hover_file,
+      hover_video
     } = this.state;
     const { fileConverted } = this.props.filePresentationStore;
     return (
@@ -122,20 +138,21 @@ class ToggleScreenShareButton extends Component {
         id="screenshare-container"
         className={
           filePresentationEnabled ||
-          screenShareEnabled ||
-          videoPresentationEnabled ||
-          opened ||
-          openedVideoPresentation
+            screenShareEnabled ||
+            videoPresentationEnabled ||
+            opened ||
+            openedVideoPresentation
             ? "active"
             : fileConverted
-            ? "conversion-running"
-            : ""
+              ? "conversion-running"
+              : ""
         }
       >
         {fileConverted ? (
           <Fragment>
             <div id="loader-container-file-presentation">
-              <div className="loader-file-presentation"></div>
+              <img src={dolbyLogo} />
+              {/* <div className="loader-file-presentation"></div> */}
             </div>
             {isBottomBar && (
               <a>
@@ -146,39 +163,39 @@ class ToggleScreenShareButton extends Component {
             )}
           </Fragment>
         ) : (
-          <Fragment>
-            <a
-              data-tip
-              data-for="toggle-screenshare"
-              className={
-                "" + (opened || openedVideoPresentation ? "on" : "off")
-              }
-              title={strings.screenshare}
-              onClick={() => {
-                currentUserScreenShare ||
-                currentUserFilePresentation ||
-                currentUserVideoPresentation
-                  ? toggle()
-                  : this.togglePopUp();
-              }}
-            >
-              <img
-                src={
-                  filePresentationEnabled ||
-                  screenShareEnabled ||
-                  videoPresentationEnabled
-                    ? ShareScreenOn
-                    : ShareScreenOff
+            <Fragment>
+              <a
+                data-tip
+                data-for="toggle-screenshare"
+                className={
+                  "" + (opened || openedVideoPresentation ? "on" : "off")
                 }
-              />
-              {isBottomBar && (
-                <div>
-                  <span>{strings.share}</span>
-                </div>
-              )}
-            </a>
-          </Fragment>
-        )}
+                title={strings.screenshare}
+                onClick={() => {
+                  currentUserScreenShare ||
+                    currentUserFilePresentation ||
+                    currentUserVideoPresentation
+                    ? toggle()
+                    : this.togglePopUp();
+                }}
+              >
+                <img
+                  src={
+                    filePresentationEnabled ||
+                      screenShareEnabled ||
+                      videoPresentationEnabled
+                      ? ShareScreenOn
+                      : ShareScreenOff
+                  }
+                />
+                {isBottomBar && (
+                  <div>
+                    <span>{strings.screenshare}</span>
+                  </div>
+                )}
+              </a>
+            </Fragment>
+          )}
         {openedVideoPresentation && (
           <div className="bubble-tip bubble-video-presentation">
             <a
@@ -218,17 +235,54 @@ class ToggleScreenShareButton extends Component {
                       onClick={() =>
                         this.toggleScreenShare()
                       }
+                      onMouseEnter={() => {
+                        !isMobile && this.setState({ hover_screen: true });
+                      }}
+                      onMouseLeave={() => {
+                        !isMobile && this.setState({ hover_screen: false });
+                      }}
                     >
-                      <img src={EntireScreenShareOff} />
-                      {strings.screenshare}
+                      <img src={hover_screen ? EntireScreenShareOff : EntireScreenShareOn} />
+                      {strings.screenshareEntireScreen}
                     </a>
                   </Fragment>
                 </div>
               )}
+            {shareActions.indexOf("windowpresentation") > -1 && (
+              <Fragment>
+                <a
+                  // onClick={this.handleClickFilePresentation}
+                  onMouseEnter={() => {
+                    !isMobile && this.setState({ hover_window: true });
+                  }}
+                  onMouseLeave={() => {
+                    !isMobile && this.setState({ hover_window: false });
+                  }}
+                >
+                  <img src={hover_window ? WindowShareOff : WindowShareOn} />
+                  {strings.screenshareAWindow}
+                </a>
+                <input
+                  type="window"
+                  id="windowPresentationUpload"
+                  accept="application/pdf"
+                  onChange={this.handleChange}
+                  style={{ display: "none" }}
+                />
+              </Fragment>
+            )}
             {shareActions.indexOf("filepresentation") > -1 && (
               <Fragment>
-                <a onClick={this.handleClickFilePresentation}>
-                  <img src={FileShareOff} />
+                <a
+                  onClick={this.handleClickFilePresentation}
+                  onMouseEnter={() => {
+                    !isMobile && this.setState({ hover_file: true });
+                  }}
+                  onMouseLeave={() => {
+                    !isMobile && this.setState({ hover_file: false });
+                  }}
+                >
+                  <img src={hover_file ? FileShareOff : FileShareOn} />
                   {strings.filepresentation}
                 </a>
                 <input
@@ -243,8 +297,16 @@ class ToggleScreenShareButton extends Component {
 
             {shareActions.indexOf("videopresentation") > -1 && (
               <Fragment>
-                <a onClick={() => this.toggleBubbleVideoPresentation()}>
-                  <img src={VideoShareOff} />
+                <a
+                  onClick={() => this.toggleBubbleVideoPresentation()}
+                  onMouseEnter={() => {
+                    !isMobile && this.setState({ hover_video: true });
+                  }}
+                  onMouseLeave={() => {
+                    !isMobile && this.setState({ hover_video: false });
+                  }}
+                >
+                  <img src={hover_video ? VideoShareOff : VideoShareOn} />
                   {strings.videopresentation}
                 </a>
               </Fragment>

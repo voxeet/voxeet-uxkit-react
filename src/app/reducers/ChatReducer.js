@@ -8,7 +8,7 @@ const defaultState = {
 const ChatReducer = (state = defaultState, action) => {
   switch (action.type) {
     case Types.ADD_MESSAGE_CHAT: {
-      let messages = state.messages;
+      let messages = [...state.messages];
       messages.push({
         content: action.payload.chat.content,
         type: action.payload.chat.type,

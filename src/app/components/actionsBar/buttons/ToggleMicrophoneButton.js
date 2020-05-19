@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
-import MuteOn from "../../../../static/images/newicons/icon-mute-on.svg";
-import MuteOff from "../../../../static/images/newicons/icon-mute-off.svg";
+import MuteOn from "../../../../static/images/icons/btn-mute-on.svg";
+import MuteOff from "../../../../static/images/icons/btn-mute-off.svg";
 
 class ToggleMicrophoneButton extends Component {
   constructor(props) {
@@ -36,10 +36,10 @@ class ToggleMicrophoneButton extends Component {
           title={strings.mute}
           onClick={() => toggle()}
         >
-          <img src={isMuted || hover ? MuteOn : MuteOff} />
+          <img src={!isMuted || hover ? MuteOff : MuteOn} />
           {isBottomBar && (
             <div>
-              <span>{strings.mute}</span>
+              <span>{strings.audioTitle}</span>
             </div>
           )}
         </a>

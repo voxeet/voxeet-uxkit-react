@@ -10,7 +10,7 @@ class SpeakerVideo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSpeaking: false
+      isSpeaking: false,
     };
   }
 
@@ -24,18 +24,21 @@ class SpeakerVideo extends Component {
     const { participant } = this.props;
     this.mounted = true;
     this._interval = setInterval(() => {
-      VoxeetSDK.conference.isSpeaking(participant.participant_id, isSpeaking => {
-        if (participant.isMuted && this.state.isSpeaking && this.mounted) {
-          this.setState({ isSpeaking: false });
-        }
+      VoxeetSDK.conference.isSpeaking(
+        VoxeetSDK.conference.participants.get(participant.participant_id),
+        (isSpeaking) => {
+          if (participant.isMuted && this.state.isSpeaking && this.mounted) {
+            this.setState({ isSpeaking: false });
+          }
 
-        if (
-          this.state.isSpeaking !== isSpeaking &&
-          !participant.isMuted &&
-          this.mounted
-        )
-          this.setState({ isSpeaking });
-      });
+          if (
+            this.state.isSpeaking !== isSpeaking &&
+            !participant.isMuted &&
+            this.mounted
+          )
+            this.setState({ isSpeaking });
+        }
+      );
     }, 300);
   }
 
@@ -45,8 +48,11 @@ class SpeakerVideo extends Component {
     );
     if (
       nextProps.participant != this.props.participant ||
-      ((checker != null && nextProps.participant.stream == null) ||
-        (checker == null && nextProps.participant.stream)) ||
+      (checker != null && nextProps.participant.stream == null) ||
+      (checker != null && nextProps.participant.stream.active == false) ||
+      (checker != null &&
+        nextProps.participant.stream.getVideoTracks().length === 0) ||
+      (checker == null && nextProps.participant.stream) ||
       this.props.nbParticipant != nextProps.nbParticipant ||
       (this.props.mySelf && this.props.participant.name == null) ||
       (this.state.isSpeaking != nextState.isSpeaking && !checker)
@@ -59,6 +65,10 @@ class SpeakerVideo extends Component {
   render() {
     const { participant, nbParticipant, mySelf } = this.props;
     const photoUrl = participant.avatarUrl || userPlaceholder;
+    const has_video =
+      participant.stream &&
+      participant.stream.active &&
+      participant.stream.getVideoTracks().length > 0;
     let className = " avatar-vumeter ";
     if (this.state.isSpeaking) {
       className += " avatar-vumeter-active";
@@ -66,15 +76,10 @@ class SpeakerVideo extends Component {
 
     return (
       <div
-        id={
-          "video-" +
-          nbParticipant +
-          "-video-" +
-          (participant.stream ? "on" : "off")
-        }
+        id={"video-" + nbParticipant + "-video-" + (has_video ? "on" : "off")}
         className="participant-video video-frame"
       >
-        {participant.stream ? (
+        {has_video ? (
           <div className={"item " + className}>
             <div className="container-avatar-vumeter">
               <div className={mySelf ? "stream-media myself" : "stream-media"}>
@@ -95,13 +100,13 @@ class SpeakerVideo extends Component {
 }
 
 SpeakerVideo.defaultProps = {
-  mySelf: false
+  mySelf: false,
 };
 
 SpeakerVideo.propTypes = {
   participant: PropTypes.object.isRequired,
   mySelf: PropTypes.bool,
-  nbParticipant: PropTypes.number
+  nbParticipant: PropTypes.number,
 };
 
 export default SpeakerVideo;

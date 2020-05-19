@@ -49,6 +49,7 @@ class ActionsButtons extends Component {
       recordingLocked,
       toggleModal,
       toggleAudio3D,
+      participants,
       isWebinar,
       isAdmin,
       displayActions,
@@ -61,6 +62,13 @@ class ActionsButtons extends Component {
       isScreenshare,
       isDemo
     } = this.props;
+    let nbParticipants = 0;
+    if (participants && participants.length) {
+      nbParticipants = participants.filter(p => p.isConnected).length;
+    }
+    if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
+      nbParticipants += 1;
+
     return (
       <div>
         <ul className="controls-left">
@@ -157,6 +165,7 @@ class ActionsButtons extends Component {
             )}
           {displayActions.indexOf("attendees") > -1 && (
             <ToggleAttendeesListButton
+              nbParticipants={nbParticipants}
               tooltipPlace={isBottomBar ? "top" : "right"}
               toggle={toggleAttendeesList}
               isBottomBar={isBottomBar}

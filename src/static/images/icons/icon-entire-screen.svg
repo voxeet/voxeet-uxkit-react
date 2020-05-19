@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="22px" viewBox="0 0 24 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>icon-entire-screen</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon-entire-screen" transform="translate(1.000000, 1.000000)" stroke="#00AFEF" stroke-width="1.5">
+            <path d="M8.5,15 L8.5,19 M13.5,15 L13.5,19 M5.30176471,19.5 L16.7823529,19.5 M21.2137397,15 L0.787352328,15 C0.351633079,15 0,14.5946967 0,14.0937316 L0,0.906268356 C0,0.405303348 0.351633079,0 0.787352328,0 L21.2137397,0 C21.6472749,0 22,0.405303348 22,0.906268356 L22,14.0937316 C22,14.5946967 21.6472749,15 21.2137397,15 Z"></path>
+        </g>
+    </g>
+</svg>

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
-import CameraOn from "../../../../static/images/newicons/icon-camera-on.svg";
-import CameraOff from "../../../../static/images/newicons/icon-camera-off.svg";
+import CameraOn from "../../../../static/images/icons/btn-camera-on.svg";
+import CameraOff from "../../../../static/images/icons/btn-camera-off.svg";
 
 class ToggleVideoButton extends Component {
   constructor(props) {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>icon-tag</title>
+    <desc>Created with Sketch.</desc>
+    <g id="PC-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="conference-gallery-3D-panel-chat-dark" transform="translate(-1394.000000, -893.000000)" stroke="#00AFEF" stroke-width="1.5">
+            <g id="Expaned-Drawer-Menu" transform="translate(1080.000000, 0.000000)">
+                <g id="msg-input" transform="translate(20.000000, 882.000000)">
+                    <g id="icon-tag" transform="translate(295.339260, 12.378031)">
+                        <path d="M5.6313286,13.579545 C1.88426978,13.579545 -0.668671398,10.3128783 0.154858014,6.40984802 C0.896034484,2.97348438 4.10779919,0.131060139 7.48426978,0.00378741135 C11.2725051,-0.123485316 13.8666227,2.97348438 13.2489757,6.7916662 C13.1254462,7.59772681 12.8783874,8.27651468 12.5077992,8.99772681 C12.0136815,9.97348438 11.0254462,10.609848 10.037211,10.609848 L10.037211,10.609848 C8.7195639,10.609848 7.85485801,9.50681771 8.06074037,8.1916662 L8.76074037,3.82196923 M8.63721095,4.67045408 L6.57838743,4.67045408 C5.42544625,4.67045408 4.35485801,5.60378741 4.19015213,6.7916662 L4.10779919,7.21590862 C3.90191684,8.40378741 4.68426978,9.33712074 5.83721095,9.33712074 L5.83721095,9.33712074 C6.99015213,9.33712074 8.06074037,8.40378741 8.22544625,7.21590862 L8.63721095,4.67045408 Z"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

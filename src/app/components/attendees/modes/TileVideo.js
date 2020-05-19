@@ -35,7 +35,8 @@ class TileVideo extends Component {
             toggleMicrophone={toggleMicrophone}
           />
         )}
-        {participant.stream ? (
+        {participant.stream && participant.stream.active &&
+          participant.stream.getVideoTracks().length > 0? (
           <div className={mySelf ? "stream-media myself" : "stream-media"}>
             <AttendeesParticipantVideo stream={participant.stream} />
           </div>

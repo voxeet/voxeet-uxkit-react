@@ -14,7 +14,7 @@ class SpeakerDetails extends Component {
     const { participant, isWidgetFullScreenOn, toggleMicrophone } = this.props;
     return (
       <span className="participant-details">
-        {participant.stream ? (
+        {participant.stream && participant.stream.active && participant.stream.getVideoTracks().length > 0 ? (
           <div
             className={
               "stream-media " + (!isWidgetFullScreenOn ? "bubble" : "")

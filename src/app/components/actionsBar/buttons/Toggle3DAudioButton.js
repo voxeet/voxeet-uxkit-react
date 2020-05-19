@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { strings } from "../../../languages/localizedStrings";
-import Audio3DOn from "../../../../static/images/newicons/icon-3d-on.svg";
+import Audio3DOn from "../../../../static/images/icons/icon-layout-3D.svg";
 
 class Toggle3DAudioButton extends Component {
   constructor(props) {

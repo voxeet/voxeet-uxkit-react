@@ -14,7 +14,7 @@ class AttendeesSettingsVuMeter extends Component {
   componentDidMount() {
     this._interval = setInterval(() => {
       VoxeetSDK.conference.audioLevel(VoxeetSDK.session.participant, level => {
-        this.setState({ level: Math.round(level * 24) });
+        this.setState({ level: Math.round(level * 21) });
       });
     }, 200);
   }
@@ -27,7 +27,7 @@ class AttendeesSettingsVuMeter extends Component {
     const { level } = this.state;
     return (
       <ul className="loadbar">
-        {[...Array(24)].map((el, i) => (
+        {[...Array(21)].map((el, i) => (
           <li key={`loadbar_${i}`}>
             <div className={`bar ${level >= i ? "ins" : ""}`}></div>
           </li>

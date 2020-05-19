@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="18px" viewBox="0 0 24 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>icon-video-hover</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="icon-video-hover" transform="translate(1.000000, 1.000000)" stroke="#FFFFFF" stroke-width="1.5">
+            <path d="M0,2.07531765 C0,0.929151361 0.931260627,0 2.06970659,0 L19.9302934,0 C21.0733608,0 22,0.929385424 22,2.07531765 L22,13.9246823 C22,15.0708486 21.0687394,16 19.9302934,16 L2.06970659,16 C0.926639203,16 0,15.0706146 0,13.9246823 L0,2.07531765 Z M15,8 L8,11.5 L8,4.5 L15,8 Z"></path>
+        </g>
+    </g>
+</svg>

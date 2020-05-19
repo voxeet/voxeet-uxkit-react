@@ -72,7 +72,7 @@
       height: 40px;
       &.active {
         color: #fff;
-        background-color: #fff;
+        //background-color: #fff;
         border-radius: 50%;
         cursor: pointer;
       }
@@ -90,11 +90,29 @@
       }
       a {
         img {
-          width: 20px;
+          width: 40px;
           position: absolute;
           left: 50%;
           top: 50%;
           transform: translate(-50%, -50%);
+        }
+        .attendees-number {
+          width: 17px;
+          height: 15px;
+          position: absolute !important;
+          line-height: 16px;
+          font-size: 14px;
+          padding-top: 4px;
+          margin-left: -26px !important;
+          margin-top: 0px !important;
+          z-index: 1;
+          font-family: 'DINNextLTPro-Regular';
+          background: #13141C;
+          border-radius: 50px;
+
+          &.active {
+            background: #3E44FE;
+          }
         }
         color: #c6d9ec;
         //transition: all ease-in-out .08s;
@@ -102,7 +120,7 @@
         &:hover,
         &.active {
           color: #fff;
-          background-color: #fff;
+          //background-color: #fff;
           border-radius: 50%;
           cursor: pointer;
         }
@@ -112,23 +130,23 @@
         &.icon-screen-share:hover,
         &.icon-camera-video:hover {
           //color: @dangerColor;
-          background-color: #fff;
+          //background-color: #fff;
           border-radius: 50%;
           cursor: pointer;
         }
         &.icon-mute-participant-on {
-          background-color: #fff;
+          //background-color: #fff;
           border-radius: 50%;
           padding: 3px;
         }
         &.icon-gear {
           &.on {
-            color: #c6d9ec;
-            background: @navActiveItemBgColor;
+            // color: #c6d9ec;
+            // background: @navActiveItemBgColor;
           }
           &:hover {
-            color: #fff;
-            background: @navActiveItemBgColor;
+            // color: #fff;
+            // background: @navActiveItemBgColor;
           }
         }
       }

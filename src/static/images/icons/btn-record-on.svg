@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>btn-record-on</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="btn-record-on">
+            <g>
+                <circle id="bg" fill="#3E44FE" cx="25" cy="25" r="25"></circle>
+                <path d="M25,9 C16.1779048,9 9,16.1771429 9,25 C9,33.8228571 16.1779048,41 25,41 C33.8220952,41 41,33.8228571 41,25 C41,16.1771429 33.8220952,9 25,9 M25,13 C18.3723077,13 13,18.3723077 13,25 C13,31.6276923 18.3723077,37 25,37 C31.6276923,37 37,31.6276923 37,25 C37,18.3723077 31.6276923,13 25,13 M17.5384615,21.5833333 L17.5384615,26.9447021 M21.25,18.1805725 L21.25,30.8465881 M32.3846154,22.2110291 L32.3846154,26.4548035 M24.9615385,21.0636335 L24.9615385,28.9386335 M28.6730769,19.1881226 L28.6730769,29.7953735" id="icon" stroke="#FFFFFF" stroke-width="1.65"></path>
+            </g>
+        </g>
+    </g>
+</svg>

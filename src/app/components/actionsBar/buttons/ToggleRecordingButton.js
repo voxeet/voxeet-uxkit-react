@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
-import RecordingOn from "../../../../static/images/newicons/icon-record-on.svg";
-import RecordingOff from "../../../../static/images/newicons/icon-record-off.svg";
+import RecordingOn from "../../../../static/images/icons/btn-record-on.svg";
+import RecordingOff from "../../../../static/images/icons/btn-record-off.svg";
 
 class ToggleRecordingButton extends Component {
   constructor(props) {

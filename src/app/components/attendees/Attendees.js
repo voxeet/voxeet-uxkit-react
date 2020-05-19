@@ -283,7 +283,7 @@ class Attendees extends Component {
               (isWebinar && isAdmin) ||
               (isWebinar && !isAdmin && participantsConnected.length > 0)) && (
               <Speakers
-                participants={participants}
+                participants={participantsConnected}
                 isAdmin={isAdmin}
                 isAdminActived={isAdminActived}
                 isFilePresentation={isFilePresentation}

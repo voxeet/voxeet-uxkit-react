@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="25px" viewBox="0 0 26 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>icon 3D v2</title>
+    <desc>Created with Sketch.</desc>
+    <g id="PC-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="conference-gallery-3D-dark" transform="translate(-1359.000000, -26.000000)">
+            <g id="3D-view" transform="translate(32.000000, 20.000000)">
+                <g id="btn-layout" transform="translate(1198.000000, 0.000000)">
+                    <g id="icon-3D-v2" transform="translate(129.000000, 5.000000)">
+                        <text id="3D" font-family="Helvetica" font-size="8" font-weight="normal" fill="#FFFFFF">
+                            <tspan x="8.38671875" y="17">3D</tspan>
+                        </text>
+                        <g id="Group-21" transform="translate(1.000000, 2.000000)" stroke="#FFFFFF" stroke-width="1.25">
+                            <path d="M7.6428,21.9025333 C7.92946667,22.0212 8.2188,22.1398667 8.5188,22.2372 C11.2561333,23.1252 14.0801333,22.9305333 16.5414667,21.9025333" id="Stroke-1"></path>
+                            <path d="M21.9592,5.23066667 C20.5712,2.95066667 18.4005333,1.13466667 15.6645333,0.245333333 C15.3645333,0.146666667 15.0605333,0.072 14.7592,-6.21724894e-14" id="Stroke-3"></path>
+                            <path d="M9.42533333,0.0028 C6.468,0.7068 3.84933333,2.56013333 2.22666667,5.2308" id="Stroke-5"></path>
+                            <path d="M20.8628,18.7749333 C21.8321333,17.6469333 22.6001333,16.3149333 23.0881333,14.8136 C23.5761333,13.3109333 23.7374667,11.7816 23.6161333,10.3016" id="Stroke-7"></path>
+                            <path d="M0.577733333,10.3034667 C0.321733333,13.4194667 1.35106667,16.4568 3.3284,18.7648" id="Stroke-9"></path>
+                            <path d="M18.6441333,15.7788 C19.0668,15.1628 19.4388,14.5028 19.6801333,13.7548 C19.9308,12.9868 20.0561333,12.2081333 20.0681333,11.4388" id="Stroke-11"></path>
+                            <path d="M9.38373333,3.83613333 C7.9904,4.3428 6.76373333,5.22546667 5.83573333,6.41746667" id="Stroke-13"></path>
+                            <path d="M18.3498667,6.38946667 C17.4392,5.2228 16.2112,4.29346667 14.7165333,3.7708" id="Stroke-15"></path>
+                            <path d="M9.77426667,18.9102667 C11.3169333,19.3809333 12.8849333,19.3409333 14.3289333,18.9142667" id="Stroke-17"></path>
+                            <path d="M4.12453333,11.4701333 C4.1592,13.0074667 4.64586667,14.4848 5.4872,15.7368" id="Stroke-19"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -24,7 +24,8 @@ const defaultState = {
   isAdmin: false,
   isWebinar: false,
   handleOnConnect: null,
-  handleOnLeave: null
+  handleOnLeave: null,
+  quality: {}
 };
 
 const ParticipantReducer = (state = defaultState, action) => {
@@ -43,7 +44,8 @@ const ParticipantReducer = (state = defaultState, action) => {
         },
         screenShareEnabled: false,
         isSpeaking: false,
-        isReplaying: false
+        isReplaying: false,
+        quality: {}
       };
     }
     case Types.WEBINAR_ACTIVATED: {
@@ -62,8 +64,8 @@ const ParticipantReducer = (state = defaultState, action) => {
       };
     }
     case Types.USER_INVITED:
-      var invitedUsers = state.invitedUsers;
-      for (var i = 0; i < invitedUsers.length; i++) {
+      let invitedUsers = [...state.invitedUsers];
+      for (let i = 0; i < invitedUsers.length; i++) {
         if (action.payload.externalId == invitedUsers[i]["externalId"]) {
           invitedUsers[i]["invited"] = true;
         }
@@ -73,7 +75,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         invitedUsers: invitedUsers
       };
     case Types.PARTICIPANTS_MOVES: {
-      let participants = state.participants;
+      let participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
@@ -84,7 +86,7 @@ const ParticipantReducer = (state = defaultState, action) => {
       };
     }
     case Types.SAVE_CURRENT_USER: {
-      let currentUser = state.currentUser;
+      let currentUser = {...state.currentUser};
       currentUser = {
         name: action.payload.name,
         participant_id: VoxeetSDK.session.participant.id,
@@ -113,7 +115,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         handleOnLeave: action.payload.handleOnLeave
       };
     case Types.PARTICIPANTS_RESET: {
-      const replayParticipantTmp = state.replayParticipantTmp;
+      const replayParticipantTmp = [...state.replayParticipantTmp];
       return {
         ...state,
         participants: replayParticipantTmp,
@@ -129,7 +131,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         isAdmin: true
       };
     case Types.PARTICIPANTS_SAVE: {
-      const participants = state.participants;
+      const participants = [...state.participants];
       return {
         ...state,
         replayParticipantTmp: participants,
@@ -138,7 +140,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     }
     case Types.PARTICIPANT_SPEAK: {
       const userId = action.payload.userId;
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
@@ -152,7 +154,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     case Types.PARTICIPANT_ADDED: {
       const userInfo = action.payload.userInfo;
       if (VoxeetSDK.session.participant.id != action.payload.user) {
-        let participants = state.participants;
+        let participants = [...state.participants];
         const index = participants.findIndex(
           p => p.participant_id === action.payload.userId
         );
@@ -190,10 +192,10 @@ const ParticipantReducer = (state = defaultState, action) => {
           const audio = new Audio(AudioParticipantJoined);
           audio.play();
         }
-        let currentUser = state.currentUser;
+        let currentUser = {...state.currentUser};
         if (
           action.payload.stream &&
-          action.payload.stream.getVideoTracks().length > 0
+          action.payload.stream.getTracks().length > 0
         ) {
           currentUser = {
             ...currentUser,
@@ -205,6 +207,20 @@ const ParticipantReducer = (state = defaultState, action) => {
             userStream: action.payload.stream
           };
         }
+        if (
+            action.payload.stream && !action.payload.stream.active
+        ) {
+          currentUser = {
+            ...currentUser,
+            stream: null
+          };
+          return {
+            ...state,
+            currentUser: currentUser,
+            userStream: null
+          };
+        }
+
         if (currentUser != null) {
           currentUser.stream = null;
           return {
@@ -213,7 +229,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         }
         return state;
       }
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
@@ -267,12 +283,13 @@ const ParticipantReducer = (state = defaultState, action) => {
     }
     case Types.PARTICIPANT_UPDATED:
       const { userId } = action.payload;
-      const participants = state.participants;
+      const participants = [...state.participants];
       if (VoxeetSDK.session.participant.id === action.payload.userId) {
-        let currentUser = state.currentUser;
+        let currentUser = {...state.currentUser};
+
         if (
           action.payload.stream &&
-          action.payload.stream.getVideoTracks().length > 0
+          action.payload.stream.getTracks().length > 0
         ) {
           currentUser = {
             ...currentUser,
@@ -284,6 +301,20 @@ const ParticipantReducer = (state = defaultState, action) => {
             userStream: action.payload.stream
           };
         }
+        if (
+            action.payload.stream && !action.payload.stream.active
+        ) {
+          currentUser = {
+            ...currentUser,
+            stream: null
+          };
+          return {
+            ...state,
+            currentUser: currentUser,
+            userStream: null
+          };
+        }
+
         if (currentUser != null) {
           currentUser.stream = null;
           return {
@@ -315,7 +346,7 @@ const ParticipantReducer = (state = defaultState, action) => {
       const userInfo = action.payload.userInfo;
       const status = action.payload.status;
       if (VoxeetSDK.session.participant.id != action.payload.userId) {
-        let participants = state.participants;
+        let participants = [...state.participants];
         const index = participants.findIndex(
           p => p.participant_id === action.payload.userId
         );
@@ -352,7 +383,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     }
 
     case Types.PARTICIPANT_LEFT: {
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
@@ -366,6 +397,7 @@ const ParticipantReducer = (state = defaultState, action) => {
       participants[index].status = STATUS_LEFT;
       participants[index].x = -1;
       participants[index].y = -1;
+      participants[index].stream = null;
 
       /*const size = participants.filter(
         participant => participant.isConnected === true
@@ -407,7 +439,7 @@ const ParticipantReducer = (state = defaultState, action) => {
       };
     }
     case Types.PARTICIPANT_3D_MOVE: {
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
@@ -421,7 +453,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     }
     case Types.PARTICIPANT_TOGGLE_MICROPHONE: {
       const userId = action.payload.userId;
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(
         p => p.participant_id === action.payload.userId
       );
@@ -478,7 +510,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     }
     case Types.SAVE_USER_POSITION: {
       const { userId, relativePosition, position } = action.payload;
-      const participants = state.participants;
+      const participants = [...state.participants];
       const index = participants.findIndex(p => p.participant_id === userId);
       if (index !== -1) {
         participants[index].x = position.posX;
@@ -489,6 +521,12 @@ const ParticipantReducer = (state = defaultState, action) => {
       return {
         ...state,
         participants: [...participants]
+      };
+    }
+    case Types.PARTICIPANT_QUALITY_UPDATED: {
+      return {
+        ...state,
+        quality: {...action.payload.quality}
       };
     }
     default:
