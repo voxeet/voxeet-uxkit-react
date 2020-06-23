@@ -1223,7 +1223,7 @@ export class Actions {
 
       VoxeetSDK.conference.on("qualityIndicators", (indicators) => {
         if (indicators) {
-          console.log("Quality indicators:", indicators)
+          // console.log("Quality indicators:", indicators)
           dispatch(ParticipantActions.onParticipantQualityUpdated(indicators));
           // dispatch(ControlsActions.toggleScreenShareMode(false));
         } else {
