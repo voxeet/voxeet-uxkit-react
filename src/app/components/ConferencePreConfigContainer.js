@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import Cookies from "js-cookie";
 import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
-import AudioTest from "../../static/sounds/voxeet_reaching_out.mp3";
 import { strings } from "../languages/localizedStrings.js";
 
 @connect(store => {
