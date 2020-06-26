@@ -166,7 +166,6 @@ export class Actions {
     constraints,
     liveRecordingEnabled,
     ttl,
-    rtcpmode,
     mode,
     videoCodec,
     userInfoRaw,
@@ -200,7 +199,6 @@ export class Actions {
                 liveRecording: liveRecordingEnabled,
                 ttl: ttl,
                 stats: "true",
-                rtcpMode: rtcpmode,
                 mode: mode,
                 videoCodec: videoCodec,
               },
@@ -352,7 +350,6 @@ export class Actions {
                   liveRecording: liveRecordingEnabled,
                   ttl: ttl,
                   stats: "true",
-                  rtcpMode: rtcpmode,
                   mode: mode,
                   videoCodec: videoCodec,
                 },
@@ -507,7 +504,6 @@ export class Actions {
               liveRecording: liveRecordingEnabled,
               ttl: ttl,
               stats: "true",
-              rtcpMode: rtcpmode,
               mode: mode,
               videoCodec: videoCodec,
             },
@@ -912,7 +908,7 @@ export class Actions {
           return VoxeetSDK.command
             .send(broadcastMessage)
             .then(() => {
-              dispatch({type:'noop'});
+              dispatch({ type: "noop" });
             })
             .catch((err) => {
               this._throwErrorModal(err);
@@ -931,7 +927,7 @@ export class Actions {
           return VoxeetSDK.command
             .send(broadcastMessage)
             .then(() => {
-              dispatch({type:'noop'});
+              dispatch({ type: "noop" });
             })
             .catch((err) => {
               this._throwErrorModal(err);
@@ -1227,7 +1223,7 @@ export class Actions {
           dispatch(ParticipantActions.onParticipantQualityUpdated(indicators));
           // dispatch(ControlsActions.toggleScreenShareMode(false));
         } else {
-          console.warn("No indicators")
+          console.warn("No indicators");
         }
       });
 
