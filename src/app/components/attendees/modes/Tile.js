@@ -34,7 +34,7 @@ class Tile extends Component {
       kickParticipant,
       isAdminActived,
       nbParticipant,
-      mySelf
+      mySelf,
     } = this.props;
     return (
       <div
@@ -48,7 +48,11 @@ class Tile extends Component {
           "video-" +
           nbParticipant +
           "-video-" +
-          (participant.stream && participant.stream.active && participant.stream.getVideoTracks().length > 0? "on" : "off")
+          (participant.stream &&
+          participant.stream.active &&
+          participant.stream.getVideoTracks().length > 0
+            ? "on"
+            : "off")
         }
       >
         <TileVideo
@@ -73,7 +77,7 @@ class Tile extends Component {
 }
 
 TileVideo.defaultProps = {
-  mySelf: false
+  mySelf: false,
 };
 
 Tile.propTypes = {

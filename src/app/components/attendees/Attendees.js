@@ -11,7 +11,7 @@ import { Actions as ActiveSpeakerActions } from "../../actions/ActiveSpeakerActi
 import {
   MODE_LIST,
   MODE_TILES,
-  MODE_SPEAKER
+  MODE_SPEAKER,
 } from "../../constants/DisplayModes";
 import { BROADCAST_KICK } from "../../constants/BroadcastMessageType";
 
@@ -25,16 +25,16 @@ import {
   Speakers,
   Tiles,
   View3D,
-  ToggleModeButton
+  ToggleModeButton,
 } from "./modes";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
 
-@connect(store => {
+@connect((store) => {
   return {
     participantStore: store.voxeet.participants,
-    errorStore: store.voxeet.error
+    errorStore: store.voxeet.error,
   };
 })
 class Attendees extends Component {
@@ -116,7 +116,7 @@ class Attendees extends Component {
       ...this.props,
       attendeesListOpened: this.props.attendeesListOpened,
       isWebinar: this.props.participantStore.isWebinar,
-      isAdmin: this.props.participantStore.isAdmin
+      isAdmin: this.props.participantStore.isAdmin,
     });
   }
 
@@ -125,7 +125,7 @@ class Attendees extends Component {
       ...this.props,
       attendeesChatOpened: this.props.attendeesChatOpened,
       participants: this.props.participantStore.participants,
-      currentUser: this.props.participantStore.currentUser
+      currentUser: this.props.participantStore.currentUser,
     });
   }
 
@@ -146,7 +146,7 @@ class Attendees extends Component {
       attendeesChatOpened,
       attendeesSettingsOpened,
       conferenceId,
-      isVideoPresentation
+      isVideoPresentation,
     } = this.props;
     const {
       participants,
@@ -160,9 +160,9 @@ class Attendees extends Component {
       userIdFilePresentation,
       userIdVideoPresentation,
       userStream,
-      currentUser
+      currentUser,
     } = this.props.participantStore;
-    const participantsConnected = participants.filter(p => p.isConnected);
+    const participantsConnected = participants.filter((p) => p.isConnected);
     return (
       <div
         id="conference-attendees"
@@ -337,7 +337,7 @@ Attendees.propTypes = {
   isFilePresentation: PropTypes.bool,
   attendeesWaiting: PropTypes.func,
   attendeesChat: PropTypes.func,
-  attendeesList: PropTypes.func
+  attendeesList: PropTypes.func,
 };
 
 export default Attendees;
