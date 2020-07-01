@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
+    - uses: rlespinasse/github-slug-action@master
     - name: install dependencies
       run: |
           yarn install
@@ -32,3 +32,8 @@ jobs:
           yarn publish
       env:
           NODE_AUTH_TOKEN: ${{ secrets.NEXUS_AUTH_TOKEN }}
+
+    - name: create NPM tag for develop version
+      if: ${{ env.GITHUB_REF_SLUG == 'develop' }}
+      run: |
+        npm dist-tag add @voxeet/react-components@$(npm run --silent get-version) ${{ env.GITHUB_REF_SLUG }}
