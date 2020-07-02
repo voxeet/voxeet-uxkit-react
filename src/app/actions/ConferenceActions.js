@@ -132,7 +132,7 @@ export class Actions {
     };
   }
 
-  static setInputAudio(constraints) {
+  static setInputAudio(constraints, dispatch) {
     let inputCookieExist = false;
     VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
       devices.forEach((source) => {
@@ -155,7 +155,7 @@ export class Actions {
     return constraints;
   }
 
-  static setVideoConstraints(constraints, videoRatio) {
+  static setVideoConstraints(constraints, videoRatio, dispatch) {
     let videoCookieExist = false;
     VoxeetSDK.mediaDevice.enumerateVideoDevices().then((devices) => {
       devices.forEach((source) => {
@@ -211,7 +211,7 @@ export class Actions {
     return constraints;
   }
 
-  static setOutputAudio() {
+  static setOutputAudio(dispatch) {
     let outputCookieExist = false;
     VoxeetSDK.mediaDevice.enumerateAudioDevices("output").then((devices) => {
       devices.map((source, i) => {
@@ -305,9 +305,9 @@ export class Actions {
     isListener,
     preConfigPayload,
     autoRecording,
-    autoHls,
     pinCode,
-    simulcast
+    simulcast,
+    dvcs
   ) {
     return (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
@@ -329,7 +329,7 @@ export class Actions {
               alias: conferenceAlias,
               params: {
                 liveRecording: liveRecordingEnabled,
-                dvcs: true,
+                dvcs: dvcs,
                 ttl: ttl,
                 stats: "true",
                 mode: mode,
@@ -392,16 +392,16 @@ export class Actions {
       }
 
       if (preConfigPayload == null && !bowser.msie && !participants.isWebinar) {
-        this.setVideoConstraints(constraints, videoRatio);
+        this.setVideoConstraints(constraints, videoRatio, dispatch);
         if (constraints.audio) {
-          constraints = this.setInputAudio(constraints);
+          constraints = this.setInputAudio(constraints, dispatch);
           return VoxeetSDK.session.open(userInfo).then(() => {
             return VoxeetSDK.conference
               .create({
                 alias: conferenceAlias,
                 params: {
                   liveRecording: liveRecordingEnabled,
-                  dvcs: true,
+                  dvcs: dvcs,
                   ttl: ttl,
                   stats: "true",
                   mode: mode,
@@ -417,10 +417,6 @@ export class Actions {
                     audio3D: false,
                   })
                   .then((res) => {
-                    if (conference.isNew && autoHls) {
-                      dispatch(ConferenceActions.startLiveHls());
-                      dispatch(ControlsActions.toggleLiveHls());
-                    }
                     dispatch(
                       ParticipantActions.saveCurrentUser(
                         userInfo.name,
@@ -474,7 +470,7 @@ export class Actions {
                               console.log(err);
                             });
                       } else {
-                        this.setOutputAudio();
+                        this.setOutputAudio(dispatch);
                       }
                     }
                     //}
@@ -509,7 +505,7 @@ export class Actions {
             alias: conferenceAlias,
             params: {
               liveRecording: liveRecordingEnabled,
-              dvcs: true,
+              dvcs: dvcs,
               ttl: ttl,
               stats: "true",
               mode: mode,
@@ -525,10 +521,6 @@ export class Actions {
                 audio3D: false,
               })
               .then((res) => {
-                if (conference.isNew && autoHls) {
-                  dispatch(ConferenceActions.startLiveHls());
-                  dispatch(ControlsActions.toggleLiveHls());
-                }
                 if (VoxeetSDK.extensions.hasElectron()) {
                   dispatch(ConferenceActions.hasElectron());
                 } else {
@@ -583,7 +575,7 @@ export class Actions {
                             console.log(err);
                           });
                     } else {
-                      this.setOutputAudio();
+                      this.setOutputAudio(dispatch);
                     }
                   }
                 }
