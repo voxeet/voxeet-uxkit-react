@@ -13,9 +13,9 @@ import ScreenshareMode from "./presentationMode/ScreenshareMode";
 import FilePresentationMode from "./presentationMode/FilePresentationMode";
 import VideoPresentationMode from "./presentationMode/VideoPresentationMode";
 
-@connect(store => {
+@connect((store) => {
   return {
-    activeSpeakerStore: store.voxeet.activeSpeaker
+    activeSpeakerStore: store.voxeet.activeSpeaker,
   };
 })
 class Speakers extends Component {
@@ -53,11 +53,11 @@ class Speakers extends Component {
       isWebinar,
       isScreenshare,
       videoPresentationEnabled,
-      isVideoPresentation
+      isVideoPresentation,
     } = this.props;
     const {
       activeSpeaker,
-      forceActiveUserEnabled
+      forceActiveUserEnabled,
     } = this.props.activeSpeakerStore;
     let activeSpeakerChecker = activeSpeaker;
     if (activeSpeakerChecker == null) {
@@ -122,7 +122,9 @@ class Speakers extends Component {
         )}
         <div className="SidebarList">
           <ul className="list-items">
-            {((!isWebinar && !currentUser.isListener && currentUser.isConnected) ||
+            {((!isWebinar &&
+              !currentUser.isListener &&
+              currentUser.isConnected) ||
               (isWebinar && isAdmin)) && (
               <li
                 className={"item small-item participant-available myself-item"}
@@ -138,7 +140,7 @@ class Speakers extends Component {
               </li>
             )}
             {participants.map((participant, i) => {
-              if (participant.isConnected)
+              if (participant.isConnected && participant.type == "user")
                 return (
                   <Speaker
                     key={i}
@@ -158,7 +160,7 @@ class Speakers extends Component {
                     disableForceActiveSpeaker={disableForceActiveSpeaker}
                     forceActiveSpeaker={forceActiveSpeaker}
                   />
-              );
+                );
             })}
           </ul>
         </div>
@@ -187,7 +189,7 @@ Speakers.propTypes = {
   userStream: PropTypes.object,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  isAdminActived: PropTypes.bool.isRequired
+  isAdminActived: PropTypes.bool.isRequired,
 };
 
 export default Speakers;

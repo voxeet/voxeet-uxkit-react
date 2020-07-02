@@ -16,7 +16,7 @@ class ListWidget extends Component {
       isAdmin,
       isAdminActived,
       currentUser,
-      isWebinar
+      isWebinar,
     } = this.props;
     return (
       <div className="SidebarList">
@@ -31,7 +31,7 @@ class ListWidget extends Component {
             />
           )}
           {participants.map((participant, i) => {
-            if (participant.isConnected)
+            if (participant.isConnected && participant.type == "user")
               return (
                 <ListWidgetItem
                   isAdminActived={isAdminActived}
@@ -57,7 +57,7 @@ ListWidget.propTypes = {
   isWebinar: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   toggleMicrophone: PropTypes.func.isRequired,
-  kickParticipant: PropTypes.func.isRequired
+  kickParticipant: PropTypes.func.isRequired,
 };
 
 export default ListWidget;

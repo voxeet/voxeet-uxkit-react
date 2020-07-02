@@ -20,7 +20,9 @@ class Tiles extends Component {
       currentUser,
       isWebinar,
     } = this.props;
-    let nbParticipants = participants.filter((p) => p.isConnected).length;
+    let nbParticipants = participants.filter(
+      (p) => p.isConnected && p.type == "user"
+    ).length;
     if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
       nbParticipants += 1;
     let count = -1;
@@ -43,7 +45,7 @@ class Tiles extends Component {
             />
           )}
           {participants.map((participant, i) => {
-            if (participant.isConnected) {
+            if (participant.isConnected && participant.type == "user") {
               count = count + 1;
               return (
                 <Tile
