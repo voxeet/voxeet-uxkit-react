@@ -18,14 +18,17 @@ class Tiles extends Component {
       isAdmin,
       isAdminActived,
       currentUser,
-      isWebinar
+      isWebinar,
     } = this.props;
-    let nbParticipants = participants.filter(p => p.isConnected).length;
+    let nbParticipants = participants.filter((p) => p.isConnected).length;
     if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
       nbParticipants += 1;
     let count = -1;
     return (
-      <div className="SidebarTiles" data-number-user={nbParticipants}>
+      <div
+        className="SidebarTiles"
+        data-number-user={nbParticipants <= 16 ? nbParticipants : 16}
+      >
         <div className={"tiles-list list" + nbParticipants}>
           {((!isWebinar && !currentUser.isListener) ||
             (isWebinar && isAdmin)) && (
@@ -71,7 +74,7 @@ Tiles.propTypes = {
   currentUser: PropTypes.object.isRequired,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  isAdminActived: PropTypes.bool.isRequired
+  isAdminActived: PropTypes.bool.isRequired,
 };
 
 export default Tiles;
