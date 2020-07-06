@@ -799,7 +799,7 @@ export class Actions {
     };
   }
 
-  static toggleScreenShare() {
+  static toggleScreenShare(source_id) {
     return (dispatch, getState) => {
       const {
         voxeet: { participants, controls },
@@ -815,7 +815,7 @@ export class Actions {
         );
       }
       if (enableScreenShare)
-        return VoxeetSDK.conference.startScreenShare().catch((err) => {
+        return VoxeetSDK.conference.startScreenShare(source_id).catch((err) => {
           if (
             err.message == "Chrome Web Extension is not installed" &&
             controls.chromeExtensionId != null

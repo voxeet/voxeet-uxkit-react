@@ -129,7 +129,22 @@ class ConferenceRoomContainer extends Component {
       isVideoPresentation
     } = this.props.controlsStore;
     if (isScreenshare || type == "screenshare") {
-      this.props.dispatch(ConferenceActions.toggleScreenShare());
+      const {getSources} = this.props;
+      if(!getSources)
+        this.props.dispatch(ConferenceActions.toggleScreenShare());
+      else {
+        getSources().then(sources => {
+          console.log('Got sources', sources);
+          if(!sources)
+            this.props.dispatch(ConferenceActions.toggleScreenShare());
+          else {
+            const entireScreen = sources.find(item => item.name=="Entire Screen");
+
+            // console.log('Screen', entireScreen);
+            this.props.dispatch(ConferenceActions.toggleScreenShare(entireScreen?entireScreen.id:null));
+          }
+        })
+      }
     } else if (isFilePresentation) {
       this.props.dispatch(ConferenceActions.stopFilePresentation());
     } else if (isVideoPresentation) {
@@ -405,6 +420,7 @@ ConferenceRoomContainer.propTypes = {
   videoPresentationEnabled: PropTypes.bool,
   screenShareEnabled: PropTypes.bool,
   handleOnLeave: PropTypes.func,
+  getSources: PropTypes.func,
   conferenceId: PropTypes.string,
   conferencePincode: PropTypes.string,
   attendeesList: PropTypes.func,

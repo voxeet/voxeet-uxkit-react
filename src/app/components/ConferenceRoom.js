@@ -298,6 +298,7 @@ class ConferenceRoom extends Component {
       attendeesList,
       attendeesChat,
       handleOnLeave,
+      getSources,
       attendeesWaiting,
       isWebinar,
       isAdmin,
@@ -406,6 +407,7 @@ class ConferenceRoom extends Component {
           filePresentationEnabled={filePresentationEnabled}
           videoPresentationEnabled={videoPresentationEnabled}
           handleOnLeave={handleOnLeave}
+          getSources={getSources}
           conferenceId={conferenceId}
           attendeesWaiting={attendeesWaiting}
         />
@@ -455,6 +457,7 @@ ConferenceRoom.propTypes = {
   attendeesChat: PropTypes.func,
   loadingScreen: PropTypes.func,
   handleOnLeave: PropTypes.func,
+  getSources: PropTypes.func,
   refreshTokenCallback: PropTypes.func,
   liveRecordingEnabled: PropTypes.bool,
   isDemo: PropTypes.bool,
@@ -477,6 +480,7 @@ ConferenceRoom.defaultProps = {
   chromeExtensionId: null,
   closeSessionAtHangUp: true,
   handleOnLeave: null,
+  getSources: null,
   isDemo: false,
   pinCode: "",
   isManualKickAllowed: false,
