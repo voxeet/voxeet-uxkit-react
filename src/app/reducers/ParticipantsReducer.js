@@ -176,7 +176,7 @@ const ParticipantReducer = (state = defaultState, action) => {
           });
         } else {
           participants[index].name = userInfo.name;
-          participants[index].name = userInfo.type;
+          participants[index].type = userInfo.type;
           participants[index].avatarUrl = userInfo.avatarUrl;
           participants[index].metadata = userInfo.metadata;
         }
@@ -365,6 +365,14 @@ const ParticipantReducer = (state = defaultState, action) => {
             x: -1,
             y: -1,
           });
+        } else {
+          participants[index].name = userInfo.name;
+          participants[index].type = userInfo.type;
+          participants[index].isConnected =
+            status == "Connected" || status == "Connecting" ? true : false;
+          participants[index].avatarUrl = userInfo.avatarUrl;
+          participants[index].metadata = userInfo.metadata;
+          participants[index].status = status;
         }
         return {
           ...state,
