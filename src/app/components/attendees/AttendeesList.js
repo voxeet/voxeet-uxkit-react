@@ -8,10 +8,10 @@ import iconPlus from "../../../static/images/icons/icon-plus.svg";
 import iconSlideLeft from "../../../static/images/icons/icon-slide-left.svg";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
 
-@connect(store => {
+@connect((store) => {
   return {
     participantStore: store.voxeet.participants,
-    participantWaiting: store.voxeet.participantsWaiting
+    participantWaiting: store.voxeet.participantsWaiting,
   };
 })
 class AttendeesList extends Component {
@@ -21,7 +21,7 @@ class AttendeesList extends Component {
       runningAnimation: false,
       q: "",
       // view: 'participants',
-      filteredUsers: this.props.participantStore.invitedUsers
+      filteredUsers: this.props.participantStore.invitedUsers,
     };
     this.inviteUserSelected = this.inviteUserSelected.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -65,40 +65,43 @@ class AttendeesList extends Component {
   inviteUserSelected(externalId) {
     const tmpArray = [];
     tmpArray.push(externalId);
-    const test = { "externalIds": tmpArray }
+    const participantsArray = { externalIds: tmpArray };
     this.props.dispatch(ParticipantActions.userInvited(externalId));
-    VoxeetSDK.notification.invite(VoxeetSDK.conference.current, test);
+    VoxeetSDK.conference.invite(
+      VoxeetSDK.conference.current,
+      participantsArray
+    );
   }
 
   render() {
     const {
       participants,
       currentUser,
-      invitedUsers
+      invitedUsers,
     } = this.props.participantStore;
     const { isWebinar, isAdmin, attendeesListOpened } = this.props;
     const { filteredUsers } = this.state;
-    const participantsConnected = participants.filter(p => p.isConnected);
+    const participantsConnected = participants.filter((p) => p.isConnected);
     let userNotYetInvitedWithoutFilter = null;
     let userNotYetInvitedWithFilter = null;
     const participantsListener = this.props.participantWaiting.participants.filter(
-      p => p.stream == null && p.isConnected && p.status == "Connecting"
+      (p) => p.stream == null && p.isConnected && p.status == "Connecting"
     );
     const participantsInvited = this.props.participantWaiting.participants.filter(
-      p => p.status == "Reserved"
+      (p) => p.status == "Reserved"
     );
     const participantsInactive = this.props.participantWaiting.participants.filter(
-      p => p.status == "Inactive"
+      (p) => p.status == "Inactive"
     );
     const participantsLeft = this.props.participantWaiting.participants.filter(
-      p => p.status == "Left"
+      (p) => p.status == "Left"
     );
     if (invitedUsers != null) {
       userNotYetInvitedWithoutFilter = invitedUsers.filter(
-        p => p.invited == false
+        (p) => p.invited == false
       );
       userNotYetInvitedWithFilter = filteredUsers.filter(
-        p => p.invited == false
+        (p) => p.invited == false
       );
     }
     return (
@@ -107,8 +110,8 @@ class AttendeesList extends Component {
           this.state.runningAnimation
             ? "attendees-list attendees-list-out"
             : attendeesListOpened
-              ? "attendees-list"
-              : "attendees-list-hidden"
+            ? "attendees-list"
+            : "attendees-list-hidden"
         }
       >
         <div className="attendees-list-header">
@@ -116,114 +119,111 @@ class AttendeesList extends Component {
         </div>
         {isWebinar ? (
           <div>
-            {(participantsConnected.length > 0 ||
-              isAdmin) && (
-                <div>
-                  <div className="title-section">
-                    {strings.presenter}{" "}
-                    <span>
-                      (
+            {(participantsConnected.length > 0 || isAdmin) && (
+              <div>
+                <div className="title-section">
+                  {strings.presenter}{" "}
+                  <span>
+                    (
                     {isAdmin
-                        ? participantsConnected.length + 1
-                        : participantsConnected.length}
-                      )
+                      ? participantsConnected.length + 1
+                      : participantsConnected.length}
+                    )
                   </span>
-                  </div>
-                  <ul>
-                    {isAdmin && (
-                      <li>
+                </div>
+                <ul>
+                  {isAdmin && (
+                    <li>
+                      <span className="participant-details">
+                        <img
+                          src={currentUser.avatarUrl || userPlaceholder}
+                          className="participant-avatar"
+                        />
+                        <span className="participant-username">
+                          {currentUser.name}
+                        </span>
+                      </span>
+                    </li>
+                  )}
+                  {participantsConnected.map((participant, i) => {
+                    return (
+                      <li key={i}>
                         <span className="participant-details">
                           <img
-                            src={currentUser.avatarUrl || userPlaceholder}
+                            src={participant.avatarUrl || userPlaceholder}
                             className="participant-avatar"
                           />
                           <span className="participant-username">
-                            {currentUser.name}
+                            {participant.name}
                           </span>
                         </span>
                       </li>
-                    )}
-                    {participantsConnected.map((participant, i) => {
-                      return (
-                        <li key={i}>
-                          <span className="participant-details">
-                            <img
-                              src={participant.avatarUrl || userPlaceholder}
-                              className="participant-avatar"
-                            />
-                            <span className="participant-username">
-                              {participant.name}
-                            </span>
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
-            {(participantsListener.length > 0 ||
-              !isAdmin) && (
-                <div>
-                  <div className="title-section">
-                    {strings.listener}{" "}
-                    <span>
-                      (
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+            {(participantsListener.length > 0 || !isAdmin) && (
+              <div>
+                <div className="title-section">
+                  {strings.listener}{" "}
+                  <span>
+                    (
                     {!isAdmin
-                        ? participantsListener.length + 1
-                        : participantsListener.length}
-                      )
+                      ? participantsListener.length + 1
+                      : participantsListener.length}
+                    )
                   </span>
-                  </div>
-                  <ul>
-                    {!isAdmin && (
-                      <li>
+                </div>
+                <ul>
+                  {!isAdmin && (
+                    <li>
+                      <span className="participant-details">
+                        <img
+                          src={currentUser.avatarUrl || userPlaceholder}
+                          className="participant-avatar"
+                        />
+                        <span className="participant-username">
+                          {currentUser.name}
+                        </span>
+                      </span>
+                    </li>
+                  )}
+                  {participantsListener.map((participant, i) => {
+                    return (
+                      <li key={i}>
                         <span className="participant-details">
                           <img
-                            src={currentUser.avatarUrl || userPlaceholder}
+                            src={participant.avatarUrl || userPlaceholder}
                             className="participant-avatar"
                           />
                           <span className="participant-username">
-                            {currentUser.name}
+                            {participant.name}
                           </span>
                         </span>
                       </li>
-                    )}
-                    {participantsListener.map((participant, i) => {
-                      return (
-                        <li key={i}>
-                          <span className="participant-details">
-                            <img
-                              src={participant.avatarUrl || userPlaceholder}
-                              className="participant-avatar"
-                            />
-                            <span className="participant-username">
-                              {participant.name}
-                            </span>
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </div>
         ) : (
-            <Fragment>
-              {(participantsConnected.length > 0 ||
-                !currentUser.isListener) && (
-                  <div>
-                    <div className="title-section">
-                      {strings.joined}{" "}
-                      <span>
-                        (
+          <Fragment>
+            {(participantsConnected.length > 0 || !currentUser.isListener) && (
+              <div>
+                <div className="title-section">
+                  {strings.joined}{" "}
+                  <span>
+                    (
                     {!currentUser.isListener
-                          ? participantsConnected.length + 1
-                          : participantsConnected.length}
-                        )
+                      ? participantsConnected.length + 1
+                      : participantsConnected.length}
+                    )
                   </span>
-                    </div>
-                    <ul>
-                      {/* <li>
+                </div>
+                <ul>
+                  {/* <li>
                         <span className="participant-details">
                           <img
                             src={iconPlus}
@@ -235,103 +235,103 @@ class AttendeesList extends Component {
                           </span>
                         </span>
                       </li> */}
-                      {!currentUser.isListener && (
-                        <li>
-                          <span className="participant-details">
-                            <img
-                              src={currentUser.avatarUrl || userPlaceholder}
-                              className="participant-avatar"
-                            />
-                            <span className="participant-username">
-                              {currentUser.name}
-                            </span>
+                  {!currentUser.isListener && (
+                    <li>
+                      <span className="participant-details">
+                        <img
+                          src={currentUser.avatarUrl || userPlaceholder}
+                          className="participant-avatar"
+                        />
+                        <span className="participant-username">
+                          {currentUser.name}
+                        </span>
+                      </span>
+                    </li>
+                  )}
+                  {participantsConnected.map((participant, i) => {
+                    return (
+                      <li key={i}>
+                        <span className="participant-details">
+                          <img
+                            src={participant.avatarUrl || userPlaceholder}
+                            className="participant-avatar"
+                          />
+                          <span className="participant-username">
+                            {participant.name}
                           </span>
-                        </li>
-                      )}
-                      {participantsConnected.map((participant, i) => {
-                        return (
-                          <li key={i}>
-                            <span className="participant-details">
-                              <img
-                                src={participant.avatarUrl || userPlaceholder}
-                                className="participant-avatar"
-                              />
-                              <span className="participant-username">
-                                {participant.name}
-                              </span>
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                )}
-              {(participantsInactive.length > 0 ||
-                participantsListener.length > 0 ||
-                currentUser.isListener) && (
-                  <div>
-                    <div className="title-section">
-                      {strings.listener}{" "}
-                      <span>
-                        (
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+            {(participantsInactive.length > 0 ||
+              participantsListener.length > 0 ||
+              currentUser.isListener) && (
+              <div>
+                <div className="title-section">
+                  {strings.listener}{" "}
+                  <span>
+                    (
                     {currentUser.isListener
-                          ? participantsInactive.length +
-                          participantsListener.length +
-                          1
-                          : participantsInactive.length +
-                          participantsListener.length}
-                        )
+                      ? participantsInactive.length +
+                        participantsListener.length +
+                        1
+                      : participantsInactive.length +
+                        participantsListener.length}
+                    )
                   </span>
-                    </div>
-                    <ul>
-                      {currentUser.isListener && (
-                        <li>
-                          <span className="participant-details">
-                            <img
-                              src={currentUser.avatarUrl || userPlaceholder}
-                              className="participant-avatar"
-                            />
-                            <span className="participant-username">
-                              {currentUser.name}
-                            </span>
+                </div>
+                <ul>
+                  {currentUser.isListener && (
+                    <li>
+                      <span className="participant-details">
+                        <img
+                          src={currentUser.avatarUrl || userPlaceholder}
+                          className="participant-avatar"
+                        />
+                        <span className="participant-username">
+                          {currentUser.name}
+                        </span>
+                      </span>
+                    </li>
+                  )}
+                  {participantsListener.map((participant, i) => {
+                    return (
+                      <li key={i}>
+                        <span className="participant-details">
+                          <img
+                            src={participant.avatarUrl || userPlaceholder}
+                            className="participant-avatar"
+                          />
+                          <span className="participant-username">
+                            {participant.name}
                           </span>
-                        </li>
-                      )}
-                      {participantsListener.map((participant, i) => {
-                        return (
-                          <li key={i}>
-                            <span className="participant-details">
-                              <img
-                                src={participant.avatarUrl || userPlaceholder}
-                                className="participant-avatar"
-                              />
-                              <span className="participant-username">
-                                {participant.name}
-                              </span>
-                            </span>
-                          </li>
-                        );
-                      })}
-                      {participantsInactive.map((participant, i) => {
-                        return (
-                          <li key={i}>
-                            <span className="participant-details">
-                              <img
-                                src={participant.avatarUrl || userPlaceholder}
-                                className="participant-avatar"
-                              />
-                              <span className="participant-username">
-                                {participant.name}
-                              </span>
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                )}
-            </Fragment>
-          )}
+                        </span>
+                      </li>
+                    );
+                  })}
+                  {participantsInactive.map((participant, i) => {
+                    return (
+                      <li key={i}>
+                        <span className="participant-details">
+                          <img
+                            src={participant.avatarUrl || userPlaceholder}
+                            className="participant-avatar"
+                          />
+                          <span className="participant-username">
+                            {participant.name}
+                          </span>
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+          </Fragment>
+        )}
         {participantsInvited.length > 0 && (
           <div>
             <div className="title-section">
@@ -438,7 +438,7 @@ class AttendeesList extends Component {
 AttendeesList.propTypes = {
   attendeesListOpened: PropTypes.bool.isRequired,
   isWebinar: PropTypes.bool.isRequired,
-  isAdmin: PropTypes.bool.isRequired
+  isAdmin: PropTypes.bool.isRequired,
 };
 
 export default AttendeesList;
