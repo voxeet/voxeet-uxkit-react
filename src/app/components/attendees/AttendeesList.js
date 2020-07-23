@@ -65,9 +65,12 @@ class AttendeesList extends Component {
   inviteUserSelected(externalId) {
     const tmpArray = [];
     tmpArray.push(externalId);
-    const test = { externalIds: tmpArray };
+    const participantsArray = { externalIds: tmpArray };
     this.props.dispatch(ParticipantActions.userInvited(externalId));
-    VoxeetSDK.notification.invite(VoxeetSDK.conference.current, test);
+    VoxeetSDK.conference.invite(
+      VoxeetSDK.conference.current,
+      participantsArray
+    );
   }
 
   render() {
