@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import { strings } from "../../languages/localizedStrings";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 
-@connect(store => {
+@connect((store) => {
   return {
-    filePresentationStore: store.voxeet.filePresentation
+    filePresentationStore: store.voxeet.filePresentation,
   };
 })
 class AttendeesParticipantFilePresentation extends Component {
@@ -15,7 +15,7 @@ class AttendeesParticipantFilePresentation extends Component {
     this.state = {
       mouseMoving: false,
       mouseIn: false,
-      timeout: null
+      timeout: null,
     };
     this.nextFilePresentation = this.nextFilePresentation.bind(this);
     this.prevFilePresentation = this.prevFilePresentation.bind(this);
@@ -52,7 +52,7 @@ class AttendeesParticipantFilePresentation extends Component {
     const {
       imageCount,
       filePresentationPosition,
-      filePresentationId
+      filePresentationId,
     } = this.props.filePresentationStore;
     if (filePresentationPosition < imageCount - 1) {
       this.props.dispatch(
@@ -69,7 +69,7 @@ class AttendeesParticipantFilePresentation extends Component {
     const {
       imageCount,
       filePresentationPosition,
-      filePresentationId
+      filePresentationId,
     } = this.props.filePresentationStore;
     if (filePresentationPosition > 0) {
       this.props.dispatch(
@@ -107,7 +107,7 @@ class AttendeesParticipantFilePresentation extends Component {
       fileUrl,
       imageCount,
       filePresentationPosition,
-      thumbnails
+      thumbnails,
     } = this.props.filePresentationStore;
     const { mouseMoving } = this.state;
     return (
@@ -158,15 +158,15 @@ class AttendeesParticipantFilePresentation extends Component {
                   : "controls-file-presentation hidden-controls"
               }
             >
-              <button
+              <a
                 className={
                   filePresentationPosition == 0 ? "prev disabled" : "prev"
                 }
                 onClick={this.prevFilePresentation}
               >
                 {strings.prev}
-              </button>
-              <button
+              </a>
+              <a
                 className={
                   filePresentationPosition == imageCount - 1
                     ? "next disabled"
@@ -175,7 +175,7 @@ class AttendeesParticipantFilePresentation extends Component {
                 onClick={this.nextFilePresentation}
               >
                 {strings.next}
-              </button>
+              </a>
             </div>
           </Fragment>
         )}
@@ -185,7 +185,7 @@ class AttendeesParticipantFilePresentation extends Component {
 }
 
 AttendeesParticipantFilePresentation.propTypes = {
-  isFilePresentation: PropTypes.bool
+  isFilePresentation: PropTypes.bool,
 };
 
 export default AttendeesParticipantFilePresentation;
