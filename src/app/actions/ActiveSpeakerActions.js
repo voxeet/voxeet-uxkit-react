@@ -37,6 +37,11 @@ export class Actions {
             const participantsConnected = participants.participants.filter(
               (p) => p.isConnected
             );
+            const activeParticipantConnected = activeSpeaker.activeSpeaker?
+                participantsConnected.find(participant=> {
+                  activeSpeaker.activeSpeaker.participant_id === participant.participant_id
+                }):
+                false;
             const participant =
               participantsConnected.length === 1
                 ? participantsConnected[0]
@@ -44,7 +49,7 @@ export class Actions {
                   null;
             if(participant) {
               // Set new active speaker if there is none
-              if(!activeSpeaker.activeSpeaker || !activeSpeaker.activeSpeakerSince
+              if(!activeParticipantConnected || !activeSpeaker.activeSpeaker || !activeSpeaker.activeSpeakerSince
                   || activeSpeaker.activeSpeaker.participant_id == participant.participant_id) {
                 if(!activeSpeaker.activeSpeaker || !activeSpeaker.activeSpeakerSince)
                   // console.log('Setting the first active speaker', participant);
