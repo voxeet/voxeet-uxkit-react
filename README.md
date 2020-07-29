@@ -9,7 +9,7 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
-### 2.1.1
+### 2.1.1 / 2.1.2
 
 #### Features
 
