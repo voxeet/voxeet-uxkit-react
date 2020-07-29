@@ -9,6 +9,19 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 2.1.1
+
+#### Features
+
+- Ability to customise sounds
+
+#### Bug fixes
+
+- Mobile layout improvements
+- Number of participant in the bottom bar is fixed (Listeners are now included)
+- Fix invite participant
+- RtcpMode option has been removed
+
 ### 2.1.0
 
 #### Features
