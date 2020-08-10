@@ -1,6 +1,6 @@
 {
   "name": "@voxeet/react-components",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "",
   "main": "./dist/bundle.js",
   "scripts": {
@@ -22,8 +22,6 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.3.4",
-    "@voxeet/react-redux-5.1.1": "5.1.1",
-    "@voxeet/voxeet-web-sdk": "2.4.3",
     "autolinker": "^2.2.2",
     "bowser": "1.9.4",
     "browserslist": "^4.5.2",
@@ -39,6 +37,7 @@
     "react-draggable": "3.1.1",
     "react-localization": "^1.0.13",
     "react-player": "^1.11.1",
+    "@voxeet/react-redux-5.1.1": "5.1.1",
     "react-router-dom": "^4.3.1",
     "react-tooltip": "3.9.2",
     "redux": "4.0.4",
@@ -72,7 +71,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "peerDependencies": {
-    "@voxeet/voxeet-web-sdk": "2.4.3"
+    "@voxeet/voxeet-web-sdk": "2.3.0"
   },
   "files": [
     "README.md",
