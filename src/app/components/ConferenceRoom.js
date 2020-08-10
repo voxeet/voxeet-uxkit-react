@@ -297,77 +297,14 @@ class ConferenceRoom extends Component {
   async preConfigCheck() {
     const { preConfig } = this.state;
     const { constraints } = this.props;
-    console.log('preConfigCheck', preConfig, constraints);
+    // console.log('preConfigCheck', preConfig, constraints);
     //
-    const checkAudioContext = async () => {
-      console.log('About to check audio context access');
-      const tAudioCtx =
-          window.AudioContext ||
-          window.webkitAudioContext ||
-          window.mozAudioContext;
-      if(!tAudioCtx) {
-        console.log('Audio context not supported');
-        return true;
-      }
-      let audioCtx = new tAudioCtx();
-      if(!audioCtx) {
-        console.log('Audio context could not be created');
-        return true;
-      }
-      audioCtx.onstatechange = () => console.log('audioCtx state changed ', audioCtx.state);
-      console.log('Audio context created', audioCtx);
-      if(audioCtx.state == "suspended") {
-        let result = true;
-        console.log('Audio context [%s], about to try to resume it', audioCtx.state);
-        // Audio context resume function returns promise that does not resolve if autoplay is disabled
-        if(bowser.safari) {
-          audioCtx.createOscillator();
-          console.log('audioCtx.state', audioCtx.state, audioCtx)
-          if(audioCtx.state != 'running') {
-            console.error('Failed to resume Safari audio context');
-            return false;
-          }
-          result = true;
-        }
-        if(bowser.firefox) {
-          // Using timer to cancel detection
-          let timeoutTimer=null;
-          let timerPromise = new Promise (resolve => {
-            timeoutTimer = setTimeout(() => {
-              resolve(false)
-            }, 2000);
-          });
-          let resumePromise = audioCtx.resume().then(() => {
-            console.log('AudioContext resumed');
-            if(timeoutTimer) {
-              clearTimeout(timeoutTimer);
-              timeoutTimer = null;
-            }
-            return true;
-          }).catch((err) => {
-            console.error('Failed to resume audio context', err);
-            return false;
-          });
-
-          result = await Promise.race([timerPromise, resumePromise]);
-        }
-        // close audio context
-        console.log('About to close AudioContext', result);
-        audioCtx && audioCtx.close(); // FF audio context close does not resolve always
-        // audioCtx && await audioCtx.close();
-        console.log('AudioContext closed');
-        return result;
-      }
-      // Chrome should be here on success
-      audioCtx && await audioCtx.close();
-      return true;
-    }
     //
     const checkPermissions = async () => {
-      console.log('About to check access to audio/video devices', { audio: constraints.audio, video: constraints.video})
+      //console.log('About to check access to audio/video devices', { audio: constraints.audio, video: constraints.video})
       return await navigator.mediaDevices.getUserMedia({ audio: constraints.audio, video: constraints.video})
           .then((stream) => {
-            console.log('Got stream, about to close it');
+            //console.log('Got stream, about to close it');
             stream.getTracks().forEach(track => {
               track.stop();
             });
@@ -379,42 +316,36 @@ class ConferenceRoom extends Component {
           });
     }
     if(preConfig) {
-      console.log('Preconfig required, just asking for device permissions');
+      //console.log('Preconfig required, just asking for device permissions');
       return await checkPermissions(); // Just check permitions
     } else {
       return new Promise(async (resolve) => {
         // Request access to audio video devices
         await checkPermissions();
-        console.log('About to check Auto-play', await canAutoPlay.audio({inline:true, muted:false}), await canAutoPlay.video({inline:true, muted:false}), constraints);
+        //console.log('About to check Auto-play', await canAutoPlay.audio({inline:true, muted:false}), await canAutoPlay.video({inline:true, muted:false}), constraints);
         let canAutoPlayAudio = (!constraints || !constraints.audio)? {result: true} : await canAutoPlay.audio({inline:true, muted:false});
         let canAutoPlayVideo = (!constraints || !constraints.video)? {result: true} : await canAutoPlay.video({inline:true, muted:false});
         if(!canAutoPlayAudio.result || !canAutoPlayVideo.result) {
-          console.log('Auto-play check failed => will force preconfig', canAutoPlayAudio, canAutoPlayVideo);
+          console.log('Auto-play check failed... will force preconfig', canAutoPlayAudio, canAutoPlayVideo);
           return this.setState({preConfig: true}, () => {
             resolve(true)
           });
-        /*let acCheck = (bowser.chrome)?await checkAudioContext() : true; // Check audio context creation on chrome (true on success)
-        if(!acCheck) {
-          console.log('Audio context access check failed => will force preconfig');
-          return this.setState({preConfig: true}, () => {
-            resolve(true)
-          })*/
         } else if(constraints && (constraints.audio || constraints.video)) {
-          console.log('About to check preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
+          //console.log('About to check preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
           // Check cookies
           if(constraints.audio && !Cookies.get("input")) {
-            console.log('Audio input not configured => will force preconfig');
+            console.log('Audio input not configured... will force preconfig');
             return this.setState({preConfig: true}, () => {
               resolve(true)
             });
           }
           if(constraints.video && !Cookies.get("camera")) {
-            console.log('Camera input not configured => will force preconfig');
+            console.log('Camera input not configured... will force preconfig');
             return this.setState({preConfig: true}, () => {
               resolve(true)
             });
           }
-          console.log('About to check availability of preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
+          // console.log('About to check availability of preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
           // Check if exists device with Id set in cookies
           let foundAudio = !constraints.audio?
               true :
@@ -453,10 +384,10 @@ class ConferenceRoom extends Component {
               resolve(true)
             });
           }
-          console.log('No need for preconfig');
+          // console.log('No need for preconfig');
           return resolve(false);
         } else {
-          console.log('No need for preconfig');
+          // console.log('No need for preconfig');
           return resolve(false);
         }
       });
