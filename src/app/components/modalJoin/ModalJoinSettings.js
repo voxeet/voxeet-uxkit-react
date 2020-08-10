@@ -15,6 +15,7 @@ class ModalJoinSettings extends Component {
       audioDevices: [],
       videoDevices: []
     };
+    this.loadDevices = this.loadDevices.bind(this);
   }
 
   setAudioDevice(e) {
@@ -26,6 +27,15 @@ class ModalJoinSettings extends Component {
   }
 
   componentDidMount() {
+    this.loadDevices();
+    navigator.mediaDevices.addEventListener('devicechange', this.loadDevices);
+  }
+
+  componentWillUnmount() {
+    navigator.mediaDevices.removeEventListener('devicechange', this.loadDevices);
+  }
+
+  loadDevices() {
     VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
       this.setState({
         audioDevices: devices
