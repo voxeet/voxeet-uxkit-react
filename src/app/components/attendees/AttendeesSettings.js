@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import bowser from "bowser";
 import PropTypes from "prop-types";
 import { connect } from "@voxeet/react-redux-5.1.1";
@@ -267,7 +267,7 @@ class AttendeesSettings extends Component {
   }
 
   render() {
-    const { attendeesSettingsOpened } = this.props;
+    const { attendeesSettingsOpened, isListener } = this.props;
     const {
       currentAudioDevice,
       currentVideoDevice,
@@ -284,7 +284,7 @@ class AttendeesSettings extends Component {
         }
       >
         <div className="attendees-settings-header">
-          <h1>{strings.titleSettings}</h1>
+          <h1>{!isListener?strings.titleSettings:strings.titleSettingsListenerOnly}</h1>
         </div>
 
         <div className="settings">
@@ -308,40 +308,45 @@ class AttendeesSettings extends Component {
                   </select>
                 </div>
               )}
-              <div className="form-group last">
-                {/* <label htmlFor="video">Camera</label> */}
-                <select
-                  name="video"
-                  value={currentVideoDevice}
-                  className="form-control select-video-device"
-                  onChange={this.setVideoDevice}
-                  disabled={false}
-                >
-                  {this.state.videoDevices.map((device, i) => (
-                    <option key={i} value={device.deviceId}>
-                      {device.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                {/* <label htmlFor="video">Microphone</label> */}
-                <select
-                  name="audio"
-                  value={currentAudioDevice}
-                  className="form-control select-audio-input"
-                  onChange={this.setAudioDevice}
-                >
-                  {this.state.audioDevices.map((device, i) => (
-                    <option key={i} value={device.deviceId}>
-                      {device.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                <AttendeesSettingsVuMeter />
-              </div>
+              { !isListener &&
+                (<Fragment>
+                    <div className="form-group last">
+                      {/* <label htmlFor="video">Camera</label> */}
+                      <select
+                          name="video"
+                          value={currentVideoDevice}
+                          className="form-control select-video-device"
+                          onChange={this.setVideoDevice}
+                          disabled={false}
+                      >
+                        {this.state.videoDevices.map((device, i) => (
+                            <option key={i} value={device.deviceId}>
+                              {device.label}
+                            </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      {/* <label htmlFor="video">Microphone</label> */}
+                      <select
+                      name="audio"
+                      value={currentAudioDevice}
+                      className="form-control select-audio-input"
+                      onChange={this.setAudioDevice}
+                      >
+                      {this.state.audioDevices.map((device, i) => (
+                          <option key={i} value={device.deviceId}>
+                            {device.label}
+                          </option>
+                      ))}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <AttendeesSettingsVuMeter />
+                    </div>
+                  </Fragment>
+                )
+              }
               <div className="hint-text">
                 <p>{strings.problemSettings}</p>
                 <p>{strings.saveSettings}</p>
@@ -356,6 +361,7 @@ class AttendeesSettings extends Component {
 
 AttendeesSettings.propTypes = {
   videoEnabled: PropTypes.bool.isRequired,
+  isListener: PropTypes.bool.isRequired,
   attendeesSettingsOpened: PropTypes.bool.isRequired
 };
 

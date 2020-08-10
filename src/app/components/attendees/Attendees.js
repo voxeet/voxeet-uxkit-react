@@ -196,6 +196,7 @@ class Attendees extends Component {
         {!bowser.msie && (
           <AttendeesSettings
             videoEnabled={videoEnabled}
+            isListener={currentUser.isListener}
             attendeesSettingsOpened={this.props.attendeesSettingsOpened}
           />
         )}

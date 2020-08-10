@@ -64,6 +64,7 @@ export const strings = new LocalizedStrings({
     getpwd: "Get your stream password (on Youtube or Facebook)",
     enterhere: "Enter your informations here :",
     titleSettings: "Set preferred camera and microphone",
+    titleSettingsListenerOnly: "Set preferred output device",
     problemSettings: "If you are having problems, try restarting your browser.",
     saveSettings: "Your preferences will automatically save.",
     screensharerunning: "Happy Screen Sharing!",
