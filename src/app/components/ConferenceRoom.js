@@ -2,16 +2,12 @@ import React, { Fragment, Component } from "react";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import PropTypes from "prop-types";
 import bowser from "bowser";
-import { strings } from "../languages/localizedStrings";
-import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 
+import { strings } from "../languages/localizedStrings";
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../actions/ParticipantActions";
 import ActionsButtons from "./actionsBar/ActionsButtons";
-
-import Modal from "./attendees/modal/Modal";
-
 import "../../styles/main.less";
 import ConferenceRoomContainer from "./ConferenceRoomContainer";
 import ConferencePreConfigContainer from "./ConferencePreConfigContainer";
@@ -108,8 +104,8 @@ class ConferenceRoom extends Component {
       refreshTokenCallback,
       isListener,
     } = this.props;
-    let initialized = null;
-    var pinCodeTmp = pinCode;
+    let initialized;
+    let pinCodeTmp = pinCode;
     if (oauthToken != null) {
       initialized = this.props.dispatch(
         ConferenceActions.initializeWithToken(oauthToken, refreshTokenCallback)
@@ -129,7 +125,7 @@ class ConferenceRoom extends Component {
     }
 
     if (pinCodeTmp != null) {
-      if (pinCodeTmp.length != 8 || !/^\d+$/.test(pinCodeTmp)) {
+      if (pinCodeTmp.length !== 8 || !/^\d+$/.test(pinCodeTmp)) {
         pinCodeTmp = "";
       }
     }
@@ -247,6 +243,7 @@ class ConferenceRoom extends Component {
       ) {
         // Autojoin when entering in fullscreen mode
         initialized.then(() => {
+
           this.props.dispatch(
             ConferenceActions.join(
               conferenceAlias,
@@ -341,7 +338,7 @@ class ConferenceRoom extends Component {
               {logo != null ? <img src={logo} /> : <div className="ddloader" />}
             </div>
             <div className="voxeet-loading-info-container">
-              {errorMessage == "NotAllowedError: Permission denied" &&
+              {errorMessage === "NotAllowedError: Permission denied" &&
                 strings.errorPermissionDeniedMicrophone}
               {bowser.msie && (
                 <Fragment>
@@ -359,7 +356,7 @@ class ConferenceRoom extends Component {
             </div>
           </div>
           <div className="voxeet-loading-info-container">
-            {errorMessage == "NotAllowedError: Permission denied" &&
+            {errorMessage === "NotAllowedError: Permission denied" &&
               strings.errorPermissionDenied}
             {bowser.msie && (
               <Fragment>
