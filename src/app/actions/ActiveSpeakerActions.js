@@ -42,7 +42,7 @@ export class Actions {
                 : participants.participants.find((p) => p.isSpeaking) ||
                   activeSpeaker.activeSpeaker;
 
-            if (activeSpeaker.activeSpeaker != participant) {
+            if (activeSpeaker.activeSpeaker !== participant) {
               dispatch({
                 type: Types.PARTICIPANT_SPEAKING,
                 payload: { participant },

@@ -1141,14 +1141,15 @@ export class Actions {
             userInfo
           )
         );
-        dispatch(this.checkIfUserJoined(userInfo.id, null));
+        //dispatch(this.checkIfUserJoined(userInfo.id, null));
       });
 
       VoxeetSDK.conference.on("participantUpdated", (user) => {
-        if (user.status == "Left") {
-          dispatch(ParticipantWaitingActions.onParticipantWaitingLeft(user.id));
-          dispatch(ParticipantActions.onParticipantLeft(user.id));
-        }
+
+        // if (user.status === "Left") {
+        //   dispatch(ParticipantWaitingActions.onParticipantWaitingLeft(user.id));
+        //   dispatch(ParticipantActions.onParticipantLeft(user.id));
+        // }
         dispatch(
           ParticipantWaitingActions.onParticipantWaitingStatusUpdated(
             user.id,
@@ -1159,7 +1160,8 @@ export class Actions {
       });
 
       VoxeetSDK.conference.on("streamAdded", (user, stream) => {
-        if (stream.type === "ScreenShare") {
+
+        if (stream && stream.type === "ScreenShare") {
           dispatch(ControlsActions.forceMode("speaker"));
           if (VoxeetSDK.session.participant.id === user.id) {
             dispatch(ControlsActions.toggleScreenShareMode(true));
@@ -1184,7 +1186,8 @@ export class Actions {
       });
 
       VoxeetSDK.conference.on("streamRemoved", (user, stream) => {
-        if (stream.type === "ScreenShare") {
+
+        if (stream && stream.type === "ScreenShare") {
           dispatch(ParticipantActions.onScreenShareStopped());
           dispatch(ControlsActions.toggleScreenShareMode(false));
         } else {
