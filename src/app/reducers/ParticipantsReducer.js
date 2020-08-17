@@ -1,7 +1,7 @@
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Types } from "../actions/ParticipantActions";
 import { getOrganizedPosition, getRelativePosition } from "../libs/position";
-import AudioParticipantJoined from "../../static/sounds/voxeet_conference_join.mp3";
+import sounds from "../libs/sounds";
 import { STATUS_CONNECTING, STATUS_LEFT } from "../constants/ParticipantStatus";
 
 const defaultState = {
@@ -189,7 +189,7 @@ const ParticipantReducer = (state = defaultState, action) => {
       const { userId } = action.payload;
       if (VoxeetSDK.session.participant.id === action.payload.userId) {
         if (!action.payload.disableSounds) {
-          const audio = new Audio(AudioParticipantJoined);
+          const audio = new Audio(sounds.conference_join);
           audio.play();
         }
         let currentUser = {...state.currentUser};

@@ -1,8 +1,6 @@
 import { Types } from "../actions/ControlsActions";
 import modes from "../constants/DisplayModes";
-import AudioUnMute from "../../static/sounds/voxeet_Exit_Mute.mp3";
-import AudioMute from "../../static/sounds/voxeet_Enter_Mute.mp3";
-import CallRecorded from "../../static/sounds/call-recorded.mp3";
+import sounds from "../libs/sounds";
 
 const defaultState = {
   isWidgetOpened: false,
@@ -148,7 +146,7 @@ const ControlsReducer = (state = defaultState, action) => {
       };
     case Types.LOCK_RECORDING: {
       if (!state.disableSounds) {
-        const audio = new Audio(CallRecorded);
+        const audio = new Audio(sounds.call_recorded);
         audio.play();
       }
       return {
@@ -180,7 +178,7 @@ const ControlsReducer = (state = defaultState, action) => {
     case Types.TOGGLE_MICROPHONE: {
       const currentStatus = state.isMuted;
       if (!state.disableSounds) {
-        const audio = new Audio(!currentStatus ? AudioUnMute : AudioMute);
+        const audio = new Audio(!currentStatus ? sounds.mute_off : sounds.mute_on);
         audio.play();
       }
       return {
@@ -213,7 +211,7 @@ const ControlsReducer = (state = defaultState, action) => {
     case Types.TOGGLE_RECORDING: {
       const currentStatus = state.isRecording;
       if (!currentStatus && !state.disableSounds) {
-        const audio = new Audio(CallRecorded);
+        const audio = new Audio(sounds.call_recorded);
         audio.play();
       }
       return {

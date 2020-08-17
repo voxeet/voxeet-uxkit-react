@@ -70,7 +70,6 @@ class ConferenceRoom extends Component {
   startConferenceWithParams(preConfigPayload = null) {
     const {
       ttl,
-      rtcpmode,
       shareActions,
       mode,
       autoHls,
@@ -255,7 +254,6 @@ class ConferenceRoom extends Component {
               constraints,
               liveRecordingEnabled,
               ttl,
-              rtcpmode,
               mode,
               videoCodec,
               userInfo,
@@ -436,7 +434,6 @@ ConferenceRoom.propTypes = {
   isAdmin: PropTypes.bool,
   ttl: PropTypes.number,
   simulcast: PropTypes.bool,
-  rtcpmode: PropTypes.string,
   mode: PropTypes.string,
   videoCodec: PropTypes.string,
   closeSessionAtHangUp: PropTypes.bool,
@@ -485,7 +482,6 @@ ConferenceRoom.defaultProps = {
   liveRecordingEnabled: false,
   ttl: 0,
   simulcast: false,
-  rtcpmode: "worst",
   mode: "standard",
   videoCodec: "H264",
   preConfig: false,

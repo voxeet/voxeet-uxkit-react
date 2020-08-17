@@ -1,6 +1,6 @@
 {
   "name": "@voxeet/react-components",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "",
   "main": "./dist/bundle.js",
   "scripts": {
@@ -20,7 +20,6 @@
     "IE 11"
   ],
   "dependencies": {
-    "@voxeet/voxeet-web-sdk": "2.3.0",
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.3.4",
     "autolinker": "^2.2.2",
