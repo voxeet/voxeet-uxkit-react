@@ -10,6 +10,7 @@ import canAutoPlay from 'can-autoplay';
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../actions/ParticipantActions";
+import { Actions as ErrorActions } from "../actions/ErrorActions";
 import ActionsButtons from "./actionsBar/ActionsButtons";
 
 import Modal from "./attendees/modal/Modal";
@@ -309,7 +310,8 @@ class ConferenceRoom extends Component {
             return false;
           })
           .catch((err) => {
-            console.error('Got error', err)
+            console.error('Could not get access to required media', err)
+            this.props.dispatch(ErrorActions.onError(err));
             return true;
           });
     }
@@ -356,28 +358,31 @@ class ConferenceRoom extends Component {
                 return devices.find( (source) => (Cookies.get("camera") == source.deviceId) );
               });
           // TODO: prevent read errors
-          // let gotAudioStream = true;
-          // if(foundAudio) {
-          //   gotAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: Cookies.get("input") } } })
-          //       .then((stream) => {
-          //         return true;
-          //       })
-          //       .catch((err) => {
-          //         return false;
-          //       });
-          // }
-          // let gotVideoStream = true;
-          // if(foundVideo) {
-          //   gotVideoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: Cookies.get("input") } } })
-          //       .then((stream) => {
-          //         return true;
-          //       })
-          //       .catch((err) => {
-          //         return false;
-          //       });
-          // }
-          if(!foundAudio || !foundVideo /*|| !gotAudioStream || !gotVideoStream*/) {
-            console.log('Failed to find preconfigured audio input / camera', foundAudio, foundVideo);
+          console.log('About to check availability of preconfigured audio input / camera streams', Cookies.get("input"), Cookies.get("camera"));
+          let gotAudioStream = true;
+          if(constraints.audio) {
+            gotAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: Cookies.get("input") } } })
+                .then((stream) => {
+                  return true;
+                })
+                .catch((err) => {
+                  console.error('error getting audio stream', err)
+                  return false;
+                });
+          }
+          let gotVideoStream = true;
+          if(constraints.video) {
+            gotVideoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: Cookies.get("camera") } } })
+                .then((stream) => {
+                  return true;
+                })
+                .catch((err) => {
+                  console.error('error getting video stream', err)
+                  return false;
+                });
+          }
+          if(!foundAudio || !foundVideo || !gotAudioStream || !gotVideoStream) {
+            console.log('Failed to find preconfigured audio input / camera', foundAudio, foundVideo, gotAudioStream, gotVideoStream);
             return this.setState({preConfig: true}, () => {
               resolve(true)
             });

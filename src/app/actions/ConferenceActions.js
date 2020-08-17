@@ -1216,14 +1216,49 @@ export class Actions {
       });
 
       VoxeetSDK.conference.on("error", (data) => {
-        // console.error('error', data, data.message);
-        dispatch(
-            OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
-                data.message,
+        let title, description, isError;
+        // console.error('error', JSON.stringify(data), data.message, data.name);
+        switch(data.name) {
+          case 'NotAllowedError':
+          case 'OverconstrainedError':
+          case 'NotFoundError':
+          case 'AbortError':
+          case 'NotReadableError':
+          case 'SecurityError':
+          case 'TypeError':
+            title = strings[`title${data.name}`];
+            description = strings[`desc${data.name}`];
+            isError = true;
+            break;
+          case 'MediaError':
+            title = data.message;
+            description = null;
+            isError = true;
+            break;
+          default:
+            title = strings[`titleDefaultError`];
+            description = strings[`descDefaultError`];
+            isError = true;
+        }
+        if(description) {
+          dispatch(
+              OnBoardingMessageWithActionActions.onBoardingMessageWithDescription(
+                title,
+                description,
                 null,
-                true
-            )
-        );
+                isError
+              )
+          );
+        } else {
+          dispatch(
+              OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
+                title,
+                null,
+                isError
+              )
+          );
+        }
+
       });
 
       VoxeetSDK.videoPresentation.on("started", (data) => {
