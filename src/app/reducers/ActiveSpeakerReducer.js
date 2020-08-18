@@ -3,6 +3,8 @@ import { Types } from "../actions/ActiveSpeakerActions";
 const defaultState = {
   interval: null,
   activeSpeaker: null,
+  activeSpeakerSince: null,
+  silenceSince:null,
   forceActiveUserEnabled: false
 };
 
@@ -23,20 +25,30 @@ const ActiveSpeakerReducer = (state = defaultState, action) => {
       return {
         ...state,
         forceActiveUserEnabled: true,
-        activeSpeaker: action.payload.participant
+        activeSpeaker: action.payload.participant,
+        activeSpeakerSince: Date.now(),
       };
     }
     case Types.DISABLE_FORCE_ACTIVE_SPEAKER: {
       return {
         ...state,
         forceActiveUserEnabled: false,
-        activeSpeaker: null
+        activeSpeaker: null,
+        activeSpeakerSince: null,
       };
     }
     case Types.PARTICIPANT_SPEAKING: {
       return {
         ...state,
-        activeSpeaker: action.payload.participant
+        activeSpeaker: action.payload.participant,
+        activeSpeakerSince: action.payload.activeSpeakerSince || state.activeSpeakerSince || Date.now,
+        silenceSince: null,
+      };
+    }
+    case Types.SILENCE: {
+      return {
+        ...state,
+        silenceSince: Date.now(),
       };
     }
     default:
