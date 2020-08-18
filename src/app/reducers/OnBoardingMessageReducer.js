@@ -3,7 +3,7 @@ import { Types } from "../actions/OnBoardingMessageActions";
 const defaultState = {
   displayOnBoardingMessage: false,
   timer: 3000,
-  message: null
+  message: null,
 };
 
 const OnBoardingMessageReducer = (state = defaultState, action) => {

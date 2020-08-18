@@ -19,6 +19,8 @@ import Modal from "./modal/Modal";
 import AttendeesHeader from "./AttendeesHeader";
 import OnBoardingMessage from "./onBoardingMessage/onBoardingMessage";
 import OnBoardingMessageWithAction from "./onBoardingMessage/onBoardingMessageWithAction";
+import OnBoardingMessageWithDescription from "./onBoardingMessage/onBoardingMessageWithDescription";
+import OnBoardingMessageOverlay from "./onBoardingMessage/onBoardingMessageOverlay";
 import {
   List,
   ListWidget,
@@ -191,7 +193,9 @@ class Attendees extends Component {
         {!forceFullscreen && !isWidgetFullScreenOn && <AttendeesHeader />}
 
         <OnBoardingMessageWithAction />
+        <OnBoardingMessageWithDescription />
         <OnBoardingMessage />
+        <OnBoardingMessageOverlay />
 
         {!bowser.msie && (
           <AttendeesSettings

@@ -30,6 +30,7 @@ class AttendeesSettings extends Component {
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
     this.setOutputDevice = this.setOutputDevice.bind(this);
+    this.onDeviceChange = this.onDeviceChange.bind(this);
   }
 
   componentDidUpdate(nextProps, nextState) {
@@ -39,92 +40,36 @@ class AttendeesSettings extends Component {
       this.props.controlsStore.audioEnabled !=
       nextProps.controlsStore.audioEnabled
     ) {
-      VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
-        if (this.props.inputManager.currentAudioDevice != "") {
-          let exist = false;
-          devices.map((device, i) => {
-            if (device.deviceId == this.props.inputManager.currentAudioDevice && device.deviceId != "") {
-              exist = true;
-            }
-          });
-          if (!exist) {
-            var date = new Date();
-            date.setDate(date.getDate() + 365);
-            Cookies.set("input", devices[0].deviceId, {
-              path: "/",
-              expires: date,
-              secure: true,
-              sameSite: 'none'
-            });
-            this.props.dispatch(
-              InputManagerActions.inputAudioChange(devices[0].deviceId)
-            );
-          }
-        }
-        this.setState({
-          audioDevices: devices
-        });
-      });
-
-      VoxeetSDK.mediaDevice.enumerateAudioDevices("output").then(devices => {
-        if (this.props.inputManager.currentOutputDevice != "") {
-          let exist = false;
-          devices.map((device, i) => {
-            if (
-              device.deviceId == this.props.inputManager.currentOutputDevice && device.deviceId != ""
-            ) {
-              exist = true;
-            }
-          });
-          if (!exist) {
-            var date = new Date();
-            date.setDate(date.getDate() + 365);
-            Cookies.set("output", devices[0].deviceId, {
-              path: "/",
-              expires: date,
-              secure: true,
-              sameSite: 'none'
-            });
-            this.props.dispatch(
-              InputManagerActions.outputAudioChange(devices[0].deviceId)
-            );
-          }
-        }
-        this.setState({
-          outputDevices: devices
-        });
-      });
-
-      VoxeetSDK.mediaDevice.enumerateVideoDevices().then(devices => {
-        if (this.props.inputManager.currentVideoDevice != "") {
-          let exist = false;
-          devices.map((device, i) => {
-            if (device.deviceId == this.props.inputManager.currentVideoDevice && device.deviceId != "") {
-              exist = true;
-            }
-          });
-          if (!exist) {
-            var date = new Date();
-            date.setDate(date.getDate() + 365);
-            Cookies.set("camera", devices[0].deviceId, {
-              path: "/",
-              expires: date,
-              secure: true,
-              sameSite: 'none'
-            });
-            this.props.dispatch(
-              InputManagerActions.inputVideoChange(devices[0].deviceId)
-            );
-          }
-        }
-        this.setState({
-          videoDevices: devices
-        });
-      });
+      this.initDevices();
     }
   }
 
   componentDidMount() {
+    this.initDevices();
+    navigator.mediaDevices.addEventListener('devicechange', this.onDeviceChange);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (
+      this.props.attendeesSettingsOpened == true &&
+      nextProps.attendeesSettingsOpened == false
+    ) {
+      this.setState({ runningAnimation: true });
+      setTimeout(() => {
+        this.setState({ runningAnimation: false });
+      }, 250);
+    }
+  }
+
+  componentWillUnmount() {
+    navigator.mediaDevices.removeEventListener('devicechange', this.onDeviceChange);
+  }
+
+  onDeviceChange() {
+    this.initDevices();
+  }
+
+  initDevices() {
     VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
       if (this.props.inputManager.currentAudioDevice != "") {
         let exist = false;
@@ -133,17 +78,20 @@ class AttendeesSettings extends Component {
             exist = true;
           }
         });
-        if (!exist) {
+        if (!exist && devices.length) {
+          let selected_device = devices.find(device => device.deviceId=='default');
+          if(!selected_device)
+            selected_device = devices[0];
           var date = new Date();
           date.setDate(date.getDate() + 365);
-          Cookies.set("input", devices[0].deviceId, {
+          Cookies.set("input", selected_device.deviceId, {
             path: "/",
             expires: date,
             secure: true,
             sameSite: 'none'
           });
           this.props.dispatch(
-            InputManagerActions.inputAudioChange(devices[0].deviceId)
+              InputManagerActions.inputAudioChange(selected_device.deviceId)
           );
         }
       }
@@ -156,21 +104,26 @@ class AttendeesSettings extends Component {
       if (this.props.inputManager.currentOutputDevice != "") {
         let exist = false;
         devices.map((device, i) => {
-          if (device.deviceId == this.props.inputManager.currentOutputDevice && device.deviceId != "") {
+          if (
+              device.deviceId == this.props.inputManager.currentOutputDevice && device.deviceId != ""
+          ) {
             exist = true;
           }
         });
-        if (!exist) {
+        if (!exist && devices.length) {
+          let selected_device = devices.find(device => device.deviceId=='default');
+          if(!selected_device)
+            selected_device = devices[0];
           var date = new Date();
           date.setDate(date.getDate() + 365);
-          Cookies.set("output", devices[0].deviceId, {
+          Cookies.set("output", selected_device.deviceId, {
             path: "/",
             expires: date,
             secure: true,
             sameSite: 'none'
           });
           this.props.dispatch(
-            InputManagerActions.outputAudioChange(devices[0].deviceId)
+              InputManagerActions.outputAudioChange(selected_device.deviceId)
           );
         }
       }
@@ -187,17 +140,20 @@ class AttendeesSettings extends Component {
             exist = true;
           }
         });
-        if (!exist) {
+        if (!exist && devices.length) {
+          let selected_device = devices.find(device => device.deviceId=='default');
+          if(!selected_device)
+            selected_device = devices[0];
           var date = new Date();
           date.setDate(date.getDate() + 365);
-          Cookies.set("camera", devices[0].deviceId, {
+          Cookies.set("camera", selected_device.deviceId, {
             path: "/",
             expires: date,
             secure: true,
             sameSite: 'none'
           });
           this.props.dispatch(
-            InputManagerActions.inputVideoChange(devices[0].deviceId)
+              InputManagerActions.inputVideoChange(selected_device.deviceId)
           );
         }
       }
@@ -207,17 +163,6 @@ class AttendeesSettings extends Component {
     });
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (
-      this.props.attendeesSettingsOpened == true &&
-      nextProps.attendeesSettingsOpened == false
-    ) {
-      this.setState({ runningAnimation: true });
-      setTimeout(() => {
-        this.setState({ runningAnimation: false });
-      }, 250);
-    }
-  }
 
   setOutputDevice(e) {
     VoxeetSDK.mediaDevice.selectAudioOutput(e.target.value);

@@ -3,11 +3,14 @@ import { connect } from "@voxeet/react-redux-5.1.1";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import { strings } from "../languages/localizedStrings";
+import Cookies from "js-cookie";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
+import canAutoPlay from 'can-autoplay';
 
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../actions/ParticipantActions";
+import { Actions as ErrorActions } from "../actions/ErrorActions";
 import ActionsButtons from "./actionsBar/ActionsButtons";
 
 import Modal from "./attendees/modal/Modal";
@@ -274,14 +277,123 @@ class ConferenceRoom extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // Print UXKit Version
     console.log("UXKit Version: " + __VERSION__);
+    const shouldStart = await this.preConfigCheck();
 
     const { preConfig } = this.state;
     const { isWebinar, isAdmin } = this.props;
     if (!preConfig) {
       this.startConferenceWithParams();
+    }
+  }
+
+  /**
+   * Check precofigured devices and is it possible to create audio context
+   * @returns {Promise<void>}
+   */
+  async preConfigCheck() {
+    const { preConfig } = this.state;
+    const { constraints } = this.props;
+    // console.log('preConfigCheck', preConfig, constraints);
+    //
+    //
+    const checkPermissions = async () => {
+      //console.log('About to check access to audio/video devices', { audio: constraints.audio, video: constraints.video})
+      return await navigator.mediaDevices.getUserMedia({ audio: constraints.audio, video: constraints.video})
+          .then((stream) => {
+            //console.log('Got stream, about to close it');
+            stream.getTracks().forEach(track => {
+              track.stop();
+            });
+            return false;
+          })
+          .catch((err) => {
+            console.error('Could not get access to required media', err)
+            this.props.dispatch(ErrorActions.onError(err));
+            return true;
+          });
+    }
+    if(preConfig) {
+      //console.log('Preconfig required, just asking for device permissions');
+      return await checkPermissions(); // Just check permitions
+    } else {
+      return new Promise(async (resolve) => {
+        // Request access to audio video devices
+        await checkPermissions();
+        //console.log('About to check Auto-play', await canAutoPlay.audio({inline:true, muted:false}), await canAutoPlay.video({inline:true, muted:false}), constraints);
+        let canAutoPlayAudio = (!constraints || !constraints.audio)? {result: true} : await canAutoPlay.audio({inline:true, muted:false});
+        let canAutoPlayVideo = (!constraints || !constraints.video)? {result: true} : await canAutoPlay.video({inline:true, muted:false});
+        if(!canAutoPlayAudio.result || !canAutoPlayVideo.result) {
+          console.log('Auto-play check failed... will force preconfig', canAutoPlayAudio, canAutoPlayVideo);
+          return this.setState({preConfig: true}, () => {
+            resolve(true)
+          });
+        } else if(constraints && (constraints.audio || constraints.video)) {
+          //console.log('About to check preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
+          // Check cookies
+          if(constraints.audio && !Cookies.get("input")) {
+            console.log('Audio input not configured... will force preconfig');
+            return this.setState({preConfig: true}, () => {
+              resolve(true)
+            });
+          }
+          if(constraints.video && !Cookies.get("camera")) {
+            console.log('Camera input not configured... will force preconfig');
+            return this.setState({preConfig: true}, () => {
+              resolve(true)
+            });
+          }
+          // console.log('About to check availability of preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
+          // Check if exists device with Id set in cookies
+          let foundAudio = !constraints.audio?
+              true :
+              await VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
+                return devices.find( (source) => (Cookies.get("input") == source.deviceId) );
+              });
+          let foundVideo = !constraints.video?
+              true :
+              await VoxeetSDK.mediaDevice.enumerateVideoDevices().then((devices) => {
+                return devices.find( (source) => (Cookies.get("camera") == source.deviceId) );
+              });
+          // TODO: prevent read errors
+          console.log('About to check availability of preconfigured audio input / camera streams', Cookies.get("input"), Cookies.get("camera"));
+          let gotAudioStream = true;
+          if(constraints.audio) {
+            gotAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: Cookies.get("input") } } })
+                .then((stream) => {
+                  return true;
+                })
+                .catch((err) => {
+                  console.error('error getting audio stream', err)
+                  return false;
+                });
+          }
+          let gotVideoStream = true;
+          if(constraints.video) {
+            gotVideoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: Cookies.get("camera") } } })
+                .then((stream) => {
+                  return true;
+                })
+                .catch((err) => {
+                  console.error('error getting video stream', err)
+                  return false;
+                });
+          }
+          if(!foundAudio || !foundVideo || !gotAudioStream || !gotVideoStream) {
+            console.log('Failed to find preconfigured audio input / camera', foundAudio, foundVideo, gotAudioStream, gotVideoStream);
+            return this.setState({preConfig: true}, () => {
+              resolve(true)
+            });
+          }
+          // console.log('No need for preconfig');
+          return resolve(false);
+        } else {
+          // console.log('No need for preconfig');
+          return resolve(false);
+        }
+      });
     }
   }
 
