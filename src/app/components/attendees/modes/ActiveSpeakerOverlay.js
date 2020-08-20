@@ -107,9 +107,6 @@ class ActiveSpeakerOverlay extends Component {
                         : "onactivespeakeroverlay-hidden"
                 }
             >
-                { activeSpeakerChecker && !activeSpeakerChecker.isMuted ?
-                    <img src={microphoneOn}/> :
-                    <img src={microphoneOff}/>}
                 { activeSpeakerChecker && activeSpeakerChecker.stream &&
                   activeSpeakerChecker.stream.active && activeSpeakerChecker.stream.getVideoTracks().length > 0 ?
                     <img src={cameraOn}/> :
