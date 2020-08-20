@@ -38,23 +38,33 @@ export class Actions {
               (p) => p.isConnected
             );
             const activeParticipantConnected = activeSpeaker.activeSpeaker?
-                participantsConnected.find(participant=> {
+                participantsConnected.find(participant =>
                   activeSpeaker.activeSpeaker.participant_id === participant.participant_id
-                }):
+                ):
                 false;
             const participant =
               participantsConnected.length === 1
                 ? participantsConnected[0]
-                : participants.participants.find((p) => p.isSpeaking) ||
+                : participantsConnected.find((p) => p.isSpeaking) ||
                   null;
             if(participant) {
               // Set new active speaker if there is none
               if(!activeParticipantConnected || !activeSpeaker.activeSpeaker || !activeSpeaker.activeSpeakerSince
                   || activeSpeaker.activeSpeaker.participant_id == participant.participant_id) {
-                dispatch({
-                  type: Types.PARTICIPANT_SPEAKING,
-                  payload: { participant },
-                });
+                if(activeSpeaker.activeSpeaker && activeSpeaker.activeSpeaker.participant_id === participant.participant_id) {
+                  dispatch({
+                    type: Types.PARTICIPANT_SPEAKING,
+                    payload: { participant },
+                  });
+                } else {
+                  // console.log('New active speaker', participant);
+                  // console.log('!activeParticipantConnected, !activeSpeaker.activeSpeaker, !activeSpeaker.activeSpeakerSince',
+                  //    !activeParticipantConnected, !activeSpeaker.activeSpeaker, !activeSpeaker.activeSpeakerSince);
+                  dispatch({
+                    type: Types.PARTICIPANT_SPEAKING,
+                    payload: { participant, activeSpeakerSince: Date.now() },
+                  });
+                }
               }
               // Set new active speaker
               else if(activeSpeaker.activeSpeaker.participant_id != participant.participant_id &&
