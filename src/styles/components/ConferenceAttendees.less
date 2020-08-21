@@ -52,7 +52,7 @@
       color: #fff;
     }
   }
-  .onboardingmessageoverlay-hidden {
+  .onboardingmessageoverlay-hidden, .onactivespeakeroverlay-hidden {
     display: none;
   }
   .onboardingmessageoverlay{
@@ -71,7 +71,6 @@
       -o-transition: opacity 0.25s ease-in-out;
       position: relative;
       width: 500px;
-      max-height: 300px;
       margin: auto;
       background: #13141C;
       border-radius: 4px;
@@ -92,8 +91,9 @@
         }
       }
       .overlay-text {
+        text-align: center;
         padding: 10px;
-        max-height: 195px;
+        max-height: 40%;
         overflow: auto;
       }
     }
@@ -153,6 +153,32 @@
       font-weight: 800;
     }
     a:hover {
+    }
+  }
+  .onactivespeakeroverlay {
+    position: absolute;
+    display: flex;
+    z-index: 100;
+    opacity: 0.85;
+    background: #13141C;
+    color: #fff;
+    padding: 3px;
+    font-weight: 500;
+    border-radius: 100px;
+    -webkit-transition: opacity 0.25s ease-in-out;
+    -moz-transition: opacity 0.25s ease-in-out;
+    -ms-transition: opacity 0.25s ease-in-out;
+    -o-transition: opacity 0.25s ease-in-out;
+    margin: auto;
+    left: 20px;
+    top: 25px;
+    img {
+      width: 30px;
+    }
+    p {
+      margin-right: 10px;
+      margin-left: 5px;
+      line-height: 20px;
     }
   }
   .onboardingmessagewithaction, .onboardingmessagewithdescription {

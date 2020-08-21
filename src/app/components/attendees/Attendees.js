@@ -21,6 +21,7 @@ import OnBoardingMessage from "./onBoardingMessage/onBoardingMessage";
 import OnBoardingMessageWithAction from "./onBoardingMessage/onBoardingMessageWithAction";
 import OnBoardingMessageWithDescription from "./onBoardingMessage/onBoardingMessageWithDescription";
 import OnBoardingMessageOverlay from "./onBoardingMessage/onBoardingMessageOverlay";
+import ActiveSpeakerOverlay from "./modes/ActiveSpeakerOverlay";
 import {
   List,
   ListWidget,
@@ -118,7 +119,8 @@ class Attendees extends Component {
       ...this.props,
       attendeesListOpened: this.props.attendeesListOpened,
       isWebinar: this.props.participantStore.isWebinar,
-      isAdmin: this.props.participantStore.isAdmin
+      isAdmin: this.props.participantStore.isAdmin,
+      toggleMicrophone: this.toggleMicrophone
     });
   }
 
@@ -196,6 +198,10 @@ class Attendees extends Component {
         <OnBoardingMessageWithDescription />
         <OnBoardingMessage />
         <OnBoardingMessageOverlay />
+        { mode === MODE_TILES &&
+          (<ActiveSpeakerOverlay
+            participants={participantsConnected}
+            currentUser={currentUser}/>)}
 
         {!bowser.msie && (
           <AttendeesSettings
