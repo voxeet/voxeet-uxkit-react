@@ -329,7 +329,7 @@ export class Actions {
               alias: conferenceAlias,
               params: {
                 liveRecording: liveRecordingEnabled,
-                dvcs: dvcs,
+                dolbyVoice: dolbyVoice,
                 ttl: ttl,
                 stats: "true",
                 mode: mode,
@@ -401,7 +401,7 @@ export class Actions {
                 alias: conferenceAlias,
                 params: {
                   liveRecording: liveRecordingEnabled,
-                  dvcs: dvcs,
+                  dolbyVoice: dolbyVoice,
                   ttl: ttl,
                   stats: "true",
                   mode: mode,
@@ -505,7 +505,7 @@ export class Actions {
             alias: conferenceAlias,
             params: {
               liveRecording: liveRecordingEnabled,
-              dvcs: dvcs,
+              dolbyVoice: dolbyVoice,
               ttl: ttl,
               stats: "true",
               mode: mode,
