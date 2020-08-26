@@ -70,7 +70,7 @@ class ConferenceRoom extends Component {
       mode,
       videoCodec,
       sdk,
-      dvcs,
+      dolbyVoice,
       chromeExtensionId,
       autoRecording,
       videoRatio,
@@ -260,7 +260,7 @@ class ConferenceRoom extends Component {
               autoRecording,
               pinCodeTmp,
               simulcast,
-              dvcs
+              dolbyVoice
             )
           );
         });
@@ -426,12 +426,11 @@ ConferenceRoom.propTypes = {
   displayModes: PropTypes.array,
   pstnNumbers: PropTypes.array,
   displayActions: PropTypes.array,
-
   shareActions: PropTypes.array,
   isWidget: PropTypes.bool,
   isAdmin: PropTypes.bool,
   ttl: PropTypes.number,
-  dvcs: PropTypes.bool,
+  dolbyVoice: PropTypes.bool,
   simulcast: PropTypes.bool,
   mode: PropTypes.string,
   videoCodec: PropTypes.string,
@@ -463,7 +462,7 @@ ConferenceRoom.propTypes = {
 
 ConferenceRoom.defaultProps = {
   isWidget: true,
-  dvcs: true,
+  dolbyVoice: true,
   kickOnHangUp: false,
   autoRecording: false,
   disableSounds: false,
