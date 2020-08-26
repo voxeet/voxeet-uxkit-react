@@ -307,7 +307,7 @@ export class Actions {
     autoRecording,
     pinCode,
     simulcast,
-    dvcs
+    dolbyVoice
   ) {
     return (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());

@@ -70,7 +70,7 @@ class ConferenceRoom extends Component {
       mode,
       videoCodec,
       sdk,
-      dvcs,
+      dolbyVoice,
       chromeExtensionId,
       autoRecording,
       videoRatio,
@@ -260,7 +260,7 @@ class ConferenceRoom extends Component {
               autoRecording,
               pinCodeTmp,
               simulcast,
-              dvcs
+              dolbyVoice
             )
           );
         });
