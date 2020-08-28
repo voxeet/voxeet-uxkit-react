@@ -7,7 +7,7 @@ import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import Cookies from "js-cookie";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
-import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
+import AttendeesSettingsVuMeter from "./../preConfig/PreConfigVuMeter";
 import { strings } from "../../languages/localizedStrings";
 
 @connect(store => {
