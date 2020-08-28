@@ -87,7 +87,7 @@ class ConferencePreConfigContainer extends Component {
       videoConstraints = {
         deviceId: { exact: this.state.videoDeviceSelected }
       };
-    navigator.mediaDevices
+    return navigator.mediaDevices
       .getUserMedia({
         audio: { deviceId: { exact: this.state.audioDeviceSelected } },
         video: videoConstraints
@@ -427,7 +427,7 @@ class ConferencePreConfigContainer extends Component {
     });
   }
 
-  handleInputChange(event) {
+  async handleInputChange(event) {
     const target = event.target;
     const value = target.checked;
     const name = target.name;
@@ -440,14 +440,33 @@ class ConferencePreConfigContainer extends Component {
       this.video.height = "0";
     }
     if (target.checked) {
-      this.restartCamera();
-      this.video.height = "280";
+      let approved = this.state.videoDevices.length > 0;
+      if(this.state.videoDevices.length === 0){
+        // ask for video permission
+        approved = await navigator.mediaDevices.getUserMedia({ video: true})
+            .then((stream) => {
+              stream.getTracks().forEach(track => {
+                track.stop();
+              });
+              return true;
+            })
+            .catch((err) => {
+              return false;
+            });
+      }
+      if (approved) {
+        this.setState({
+          videoEnabled: value
+        }, this.init.bind(this));
+      }
+    } else {
+      if (this.state.videoDevices.length > 0) {
+        this.setState({
+          videoEnabled: value
+        });
+      }
     }
-    if (this.state.videoDevices.length > 0) {
-      this.setState({
-        videoEnabled: value
-      });
-    }
+
   }
 
   renderLoading() {

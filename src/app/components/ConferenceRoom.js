@@ -35,15 +35,8 @@ class ConferenceRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      preConfig:
-        !props.isListener &&
-        !bowser.msie &&
-        !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        ) &&
-        (!props.isWebinar || (props.isWebinar && props.isAdmin))
-          ? props.preConfig
-          : false,
+      preConfig: false, // Will decide later
+      loading: true,    // Start with loader
     };
     this.handleJoin = this.handleJoin.bind(this);
     this.startConferenceWithParams = this.startConferenceWithParams.bind(this);
@@ -280,25 +273,34 @@ class ConferenceRoom extends Component {
   async componentDidMount() {
     // Print UXKit Version
     console.log("UXKit Version: " + __VERSION__);
-    const shouldStart = await this.preConfigCheck();
+    let props = this.props;
+    const { isWebinar, isAdmin, isListener, preConfig } = this.props;
+    let doPreConfig =
+        !isListener &&
+        !bowser.msie &&
+        !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+        ) &&
+        (!isWebinar || (isWebinar && isAdmin))
+            ? (preConfig)
+            : false;
+    const shouldStart = await this.preConfigCheck(doPreConfig);
 
-    const { preConfig } = this.state;
-    const { isWebinar, isAdmin } = this.props;
-    if (!preConfig) {
-      this.startConferenceWithParams();
-    }
+    this.setState({loading:false, preConfig: shouldStart}, () => {
+      if (!this.state.preConfig) {
+        this.startConferenceWithParams();
+      }
+    })
   }
 
   /**
    * Check precofigured devices and is it possible to create audio context
    * @returns {Promise<void>}
    */
-  async preConfigCheck() {
-    const { preConfig } = this.state;
+  async preConfigCheck(preConfig) {
     const { constraints } = this.props;
     // console.log('preConfigCheck', preConfig, constraints);
-    //
-    //
+
     const checkPermissions = async () => {
       //console.log('About to check access to audio/video devices', { audio: constraints.audio, video: constraints.video})
       return await navigator.mediaDevices.getUserMedia({ audio: constraints.audio, video: constraints.video})
@@ -311,13 +313,15 @@ class ConferenceRoom extends Component {
           })
           .catch((err) => {
             console.error('Could not get access to required media', err)
-            this.props.dispatch(ErrorActions.onError(err));
+            //this.props.dispatch(ErrorActions.onError(err));
             return true;
           });
     }
+
     if(preConfig) {
-      //console.log('Preconfig required, just asking for device permissions');
-      return await checkPermissions(); // Just check permitions
+      console.log('Preconfig required, just asking for device permissions');
+      await checkPermissions();
+      return true;
     } else {
       return new Promise(async (resolve) => {
         // Request access to audio video devices
@@ -420,7 +424,7 @@ class ConferenceRoom extends Component {
       filePresentationEnabled,
       videoPresentationEnabled,
     } = this.props.participantsStore;
-    const { preConfig } = this.state;
+    const { preConfig, loading } = this.state;
     const {
       isJoined,
       conferenceId,
@@ -489,6 +493,8 @@ class ConferenceRoom extends Component {
           </div>
         </div>
       );
+    } else if (loading) {
+      return this.renderLoading();
     } else if (preConfig) {
       return (
         <ConferencePreConfigContainer
