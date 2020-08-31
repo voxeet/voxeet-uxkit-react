@@ -340,7 +340,7 @@ class AttendeesSettings extends Component {
                 </select>
               </div>
               <div className="form-group">
-                <AttendeesSettingsVuMeter />
+                <AttendeesSettingsVuMeter maxLevel={21} />
               </div>
               <div className="hint-text">
                 <p>{strings.problemSettings}</p>
