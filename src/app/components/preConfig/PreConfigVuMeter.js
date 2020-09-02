@@ -112,9 +112,10 @@ class PreConfigVuMeter extends Component {
 
   render() {
     const { level } = this.state;
+    const maxLevel = this.props.maxLevel || 22;
     return (
       <ul className="loadbar">
-        {[...Array(22)].map((el, i) => (
+        {[...Array(maxLevel)].map((el, i) => (
           <li key={`loadbar_${i}`}>
             <div className={`bar ${level >= i ? "ins" : ""}`}></div>
           </li>
