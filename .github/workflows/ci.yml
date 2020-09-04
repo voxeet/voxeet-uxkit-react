@@ -3,7 +3,8 @@ name: Snapshot build
 on:
   push:
     branches:
-      - release-2.1
+      - master
+      - develop
 
 jobs:
   build:
