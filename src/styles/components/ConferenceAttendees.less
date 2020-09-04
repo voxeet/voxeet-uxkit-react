@@ -18,6 +18,24 @@
   position: relative;
   width: 350px;
   // background-color: #000c31;
+  .question-icon {
+    color: #7f7f7f !important;
+    margin-left: 10px;
+    border-radius: 50%;
+    background: #FFF;
+    font-size: 20px;
+    box-shadow: 0 0 3px 1px #7f7f7f;
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px;
+    position: absolute;
+    cursor: pointer;
+    top: 5px;
+
+    &:hover {
+      background: #efefef;
+    }
+  }
   .toggle-fullscreen {
     position: absolute;
     top: 15px;
@@ -34,7 +52,53 @@
       color: #fff;
     }
   }
-  .onboardingmessagewithaction-error {
+  .onboardingmessageoverlay-hidden, .onactivespeakeroverlay-hidden {
+    display: none;
+  }
+  .onboardingmessageoverlay{
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    .overlay-wrapper {
+      -webkit-transition: opacity 0.25s ease-in-out;
+      -moz-transition: opacity 0.25s ease-in-out;
+      -ms-transition: opacity 0.25s ease-in-out;
+      -o-transition: opacity 0.25s ease-in-out;
+      position: relative;
+      width: 500px;
+      margin: auto;
+      background: #13141C;
+      border-radius: 4px;
+      color: #FFF;
+      .overlay-title {
+        padding: 10px;
+        display: flex;
+        border-bottom: thin solid #7f7f7f;
+        .title-text {
+          width: calc(100% - 30px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .icon-close {
+          position: absolute;
+          right: 10px;
+        }
+      }
+      .overlay-text {
+        text-align: center;
+        padding: 10px;
+        max-height: 40%;
+        overflow: auto;
+      }
+    }
+  }
+  .onboardingmessagewithaction-error, .onboardingmessagewithdescription-error {
     position: absolute;
     z-index: 500;
     background-image: linear-gradient(225deg, #f8cc52 0%, #f19148 100%);
@@ -64,7 +128,7 @@
     a:hover {
     }
   }
-  .onboardingmessagewithaction-hidden {
+  .onboardingmessagewithaction-hidden, .onboardingmessagewithdescription-hidden {
     visibility: hidden;
     opacity: 0;
     transition: visibility 0.25s, opacity 0.25s linear;
@@ -91,7 +155,33 @@
     a:hover {
     }
   }
-  .onboardingmessagewithaction {
+  .onactivespeakeroverlay {
+    position: absolute;
+    display: flex;
+    z-index: 100;
+    opacity: 0.85;
+    background: #13141C;
+    color: #fff;
+    padding: 3px;
+    font-weight: 500;
+    border-radius: 100px;
+    -webkit-transition: opacity 0.25s ease-in-out;
+    -moz-transition: opacity 0.25s ease-in-out;
+    -ms-transition: opacity 0.25s ease-in-out;
+    -o-transition: opacity 0.25s ease-in-out;
+    margin: auto;
+    left: 20px;
+    top: 25px;
+    img {
+      width: 30px;
+    }
+    p {
+      margin-right: 10px;
+      margin-left: 5px;
+      line-height: 20px;
+    }
+  }
+  .onboardingmessagewithaction, .onboardingmessagewithdescription {
     position: inherit;
     z-index: 500;
     opacity: 0.85;
@@ -244,7 +334,7 @@
         width: auto;
         margin-right: 350px;
       }
-      .onboardingmessagewithaction {
+      .onboardingmessagewithaction, .onboardingmessagewithdescription {
         width: 80%;
       }
       .onboardingmessage {

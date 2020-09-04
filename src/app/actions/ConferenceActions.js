@@ -143,7 +143,10 @@ export class Actions {
       } else {
         if (!inputCookieExist) {
           constraints.audio = true;
-          dispatch(InputManagerActions.inputAudioChange(devices[0].deviceId));
+          let selected_device = devices.find(device => device.deviceId=='default');
+          if(!selected_device)
+            selected_device = devices[0];
+          dispatch(InputManagerActions.inputAudioChange(selected_device.deviceId));
         } else {
           constraints.audio = {
             deviceId: { exact: Cookies.get("input") },
@@ -168,25 +171,28 @@ export class Actions {
         constraints.video = false;
       } else {
         if (!videoCookieExist) {
+          let selected_device = devices.find(device => device.deviceId=='default');
+          if(!selected_device)
+            selected_device = devices[0];
           var date = new Date();
           date.setDate(date.getDate() + 365);
-          Cookies.set("camera", devices[0].deviceId, {
+          Cookies.set("camera", selected_device.deviceId, {
             path: "/",
             expires: date,
             secure: true,
             sameSite: "none",
           });
-          dispatch(InputManagerActions.inputVideoChange(devices[0].deviceId));
+          dispatch(InputManagerActions.inputVideoChange(selected_device.deviceId));
           if (constraints.video) {
             if (videoRatio != null) {
               constraints.video = {
                 height: videoRatio.height,
                 width: videoRatio.width,
-                deviceId: { exact: devices[0].deviceId },
+                deviceId: { exact: selected_device.deviceId },
               };
             } else {
               constraints.video = {
-                deviceId: { exact: devices[0].deviceId },
+                deviceId: { exact: selected_device.deviceId },
               };
             }
           }
@@ -218,15 +224,18 @@ export class Actions {
         if (Cookies.get("output") == source.deviceId) outputCookieExist = true;
       });
       if (!outputCookieExist) {
+        let selected_device = devices.find(device => device.deviceId=='default');
+        if(!selected_device)
+          selected_device = devices[0];
         var date = new Date();
         date.setDate(date.getDate() + 365);
-        Cookies.set("output", devices[0].deviceId, {
+        Cookies.set("output", selected_device.deviceId, {
           path: "/",
           expires: date,
           secure: true,
           sameSite: "none",
         });
-        dispatch(InputManagerActions.outputAudioChange(devices[0].deviceId));
+        dispatch(InputManagerActions.outputAudioChange(selected_device.deviceId));
       } else {
         dispatch(InputManagerActions.outputAudioChange(Cookies.get("output")));
       }
@@ -664,8 +673,11 @@ export class Actions {
                 inputCookieExist = true;
             });
             if (!inputCookieExist) {
+              let selected_device = devices.find(device => device.deviceId=='default');
+              if(!selected_device)
+                selected_device = devices[0];
               dispatch(
-                InputManagerActions.inputAudioChange(devices[0].deviceId)
+                InputManagerActions.inputAudioChange(selected_device.deviceId)
               );
             } else {
               dispatch(
@@ -1204,6 +1216,52 @@ export class Actions {
         } else {
           console.warn("No indicators");
         }
+      });
+
+      VoxeetSDK.conference.on("error", (data) => {
+        let title, description, isError;
+        // console.error('error', JSON.stringify(data), data.message, data.name);
+        switch(data.name) {
+          case 'NotAllowedError':
+          case 'OverconstrainedError':
+          case 'NotFoundError':
+          case 'AbortError':
+          case 'NotReadableError':
+          case 'SecurityError':
+          case 'TypeError':
+            title = strings[`title${data.name}`];
+            description = strings[`desc${data.name}`];
+            isError = true;
+            break;
+          case 'MediaError':
+            title = data.message;
+            description = null;
+            isError = true;
+            break;
+          default:
+            title = strings[`titleDefaultError`];
+            description = strings[`descDefaultError`];
+            isError = true;
+        }
+        if(description) {
+          dispatch(
+              OnBoardingMessageWithActionActions.onBoardingMessageWithDescription(
+                title,
+                description,
+                null,
+                isError
+              )
+          );
+        } else {
+          dispatch(
+              OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
+                title,
+                null,
+                isError
+              )
+          );
+        }
+
       });
 
       VoxeetSDK.videoPresentation.on("started", (data) => {
