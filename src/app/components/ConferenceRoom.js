@@ -367,6 +367,9 @@ class ConferenceRoom extends Component {
           if(constraints.audio) {
             gotAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: Cookies.get("input") } } })
                 .then((stream) => {
+                  stream.getTracks().forEach(track => {
+                    track.stop();
+                  });
                   return true;
                 })
                 .catch((err) => {
@@ -378,6 +381,9 @@ class ConferenceRoom extends Component {
           if(constraints.video) {
             gotVideoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: Cookies.get("camera") } } })
                 .then((stream) => {
+                  stream.getTracks().forEach(track => {
+                    track.stop();
+                  });
                   return true;
                 })
                 .catch((err) => {
