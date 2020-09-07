@@ -1,10 +1,17 @@
 import React, { Component } from "react";
+import { connect } from "@voxeet/react-redux-5.1.1";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
 import ListOn from "../../../../static/images/icons/btn-participant-on.svg";
 import ListOff from "../../../../static/images/icons/btn-participant-off.svg";
 
+@connect((store) => {
+  return {
+    participantStore: store.voxeet.participants,
+    participantWaiting: store.voxeet.participantsWaiting,
+  };
+})
 class ToggleAttendeesListButton extends Component {
   constructor(props) {
     super(props);
@@ -12,13 +19,32 @@ class ToggleAttendeesListButton extends Component {
       isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
       ),
-      hover: false
+      hover: false,
     };
   }
 
   render() {
-    const { isOpen, toggle, tooltipPlace, isBottomBar, nbParticipants } = this.props;
+    const {
+      isOpen,
+      toggle,
+      tooltipPlace,
+      isBottomBar,
+      isWebinar,
+      currentUser,
+      isAdmin,
+    } = this.props;
     const { hover, isMobile } = this.state;
+
+    let nbParticipants = 0;
+    const participantsConnected = this.props.participantStore.participants.filter(
+      (p) => p.isConnected
+    ).length;
+    const participantsListener = this.props.participantWaiting.participants.filter(
+      (p) => p.stream == null && p.isConnected
+    ).length;
+    nbParticipants = participantsListener + participantsConnected;
+    if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
+      nbParticipants += 1;
 
     return (
       <li
@@ -37,7 +63,11 @@ class ToggleAttendeesListButton extends Component {
           title={strings.attendees}
           onClick={() => toggle()}
         >
-          <span className={"attendees-number" + (isOpen || hover ? " active" : '')}>{nbParticipants}</span>
+          <span
+            className={"attendees-number" + (isOpen || hover ? " active" : "")}
+          >
+            {nbParticipants}
+          </span>
           <img src={isOpen || hover ? ListOn : ListOff} />
           {isBottomBar && (
             <div>
@@ -64,11 +94,11 @@ ToggleAttendeesListButton.propTypes = {
   toggle: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   tooltipPlace: PropTypes.string.isRequired,
-  isBottomBar: PropTypes.bool.isRequired
+  isBottomBar: PropTypes.bool.isRequired,
 };
 
 ToggleAttendeesListButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleAttendeesListButton;

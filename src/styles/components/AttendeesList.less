@@ -138,6 +138,7 @@
       border-radius: 50%;
       height: 48px;
       width: 48px;
+      margin-right: 10px;
 
       &.active {
         cursor: pointer;
@@ -148,10 +149,59 @@
       color: @white;
       font-size: 17px;
       font-family: 'DINNextLTPro-Regular';
+      width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       &.add-participant {
         color: #00AFEF;
       }
+    }
+    .participant-mute {
+      img {
+        position: absolute;
+        right: 15px;
+        margin-top: 12px;
+      }
+    }
+    div.quality {
+      width: 30px;
+      margin-top: auto;
+      margin-bottom: auto;
+      height: 100%;
+      vertical-align: middle;
+      div {
+        width: 10%;
+        margin-left: 2px;
+        margin-bottom: auto;
+        min-height: 1px;
+        display: inline-block;
+        background-color: @headeBorderColor;
+        &:first-of-type {
+          margin-left: 0;
+          height: 1px;
+        }
+        &:nth-of-type(2) {
+          height: 3px;
+        }
+        &:nth-of-type(3) {
+          height: 5px;
+        }
+        &:nth-of-type(4) {
+          height: 7px;
+        }
+        &:last-of-type {
+          height: 9px;
+        }
+        &.on {
+          background-color: @qualityIndicator;
+        }
+        &.off {
+          background-color: gray;
+        }
+      }
+      .clearfix();
     }
   }
 }

@@ -156,7 +156,7 @@ class ActionsButtons extends Component {
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
             !bowser.msie &&
-            !currentUser.isListener && (
+            (!currentUser.isListener || bowser.chrome) && (
               <ToggleSettingsButton
                 attendeesSettingsOpened={attendeesSettingsOpened}
                 toggle={toggleAttendeesSettings}
@@ -171,6 +171,9 @@ class ActionsButtons extends Component {
               toggle={toggleAttendeesList}
               isBottomBar={isBottomBar}
               isOpen={attendeesListOpened}
+              isWebinar={isWebinar}
+              isAdmin={isAdmin}
+              currentUser={currentUser}
             />
           )}
           {displayActions.indexOf("chat") > -1 && (
