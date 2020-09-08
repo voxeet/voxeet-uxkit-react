@@ -439,7 +439,7 @@ export class Actions {
                     dispatch(ControlsActions.toggleWidget());
                     dispatch(ControlsActions.saveConstraints(constraints));
                     dispatch(ParticipantActions.triggerHandleOnConnect());
-                    if (res.recordingStatus == "RECORDING") {
+                    if (VoxeetSDK.recording.state.recording_status==='started') {
                       dispatch(ControlsActions.lockRecording());
                       dispatch(
                         OnBoardingMessageActions.onBoardingDisplay(
@@ -546,7 +546,7 @@ export class Actions {
                   dispatch(ControlsActions.toggleWidget());
                   dispatch(ControlsActions.saveConstraints(constraints));
                   dispatch(ParticipantActions.triggerHandleOnConnect());
-                  if (res.recordingStatus == "RECORDING") {
+                  if (VoxeetSDK.recording.state.recording_status==='started') {
                     dispatch(ControlsActions.lockRecording());
                     dispatch(
                       OnBoardingMessageActions.onBoardingDisplay(
@@ -1056,6 +1056,7 @@ export class Actions {
       VoxeetSDK.session.removeAllListeners();
       VoxeetSDK.videoPresentation.removeAllListeners();
       VoxeetSDK.filePresentation.removeAllListeners();
+      VoxeetSDK.recording.removeAllListeners();
       VoxeetSDK.command.removeAllListeners();
     });
   }
@@ -1303,6 +1304,30 @@ export class Actions {
         }
       });
 
+      VoxeetSDK.recording.on("started", (data) => {
+        let {userId} = data || {};
+        let user = VoxeetSDK.conference.participants.get(userId);
+        let name = (user && user.info)?user.info.name:'(unknown)';
+        dispatch(
+            OnBoardingMessageActions.onBoardingDisplay(
+                strings.recordConferenceStartBy + name + ".",
+                1000
+            )
+        );
+      });
+
+      VoxeetSDK.recording.on("stopped", (data) => {
+        let {userId} = data || {};
+        let user = VoxeetSDK.conference.participants.get(userId);
+        let name = (user && user.info)?user.info.name:'(unknown)';
+        dispatch(
+            OnBoardingMessageActions.onBoardingDisplay(
+                strings.recordConferenceStopBy + name + ".",
+                1000
+            )
+        );
+      });
+
       VoxeetSDK.command.on("received", (participant, message) => {
         const dataParsed = JSON.parse(message);
         switch (dataParsed.title) {
@@ -1316,20 +1341,8 @@ export class Actions {
           case RECORDING_STATE:
             if (dataParsed.recordingRunning) {
               dispatch(ControlsActions.lockRecording());
-              dispatch(
-                OnBoardingMessageActions.onBoardingDisplay(
-                  strings.recordConferenceStartBy + dataParsed.name + ".",
-                  1000
-                )
-              );
             } else {
               dispatch(ControlsActions.unlockRecording());
-              dispatch(
-                OnBoardingMessageActions.onBoardingDisplay(
-                  strings.recordConferenceStopBy + dataParsed.name + ".",
-                  1000
-                )
-              );
             }
             break;
           case CHAT_MESSAGE:
