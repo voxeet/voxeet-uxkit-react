@@ -9,6 +9,12 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 2.1.4
+
+#### Bug fixes
+
+- Fixed an issue with enabled participants' cameras after the end of a conference.
+
 ### 2.1.3
 
 #### Device management overhaul
