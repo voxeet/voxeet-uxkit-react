@@ -439,7 +439,7 @@ export class Actions {
                     dispatch(ControlsActions.toggleWidget());
                     dispatch(ControlsActions.saveConstraints(constraints));
                     dispatch(ParticipantActions.triggerHandleOnConnect());
-                    if (VoxeetSDK.recording.state.recording_status==='started') {
+                    if (VoxeetSDK.recording.state.recordingStatus === 'started') {
                       dispatch(ControlsActions.lockRecording());
                       dispatch(
                         OnBoardingMessageActions.onBoardingDisplay(
@@ -546,7 +546,7 @@ export class Actions {
                   dispatch(ControlsActions.toggleWidget());
                   dispatch(ControlsActions.saveConstraints(constraints));
                   dispatch(ParticipantActions.triggerHandleOnConnect());
-                  if (VoxeetSDK.recording.state.recording_status==='started') {
+                  if (VoxeetSDK.recording.state.recordingStatus === 'started') {
                     dispatch(ControlsActions.lockRecording());
                     dispatch(
                       OnBoardingMessageActions.onBoardingDisplay(
