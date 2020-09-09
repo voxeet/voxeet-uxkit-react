@@ -942,12 +942,6 @@ export class Actions {
           .then(() => {
             sessionStorage.setItem("conferenceId", conferenceId);
             window.dispatchEvent(new Event("storage"));
-            dispatch(
-              OnBoardingMessageActions.onBoardingDisplay(
-                strings.recordConferenceStart,
-                1000
-              )
-            );
             dispatch(ControlsActions.toggleRecording());
           })
           .catch((err) => {
@@ -957,12 +951,6 @@ export class Actions {
         return VoxeetSDK.recording
           .stop()
           .then(() => {
-            dispatch(
-              OnBoardingMessageActions.onBoardingDisplay(
-                strings.recordConferenceStop,
-                1000
-              )
-            );
             dispatch(ControlsActions.toggleRecording());
           })
           .catch((err) => {
@@ -1306,25 +1294,31 @@ export class Actions {
 
       VoxeetSDK.recording.on("started", (data) => {
         let {userId} = data || {};
-        let user = VoxeetSDK.conference.participants.get(userId);
-        let name = (user && user.info)?user.info.name:'(unknown)';
+        let message = strings.recordConferenceStart;
+        if(userId && VoxeetSDK.session.participant.id !== userId) {
+          let user = VoxeetSDK.conference.participants.get(userId);
+          let name = (user && user.info)?user.info.name:'(unknown)';
+          message = strings.recordConferenceStartBy + name + ".";
+        }
         dispatch(
-            OnBoardingMessageActions.onBoardingDisplay(
-                strings.recordConferenceStartBy + name + ".",
-                1000
-            )
+            OnBoardingMessageActions.onBoardingDisplay( message, 1000)
         );
       });
 
       VoxeetSDK.recording.on("stopped", (data) => {
-        let {userId} = data || {};
-        let user = VoxeetSDK.conference.participants.get(userId);
-        let name = (user && user.info)?user.info.name:'(unknown)';
+        let {userId, startTimestamp} = data || {};
+        // Skip initial message when stopped
+        if(!userId && !startTimestamp)
+          return;
+        let message = strings.recordConferenceStop;
+        if(userId && VoxeetSDK.session.participant.id !== userId) {
+          //
+          let user = VoxeetSDK.conference.participants.get(userId);
+          let name = (user && user.info)?user.info.name:'(unknown)';
+          message = strings.recordConferenceStopBy + name + ".";
+        }
         dispatch(
-            OnBoardingMessageActions.onBoardingDisplay(
-                strings.recordConferenceStopBy + name + ".",
-                1000
-            )
+            OnBoardingMessageActions.onBoardingDisplay( message, 1000)
         );
       });
 
