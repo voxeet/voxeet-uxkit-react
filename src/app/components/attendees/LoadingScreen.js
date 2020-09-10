@@ -13,13 +13,8 @@ class LoadingScreen extends Component {
       <div className="voxeet-loading-message-container">
         <div className="voxeet-loading-center-container">
           <div className="voxeet-loading-logo-container">
-            {/* <img src={dolbyLogo != null ? dolbyLogo : dolbyLogo} /> */}
-            <div className='ddloader' />
+            {logo ? <img src={logo} /> : <div className='ddloader' />}
           </div>
-          {/* <div id="loader-container">
-            <img src={dolbyLogo} />
-            <div className="loader"></div>
-          </div> */}
           <div className="voxeet-loading-info-container">
             {strings.electronloading}
             <span className="one">.</span>
