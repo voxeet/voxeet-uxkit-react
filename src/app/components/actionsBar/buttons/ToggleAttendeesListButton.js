@@ -37,15 +37,13 @@ class ToggleAttendeesListButton extends Component {
 
     let nbParticipants = 0;
     const participantsConnected = this.props.participantStore.participants.filter(
-      (p) => p.isConnected
+      (p) => p.isConnected && p.type == "user"
     ).length;
     const participantsListener = this.props.participantWaiting.participants.filter(
-      (p) => p.stream == null && p.isConnected
+      (p) => p.stream == null && p.isConnected && p.type == "listener"
     ).length;
-    nbParticipants = participantsListener + participantsConnected;
-    if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
-      nbParticipants += 1;
-
+    // Participant connected + listener + myself
+    nbParticipants = participantsConnected + participantsListener + 1;
     return (
       <li
         className={isOpen ? "active" : ""}
