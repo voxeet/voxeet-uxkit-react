@@ -279,7 +279,7 @@ class AttendeesList extends Component {
                         videoq = quality[participant.participant_id].video;
                         if (audioq > 0 && videoq > 0) avquality = (audioq + videoq) / 2;
                         if ((audioq == 0 || audioq == -1) && videoq > 0) avquality = videoq;
-                        if (audioq > 0 && videoq == 0) avquality = audioq;
+                        if (audioq > 0 && (videoq == 0 || videoq == -1)) avquality = audioq;
                         //avquality = Math.max(audioq, videoq);
                       }
                       return (
