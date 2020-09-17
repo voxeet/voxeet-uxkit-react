@@ -272,6 +272,8 @@ class ConferenceRoom extends Component {
     console.log("UXKit Version: " + __VERSION__);
     let props = this.props;
     const { isWebinar, isAdmin, isListener, preConfig } = this.props;
+    let shouldStart = false;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     let doPreConfig =
         !isListener &&
         !bowser.msie &&
@@ -281,7 +283,9 @@ class ConferenceRoom extends Component {
         (!isWebinar || (isWebinar && isAdmin))
             ? (preConfig)
             : false;
-    const shouldStart = await this.preConfigCheck(doPreConfig);
+    if (!isMobile && !isListener && preConfig) {
+      shouldStart = await this.preConfigCheck(doPreConfig);
+    }
 
     this.setState({loading:false, preConfig: shouldStart}, () => {
       if (!this.state.preConfig) {
