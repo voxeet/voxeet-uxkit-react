@@ -273,7 +273,7 @@ class ConferenceRoom extends Component {
     let props = this.props;
     const { isWebinar, isAdmin, isListener, preConfig } = this.props;
     let shouldStart = false;
-    const isMobile = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     let doPreConfig =
         !isListener &&
         !bowser.msie &&
@@ -283,7 +283,7 @@ class ConferenceRoom extends Component {
         (!isWebinar || (isWebinar && isAdmin))
             ? (preConfig)
             : false;
-    if (!isMobile) { 
+    if (!isMobile && !isListener && preConfig) {
       shouldStart = await this.preConfigCheck(doPreConfig);
     }
 
