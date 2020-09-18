@@ -193,6 +193,13 @@ const ControlsReducer = (state = defaultState, action) => {
         videoEnabled: currentStatus
       };
     }
+    case Types.TOGGLE_AUDIO_TRANSPARENT_MODE: {
+      const currentStatus = state.audioTransparentMode;
+      return {
+        ...state,
+        audioTransparentMode: !currentStatus
+      };
+    }
     case Types.TOGGLE_AUDIO: {
       const currentStatus = action.payload.state;
       return {

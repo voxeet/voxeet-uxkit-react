@@ -73,6 +73,7 @@ export const strings = new LocalizedStrings({
     close: "Close",
     video: "Video",
     camera: "Camera",
+    audioTransparentMode: "Audio transparency mode",
     liveCall: "Live is running",
     linkHls: "See your live",
     broadcastLive: "Diffusion en cours",
