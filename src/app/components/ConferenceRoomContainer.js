@@ -274,6 +274,7 @@ class ConferenceRoomContainer extends Component {
               filePresentationEnabled={filePresentationEnabled}
               displayActions={displayActions}
               screenShareEnabled={screenShareEnabled}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
               toggleWidget={this.toggleWidget}
               toggleFullScreen={this.toggleFullScreen}
               isWidgetOpened={isWidgetOpened}

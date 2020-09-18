@@ -49,7 +49,8 @@ class Speaker extends Component {
       disableForceActiveSpeaker,
       forceActiveUserEnabled,
       screenShareEnabled,
-      nbParticipant
+      nbParticipant,
+      dolbyVoiceEnabled
     } = this.props;
     let forcedActive = "";
     if (
@@ -89,13 +90,14 @@ class Speaker extends Component {
             isAdmin={isAdmin}
             participant={participant}
             toggleMicrophone={toggleMicrophone}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
           />
         )}
         <SpeakerDetails
           participant={participant}
           isWidgetFullScreenOn={isWidgetFullScreenOn}
         />
-        {!isWidgetFullScreenOn && (
+        {!isWidgetFullScreenOn && !dolbyVoiceEnabled && (
           <AttendeesParticipantMute
             participant={participant}
             toggleMicrophone={toggleMicrophone}
@@ -128,7 +130,8 @@ Speaker.propTypes = {
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  isAdminActived: PropTypes.bool.isRequired
+  isAdminActived: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default Speaker;

@@ -92,7 +92,7 @@ class AttendeesList extends Component {
       if (audioq != 0 && videoq == 0) avquality = audioq;
       //avquality = Math.max(audioq, videoq);
     }
-    const { isWebinar, isAdmin, attendeesListOpened, toggleMicrophone } = this.props;
+    const { isWebinar, isAdmin, attendeesListOpened, toggleMicrophone, dolbyVoiceEnabled } = this.props;
     const { filteredUsers } = this.state;
     const participantsConnected = participants.filter(
       (p) => p.isConnected && p.type == "user"
@@ -299,7 +299,7 @@ class AttendeesList extends Component {
                             <span className="participant-username">
                               {participant.name}
                             </span>
-                            {toggleMicrophone != null && !participant.isMyself && (
+                            {toggleMicrophone != null && !participant.isMyself && !dolbyVoiceEnabled && (
                               <AttendeesParticipantMute
                                 participant={participant}
                                 toggleMicrophone={toggleMicrophone}
@@ -485,6 +485,7 @@ AttendeesList.propTypes = {
   attendeesListOpened: PropTypes.bool.isRequired,
   isWebinar: PropTypes.bool.isRequired,
   isAdmin: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default AttendeesList;

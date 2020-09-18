@@ -35,6 +35,7 @@ class Tile extends Component {
       isAdminActived,
       nbParticipant,
       mySelf,
+      dolbyVoiceEnabled
     } = this.props;
     return (
       <div
@@ -63,6 +64,7 @@ class Tile extends Component {
           participant={participant}
           toggleMicrophone={toggleMicrophone}
           isWidgetFullScreenOn={isWidgetFullScreenOn}
+          dolbyVoiceEnabled={dolbyVoiceEnabled}
         />
         <TileLegend
           participant={participant}
@@ -70,6 +72,7 @@ class Tile extends Component {
           isAdminActived={isAdminActived}
           isAdmin={isAdmin}
           toggleMicrophone={toggleMicrophone}
+          dolbyVoiceEnabled={dolbyVoiceEnabled}
         />
       </div>
     );
@@ -88,6 +91,7 @@ Tile.propTypes = {
   mySelf: PropTypes.bool.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   nbParticipant: PropTypes.number,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default Tile;

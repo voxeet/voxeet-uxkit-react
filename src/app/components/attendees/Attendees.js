@@ -257,6 +257,7 @@ class Attendees extends Component {
                 setUserPosition={this.setUserPosition}
                 saveUserPosition={this.saveUserPosition}
                 toggleMicrophone={this.toggleMicrophone}
+                dolbyVoiceEnabled={dolbyVoiceEnabled}
               />
             )}
           {mode === MODE_TILES &&
@@ -281,6 +282,7 @@ class Attendees extends Component {
                 kickParticipant={this.kickParticipant}
                 toggleMicrophone={this.toggleMicrophone}
                 isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
+                dolbyVoiceEnabled={dolbyVoiceEnabled}
               />
             )}
           {mode === MODE_SPEAKER &&
@@ -317,6 +319,7 @@ class Attendees extends Component {
                 isScreenshare={isScreenshare}
                 isVideoPresentation={isVideoPresentation}
                 screenShareStream={userStreamScreenShare}
+                dolbyVoiceEnabled={dolbyVoiceEnabled}
               />
             )}
           {participantsConnected.length === 0 &&
