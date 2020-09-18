@@ -115,10 +115,13 @@
         margin: 0;
       }
     }
+    .group-switch {
+      margin: auto;
+      display: table;
     .group-enable {
-      div {
-        width: 100%;
-      }
+        display: table-row;
+        .enable-item {
+          margin-bottom: 15px;
       input {
         opacity: 0;
         position: absolute;
@@ -126,14 +129,13 @@
       label {
         position: relative;
         display: block;
-        padding: 0.5em 1em 0.5em 0em;
-        width: 25% !important;
+        padding: 0.5em 1em 0.5em 5em;
         margin: auto;
         color: #fff;
         font-size: 18px;
         font-family: 'DINNextLTPro-Regular';
         cursor: pointer;
-        text-align: right;
+        text-align: left;
         &::before {
           content: "";
           position: absolute;
@@ -180,8 +182,8 @@
           }
         }
       }
-      // margin-top: 18px;
-      margin-bottom: 18px;
+        }
+      }
     }
     .start-conference {
       padding: 10px 50px;

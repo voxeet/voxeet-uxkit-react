@@ -316,7 +316,7 @@ export class Actions {
     autoRecording,
     pinCode,
     simulcast,
-    dolbyVoice
+    enableDolbyVoice
   ) {
     return (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
@@ -338,7 +338,7 @@ export class Actions {
               alias: conferenceAlias,
               params: {
                 liveRecording: liveRecordingEnabled,
-                dolbyVoice: dolbyVoice,
+                dolbyVoice: enableDolbyVoice,
                 ttl: ttl,
                 stats: "true",
                 mode: mode,
@@ -360,7 +360,7 @@ export class Actions {
                       )
                     );
                     dispatch(
-                      ConferenceActions._conferenceJoined(res.id, pinCode)
+                      ConferenceActions._conferenceJoined(res.id, pinCode, res.params.dolbyVoice)
                     );
                     dispatch(ControlsActions.toggleWidget());
                     dispatch(ParticipantActions.triggerHandleOnConnect());
@@ -390,7 +390,7 @@ export class Actions {
                       )
                     );
                     dispatch(
-                      ConferenceActions._conferenceJoined(res.id, pinCode)
+                      ConferenceActions._conferenceJoined(res.id, pinCode, res.params.dolbyVoice)
                     );
                     dispatch(ControlsActions.toggleWidget());
                     dispatch(ParticipantActions.triggerHandleOnConnect());
@@ -410,7 +410,7 @@ export class Actions {
                 alias: conferenceAlias,
                 params: {
                   liveRecording: liveRecordingEnabled,
-                  dolbyVoice: dolbyVoice,
+                  dolbyVoice: enableDolbyVoice,
                   ttl: ttl,
                   stats: "true",
                   mode: mode,
@@ -434,7 +434,7 @@ export class Actions {
                       )
                     );
                     dispatch(
-                      ConferenceActions._conferenceJoined(res.id, pinCode)
+                      ConferenceActions._conferenceJoined(res.id, pinCode, res.params.dolbyVoice)
                     );
                     dispatch(ControlsActions.toggleWidget());
                     dispatch(ControlsActions.saveConstraints(constraints));
@@ -514,7 +514,7 @@ export class Actions {
             alias: conferenceAlias,
             params: {
               liveRecording: liveRecordingEnabled,
-              dolbyVoice: dolbyVoice,
+              dolbyVoice: enableDolbyVoice,
               ttl: ttl,
               stats: "true",
               mode: mode,
@@ -541,7 +541,7 @@ export class Actions {
                     )
                   );
                   dispatch(
-                    ConferenceActions._conferenceJoined(res.id, pinCode)
+                    ConferenceActions._conferenceJoined(res.id, pinCode, res.params.dolbyVoice)
                   );
                   dispatch(ControlsActions.toggleWidget());
                   dispatch(ControlsActions.saveConstraints(constraints));
@@ -587,6 +587,9 @@ export class Actions {
                       this.setOutputAudio(dispatch);
                     }
                   }
+                  if (preConfigPayload && preConfigPayload.audioTransparentMode) {
+                    dispatch ( ConferenceActions.toggleAudioTransparentMode(true) );
+                  }
                 }
               })
               .catch((err) => {
@@ -611,7 +614,7 @@ export class Actions {
         .then((res) => {
           dispatch(ControlsActions.toggleWidget());
           dispatch(ParticipantActions.triggerHandleOnConnect());
-          dispatch(this._conferenceJoined(res.conferenceId));
+          dispatch(this._conferenceJoined(res.conferenceId, undefined, res.params.dolbyVoice));
         })
         .catch((err) => {
           this._throwErrorModal(err);
@@ -720,6 +723,15 @@ export class Actions {
     return (dispatch) => {
       return VoxeetSDK.conference.rtc.enable3DAudio(audio3DEnabled).then(() => {
         dispatch(ControlsActions.toggleAudio3D());
+      });
+    };
+  }
+
+
+  static toggleAudioTransparentMode(enabled) {
+    return (dispatch) => {
+      return VoxeetSDK.conference.audioProcessing(VoxeetSDK.session.participant, {send: {audioProcessing: !enabled}}).then(() => {
+        dispatch(ControlsActions.toggleAudioTransparentMode());
       });
     };
   }
@@ -1386,12 +1398,13 @@ export class Actions {
     };
   }
 
-  static _conferenceJoined(conferenceId, conferencePincode) {
+  static _conferenceJoined(conferenceId, conferencePincode, dolbyVoiceEnabled) {
     return {
       type: Types.CONFERENCE_JOINED,
       payload: {
         conferenceId,
         conferencePincode,
+        dolbyVoiceEnabled
       },
     };
   }

@@ -12,7 +12,8 @@ const defaultState = {
   conferenceReplayId: null,
   hasLeft: false,
   time: 0,
-  isJoined: false
+  isJoined: false,
+  dolbyVoiceEnabled: true
 };
 
 const ConferenceReducer = (state = defaultState, action) => {
@@ -45,6 +46,7 @@ const ConferenceReducer = (state = defaultState, action) => {
         ...state,
         conferenceId: action.payload.conferenceId,
         conferencePincode: action.payload.conferencePincode,
+        dolbyVoiceEnabled: action.payload.dolbyVoiceEnabled,
         connecting: false,
         hasLeft: false,
         isJoined: true

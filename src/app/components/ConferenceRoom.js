@@ -256,7 +256,7 @@ class ConferenceRoom extends Component {
               autoRecording,
               pinCodeTmp,
               simulcast,
-              dolbyVoice
+              dolbyVoice,
             )
           );
         });
@@ -272,8 +272,6 @@ class ConferenceRoom extends Component {
     console.log("UXKit Version: " + __VERSION__);
     let props = this.props;
     const { isWebinar, isAdmin, isListener, preConfig } = this.props;
-    let shouldStart = false;
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     let doPreConfig =
         !isListener &&
         !bowser.msie &&
@@ -283,9 +281,7 @@ class ConferenceRoom extends Component {
         (!isWebinar || (isWebinar && isAdmin))
             ? (preConfig)
             : false;
-    if (!isMobile && !isListener && preConfig) {
-      shouldStart = await this.preConfigCheck(doPreConfig);
-    }
+    const shouldStart = await this.preConfigCheck(doPreConfig);
 
     this.setState({loading:false, preConfig: shouldStart}, () => {
       if (!this.state.preConfig) {
@@ -425,6 +421,7 @@ class ConferenceRoom extends Component {
       isWebinar,
       isAdmin,
       logo,
+      dolbyVoice,
     } = this.props;
     const {
       screenShareEnabled,
@@ -441,6 +438,7 @@ class ConferenceRoom extends Component {
       isDemo,
       conferencePincode,
       hasLeft,
+      dolbyVoiceEnabled,
     } = this.props.conferenceStore;
     const { errorMessage, isError } = this.props.errorStore;
     if (bowser.ios && bowser.chrome) {
@@ -509,6 +507,7 @@ class ConferenceRoom extends Component {
           loadingScreen={this.props.loadingScreen}
           logo={this.props.logo}
           handleJoin={this.handleJoin}
+          dolbyVoiceEnabled={dolbyVoice}
         />
       );
     } else if (isJoined || !isWidget || conferenceReplayId != null) {
@@ -533,6 +532,7 @@ class ConferenceRoom extends Component {
           handleOnLeave={handleOnLeave}
           conferenceId={conferenceId}
           attendeesWaiting={attendeesWaiting}
+          dolbyVoiceEnabled={dolbyVoiceEnabled}
         />
       );
     }
