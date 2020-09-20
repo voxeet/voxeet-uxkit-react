@@ -439,7 +439,7 @@ export class Actions {
                     dispatch(ControlsActions.toggleWidget());
                     dispatch(ControlsActions.saveConstraints(constraints));
                     dispatch(ParticipantActions.triggerHandleOnConnect());
-                    if (VoxeetSDK.recording.isRecording) {
+                    if (VoxeetSDK.recording.current) {
                       dispatch(ControlsActions.lockRecording());
                       dispatch(
                         OnBoardingMessageActions.onBoardingDisplay(
@@ -546,7 +546,7 @@ export class Actions {
                   dispatch(ControlsActions.toggleWidget());
                   dispatch(ControlsActions.saveConstraints(constraints));
                   dispatch(ParticipantActions.triggerHandleOnConnect());
-                  if (VoxeetSDK.recording.isRecording) {
+                  if (VoxeetSDK.recording.current) {
                     dispatch(ControlsActions.lockRecording());
                     dispatch(
                       OnBoardingMessageActions.onBoardingDisplay(
