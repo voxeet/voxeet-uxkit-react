@@ -55,7 +55,7 @@
   }
   .file-presentation-img-presenter {
     height: 100%;
-    width: calc(100% - 170px);
+    width: 100%;
     object-fit: contain;
   }
   .file-presentation-img {
@@ -83,27 +83,29 @@
     opacity: 0.6;
     cursor: not-allowed;
   }
-  a {
-    cursor: pointer;
-    margin: 15px;
-    background-color: #515973;
-    border: none;
-    color: #fff;
-    padding: 5px 15px 5px 15px;
-    border-radius: 4px;
-    font-size: 14px;
-    user-select: none;
-  }
-  a:hover {
-    -moz-box-shadow: 0px 0px 5px 0px #656565;
-    -webkit-box-shadow: 0px 0px 5px 0px #656565;
-    -o-box-shadow: 0px 0px 5px 0px #656565;
-    box-shadow: 0px 0px 5px 0px #656565;
-    filter: progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=5);
-    user-select: none;
-  }
-  a:focus {
-    outline: 0;
+  .controls-file-presentation {
+      a {
+      cursor: pointer;
+      margin: 15px;
+      background-color: #515973;
+      border: none;
+      color: #fff;
+      padding: 5px 15px 5px 15px;
+      border-radius: 4px;
+      font-size: 14px;
+      user-select: none;
+    }
+    a:hover {
+      -moz-box-shadow: 0px 0px 5px 0px #656565;
+      -webkit-box-shadow: 0px 0px 5px 0px #656565;
+      -o-box-shadow: 0px 0px 5px 0px #656565;
+      box-shadow: 0px 0px 5px 0px #656565;
+      filter: progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=5);
+      user-select: none;
+    }
+    a:focus {
+      outline: 0;
+    }
   }
 }
 
