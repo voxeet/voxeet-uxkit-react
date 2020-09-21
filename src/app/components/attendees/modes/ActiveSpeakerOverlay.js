@@ -111,7 +111,7 @@ class ActiveSpeakerOverlay extends Component {
                   activeSpeakerChecker.stream.active && activeSpeakerChecker.stream.getVideoTracks().length > 0 ?
                     <img src={cameraOn}/> :
                     <img src={cameraOff}/>}
-                <p>{activeSpeakerChecker && `${activeSpeakerChecker.name} is speaking`}</p>
+                <p>{activeSpeakerChecker && `${activeSpeakerChecker.name} ` + strings.isSpeaking}</p>
             </div>
         );
     }

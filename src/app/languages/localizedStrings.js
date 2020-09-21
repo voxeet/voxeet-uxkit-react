@@ -123,7 +123,8 @@ export const strings = new LocalizedStrings({
     placeholderVideoPresentation: "Video URL",
     startVideoPresentationAutoplay: "Start video",
     invitedUsers: "Waiting for invitation",
-    inviteUser: "Invite"
+    inviteUser: "Invite",
+    isSpeaking: "is speaking"
   },
   fr: {
     noPstnNumbers: "Pas de numéro PSTN ...",
@@ -232,6 +233,7 @@ export const strings = new LocalizedStrings({
     placeholderVideoPresentation: "URL de la vidéo",
     startVideoPresentationAutoplay: "Démarrer la video",
     invitedUsers: "En attente d'invitation",
-    inviteUser: "Inviter"
+    inviteUser: "Inviter",
+    isSpeaking: "parle"
   }
 });
