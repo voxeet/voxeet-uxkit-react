@@ -45,7 +45,8 @@ class ListItem extends Component {
       isAdmin,
       toggleMicrophone,
       kickParticipant,
-      isAdminActived
+      isAdminActived,
+      dolbyVoiceEnabled
     } = this.props;
     return (
       <li
@@ -70,10 +71,10 @@ class ListItem extends Component {
           )}
           <span className="participant-username">{participant.name}</span>
         </span>
-        <AttendeesParticipantMute
+        {!dolbyVoiceEnabled && <AttendeesParticipantMute
           participant={participant}
           toggleMicrophone={toggleMicrophone}
-        />
+        />}
         {isAdmin && isAdminActived && (
           <AttendeesKickParticipant
             participant={participant}
@@ -90,7 +91,8 @@ ListItem.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   toggleMicrophone: PropTypes.func.isRequired,
-  kickParticipant: PropTypes.func.isRequired
+  kickParticipant: PropTypes.func.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default ListItem;

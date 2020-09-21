@@ -17,7 +17,8 @@ class View3D extends Component {
       isAdmin,
       isAdminActived,
       saveUserPosition,
-      participants
+      participants,
+      dolbyVoiceEnabled
     } = this.props;
     const participantsConnected = [];
     let size = 0;
@@ -43,6 +44,7 @@ class View3D extends Component {
               saveUserPosition={saveUserPosition}
               kickParticipant={kickParticipant}
               toggleMicrophone={toggleMicrophone}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
             />
           );
         })}
@@ -58,7 +60,8 @@ View3D.propTypes = {
   saveUserPosition: PropTypes.func.isRequired,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  isAdminActived: PropTypes.bool.isRequired
+  isAdminActived: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default View3D;

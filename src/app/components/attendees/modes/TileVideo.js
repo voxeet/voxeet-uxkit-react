@@ -20,7 +20,8 @@ class TileVideo extends Component {
       isAdmin,
       kickParticipant,
       isAdminActived,
-      mySelf
+      mySelf,
+      dolbyVoiceEnabled
     } = this.props;
     const photoUrl = participant.avatarUrl || userPlaceholder;
     return (
@@ -33,6 +34,7 @@ class TileVideo extends Component {
             isAdmin={isAdmin}
             participant={participant}
             toggleMicrophone={toggleMicrophone}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
           />
         )}
         {participant.stream && participant.stream.active &&
@@ -64,7 +66,8 @@ TileVideo.propTypes = {
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  isAdminActived: PropTypes.bool.isRequired
+  isAdminActived: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool
 };
 
 export default TileVideo;

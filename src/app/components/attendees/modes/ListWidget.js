@@ -17,6 +17,7 @@ class ListWidget extends Component {
       isAdminActived,
       currentUser,
       isWebinar,
+      dolbyVoiceEnabled,
     } = this.props;
     return (
       <div className="SidebarList">
@@ -28,6 +29,7 @@ class ListWidget extends Component {
               participant={currentUser}
               isAdmin={isAdmin}
               mySelf={true}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
             />
           )}
           {participants.map((participant, i) => {
@@ -41,6 +43,7 @@ class ListWidget extends Component {
                   mySelf={false}
                   kickParticipant={kickParticipant}
                   toggleMicrophone={toggleMicrophone}
+                  dolbyVoiceEnabled={dolbyVoiceEnabled}
                 />
               );
           })}
@@ -58,6 +61,7 @@ ListWidget.propTypes = {
   isAdminActived: PropTypes.bool.isRequired,
   toggleMicrophone: PropTypes.func.isRequired,
   kickParticipant: PropTypes.func.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default ListWidget;

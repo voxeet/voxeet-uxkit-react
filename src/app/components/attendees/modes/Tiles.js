@@ -19,6 +19,7 @@ class Tiles extends Component {
       isAdminActived,
       currentUser,
       isWebinar,
+      dolbyVoiceEnabled,
     } = this.props;
     let nbParticipants = participants.filter(
       (p) => p.isConnected && p.type == "user"
@@ -42,6 +43,7 @@ class Tiles extends Component {
               isAdmin={isAdmin}
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={isWidgetFullScreenOn}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
             />
           )}
           {participants.map((participant, i) => {
@@ -58,6 +60,7 @@ class Tiles extends Component {
                   isAdmin={isAdmin}
                   toggleMicrophone={toggleMicrophone}
                   isWidgetFullScreenOn={isWidgetFullScreenOn}
+                  dolbyVoiceEnabled={dolbyVoiceEnabled}
                 />
               );
             }
@@ -77,6 +80,7 @@ Tiles.propTypes = {
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default Tiles;

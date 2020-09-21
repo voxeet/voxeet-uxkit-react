@@ -54,6 +54,7 @@ class Speakers extends Component {
       isScreenshare,
       videoPresentationEnabled,
       isVideoPresentation,
+      dolbyVoiceEnabled,
     } = this.props;
     const {
       activeSpeaker,
@@ -84,6 +85,7 @@ class Speakers extends Component {
               currentUser={currentUser}
               isScreenshare={isScreenshare}
               screenShareStream={screenShareStream}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
             />
           )}
         {videoPresentationEnabled && (
@@ -118,6 +120,7 @@ class Speakers extends Component {
             currentUser={currentUser}
             isScreenshare={isScreenshare}
             screenShareStream={screenShareStream}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
           />
         )}
         <div className="SidebarList">
@@ -135,7 +138,7 @@ class Speakers extends Component {
                 />
                 <SpeakerVideo mySelf={true} participant={currentUser} />
                 {isWidgetFullScreenOn && (
-                  <AttendeesParticipantBar participant={currentUser} />
+                  <AttendeesParticipantBar participant={currentUser} dolbyVoiceEnabled={dolbyVoiceEnabled} />
                 )}
               </li>
             )}
@@ -159,6 +162,7 @@ class Speakers extends Component {
                     isWidgetFullScreenOn={isWidgetFullScreenOn}
                     disableForceActiveSpeaker={disableForceActiveSpeaker}
                     forceActiveSpeaker={forceActiveSpeaker}
+                    dolbyVoiceEnabled={dolbyVoiceEnabled}
                   />
                 );
             })}
@@ -190,6 +194,7 @@ Speakers.propTypes = {
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default Speakers;

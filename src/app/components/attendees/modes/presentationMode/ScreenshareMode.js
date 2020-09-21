@@ -24,7 +24,8 @@ class ScreenshareMode extends Component {
       userIdStreamScreenShare,
       currentUser,
       isWebinar,
-      isScreenshare
+      isScreenshare,
+      dolbyVoiceEnabled
     } = this.props;
     return !isScreenshare ? (
       <SpeakerActive
@@ -38,6 +39,7 @@ class ScreenshareMode extends Component {
         isAdmin={isAdmin}
         isAdminActived={isAdminActived}
         mySelf={participants.length >= 1 ? false : true}
+        dolbyVoiceEnabled={dolbyVoiceEnabled}
       />
     ) : (
       <div className="screenshare-current-user">
@@ -54,6 +56,7 @@ class ScreenshareMode extends Component {
           isAdmin={isAdmin}
           isAdminActived={isAdminActived}
           mySelf={false}
+          dolbyVoiceEnabled={dolbyVoiceEnabled}
         />
       </div>
     );
@@ -71,7 +74,8 @@ ScreenshareMode.propTypes = {
   screenShareStream: PropTypes.object,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  isAdminActived: PropTypes.bool.isRequired
+  isAdminActived: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default ScreenshareMode;

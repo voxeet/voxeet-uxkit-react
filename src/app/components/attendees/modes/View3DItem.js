@@ -94,7 +94,8 @@ class View3DItem extends Component {
       toggleMicrophone,
       kickParticipant,
       isAdmin,
-      isAdminActived
+      isAdminActived,
+      dolbyVoiceEnabled
     } = this.props;
     const { posX, posY } = this.state;
     return (
@@ -123,6 +124,7 @@ class View3DItem extends Component {
             participant={participant}
             toggleMicrophone={toggleMicrophone}
             is3D={true}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
           />
         </div>
       </Draggable>
@@ -202,7 +204,8 @@ View3DItem.propTypes = {
   setUserPosition: PropTypes.func.isRequired,
   saveUserPosition: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  kickParticipant: PropTypes.func.isRequired
+  kickParticipant: PropTypes.func.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default View3DItem;
