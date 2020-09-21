@@ -92,6 +92,8 @@ class PreConfigVuMeter extends Component {
             userStream: stream,
             analyser: analyser
           });
+        }).catch((e) => {
+          console.error('Could not create analyzer', e.message);
         });
     }
   }

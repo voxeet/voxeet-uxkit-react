@@ -7,7 +7,8 @@ import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import Cookies from "js-cookie";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
-import AttendeesSettingsVuMeter from "./../preConfig/PreConfigVuMeter";
+import PreConfigVuMeter from "./../preConfig/PreConfigVuMeter";
+import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
 import { strings } from "../../languages/localizedStrings";
 
 @connect(store => {
@@ -25,7 +26,7 @@ class AttendeesSettings extends Component {
       videoDevices: [],
       outputDevices: [],
       testAudio: null,
-      testAudioPlaying: false
+      testAudioPlaying: false,
     };
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
@@ -287,7 +288,9 @@ class AttendeesSettings extends Component {
                       </select>
                     </div>
                     <div className="form-group">
-                      <AttendeesSettingsVuMeter maxLevel={21} />
+                    { (bowser.iphone || bowser.ipod || bowser.ipad) ?
+                      <AttendeesSettingsVuMeter maxLevel={21}/>:
+                      <PreConfigVuMeter maxLevel={21} />}
                     </div>
                   </Fragment>
                 )

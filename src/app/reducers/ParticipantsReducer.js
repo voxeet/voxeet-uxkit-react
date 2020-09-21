@@ -192,7 +192,9 @@ const ParticipantReducer = (state = defaultState, action) => {
       if (VoxeetSDK.session.participant.id === action.payload.userId) {
         if (!action.payload.disableSounds) {
           const audio = new Audio(sounds.conference_join);
-          audio.play();
+          audio.play().catch((e) => {
+            console.error('Could not play the sound', e.message)
+          });
         }
         let currentUser = { ...state.currentUser };
         if (
