@@ -39,7 +39,8 @@ const defaultState = {
   modeSaveBeforePresentation: "tiles",
   displayAttendeesList: false,
   displayAttendeesSettings: false,
-  displayAttendeesChat: false
+  displayAttendeesChat: false,
+  audioTransparentMode: false,
 };
 
 const ControlsReducer = (state = defaultState, action) => {
@@ -191,6 +192,13 @@ const ControlsReducer = (state = defaultState, action) => {
       return {
         ...state,
         videoEnabled: currentStatus
+      };
+    }
+    case Types.TOGGLE_AUDIO_TRANSPARENT_MODE: {
+      const currentStatus = state.audioTransparentMode;
+      return {
+        ...state,
+        audioTransparentMode: !currentStatus
       };
     }
     case Types.TOGGLE_AUDIO: {

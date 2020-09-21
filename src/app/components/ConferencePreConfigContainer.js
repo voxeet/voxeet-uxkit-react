@@ -27,6 +27,7 @@ class ConferencePreConfigContainer extends Component {
       outputDevices: [],
       userStream: null,
       videoEnabled: this.props.constraints.video,
+      audioTransparentMode: false,
       audioEnabled: true,
       error: null,
       level: 0
@@ -38,6 +39,7 @@ class ConferencePreConfigContainer extends Component {
     this.handleJoin = this.handleJoin.bind(this);
     this.releaseStream = this.releaseStream.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
+    this.handleAudioTransparentModeChange = this.handleAudioTransparentModeChange.bind(this);
   }
 
   componentDidMount() {
@@ -68,7 +70,8 @@ class ConferencePreConfigContainer extends Component {
       videoDeviceSelected: this.state.videoDeviceSelected,
       outputDeviceSelected: this.state.outputDeviceSelected,
       videoEnabled: this.state.videoEnabled,
-      audioEnabled: this.state.audioEnabled
+      audioEnabled: this.state.audioEnabled,
+      audioTransparentMode: this.state.audioTransparentMode,
     };
     handleJoin(payload);
   }
@@ -469,6 +472,12 @@ class ConferencePreConfigContainer extends Component {
 
   }
 
+  handleAudioTransparentModeChange() {
+    this.setState({
+      audioTransparentMode: !this.state.audioTransparentMode
+    });
+  }
+
   renderLoading() {
     return React.createElement(this.props.loadingScreen, {
       logo: this.props.logo
@@ -476,7 +485,7 @@ class ConferencePreConfigContainer extends Component {
   }
 
   render() {
-    const { handleJoin, logo } = this.props;
+    const { handleJoin, logo, dolbyVoiceEnabled } = this.props;
     const {
       level,
       videoEnabled,
@@ -596,8 +605,9 @@ class ConferencePreConfigContainer extends Component {
                                 </div>
                               )}
                             </div>
-                            <div className="form-group group-enable">
-                              <div>
+                            <div className='group-switch'>
+                            <div className="group-enable">
+                              <div className='enable-item'>
                                 <input
                                   id="videoEnabled"
                                   name="videoEnabled"
@@ -609,6 +619,21 @@ class ConferencePreConfigContainer extends Component {
                                   {strings.video}
                                 </label>
                               </div>
+                            </div>
+                            {dolbyVoiceEnabled && <div className="group-enable">
+                              <div className='enable-item'>
+                                <input
+                                    id="audioTransparentMode"
+                                    name="audioTransparentMode"
+                                    type="checkbox"
+                                    onChange={this.handleAudioTransparentModeChange}
+                                    checked={this.state.audioTransparentMode}
+                                />
+                                <label htmlFor="audioTransparentMode">
+                                  {strings.audioTransparentMode}
+                                </label>
+                              </div>
+                            </div>}
                             </div>
                             <div>
                               <button
@@ -651,7 +676,8 @@ ConferencePreConfigContainer.propTypes = {
   handleJoin: PropTypes.func.isRequired,
   constraints: PropTypes.object.isRequired,
   loadingScreen: PropTypes.func,
-  logo: PropTypes.string
+  logo: PropTypes.string,
+  dolbyVoiceEnabled: PropTypes.bool
 };
 
 export default ConferencePreConfigContainer;

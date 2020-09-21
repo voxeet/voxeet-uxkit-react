@@ -6,6 +6,7 @@ import ReactTooltip from "react-tooltip";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import Cookies from "js-cookie";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
+import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import PreConfigVuMeter from "./../preConfig/PreConfigVuMeter";
 import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
@@ -32,6 +33,7 @@ class AttendeesSettings extends Component {
     this.setVideoDevice = this.setVideoDevice.bind(this);
     this.setOutputDevice = this.setOutputDevice.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
+    this.onAudioTransparentModeChange = this.onAudioTransparentModeChange.bind(this);
   }
 
   componentDidUpdate(nextProps, nextState) {
@@ -68,6 +70,11 @@ class AttendeesSettings extends Component {
 
   onDeviceChange() {
     this.initDevices();
+  }
+
+  onAudioTransparentModeChange() {
+    const { audioTransparentMode } = this.props.controlsStore;
+    this.props.dispatch(ConferenceActions.toggleAudioTransparentMode(!audioTransparentMode));
   }
 
   initDevices() {
@@ -213,7 +220,8 @@ class AttendeesSettings extends Component {
   }
 
   render() {
-    const { attendeesSettingsOpened, isListener } = this.props;
+    const { audioTransparentMode } = this.props.controlsStore;
+    const { attendeesSettingsOpened, isListener, dolbyVoiceEnabled } = this.props;
     const {
       currentAudioDevice,
       currentVideoDevice,
@@ -292,6 +300,20 @@ class AttendeesSettings extends Component {
                       <AttendeesSettingsVuMeter maxLevel={21}/>:
                       <PreConfigVuMeter maxLevel={21} />}
                     </div>
+                  { dolbyVoiceEnabled && <div className="form-group switch-enable">
+                    <div className='switch-mode'>
+                      <input
+                          id="audioTransparentMode"
+                          name="audioTransparentMode"
+                          type="checkbox"
+                          onChange={this.onAudioTransparentModeChange}
+                          checked={audioTransparentMode}
+                      />
+                      <label htmlFor="audioTransparentMode">
+                        {strings.audioTransparentMode}
+                      </label>
+                    </div>
+                  </div>}
                   </Fragment>
                 )
               }
@@ -310,7 +332,8 @@ class AttendeesSettings extends Component {
 AttendeesSettings.propTypes = {
   videoEnabled: PropTypes.bool.isRequired,
   isListener: PropTypes.bool.isRequired,
-  attendeesSettingsOpened: PropTypes.bool.isRequired
+  attendeesSettingsOpened: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool
 };
 
 export default AttendeesSettings;

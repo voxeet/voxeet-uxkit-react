@@ -151,6 +151,7 @@ class Attendees extends Component {
       attendeesSettingsOpened,
       conferenceId,
       isVideoPresentation,
+      dolbyVoiceEnabled,
     } = this.props;
     const {
       participants,
@@ -208,6 +209,7 @@ class Attendees extends Component {
             videoEnabled={videoEnabled}
             isListener={currentUser.isListener}
             attendeesSettingsOpened={this.props.attendeesSettingsOpened}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
           />
         )}
 
@@ -349,6 +351,7 @@ Attendees.propTypes = {
   attendeesWaiting: PropTypes.func,
   attendeesChat: PropTypes.func,
   attendeesList: PropTypes.func,
+  dolbyVoiceEnabled: PropTypes.func,
 };
 
 export default Attendees;
