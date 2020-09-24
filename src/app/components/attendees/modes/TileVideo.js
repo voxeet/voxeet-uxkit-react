@@ -21,6 +21,7 @@ class TileVideo extends Component {
       kickParticipant,
       isAdminActived,
       mySelf,
+      isBackCamera,
       dolbyVoiceEnabled
     } = this.props;
     const photoUrl = participant.avatarUrl || userPlaceholder;
@@ -39,7 +40,7 @@ class TileVideo extends Component {
         )}
         {participant.stream && participant.stream.active &&
           participant.stream.getVideoTracks().length > 0? (
-          <div className={mySelf ? "stream-media myself" : "stream-media"}>
+          <div className={(mySelf && !isBackCamera) ? "stream-media myself" : "stream-media"}>
             <AttendeesParticipantVideo stream={participant.stream} />
           </div>
         ) : (
@@ -56,7 +57,8 @@ class TileVideo extends Component {
 }
 
 TileVideo.defaultProps = {
-  mySelf: false
+  mySelf: false,
+  isBackCamera: false
 };
 
 TileVideo.propTypes = {
@@ -67,7 +69,8 @@ TileVideo.propTypes = {
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
-  dolbyVoiceEnabled: PropTypes.bool
+  dolbyVoiceEnabled: PropTypes.bool,
+  isBackCamera: PropTypes.bool,
 };
 
 export default TileVideo;
