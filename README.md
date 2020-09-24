@@ -9,6 +9,14 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 2.1.5
+
+#### Bug fixes
+
+- Fixed an issue with ignoring logo props during loading.
+- Added translation for an active speaker overlay. 
+- Improved the file presentation UI, which introduces cropped images and removal of a grey bar in the thumbnails area.
+
 ### 2.1.4
 
 #### Bug fixes
