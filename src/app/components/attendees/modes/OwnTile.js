@@ -44,7 +44,7 @@ class OwnTile extends Component {
       dolbyVoiceEnabled
     } = this.props;
     const { currentVideoDevice } = this.props.inputManager;
-    let backCamera = true;
+    let backCamera = false;
 
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
       navigator.mediaDevices
