@@ -364,6 +364,15 @@ export class Actions {
                     );
                     dispatch(ControlsActions.toggleWidget());
                     dispatch(ParticipantActions.triggerHandleOnConnect());
+                    if (VoxeetSDK.recording.current) {
+                      dispatch(ControlsActions.lockRecording());
+                      dispatch(
+                          OnBoardingMessageActions.onBoardingDisplay(
+                              strings.recordConferenceStart,
+                              2000
+                          )
+                      );
+                    }
                   });
               } else {
                 return VoxeetSDK.conference
@@ -394,6 +403,15 @@ export class Actions {
                     );
                     dispatch(ControlsActions.toggleWidget());
                     dispatch(ParticipantActions.triggerHandleOnConnect());
+                    if (VoxeetSDK.recording.current) {
+                      dispatch(ControlsActions.lockRecording());
+                      dispatch(
+                          OnBoardingMessageActions.onBoardingDisplay(
+                              strings.recordConferenceStart,
+                              2000
+                          )
+                      );
+                    }
                   });
               }
             });
@@ -444,7 +462,7 @@ export class Actions {
                       dispatch(
                         OnBoardingMessageActions.onBoardingDisplay(
                           strings.recordConferenceStart,
-                          1000
+                          2000
                         )
                       );
                     } else if (autoRecording) {
@@ -551,7 +569,7 @@ export class Actions {
                     dispatch(
                       OnBoardingMessageActions.onBoardingDisplay(
                         strings.recordConferenceStart,
-                        1000
+                        2000
                       )
                     );
                   } else if (autoRecording) {
