@@ -402,7 +402,8 @@ export class Actions {
                       ConferenceActions._conferenceJoined(res.id, pinCode, res.params.dolbyVoice)
                     );
                     dispatch(ControlsActions.toggleWidget());
-                    dispatch(ParticipantActions.triggerHandleOnConnect());if (VoxeetSDK.recording.current) {
+                    dispatch(ParticipantActions.triggerHandleOnConnect());
+                    if (VoxeetSDK.recording.current) {
                       dispatch(ControlsActions.lockRecording());
                       dispatch(
                           OnBoardingMessageActions.onBoardingDisplay(
