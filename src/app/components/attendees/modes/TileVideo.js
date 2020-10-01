@@ -40,7 +40,7 @@ class TileVideo extends Component {
         )}
         {participant.stream && participant.stream.active &&
           participant.stream.getVideoTracks().length > 0? (
-          <div className={(mySelf && !isBackCamera) ? "stream-media myself" : "stream-media"}>
+          <div className={(mySelf && !isBackCamera) ? "stream-media myself" : "stream-media myself-not-mirrored"}>
             <AttendeesParticipantVideo stream={participant.stream} />
           </div>
         ) : (

@@ -24,6 +24,7 @@ class OwnTile extends Component {
       (checker != null && !nextProps.participant.stream.active) ||
       (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
       (checker == null && nextProps.participant.stream) ||
+      (this.props.inputManager.isBackCamera != nextProps.inputManager.isBackCamera) ||
       (this.props.mySelf && this.props.participant.name == null)
     ) {
       return true;
@@ -43,25 +44,7 @@ class OwnTile extends Component {
       mySelf,
       dolbyVoiceEnabled
     } = this.props;
-    const { currentVideoDevice } = this.props.inputManager;
-    let backCamera = false;
-
-    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-      navigator.mediaDevices
-        .enumerateDevices()
-        .then(function (sources) {
-          /* GET SOURCES */
-          sources.forEach(source => {
-            if (source.kind === "videoinput" && source.deviceId == currentVideoDevice) {
-                console.log(source)
-                if (source.facingMode == "environment" || source.label.indexOf("facing back") >= 0) {
-                  backCamera = true;
-                }
-            }
-          })
-        })
-    }
-
+    const { currentVideoDevice, isBackCamera } = this.props.inputManager;
     return (
       <div
         className={
@@ -82,7 +65,7 @@ class OwnTile extends Component {
         }
       >
         <TileVideo
-          isBackCamera={backCamera}
+          isBackCamera={isBackCamera}
           mySelf={mySelf}
           kickParticipant={kickParticipant}
           isAdminActived={isAdminActived}
