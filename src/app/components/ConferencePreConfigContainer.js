@@ -7,7 +7,6 @@ import Cookies from "js-cookie";
 import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
-import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
 
 @connect(store => {
   return {
@@ -175,10 +174,7 @@ class ConferencePreConfigContainer extends Component {
         video: { deviceId: { exact: deviceId } }
       })
       .then(stream => {
-        getVideoDeviceName(deviceId)
-        .then((isBackCamera) => {
-          this.props.dispatch(InputManagerActions.inputVideoChange(deviceId, isBackCamera))
-        })
+        this.props.dispatch(InputManagerActions.inputVideoChange(deviceId));
         this.setState({
           videoDeviceSelected: deviceId,
           userStream: stream,
@@ -317,19 +313,21 @@ class ConferencePreConfigContainer extends Component {
                         secure: true,
                         sameSite: 'none'
                       });
-                      getVideoDeviceName(selected_device.deviceId)
-                      .then((isBackCamera) => {
-                        this.props.dispatch(InputManagerActions.inputVideoChange(selected_device.deviceId, isBackCamera))
-                      })
+                      this.props.dispatch(
+                        InputManagerActions.inputVideoChange(
+                            selected_device.deviceId
+                        )
+                      );
                       this.setState({
                         videoDevices: resultVideo,
                         videoDeviceSelected: selected_device.deviceId
                       });
                     } else {
-                      getVideoDeviceName(Cookies.get("camera"))
-                      .then((isBackCamera) => {
-                        this.props.dispatch(InputManagerActions.inputVideoChange(Cookies.get("camera"), isBackCamera))
-                      })
+                      this.props.dispatch(
+                        InputManagerActions.inputVideoChange(
+                          Cookies.get("camera")
+                        )
+                      );
                       this.setState({
                         videoDevices: resultVideo,
                         videoDeviceSelected: Cookies.get("camera")

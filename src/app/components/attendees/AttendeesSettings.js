@@ -11,7 +11,6 @@ import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import PreConfigVuMeter from "./../preConfig/PreConfigVuMeter";
 import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
 import { strings } from "../../languages/localizedStrings";
-import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
 
 @connect(store => {
   return {
@@ -161,10 +160,9 @@ class AttendeesSettings extends Component {
             secure: true,
             sameSite: 'none'
           });
-          getVideoDeviceName(selected_device.deviceId)
-          .then((isBackCamera) => {
-            this.props.dispatch(InputManagerActions.inputVideoChange(selected_device.deviceId, isBackCamera))
-          })
+          this.props.dispatch(
+              InputManagerActions.inputVideoChange(selected_device.deviceId)
+          );
         }
       }
       this.setState({
@@ -207,7 +205,6 @@ class AttendeesSettings extends Component {
 
   setVideoDevice(e) {
     const { videoEnabled } = this.props;
-    const deviceId = e.target.value;
     if (videoEnabled) {
       VoxeetSDK.mediaDevice.selectVideoInput(e.target.value);
     }
@@ -219,10 +216,7 @@ class AttendeesSettings extends Component {
       secure: true,
       sameSite: 'none'
     });
-    getVideoDeviceName(deviceId)
-    .then((isBackCamera, currentVideoDevice) => {
-      this.props.dispatch(InputManagerActions.inputVideoChange(deviceId, isBackCamera))
-    })
+    this.props.dispatch(InputManagerActions.inputVideoChange(e.target.value));
   }
 
   render() {

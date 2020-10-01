@@ -12,10 +12,10 @@ export class Actions {
     };
   }
 
-  static inputVideoChange(deviceId, isBackCamera) {
+  static inputVideoChange(deviceId) {
     return {
       type: Types.INPUT_VIDEO_CHANGE,
-      payload: { deviceId, isBackCamera }
+      payload: { deviceId }
     };
   }
 
