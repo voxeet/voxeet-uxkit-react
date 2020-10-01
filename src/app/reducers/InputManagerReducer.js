@@ -3,7 +3,8 @@ import { Types } from "../actions/InputManagerActions";
 const defaultState = {
   currentAudioDevice: "",
   currentOutputDevice: "",
-  currentVideoDevice: ""
+  currentVideoDevice: "",
+  isBackCamera: false,
 };
 
 const InputManagerReducer = (state = defaultState, action) => {
@@ -21,6 +22,7 @@ const InputManagerReducer = (state = defaultState, action) => {
     case Types.INPUT_VIDEO_CHANGE:
       return {
         ...state,
+        isBackCamera: action.payload.isBackCamera,
         currentVideoDevice: action.payload.deviceId
       };
     default:

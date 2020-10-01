@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import Tile from "./Tile";
+import OwnTile from "./OwnTile";
 import AttendeesWaitingWebinarListener from "../AttendeesWaitingWebinarListener";
 
 class Tiles extends Component {
@@ -35,7 +36,7 @@ class Tiles extends Component {
         <div className={"tiles-list list" + nbParticipants}>
           {((!isWebinar && !currentUser.isListener) ||
             (isWebinar && isAdmin)) && (
-            <Tile
+            <OwnTile
               participant={currentUser}
               isAdminActived={isAdminActived}
               mySelf={true}

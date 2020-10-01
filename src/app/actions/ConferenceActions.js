@@ -14,6 +14,7 @@ import { Actions as OnBoardingMessageActions } from "./OnBoardingMessageActions"
 import { Actions as OnBoardingMessageWithActionActions } from "./OnBoardingMessageWithActionActions";
 import { Actions as TimerActions } from "./TimerActions";
 import { strings } from "../languages/localizedStrings.js";
+import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
 import { getOrganizedPosition, getRelativePosition } from "./../libs/position";
 import {
   STATUS_CONNECTING,
@@ -182,7 +183,10 @@ export class Actions {
             secure: true,
             sameSite: "none",
           });
-          dispatch(InputManagerActions.inputVideoChange(selected_device.deviceId));
+          getVideoDeviceName(selected_device.deviceId)
+          .then((isBackCamera) => {
+            dispatch(InputManagerActions.inputVideoChange(selected_device.deviceId, isBackCamera))
+          })
           if (constraints.video) {
             if (videoRatio != null) {
               constraints.video = {
@@ -210,7 +214,10 @@ export class Actions {
               };
             }
           }
-          dispatch(InputManagerActions.inputVideoChange(Cookies.get("camera")));
+          getVideoDeviceName(Cookies.get("camera"))
+          .then((isBackCamera) => {
+            dispatch(InputManagerActions.inputVideoChange(Cookies.get("camera"), isBackCamera))
+          })
         }
       }
     });
