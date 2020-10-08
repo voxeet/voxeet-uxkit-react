@@ -23,7 +23,7 @@ class AttendeesParticipantVideo extends Component {
 
   updateStream(props) {
     const { stream } = props;
-    navigator.attachMediaStream(this.video, stream);
+    navigator.attachMediaStream(this.video, new MediaStream(stream.getVideoTracks()));
   }
 
   toggleScreenShareFullScreen() {
