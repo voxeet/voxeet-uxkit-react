@@ -55,6 +55,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
 
       if (index === -1) return state;
       participants[index].status = action.payload.status;
+      participants[index].type = action.payload.type;
       if (
         action.payload.status == "Connected" ||
         action.payload.status == "Connecting"
@@ -113,6 +114,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
         return { ...state, participants: [] };
 
       if (index === -1) return state;
+      participants[index].stream = null;
       participants[index].isConnected = false;
       participants[index].status = STATUS_LEFT;
 

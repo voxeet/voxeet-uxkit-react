@@ -997,33 +997,34 @@ export class Actions {
     };
   }
 
-  static checkIfUpdateStatusUser(userId, status) {
+  static checkIfUpdateStatusUser(user) {
     return (dispatch, getState) => {
       const {
         voxeet: { participants },
       } = getState();
       const index = participants.participants.findIndex(
-        (p) => p.participant_id === userId
+        (p) => p.participant_id === user.id
       );
       if (index != -1) {
         const {
           voxeet: { participantsWaiting },
         } = getState();
         const index = participantsWaiting.participants.findIndex(
-          (p) => p.participant_id === userId
+          (p) => p.participant_id === user.id
         );
         dispatch(
           ParticipantActions.onParticipantStatusUpdated(
-            userId,
+            user.id,
             participantsWaiting.participants[index],
-            status
+            user.status
           )
         );
       }
       dispatch(
         ParticipantWaitingActions.onParticipantWaitingStatusUpdated(
-          userId,
-          status
+          user.id,
+          user.status,
+          user.type
         )
       );
     };
@@ -1183,7 +1184,6 @@ export class Actions {
       });
 
       VoxeetSDK.conference.on("participantUpdated", (user) => {
-
         // if (user.status === "Left") {
         //   dispatch(ParticipantWaitingActions.onParticipantWaitingLeft(user.id));
         //   dispatch(ParticipantActions.onParticipantLeft(user.id));
@@ -1191,10 +1191,11 @@ export class Actions {
         dispatch(
           ParticipantWaitingActions.onParticipantWaitingStatusUpdated(
             user.id,
-            user.status
+            user.status,
+            user.type
           )
         );
-        dispatch(this.checkIfUpdateStatusUser(user.id, user.status));
+        dispatch(this.checkIfUpdateStatusUser(user));
       });
 
       VoxeetSDK.conference.on("streamAdded", (user, stream) => {
