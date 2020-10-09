@@ -19,6 +19,7 @@ import AttendeesList from "./attendees/AttendeesList";
 import AttendeesChat from "./attendees/AttendeesChat";
 import LoadingScreen from "./attendees/LoadingScreen";
 import { setPstnNumbers } from "../constants/PinCode";
+import {isMobile} from "../libs/browserDetection";
 
 @connect((state) => {
   return {
@@ -275,9 +276,7 @@ class ConferenceRoom extends Component {
     let doPreConfig =
         !isListener &&
         !bowser.msie &&
-        !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-            navigator.userAgent
-        ) &&
+        !isMobile() &&
         (!isWebinar || (isWebinar && isAdmin))
             ? (preConfig)
             : false;

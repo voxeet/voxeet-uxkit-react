@@ -16,6 +16,7 @@ import VideoShareOff from "../../../../static/images/icons/icon-video-hover.svg"
 import WindowShareOn from "../../../../static/images/icons/icon-window.svg";
 import WindowShareOff from "../../../../static/images/icons/icon-window-hover.svg";
 import dolbyLogo from "../../../../static/images/DDLoader.gif";
+import { isMobile } from "../../../libs/browserDetection";
 
 @connect(store => {
   return {
@@ -29,9 +30,7 @@ class ToggleScreenShareButton extends Component {
       opened: false,
       contentUrlVideoPresentation: "",
       openedVideoPresentation: false,
-      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      ),
+      isMobile: isMobile(),
       hover_screen: false,
       hover_window: false,
       hover_file: false,

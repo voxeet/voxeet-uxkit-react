@@ -5,6 +5,7 @@ import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
 import ListOn from "../../../../static/images/icons/btn-participant-on.svg";
 import ListOff from "../../../../static/images/icons/btn-participant-off.svg";
+import { isMobile } from "../../../libs/browserDetection";
 
 @connect((store) => {
   return {
@@ -16,9 +17,7 @@ class ToggleAttendeesListButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      ),
+      isMobile: isMobile(),
       hover: false,
     };
   }

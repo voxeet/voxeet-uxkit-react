@@ -12,6 +12,7 @@ import PreConfigVuMeter from "./../preConfig/PreConfigVuMeter";
 import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
+import { isIOS } from "./../../libs/browserDetection";
 
 @connect(store => {
   return {
@@ -36,8 +37,7 @@ class AttendeesSettings extends Component {
     this.onDeviceChange = this.onDeviceChange.bind(this);
     this.onAudioTransparentModeChange = this.onAudioTransparentModeChange.bind(this);
 
-    this.isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
-        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+    this.isIOS = isIOS();
   }
 
   componentDidUpdate(nextProps, nextState) {

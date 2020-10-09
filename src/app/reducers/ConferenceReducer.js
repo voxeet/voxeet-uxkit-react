@@ -55,7 +55,9 @@ const ConferenceReducer = (state = defaultState, action) => {
     case Types.CONFERENCE_LEAVE: {
       if (!action.payload.disableSounds) {
         const audio = new Audio(sounds.conference_exit);
-        audio.play();
+        audio.play().catch((e) => {
+          console.error('Could not play the sound', e.message)
+        });;
       }
       return {
         ...state,
