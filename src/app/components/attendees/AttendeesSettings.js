@@ -35,6 +35,9 @@ class AttendeesSettings extends Component {
     this.setOutputDevice = this.setOutputDevice.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
     this.onAudioTransparentModeChange = this.onAudioTransparentModeChange.bind(this);
+
+    this.isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
   }
 
   componentDidUpdate(nextProps, nextState) {
@@ -302,7 +305,7 @@ class AttendeesSettings extends Component {
                       </select>
                     </div>
                     <div className="form-group">
-                    { (bowser.iphone || bowser.ipod || bowser.ipad) ?
+                    { (this.isIOS) ?
                       <AttendeesSettingsVuMeter maxLevel={21}/>:
                       <PreConfigVuMeter maxLevel={21} />}
                     </div>
