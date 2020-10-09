@@ -4,14 +4,13 @@ import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
 import MuteOn from "../../../../static/images/icons/btn-mute-on.svg";
 import MuteOff from "../../../../static/images/icons/btn-mute-off.svg";
+import { isMobile } from "../../../libs/browserDetection";
 
 class ToggleMicrophoneButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      ),
+      isMobile: isMobile(),
       hover: false
     };
   }

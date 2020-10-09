@@ -6,15 +6,14 @@ import { strings } from "../../../languages/localizedStrings";
 import PhoneOff from "../../../../static/images/icons/btn-dialin-off.svg";
 import PhoneOn from "../../../../static/images/icons/btn-dialin-on.svg";
 import { pinCode } from "../../../constants/PinCode";
+import { isMobile } from "../../../libs/browserDetection";
 
 class TogglePSTN extends Component {
   constructor(props) {
     super(props);
     this.state = {
       opened: false,
-      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      ),
+      isMobile: isMobile(),
       hover: false
     };
     this.togglePopUp = this.togglePopUp.bind(this);

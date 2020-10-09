@@ -5,6 +5,7 @@ import { strings } from "../../../languages/localizedStrings";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import ChatOn from "../../../../static/images/icons/btn-chat-on.svg";
 import ChatOff from "../../../../static/images/icons/btn-chat-off.svg";
+import { isMobile } from "../../../libs/browserDetection";
 
 @connect(store => {
   return {
@@ -15,9 +16,7 @@ class ToggleAttendeesChatButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      ),
+      isMobile: isMobile(),
       hover: false
     };
   }

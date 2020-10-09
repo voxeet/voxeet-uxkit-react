@@ -4,14 +4,13 @@ import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
 import RecordingOn from "../../../../static/images/icons/btn-record-on.svg";
 import RecordingOff from "../../../../static/images/icons/btn-record-off.svg";
+import { isMobile } from "../../../libs/browserDetection";
 
 class ToggleRecordingButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      ),
+      isMobile: isMobile(),
       hover: false
     };
   }

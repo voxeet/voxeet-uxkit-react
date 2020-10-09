@@ -15,6 +15,7 @@ import { Actions as OnBoardingMessageWithActionActions } from "./OnBoardingMessa
 import { Actions as TimerActions } from "./TimerActions";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
+import { isIOS } from "./../libs/browserDetection";
 import { getOrganizedPosition, getRelativePosition } from "./../libs/position";
 import {
   STATUS_CONNECTING,
@@ -389,7 +390,7 @@ export class Actions {
                   })
                   .then(function (res) {
                     if (
-                      navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+                      isIOS() &&
                       navigator.userAgent.match(/AppleWebKit/)
                     ) {
                       navigator.mediaDevices.getUserMedia({

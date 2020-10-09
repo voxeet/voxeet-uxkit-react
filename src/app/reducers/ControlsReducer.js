@@ -148,7 +148,9 @@ const ControlsReducer = (state = defaultState, action) => {
     case Types.LOCK_RECORDING: {
       if (!state.disableSounds) {
         const audio = new Audio(sounds.call_recorded);
-        audio.play();
+        audio.play().catch((e) => {
+          console.error('Could not play the sound', e.message)
+        });;
       }
       return {
         ...state,
@@ -180,7 +182,9 @@ const ControlsReducer = (state = defaultState, action) => {
       const currentStatus = state.isMuted;
       if (!state.disableSounds) {
         const audio = new Audio(!currentStatus ? sounds.mute_off : sounds.mute_on);
-        audio.play();
+        audio.play().catch((e) => {
+          console.error('Could not play the sound', e.message)
+        });;
       }
       return {
         ...state,
@@ -220,7 +224,9 @@ const ControlsReducer = (state = defaultState, action) => {
       const currentStatus = state.isRecording;
       if (!currentStatus && !state.disableSounds) {
         const audio = new Audio(sounds.call_recorded);
-        audio.play();
+        audio.play().catch((e) => {
+          console.error('Could not play the sound', e.message)
+        });;
       }
       return {
         ...state,
