@@ -168,7 +168,7 @@ const ParticipantReducer = (state = defaultState, action) => {
             type: userInfo.type,
             metadata: userInfo.metadata,
             isAdmin: userInfo.metadata.admin === "true",
-            isConnected: false,
+            isConnected: userInfo.status == "Connected" ? true : false,
             status: userInfo.status,
             isMuted: false,
             x: -1,
@@ -371,7 +371,7 @@ const ParticipantReducer = (state = defaultState, action) => {
           participants[index].name = userInfo.name;
           participants[index].type = userInfo.type;
           participants[index].isConnected =
-            status == "Connected" || status == "Connecting" ? true : false;
+            status == "Connected" ? true : false;
           participants[index].avatarUrl = userInfo.avatarUrl;
           participants[index].metadata = userInfo.metadata;
           participants[index].status = status;
