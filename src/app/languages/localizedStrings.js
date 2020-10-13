@@ -29,6 +29,21 @@ export const strings = new LocalizedStrings({
     descAlreadyStartedWarning: '',
     titleAlreadyStoppedWarning:'Media already stopped',
     descAlreadyStoppedWarning: '',
+    titleNetworkConnectionError:'Network connection error',
+    titleSystemFailure:'System Failure',
+    titleCallSetupError:'Call Setup Error',
+    titleProgramError:'Program Error',
+    titleSystemError:'System Error',
+    descPeerConnectionFailedError: 'Your computer cannot connect to the communications platform, check your network setup, and try again. ' +
+        'If the problem persists, contact your app provider for help.',
+    descPeerConnectionDisconnectedError: 'There was a temporary network glitch that may have affected your call, if the problem persists please disconnect and rejoin.',
+    descPeerNotFoundError: 'Connection to server could not be established. Please check your network connection.',
+    descRemoteDescriptionError: 'The system was unable to set up your call due to a call negotiation failure. ' +
+        'If you are using a mobile device, it might be a model that is not supported. ' +
+        'Contact your app provider for help.',
+    descCreateAnswerError: 'The system was unable to set up your call due to a call negotiation failure. Contact your app provider for help.',
+    descParticipantNotFoundError: 'The system was unable to find the participant in your call. ' +
+        'Contact your app provider for help.',
     titleDefaultError:'Failed accessing microphone or camera',
     descDefaultError: 'Please check is device connected properly or use the settings menu to try to select another device.',
     browerNotSupported: "This browser is currently not supported.",

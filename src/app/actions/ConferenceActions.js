@@ -1252,7 +1252,6 @@ export class Actions {
         switch(data.name) {
           case 'NotAllowedError':
           case 'OverconstrainedError':
-          case 'NotFoundError':
           case 'AbortError':
           case 'NotReadableError':
           case 'SecurityError':
@@ -1266,9 +1265,62 @@ export class Actions {
             description = null;
             isError = true;
             break;
+          case 'PeerConnectionFailedError':
+            title = strings.titleNetworkConnectionError;
+            description = strings.descPeerConnectionFailedError;
+            isError = true;
+            break;
+          case 'PeerConnectionDisconnectedError':
+            title = strings.titleNetworkConnectionError;
+            description = strings.descPeerConnectionDisconnectedError;
+            isError = true;
+            break;
+          case 'RemoteDescriptionError':
+            title = strings.titleCallSetupError;
+            description = strings.descRemoteDescriptionError;
+            isError = true;
+            break;
+          case 'CreateAnswerError':
+            title = strings.titleCallSetupError;
+            description = strings.descCreateAnswerError;
+            isError = true;
+            break;
+          case 'ConferenceUninitializedError':
+            title = strings.titleCallSetupError;
+            description = strings.descPeerNotFoundError;
+            isError = true;
+            break;
+          // case 'PeerDisconnectedError':
+          // case 'PeerNotFoundError':
+            // case 'ParticipantNotFoundError':
+          case 'NotFoundError':
+            if(data instanceof PeerNotFoundError) {
+              title = strings.titleSystemFailure;
+              description = strings.descPeerNotFoundError;
+            } else if(data instanceof ParticipantNotFoundError) {
+              title = strings.titleSystemError;
+              description = string.descParticipantNotFoundError;
+            } else if(data instanceof MediaStreamError) {
+              title = strings.titleNotFoundError;
+              description = string.descNotFoundError;
+            }
+            isError = true;
+            break;
+          case 'ChromeExtensionNotInstalled':
+            title = strings.noExtensionAvailable;
+            description = null;
+            isError = true;
+            break;
+          case 'BrowserNotSupportedError':
+            title = strings.browerNotSupported;
+            description = null;
+            isError = true;
+            break;
           default:
-            title = strings[`titleDefaultError`];
-            description = strings[`descDefaultError`];
+            // title = strings[`titleDefaultError`];
+            // description = strings[`descDefaultError`];
+            title = null;
+            description = null;
             isError = true;
         }
         if(description) {
@@ -1280,7 +1332,7 @@ export class Actions {
                 isError
               )
           );
-        } else {
+        } else if(title)  {
           dispatch(
               OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
                 title,
