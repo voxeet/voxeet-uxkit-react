@@ -30,7 +30,6 @@ export const strings = new LocalizedStrings({
     titleAlreadyStoppedWarning:'Media already stopped',
     descAlreadyStoppedWarning: '',
     titleNetworkConnectionError:'Network connection error',
-    titleSystemFailure:'System Failure',
     titleCallSetupError:'Call Setup Error',
     titleProgramError:'Program Error',
     titleSystemError:'System Error',

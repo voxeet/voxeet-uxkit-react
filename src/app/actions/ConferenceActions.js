@@ -1295,7 +1295,7 @@ export class Actions {
             // case 'ParticipantNotFoundError':
           case 'NotFoundError':
             if(data instanceof PeerNotFoundError) {
-              title = strings.titleSystemFailure;
+              title = strings.titleSystemError;
               description = strings.descPeerNotFoundError;
             } else if(data instanceof ParticipantNotFoundError) {
               title = strings.titleSystemError;
