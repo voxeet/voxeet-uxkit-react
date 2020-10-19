@@ -45,7 +45,7 @@ class ToggleVideoButton extends Component {
         this.setState({local:null}, () => {
           this.clickTimer = null;
         });
-      }, 1000)
+      }, TIMEOUT)
       this.setState({local:videoEnabled}, toggle); // Set current video state
     }
   }
