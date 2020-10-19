@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import Tile from "./Tile";
 import OwnTile from "./OwnTile";
-import AttendeesWaitingWebinarListener from "../AttendeesWaitingWebinarListener";
 
 class Tiles extends Component {
   constructor(props) {
@@ -22,11 +21,26 @@ class Tiles extends Component {
       isWebinar,
       dolbyVoiceEnabled,
     } = this.props;
-    let nbParticipants = participants.filter(
+    let videoParticipants = participants.filter(
+        (p) => p.isConnected && p.type == "user" &&
+            ((p.stream !== null) &&
+                (p.stream.active) &&
+                (p.stream.getVideoTracks().length > 0)
+            )
+    );
+    let hasVideoParticipants = videoParticipants && videoParticipants.length>0;
+    let IHaveVideo = (!currentUser || (currentUser.stream && currentUser.stream.getVideoTracks().length > 0));
+    let tilesParticipants = (hasVideoParticipants || IHaveVideo)? videoParticipants : participants;
+    let showOwnTile = ((!isWebinar && !currentUser.isListener) ||
+        (isWebinar && isAdmin)) &&
+        (IHaveVideo || !hasVideoParticipants);
+
+    let nbParticipants = tilesParticipants.filter(
       (p) => p.isConnected && p.type == "user"
     ).length;
-    if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
+    if (showOwnTile)
       nbParticipants += 1;
+
     let count = -1;
     return (
       <div
@@ -34,8 +48,7 @@ class Tiles extends Component {
         data-number-user={nbParticipants <= 16 ? nbParticipants : 16}
       >
         <div className={"tiles-list list" + nbParticipants}>
-          {((!isWebinar && !currentUser.isListener) ||
-            (isWebinar && isAdmin)) && (
+          { showOwnTile && (
             <OwnTile
               participant={currentUser}
               isAdminActived={isAdminActived}
@@ -47,7 +60,7 @@ class Tiles extends Component {
               dolbyVoiceEnabled={dolbyVoiceEnabled}
             />
           )}
-          {participants.map((participant, i) => {
+          {tilesParticipants.map((participant, i) => {
             if (participant.isConnected && participant.type == "user") {
               count = count + 1;
               return (
