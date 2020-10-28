@@ -30,8 +30,8 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
             type: userInfo.type,
             metadata: userInfo.metadata,
             isAdmin: userInfo.metadata.admin === "true",
-            isConnected: userInfo.status == "Connected" ? true : false,
-            status: userInfo.status,
+            isConnected: false,
+            status: "Connecting",
             isMuted: false,
             x: -1,
             y: -1,
@@ -56,7 +56,8 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
       if (index === -1) return state;
       participants[index].status = action.payload.status;
       participants[index].type = action.payload.type;
-      participants[index].isConnected = action.payload.status == "Connected" ? true : false;
+      participants[index].isConnected =
+        action.payload.status == "Connected" ? true : false;
       return {
         ...state,
         participants: [...participants],
