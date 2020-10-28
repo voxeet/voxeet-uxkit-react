@@ -26,13 +26,13 @@ export const Types = {
   PARTICIPANT_ADMIN: "PARTICIPANT_ADMIN",
   PARTICIPANT_ADDED_UPDATED: "PARTICIPANT_ADDED_UPDATED",
   USER_INVITED: "USER_INVITED",
-  PARTICIPANT_QUALITY_UPDATED: "PARTICIPANT_QUALITY_UPDATED"
+  PARTICIPANT_QUALITY_UPDATED: "PARTICIPANT_QUALITY_UPDATED",
 };
 
 export class Actions {
   static clearParticipantsList() {
     return {
-      type: Types.PARTICIPANTS_CLEAR
+      type: Types.PARTICIPANTS_CLEAR,
     };
   }
 
@@ -41,8 +41,8 @@ export class Actions {
       type: Types.PARTICIPANTS_MOVES,
       payload: {
         userId,
-        moved
-      }
+        moved,
+      },
     };
   }
 
@@ -50,8 +50,8 @@ export class Actions {
     return {
       type: Types.USER_INVITED,
       payload: {
-        externalId
-      }
+        externalId,
+      },
     };
   }
 
@@ -59,21 +59,21 @@ export class Actions {
     return {
       type: Types.INVITED_USERS,
       payload: {
-        invitedUsers
-      }
+        invitedUsers,
+      },
     };
   }
 
   static webinarActivated() {
     return {
-      type: Types.WEBINAR_ACTIVATED
+      type: Types.WEBINAR_ACTIVATED,
     };
   }
 
   static triggerHandleOnConnect() {
     return (dispatch, getState) => {
       const {
-        voxeet: { participants }
+        voxeet: { participants },
       } = getState();
       if (participants.handleOnConnect != null) participants.handleOnConnect();
     };
@@ -86,48 +86,48 @@ export class Actions {
         name,
         avatarUrl,
         externalId,
-        isListener
-      }
+        isListener,
+      },
     };
   }
 
   static handleOnLeave(handleOnLeave) {
-    return dispatch => {
+    return (dispatch) => {
       dispatch({
         type: Types.HANDLE_ON_LEAVE,
         payload: {
-          handleOnLeave
-        }
+          handleOnLeave,
+        },
       });
     };
   }
 
   static handleOnConnect(handleOnConnect) {
-    return dispatch => {
+    return (dispatch) => {
       dispatch({
         type: Types.HANDLE_ON_CONNECT,
         payload: {
-          handleOnConnect
-        }
+          handleOnConnect,
+        },
       });
     };
   }
 
   static onParticipantReset() {
     return {
-      type: Types.PARTICIPANTS_RESET
+      type: Types.PARTICIPANTS_RESET,
     };
   }
 
   static onParticipantAdmin() {
     return {
-      type: Types.PARTICIPANT_ADMIN
+      type: Types.PARTICIPANT_ADMIN,
     };
   }
 
   static onParticipantSave() {
     return {
-      type: Types.PARTICIPANTS_SAVE
+      type: Types.PARTICIPANTS_SAVE,
     };
   }
 
@@ -136,19 +136,19 @@ export class Actions {
       type: Types.PARTICIPANT_ADDED,
       payload: {
         userId,
-        userInfo
-      }
+        userInfo,
+      },
     };
   }
 
-  static onParticipantJoined(userId, stream, disableSounds) {
+  static onParticipantJoined(user, stream, disableSounds) {
     return {
       type: Types.PARTICIPANT_JOINED,
       payload: {
-        userId,
+        user,
         stream,
-        disableSounds
-      }
+        disableSounds,
+      },
     };
   }
 
@@ -157,39 +157,37 @@ export class Actions {
       type: Types.PARTICIPANT_SPEAK,
       payload: {
         userId,
-        isSpeaking
-      }
+        isSpeaking,
+      },
     };
   }
 
-  static onParticipantUpdated(userId, stream) {
+  static onParticipantUpdated(user, stream) {
     return {
       type: Types.PARTICIPANT_UPDATED,
       payload: {
-        userId,
-        stream
-      }
+        user,
+        stream,
+      },
     };
   }
 
   static onParticipantQualityUpdated(indicators) {
-    let quality={};
+    let quality = {};
 
     for (let [key, value] of indicators) {
-      let update = {audio:0, video: 0}
-      if(value) {
-        if(!isNaN(value.audio))
-          update.audio = value.audio;
-        if(!isNaN(value.video))
-          update.video = value.video;
+      let update = { audio: 0, video: 0 };
+      if (value) {
+        if (!isNaN(value.audio)) update.audio = value.audio;
+        if (!isNaN(value.video)) update.video = value.video;
       }
       quality[key] = update;
     }
     return {
       type: Types.PARTICIPANT_QUALITY_UPDATED,
       payload: {
-        quality
-      }
+        quality,
+      },
     };
   }
 
@@ -199,75 +197,75 @@ export class Actions {
       payload: {
         userId,
         userInfo,
-        status
-      }
+        status,
+      },
     };
   }
 
   static onParticipantLeft(userId) {
     return {
       type: Types.PARTICIPANT_LEFT,
-      payload: { userId }
+      payload: { userId },
     };
   }
 
   static onFilePresentationStarted(userId) {
     return {
       type: Types.FILE_PRESENTATION_STARTED,
-      payload: { userId }
+      payload: { userId },
     };
   }
 
   static onVideoPresentationStarted(userId) {
     return {
       type: Types.VIDEO_PRESENTATION_STARTED,
-      payload: { userId }
+      payload: { userId },
     };
   }
 
   static onVideoPresentationStopped() {
     return {
-      type: Types.VIDEO_PRESENTATION_STOPPED
+      type: Types.VIDEO_PRESENTATION_STOPPED,
     };
   }
 
   static onFilePresentationStopped() {
     return {
-      type: Types.FILE_PRESENTATION_STOPPED
+      type: Types.FILE_PRESENTATION_STOPPED,
     };
   }
 
   static onScreenShareStarted(userId, stream) {
     return {
       type: Types.SCREENSHARE_STARTED,
-      payload: { userId, stream }
+      payload: { userId, stream },
     };
   }
 
   static onScreenShareStopped() {
     return {
-      type: Types.SCREENSHARE_STOPPED
+      type: Types.SCREENSHARE_STOPPED,
     };
   }
 
   static onParticipant3DMoves(userId, x, y) {
     return {
       type: Types.PARTICIPANT_3D_MOVE,
-      payload: { userId, x, y }
+      payload: { userId, x, y },
     };
   }
 
   static onToogleMicrophone(userId, status) {
     return {
       type: Types.PARTICIPANT_TOGGLE_MICROPHONE,
-      payload: { userId, status }
+      payload: { userId, status },
     };
   }
 
   static saveUserPosition(userId, relativePosition, position) {
     return {
       type: Types.SAVE_USER_POSITION,
-      payload: { userId, relativePosition, position }
+      payload: { userId, relativePosition, position },
     };
   }
 }

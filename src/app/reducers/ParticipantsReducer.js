@@ -189,11 +189,11 @@ const ParticipantReducer = (state = defaultState, action) => {
     }
     case Types.PARTICIPANT_JOINED: {
       const { userId } = action.payload;
-      if (VoxeetSDK.session.participant.id === action.payload.userId) {
+      if (VoxeetSDK.session.participant.id === action.payload.user.id) {
         if (!action.payload.disableSounds) {
           const audio = new Audio(sounds.conference_join);
           audio.play().catch((e) => {
-            console.error('Could not play the sound', e.message)
+            console.error("Could not play the sound", e.message);
           });
         }
         let currentUser = { ...state.currentUser };
@@ -233,12 +233,13 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       const participants = [...state.participants];
       const index = participants.findIndex(
-        (p) => p.participant_id === action.payload.userId
+        (p) => p.participant_id === action.payload.user.id
       );
       if (index === -1) {
         return state;
       }
-      participants[index].isConnected = true;
+      participants[index].isConnected =
+        action.payload.user.status == "Connected" ? true : false;
       participants[index].stream = null;
       if (
         action.payload.stream &&
@@ -284,9 +285,9 @@ const ParticipantReducer = (state = defaultState, action) => {
       };
     }
     case Types.PARTICIPANT_UPDATED:
-      const { userId } = action.payload;
+      const { user } = action.payload;
       const participants = [...state.participants];
-      if (VoxeetSDK.session.participant.id === action.payload.userId) {
+      if (VoxeetSDK.session.participant.id === user.id) {
         let currentUser = { ...state.currentUser };
 
         if (
@@ -324,13 +325,12 @@ const ParticipantReducer = (state = defaultState, action) => {
         return state;
       }
 
-      const index = participants.findIndex(
-        (p) => p.participant_id === action.payload.userId
-      );
+      const index = participants.findIndex((p) => p.participant_id === user.id);
       if (index === -1) {
         return state;
       }
-      participants[index].isConnected = true;
+      participants[index].isConnected =
+        user.status == "Connected" ? true : false;
       participants[index].stream = null;
       if (
         action.payload.stream &&
