@@ -4,18 +4,21 @@ export const Types = {
   DISPLAY_ON_BOARDING_WITH_DESCRIPTION: "DISPLAY_ON_BOARDING_WITH_DESCRIPTION",
   HIDE_ON_BOARDING_WITH_DESCRIPTION: "HIDE_ON_BOARDING_WITH_DESCRIPTION",
   DISPLAY_ON_BOARDING_OVERLAY: "DISPLAY_ON_BOARDING_OVERLAY",
-  HIDE_ON_BOARDING_OVERLAY: "HIDE_ON_BOARDING_OVERLAY"
+  HIDE_ON_BOARDING_OVERLAY: "HIDE_ON_BOARDING_OVERLAY",
+  DISPLAY_ON_BOARDING_WITH_CONFIRMATION: "DISPLAY_ON_BOARDING_WITH_CONFIRMATION",
+  HIDE_ON_BOARDING_WITH_CONFIRMATION: "HIDE_ON_BOARDING_WITH_CONFIRMATION",
 };
 
 export class Actions {
   static onBoardingMessageWithAction(
     messageWithAction,
     linkWithAction,
-    isError = false
+    isError = false,
+    actionCallback = null,
   ) {
     return {
       type: Types.DISPLAY_ON_BOARDING_WITH_ACTION,
-      payload: { messageWithAction, linkWithAction, isError }
+      payload: { messageWithAction, linkWithAction, isError, actionCallback }
     };
   }
 

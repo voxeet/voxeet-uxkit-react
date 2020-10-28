@@ -12,6 +12,7 @@ import { Actions as ChatActions } from "./ChatActions";
 import { Actions as ParticipantWaitingActions } from "./ParticipantWaitingActions";
 import { Actions as OnBoardingMessageActions } from "./OnBoardingMessageActions";
 import { Actions as OnBoardingMessageWithActionActions } from "./OnBoardingMessageWithActionActions";
+import { Actions as OnBoardingMessageWithConfirmationActions } from "./OnBoardingMessageWithConfirmationActions";
 import { Actions as TimerActions } from "./TimerActions";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
@@ -672,6 +673,12 @@ export class Actions {
     };
   }
 
+  static playBlockedAudio() {
+    return () => {
+      VoxeetSDK.conference.playBlockedAudio();
+    }
+  }
+
   static conferenceEnded() {
     return (dispatch) => {
       dispatch(TimerActions.stopTime());
@@ -1216,6 +1223,19 @@ export class Actions {
           );
           dispatch(this.checkIfUserJoined(user.id, stream));
         }
+      });
+
+      VoxeetSDK.conference.on("autoplayBlocked", () => {
+        dispatch(
+          OnBoardingMessageWithConfirmationActions.
+          onBoardingMessageWithConfirmation(
+            strings.autoPlayBlocked,
+            strings.autoPlayBlockedButton,
+            false,
+            () => {
+                    VoxeetSDK.conference.playBlockedAudio();
+          })
+          );
       });
 
       VoxeetSDK.conference.on("streamUpdated", (user, stream) => {

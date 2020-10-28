@@ -138,7 +138,9 @@ export const strings = new LocalizedStrings({
     placeholderVideoPresentation: "Video URL",
     startVideoPresentationAutoplay: "Start video",
     invitedUsers: "Waiting for invitation",
-    inviteUser: "Invite"
+    inviteUser: "Invite",
+    autoPlayBlocked: "The browser has blocked automatic audio playback due to a security policy, proceed to start hearing audio from the conference",
+    autoPlayBlockedButton: "Play audio"
   },
   fr: {
     noPstnNumbers: "Pas de numéro PSTN ...",
