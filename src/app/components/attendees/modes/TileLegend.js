@@ -15,15 +15,16 @@ class TileLegend extends Component {
       toggleMicrophone,
       isAdmin,
       kickParticipant,
-      isAdminActived
+      isAdminActived,
+      dolbyVoiceEnabled
     } = this.props;
     return (
       <span className="tile-legend">
         <span className="participant-username">{participant.name}</span>
-        <AttendeesParticipantMute
+        {!dolbyVoiceEnabled && <AttendeesParticipantMute
           participant={participant}
           toggleMicrophone={toggleMicrophone}
-        />
+        />}
         {isAdmin && isAdminActived && (
           <AttendeesKickParticipant
             isAdminActived={isAdminActived}
@@ -41,7 +42,8 @@ TileLegend.propTypes = {
   toggleMicrophone: PropTypes.func.isRequired,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  isAdminActived: PropTypes.bool.isRequired
+  isAdminActived: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default TileLegend;

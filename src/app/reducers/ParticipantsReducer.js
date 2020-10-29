@@ -1,14 +1,14 @@
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Types } from "../actions/ParticipantActions";
 import { getOrganizedPosition, getRelativePosition } from "../libs/position";
-import AudioParticipantJoined from "../../static/sounds/voxeet_conference_join.mp3";
+import sounds from "../libs/sounds";
 import { STATUS_CONNECTING, STATUS_LEFT } from "../constants/ParticipantStatus";
 
 const defaultState = {
   participants: [],
   replayParticipantTmp: [],
   userStream: {
-    stream: null
+    stream: null,
   },
   currentUser: null,
   userStreamScreenShare: null,
@@ -25,7 +25,7 @@ const defaultState = {
   isWebinar: false,
   handleOnConnect: null,
   handleOnLeave: null,
-  quality: {}
+  quality: {},
 };
 
 const ParticipantReducer = (state = defaultState, action) => {
@@ -40,18 +40,18 @@ const ParticipantReducer = (state = defaultState, action) => {
         userIdFilePresentation: null,
         userIdVideoPresentation: null,
         userStream: {
-          stream: null
+          stream: null,
         },
         screenShareEnabled: false,
         isSpeaking: false,
         isReplaying: false,
-        quality: {}
+        quality: {},
       };
     }
     case Types.WEBINAR_ACTIVATED: {
       return {
         ...state,
-        isWebinar: true
+        isWebinar: true,
       };
     }
     case Types.INVITED_USERS: {
@@ -60,7 +60,7 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       return {
         ...state,
-        invitedUsers: action.payload.invitedUsers
+        invitedUsers: action.payload.invitedUsers,
       };
     }
     case Types.USER_INVITED:
@@ -72,21 +72,21 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       return {
         ...state,
-        invitedUsers: invitedUsers
+        invitedUsers: invitedUsers,
       };
     case Types.PARTICIPANTS_MOVES: {
       let participants = [...state.participants];
       const index = participants.findIndex(
-        p => p.participant_id === action.payload.userId
+        (p) => p.participant_id === action.payload.userId
       );
       participants[index].isMoved = action.payload.moved;
       return {
         participants: [...participants],
-        ...state
+        ...state,
       };
     }
     case Types.SAVE_CURRENT_USER: {
-      let currentUser = {...state.currentUser};
+      let currentUser = { ...state.currentUser };
       currentUser = {
         name: action.payload.name,
         participant_id: VoxeetSDK.session.participant.id,
@@ -97,22 +97,22 @@ const ParticipantReducer = (state = defaultState, action) => {
         isPresenter: false,
         isListener: action.payload.isListener,
         isMyself: true,
-        ...currentUser
+        ...currentUser,
       };
       return {
         ...state,
-        currentUser: currentUser
+        currentUser: currentUser,
       };
     }
     case Types.HANDLE_ON_CONNECT:
       return {
         ...state,
-        handleOnConnect: action.payload.handleOnConnect
+        handleOnConnect: action.payload.handleOnConnect,
       };
     case Types.HANDLE_ON_LEAVE:
       return {
         ...state,
-        handleOnLeave: action.payload.handleOnLeave
+        handleOnLeave: action.payload.handleOnLeave,
       };
     case Types.PARTICIPANTS_RESET: {
       const replayParticipantTmp = [...state.replayParticipantTmp];
@@ -122,33 +122,33 @@ const ParticipantReducer = (state = defaultState, action) => {
         userStream: null,
         screenShareEnabled: false,
         isSpeaking: false,
-        isReplaying: false
+        isReplaying: false,
       };
     }
     case Types.PARTICIPANT_ADMIN:
       return {
         ...state,
-        isAdmin: true
+        isAdmin: true,
       };
     case Types.PARTICIPANTS_SAVE: {
       const participants = [...state.participants];
       return {
         ...state,
         replayParticipantTmp: participants,
-        isReplaying: true
+        isReplaying: true,
       };
     }
     case Types.PARTICIPANT_SPEAK: {
       const userId = action.payload.userId;
       const participants = [...state.participants];
       const index = participants.findIndex(
-        p => p.participant_id === action.payload.userId
+        (p) => p.participant_id === action.payload.userId
       );
       if (index === -1) return state;
       participants[index].isSpeaking = action.payload.isSpeaking;
       return {
         ...state,
-        participants: [...participants]
+        participants: [...participants],
       };
     }
     case Types.PARTICIPANT_ADDED: {
@@ -156,7 +156,7 @@ const ParticipantReducer = (state = defaultState, action) => {
       if (VoxeetSDK.session.participant.id != action.payload.user) {
         let participants = [...state.participants];
         const index = participants.findIndex(
-          p => p.participant_id === action.payload.userId
+          (p) => p.participant_id === action.payload.userId
         );
         if (index === -1) {
           participants.push({
@@ -165,78 +165,81 @@ const ParticipantReducer = (state = defaultState, action) => {
             isMoved: false,
             avatarUrl: userInfo.avatarUrl,
             externalId: userInfo.externalId,
+            type: userInfo.type,
             metadata: userInfo.metadata,
             isAdmin: userInfo.metadata.admin === "true",
-            isConnected: userInfo.status,
-            status: STATUS_CONNECTING,
+            isConnected: userInfo.status == "Connected" ? true : false,
+            status: userInfo.status,
             isMuted: false,
             x: -1,
-            y: -1
+            y: -1,
           });
         } else {
           participants[index].name = userInfo.name;
+          participants[index].type = userInfo.type;
           participants[index].avatarUrl = userInfo.avatarUrl;
           participants[index].metadata = userInfo.metadata;
         }
         return {
           ...state,
-          participants: [...participants]
+          participants: [...participants],
         };
       }
       return state;
     }
     case Types.PARTICIPANT_JOINED: {
       const { userId } = action.payload;
-      if (VoxeetSDK.session.participant.id === action.payload.userId) {
+      if (VoxeetSDK.session.participant.id === action.payload.user.id) {
         if (!action.payload.disableSounds) {
-          const audio = new Audio(AudioParticipantJoined);
-          audio.play();
+          const audio = new Audio(sounds.conference_join);
+          audio.play().catch((e) => {
+            console.error("Could not play the sound", e.message);
+          });
         }
-        let currentUser = {...state.currentUser};
+        let currentUser = { ...state.currentUser };
         if (
           action.payload.stream &&
           action.payload.stream.getTracks().length > 0
         ) {
           currentUser = {
             ...currentUser,
-            stream: action.payload.stream
+            stream: action.payload.stream,
           };
           return {
             ...state,
             currentUser: currentUser,
-            userStream: action.payload.stream
+            userStream: action.payload.stream,
           };
         }
-        if (
-            action.payload.stream && !action.payload.stream.active
-        ) {
+        if (action.payload.stream && !action.payload.stream.active) {
           currentUser = {
             ...currentUser,
-            stream: null
+            stream: null,
           };
           return {
             ...state,
             currentUser: currentUser,
-            userStream: null
+            userStream: null,
           };
         }
 
         if (currentUser != null) {
           currentUser.stream = null;
           return {
-            ...state
+            ...state,
           };
         }
         return state;
       }
       const participants = [...state.participants];
       const index = participants.findIndex(
-        p => p.participant_id === action.payload.userId
+        (p) => p.participant_id === action.payload.user.id
       );
       if (index === -1) {
         return state;
       }
-      participants[index].isConnected = true;
+      participants[index].isConnected =
+        action.payload.user.status == "Connected" ? true : false;
       participants[index].stream = null;
       if (
         action.payload.stream &&
@@ -245,10 +248,10 @@ const ParticipantReducer = (state = defaultState, action) => {
         participants[index].stream = action.payload.stream;
       }
       const size = participants.filter(
-        participant => participant.isConnected === true
+        (participant) => participant.isConnected === true
       ).length;
       const participantsConnect = participants.filter(
-        participant => participant.isConnected === true
+        (participant) => participant.isConnected === true
       );
       for (var i = 0; i < participantsConnect.length; i++) {
         if (!participantsConnect[i].isMoved) {
@@ -259,7 +262,7 @@ const ParticipantReducer = (state = defaultState, action) => {
             width: width,
             height: height,
             size: size,
-            index: index
+            index: index,
           });
           const relativePosition = getRelativePosition(
             width,
@@ -278,14 +281,14 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       return {
         ...state,
-        participants: [...participants]
+        participants: [...participants],
       };
     }
     case Types.PARTICIPANT_UPDATED:
-      const { userId } = action.payload;
+      const { user } = action.payload;
       const participants = [...state.participants];
-      if (VoxeetSDK.session.participant.id === action.payload.userId) {
-        let currentUser = {...state.currentUser};
+      if (VoxeetSDK.session.participant.id === user.id) {
+        let currentUser = { ...state.currentUser };
 
         if (
           action.payload.stream &&
@@ -293,44 +296,41 @@ const ParticipantReducer = (state = defaultState, action) => {
         ) {
           currentUser = {
             ...currentUser,
-            stream: action.payload.stream
+            stream: action.payload.stream,
           };
           return {
             ...state,
             currentUser: currentUser,
-            userStream: action.payload.stream
+            userStream: action.payload.stream,
           };
         }
-        if (
-            action.payload.stream && !action.payload.stream.active
-        ) {
+        if (action.payload.stream && !action.payload.stream.active) {
           currentUser = {
             ...currentUser,
-            stream: null
+            stream: null,
           };
           return {
             ...state,
             currentUser: currentUser,
-            userStream: null
+            userStream: null,
           };
         }
 
         if (currentUser != null) {
           currentUser.stream = null;
           return {
-            ...state
+            ...state,
           };
         }
         return state;
       }
 
-      const index = participants.findIndex(
-        p => p.participant_id === action.payload.userId
-      );
+      const index = participants.findIndex((p) => p.participant_id === user.id);
       if (index === -1) {
         return state;
       }
-      participants[index].isConnected = true;
+      participants[index].isConnected =
+        user.status == "Connected" ? true : false;
       participants[index].stream = null;
       if (
         action.payload.stream &&
@@ -340,7 +340,7 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       return {
         ...state,
-        participants: [...participants]
+        participants: [...participants],
       };
     case Types.PARTICIPANT_STATUS_UPDATED: {
       const userInfo = action.payload.userInfo;
@@ -348,35 +348,37 @@ const ParticipantReducer = (state = defaultState, action) => {
       if (VoxeetSDK.session.participant.id != action.payload.userId) {
         let participants = [...state.participants];
         const index = participants.findIndex(
-          p => p.participant_id === action.payload.userId
+          (p) => p.participant_id === action.payload.userId
         );
         if (index === -1) {
           participants.push({
             participant_id: action.payload.userId,
             name: userInfo.name,
             isMoved: false,
+            type: userInfo.type,
             avatarUrl: userInfo.avatarUrl,
             externalId: userInfo.externalId,
             metadata: userInfo.metadata,
             isAdmin: userInfo.metadata.admin === "true",
-            isConnected:
-              status == "Left" ||
-              status == "Left" ||
-              status == "Warning" ||
-              status == "Error" ||
-              status == "Reserved"
-                ? false
-                : true,
+            isConnected: status == "Connected" ? true : false,
             status: status,
             stream: null,
             isMuted: false,
             x: -1,
-            y: -1
+            y: -1,
           });
+        } else {
+          participants[index].name = userInfo.name;
+          participants[index].type = userInfo.type;
+          participants[index].isConnected =
+            status == "Connected" ? true : false;
+          participants[index].avatarUrl = userInfo.avatarUrl;
+          participants[index].metadata = userInfo.metadata;
+          participants[index].status = status;
         }
         return {
           ...state,
-          participants: [...participants]
+          participants: [...participants],
         };
       }
       return state;
@@ -385,7 +387,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     case Types.PARTICIPANT_LEFT: {
       const participants = [...state.participants];
       const index = participants.findIndex(
-        p => p.participant_id === action.payload.userId
+        (p) => p.participant_id === action.payload.userId
       );
 
       if (VoxeetSDK.session.participant.id === action.payload.userId)
@@ -435,61 +437,61 @@ const ParticipantReducer = (state = defaultState, action) => {
 
       return {
         ...state,
-        participants: [...participants]
+        participants: [...participants],
       };
     }
     case Types.PARTICIPANT_3D_MOVE: {
       const participants = [...state.participants];
       const index = participants.findIndex(
-        p => p.participant_id === action.payload.userId
+        (p) => p.participant_id === action.payload.userId
       );
       if (index === -1) return state;
       participants[index].x = action.payload.x;
       participants[index].y = action.payload.y;
       return {
         ...state,
-        participants: [...participants]
+        participants: [...participants],
       };
     }
     case Types.PARTICIPANT_TOGGLE_MICROPHONE: {
       const userId = action.payload.userId;
       const participants = [...state.participants];
       const index = participants.findIndex(
-        p => p.participant_id === action.payload.userId
+        (p) => p.participant_id === action.payload.userId
       );
       if (index === -1) return state;
       participants[index].isMuted = !participants[index].isMuted;
       return {
         ...state,
-        participants: [...participants]
+        participants: [...participants],
       };
     }
     case Types.FILE_PRESENTATION_STARTED: {
       return {
         ...state,
         filePresentationEnabled: true,
-        userIdFilePresentation: action.payload.userId
+        userIdFilePresentation: action.payload.userId,
       };
     }
     case Types.FILE_PRESENTATION_STOPPED: {
       return {
         ...state,
         filePresentationEnabled: false,
-        userIdFilePresentation: null
+        userIdFilePresentation: null,
       };
     }
     case Types.VIDEO_PRESENTATION_STARTED: {
       return {
         ...state,
         videoPresentationEnabled: true,
-        userIdVideoPresentation: action.payload.userId
+        userIdVideoPresentation: action.payload.userId,
       };
     }
     case Types.VIDEO_PRESENTATION_STOPPED: {
       return {
         ...state,
         videoPresentationEnabled: false,
-        userIdVideoPresentation: null
+        userIdVideoPresentation: null,
       };
     }
     case Types.SCREENSHARE_STARTED: {
@@ -497,7 +499,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         ...state,
         screenShareEnabled: true,
         userIdStreamScreenShare: action.payload.userId,
-        userStreamScreenShare: action.payload.stream
+        userStreamScreenShare: action.payload.stream,
       };
     }
     case Types.SCREENSHARE_STOPPED: {
@@ -505,13 +507,13 @@ const ParticipantReducer = (state = defaultState, action) => {
         ...state,
         screenShareEnabled: false,
         userIdStreamScreenShare: null,
-        userStreamScreenShare: null
+        userStreamScreenShare: null,
       };
     }
     case Types.SAVE_USER_POSITION: {
       const { userId, relativePosition, position } = action.payload;
       const participants = [...state.participants];
-      const index = participants.findIndex(p => p.participant_id === userId);
+      const index = participants.findIndex((p) => p.participant_id === userId);
       if (index !== -1) {
         participants[index].x = position.posX;
         participants[index].y = position.posY;
@@ -520,13 +522,13 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       return {
         ...state,
-        participants: [...participants]
+        participants: [...participants],
       };
     }
     case Types.PARTICIPANT_QUALITY_UPDATED: {
       return {
         ...state,
-        quality: {...action.payload.quality}
+        quality: { ...action.payload.quality },
       };
     }
     default:

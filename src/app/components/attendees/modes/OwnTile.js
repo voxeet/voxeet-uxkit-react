@@ -1,10 +1,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { connect } from "@voxeet/react-redux-5.1.1";
 
 import TileVideo from "./TileVideo";
 import TileLegend from "./TileLegend";
 
-class Tile extends Component {
+@connect(store => {
+  return {
+    inputManager: store.voxeet.inputManager
+  };
+})
+class OwnTile extends Component {
   constructor(props) {
     super(props);
   }
@@ -18,6 +24,7 @@ class Tile extends Component {
       (checker != null && !nextProps.participant.stream.active) ||
       (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
       (checker == null && nextProps.participant.stream) ||
+      (this.props.inputManager.isBackCamera != nextProps.inputManager.isBackCamera) ||
       (this.props.mySelf && this.props.participant.name == null)
     ) {
       return true;
@@ -37,6 +44,7 @@ class Tile extends Component {
       mySelf,
       dolbyVoiceEnabled
     } = this.props;
+    const { currentVideoDevice, isBackCamera } = this.props.inputManager;
     return (
       <div
         className={
@@ -57,6 +65,7 @@ class Tile extends Component {
         }
       >
         <TileVideo
+          isBackCamera={isBackCamera}
           mySelf={mySelf}
           kickParticipant={kickParticipant}
           isAdminActived={isAdminActived}
@@ -79,11 +88,11 @@ class Tile extends Component {
   }
 }
 
-TileVideo.defaultProps = {
+OwnTile.defaultProps = {
   mySelf: false,
 };
 
-Tile.propTypes = {
+OwnTile.propTypes = {
   participant: PropTypes.object.isRequired,
   toggleMicrophone: PropTypes.func.isRequired,
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
@@ -94,4 +103,4 @@ Tile.propTypes = {
   dolbyVoiceEnabled: PropTypes.bool,
 };
 
-export default Tile;
+export default OwnTile;

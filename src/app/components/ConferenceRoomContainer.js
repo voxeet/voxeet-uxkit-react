@@ -88,6 +88,10 @@ class ConferenceRoomContainer extends Component {
     }
   }
 
+  playBlockedAudio() {
+    this.props.dispatch(ConferenceActions.playBlockedAudio());
+  }
+
   toggleMicrophone() {
     this.props.dispatch(ConferenceActions.toggleMicrophone());
   }
@@ -216,7 +220,8 @@ class ConferenceRoomContainer extends Component {
       attendeesWaiting,
       isDemo,
       conferencePincode,
-      conferenceId
+      conferenceId,
+      dolbyVoiceEnabled,
     } = this.props;
     const { errorMessage, isError } = this.props.errorStore;
     const { isModalExternalLiveOpen } = this.state;
@@ -273,6 +278,7 @@ class ConferenceRoomContainer extends Component {
               filePresentationEnabled={filePresentationEnabled}
               displayActions={displayActions}
               screenShareEnabled={screenShareEnabled}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
               toggleWidget={this.toggleWidget}
               toggleFullScreen={this.toggleFullScreen}
               isWidgetOpened={isWidgetOpened}
@@ -329,6 +335,7 @@ class ConferenceRoomContainer extends Component {
               attendeesSettingsOpened={displayAttendeesSettings}
               attendeesChat={attendeesChat}
               attendeesList={attendeesList}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
             />
           )}
           {isJoined && (isWidgetFullScreenOn || forceFullscreen) && (
@@ -345,6 +352,7 @@ class ConferenceRoomContainer extends Component {
               shareActions={shareActions}
               leave={this.leaveConference}
               screenShareEnabled={screenShareEnabled}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
               filePresentationEnabled={filePresentationEnabled}
               videoPresentationEnabled={videoPresentationEnabled}
               recordingLocked={recordingLocked}
@@ -409,7 +417,8 @@ ConferenceRoomContainer.propTypes = {
   conferencePincode: PropTypes.string,
   attendeesList: PropTypes.func,
   attendeesChat: PropTypes.func,
-  attendeesWaiting: PropTypes.func
+  attendeesWaiting: PropTypes.func,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default ConferenceRoomContainer;

@@ -29,7 +29,8 @@ export const Types = {
   DISABLE_SOUNDS: "DISABLE_SOUNDS",
   LOCK_RECORDING: "LOCK_RECORDING",
   CLOSE_SESSION_HANG_UP: "CLOSE_SESSION_HANG_UP",
-  SET_SIMULCAST: "SET_SIMULCAST"
+  SET_SIMULCAST: "SET_SIMULCAST",
+  TOGGLE_AUDIO_TRANSPARENT_MODE: "TOGGLE_AUDIO_TRANSPARENT_MODE",
 };
 
 export class Actions {
@@ -252,6 +253,12 @@ export class Actions {
   static toggleAttendeesSettings() {
     return {
       type: Types.TOGGLE_ATTENDEES_SETTINGS
+    };
+  }
+
+  static toggleAudioTransparentMode() {
+    return {
+      type: Types.TOGGLE_AUDIO_TRANSPARENT_MODE
     };
   }
 

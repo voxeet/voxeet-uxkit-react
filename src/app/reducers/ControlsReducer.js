@@ -1,8 +1,6 @@
 import { Types } from "../actions/ControlsActions";
 import modes from "../constants/DisplayModes";
-import AudioUnMute from "../../static/sounds/voxeet_Exit_Mute.mp3";
-import AudioMute from "../../static/sounds/voxeet_Enter_Mute.mp3";
-import CallRecorded from "../../static/sounds/call-recorded.mp3";
+import sounds from "../libs/sounds";
 
 const defaultState = {
   isWidgetOpened: false,
@@ -41,7 +39,8 @@ const defaultState = {
   modeSaveBeforePresentation: "tiles",
   displayAttendeesList: false,
   displayAttendeesSettings: false,
-  displayAttendeesChat: false
+  displayAttendeesChat: false,
+  audioTransparentMode: false,
 };
 
 const ControlsReducer = (state = defaultState, action) => {
@@ -148,8 +147,10 @@ const ControlsReducer = (state = defaultState, action) => {
       };
     case Types.LOCK_RECORDING: {
       if (!state.disableSounds) {
-        const audio = new Audio(CallRecorded);
-        audio.play();
+        const audio = new Audio(sounds.call_recorded);
+        audio.play().catch((e) => {
+          console.error('Could not play the sound', e.message)
+        });;
       }
       return {
         ...state,
@@ -180,8 +181,10 @@ const ControlsReducer = (state = defaultState, action) => {
     case Types.TOGGLE_MICROPHONE: {
       const currentStatus = state.isMuted;
       if (!state.disableSounds) {
-        const audio = new Audio(!currentStatus ? AudioUnMute : AudioMute);
-        audio.play();
+        const audio = new Audio(!currentStatus ? sounds.mute_off : sounds.mute_on);
+        audio.play().catch((e) => {
+          console.error('Could not play the sound', e.message)
+        });;
       }
       return {
         ...state,
@@ -193,6 +196,13 @@ const ControlsReducer = (state = defaultState, action) => {
       return {
         ...state,
         videoEnabled: currentStatus
+      };
+    }
+    case Types.TOGGLE_AUDIO_TRANSPARENT_MODE: {
+      const currentStatus = state.audioTransparentMode;
+      return {
+        ...state,
+        audioTransparentMode: !currentStatus
       };
     }
     case Types.TOGGLE_AUDIO: {
@@ -213,8 +223,10 @@ const ControlsReducer = (state = defaultState, action) => {
     case Types.TOGGLE_RECORDING: {
       const currentStatus = state.isRecording;
       if (!currentStatus && !state.disableSounds) {
-        const audio = new Audio(CallRecorded);
-        audio.play();
+        const audio = new Audio(sounds.call_recorded);
+        audio.play().catch((e) => {
+          console.error('Could not play the sound', e.message)
+        });;
       }
       return {
         ...state,

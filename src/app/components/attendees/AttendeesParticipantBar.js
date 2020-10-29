@@ -23,6 +23,7 @@ class AttendeesParticipantBar extends Component {
       isAdmin,
       kickParticipant,
       isAdminActived /*, toggleAutomatically*/,
+      dolbyVoiceEnabled,
     } = this.props;
     const { quality } = this.props.participantStore;
     let audioq = 0,
@@ -31,9 +32,9 @@ class AttendeesParticipantBar extends Component {
     if (quality && quality[participant.participant_id]) {
       audioq = quality[participant.participant_id].audio;
       videoq = quality[participant.participant_id].video;
-      if (audioq != 0 && videoq != 0) avquality = (audioq + videoq) / 2;
-      if (audioq == 0 && videoq != 0) avquality = videoq;
-      if (audioq != 0 && videoq == 0) avquality = audioq;
+      if (audioq > 0 && videoq > 0) avquality = (audioq + videoq) / 2;
+      if ((audioq == 0 || audioq == -1) && videoq > 0) avquality = videoq;
+      if (audioq > 0 && (videoq == 0 || videoq == -1)) avquality = audioq;
       //avquality = Math.max(audioq, videoq);
     }
     let className = "participant-bar";
@@ -56,7 +57,7 @@ class AttendeesParticipantBar extends Component {
         <div className="name">{participant.name}</div>
         <ul className="bar-icons">
           <li>
-            {toggleMicrophone != null && !participant.isMyself && (
+            {toggleMicrophone != null && !participant.isMyself && !dolbyVoiceEnabled && (
               <AttendeesParticipantMute
                 participant={participant}
                 toggleMicrophone={toggleMicrophone}
@@ -83,6 +84,7 @@ AttendeesParticipantBar.propTypes = {
   kickParticipant: PropTypes.func,
   isAdmin: PropTypes.bool,
   isAdminActived: PropTypes.bool,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 AttendeesParticipantBar.defaultProps = {

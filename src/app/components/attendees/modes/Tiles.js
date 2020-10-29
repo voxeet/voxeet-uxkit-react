@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import Tile from "./Tile";
+import OwnTile from "./OwnTile";
 import AttendeesWaitingWebinarListener from "../AttendeesWaitingWebinarListener";
 
 class Tiles extends Component {
@@ -18,18 +19,24 @@ class Tiles extends Component {
       isAdmin,
       isAdminActived,
       currentUser,
-      isWebinar
+      isWebinar,
+      dolbyVoiceEnabled,
     } = this.props;
-    let nbParticipants = participants.filter(p => p.isConnected).length;
+    let nbParticipants = participants.filter(
+      (p) => p.isConnected && p.type == "user"
+    ).length;
     if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
       nbParticipants += 1;
     let count = -1;
     return (
-      <div className="SidebarTiles" data-number-user={nbParticipants}>
+      <div
+        className="SidebarTiles"
+        data-number-user={nbParticipants <= 16 ? nbParticipants : 16}
+      >
         <div className={"tiles-list list" + nbParticipants}>
           {((!isWebinar && !currentUser.isListener) ||
             (isWebinar && isAdmin)) && (
-            <Tile
+            <OwnTile
               participant={currentUser}
               isAdminActived={isAdminActived}
               mySelf={true}
@@ -37,10 +44,11 @@ class Tiles extends Component {
               isAdmin={isAdmin}
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={isWidgetFullScreenOn}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
             />
           )}
           {participants.map((participant, i) => {
-            if (participant.isConnected) {
+            if (participant.isConnected && participant.type == "user") {
               count = count + 1;
               return (
                 <Tile
@@ -53,6 +61,7 @@ class Tiles extends Component {
                   isAdmin={isAdmin}
                   toggleMicrophone={toggleMicrophone}
                   isWidgetFullScreenOn={isWidgetFullScreenOn}
+                  dolbyVoiceEnabled={dolbyVoiceEnabled}
                 />
               );
             }
@@ -71,7 +80,8 @@ Tiles.propTypes = {
   currentUser: PropTypes.object.isRequired,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  isAdminActived: PropTypes.bool.isRequired
+  isAdminActived: PropTypes.bool.isRequired,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default Tiles;

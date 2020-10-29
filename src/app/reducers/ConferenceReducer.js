@@ -1,5 +1,5 @@
 import { Types } from "../actions/ConferenceActions";
-import AudioConferenceLeave from "../../static/sounds/voxeet_conference_exit.mp3";
+import sounds from "../libs/sounds";
 
 const defaultState = {
   conferenceId: null,
@@ -12,7 +12,8 @@ const defaultState = {
   conferenceReplayId: null,
   hasLeft: false,
   time: 0,
-  isJoined: false
+  isJoined: false,
+  dolbyVoiceEnabled: true
 };
 
 const ConferenceReducer = (state = defaultState, action) => {
@@ -45,6 +46,7 @@ const ConferenceReducer = (state = defaultState, action) => {
         ...state,
         conferenceId: action.payload.conferenceId,
         conferencePincode: action.payload.conferencePincode,
+        dolbyVoiceEnabled: action.payload.dolbyVoiceEnabled,
         connecting: false,
         hasLeft: false,
         isJoined: true
@@ -52,8 +54,10 @@ const ConferenceReducer = (state = defaultState, action) => {
     }
     case Types.CONFERENCE_LEAVE: {
       if (!action.payload.disableSounds) {
-        const audio = new Audio(AudioConferenceLeave);
-        audio.play();
+        const audio = new Audio(sounds.conference_exit);
+        audio.play().catch((e) => {
+          console.error('Could not play the sound', e.message)
+        });;
       }
       return {
         ...state,

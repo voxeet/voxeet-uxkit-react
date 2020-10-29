@@ -14,13 +14,13 @@ class List extends Component {
       toggleMicrophone,
       kickParticipant,
       isAdmin,
-      isAdminActived
+      isAdminActived,
     } = this.props;
     return (
       <div className="SidebarList">
         <ul className="list-items">
           {participants.map((participant, i) => {
-            if (participant.isConnected)
+            if (participant.isConnected && participant.type == "user")
               return (
                 <ListItem
                   isAdminActived={isAdminActived}
@@ -43,7 +43,7 @@ List.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   toggleMicrophone: PropTypes.func.isRequired,
-  kickParticipant: PropTypes.func.isRequired
+  kickParticipant: PropTypes.func.isRequired,
 };
 
 export default List;

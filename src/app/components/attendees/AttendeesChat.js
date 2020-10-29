@@ -26,7 +26,7 @@ class AttendeesChat extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.attendeesChatOpened) {
       var scrollBar = document.getElementById("chat-scrollbar");
-      if (scrollBar) scrollBar.scrollTop = scrollBar.scrollHeight;
+      if (scrollBar && (prevProps.chatStore != this.props.chatStore)) scrollBar.scrollTop = scrollBar.scrollHeight;
     }
     if (
       this.props.attendeesChatOpened == true &&

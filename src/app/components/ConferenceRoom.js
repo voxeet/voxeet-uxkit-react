@@ -3,15 +3,14 @@ import { connect } from "@voxeet/react-redux-5.1.1";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import { strings } from "../languages/localizedStrings";
+import Cookies from "js-cookie";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-
+import canAutoPlay from 'can-autoplay';
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../actions/ParticipantActions";
+import { Actions as ErrorActions } from "../actions/ErrorActions";
 import ActionsButtons from "./actionsBar/ActionsButtons";
-
-import Modal from "./attendees/modal/Modal";
-
 import "../../styles/main.less";
 import ConferenceRoomContainer from "./ConferenceRoomContainer";
 import ConferencePreConfigContainer from "./ConferencePreConfigContainer";
@@ -20,6 +19,7 @@ import AttendeesList from "./attendees/AttendeesList";
 import AttendeesChat from "./attendees/AttendeesChat";
 import LoadingScreen from "./attendees/LoadingScreen";
 import { setPstnNumbers } from "../constants/PinCode";
+import {isMobile} from "../libs/browserDetection";
 
 @connect((state) => {
   return {
@@ -32,15 +32,8 @@ class ConferenceRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      preConfig:
-        !props.isListener &&
-        !bowser.msie &&
-        !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        ) &&
-        (!props.isWebinar || (props.isWebinar && props.isAdmin))
-          ? props.preConfig
-          : false,
+      preConfig: false, // Will decide later
+      loading: true,    // Start with loader
     };
     this.handleJoin = this.handleJoin.bind(this);
     this.startConferenceWithParams = this.startConferenceWithParams.bind(this);
@@ -70,12 +63,11 @@ class ConferenceRoom extends Component {
   startConferenceWithParams(preConfigPayload = null) {
     const {
       ttl,
-      rtcpmode,
       shareActions,
       mode,
-      autoHls,
       videoCodec,
       sdk,
+      dolbyVoice,
       chromeExtensionId,
       autoRecording,
       videoRatio,
@@ -109,8 +101,8 @@ class ConferenceRoom extends Component {
       refreshTokenCallback,
       isListener,
     } = this.props;
-    let initialized = null;
-    var pinCodeTmp = pinCode;
+    let initialized;
+    let pinCodeTmp = pinCode;
     if (oauthToken != null) {
       initialized = this.props.dispatch(
         ConferenceActions.initializeWithToken(oauthToken, refreshTokenCallback)
@@ -130,7 +122,7 @@ class ConferenceRoom extends Component {
     }
 
     if (pinCodeTmp != null) {
-      if (pinCodeTmp.length != 8 || !/^\d+$/.test(pinCodeTmp)) {
+      if (pinCodeTmp.length !== 8 || !/^\d+$/.test(pinCodeTmp)) {
         pinCodeTmp = "";
       }
     }
@@ -248,6 +240,7 @@ class ConferenceRoom extends Component {
       ) {
         // Autojoin when entering in fullscreen mode
         initialized.then(() => {
+
           this.props.dispatch(
             ConferenceActions.join(
               conferenceAlias,
@@ -255,7 +248,6 @@ class ConferenceRoom extends Component {
               constraints,
               liveRecordingEnabled,
               ttl,
-              rtcpmode,
               mode,
               videoCodec,
               userInfo,
@@ -263,9 +255,9 @@ class ConferenceRoom extends Component {
               isListener,
               preConfigPayload,
               autoRecording,
-              autoHls,
               pinCodeTmp,
-              simulcast
+              simulcast,
+              dolbyVoice,
             )
           );
         });
@@ -276,14 +268,139 @@ class ConferenceRoom extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // Print UXKit Version
     console.log("UXKit Version: " + __VERSION__);
+    let props = this.props;
+    const { isWebinar, isAdmin, isListener, preConfig } = this.props;
+    let doPreConfig =
+        !isListener &&
+        !bowser.msie &&
+        !isMobile() &&
+        (!isWebinar || (isWebinar && isAdmin))
+            ? (preConfig)
+            : false;
 
-    const { preConfig } = this.state;
-    const { isWebinar, isAdmin } = this.props;
-    if (!preConfig) {
-      this.startConferenceWithParams();
+    const shouldStartPreConfig = doPreConfig? await this.preConfigCheck(doPreConfig): preConfig;
+
+    this.setState({loading:false, preConfig: shouldStartPreConfig}, () => {
+      if (!this.state.preConfig) {
+        this.startConferenceWithParams();
+      }
+    })
+  }
+
+  /**
+   * Check precofigured devices and is it possible to create audio context
+   * @returns {Promise<void>}
+   */
+  async preConfigCheck(preConfig) {
+    const { constraints } = this.props;
+    // console.log('preConfigCheck', preConfig, constraints);
+
+    const checkPermissions = async () => {
+      //console.log('About to check access to audio/video devices', { audio: constraints.audio, video: constraints.video})
+      return await navigator.mediaDevices.getUserMedia({ audio: constraints.audio, video: constraints.video})
+          .then((stream) => {
+            //console.log('Got stream, about to close it');
+            stream.getTracks().forEach(track => {
+              track.stop();
+            });
+            return false;
+          })
+          .catch((err) => {
+            console.error('Could not get access to required media', err)
+            //this.props.dispatch(ErrorActions.onError(err));
+            return true;
+          });
+    }
+
+    if(preConfig) {
+      console.log('Preconfig required, just asking for device permissions');
+      await checkPermissions();
+      return true;
+    } else {
+      return new Promise(async (resolve) => {
+        // Request access to audio video devices
+        await checkPermissions();
+        //console.log('About to check Auto-play', await canAutoPlay.audio({inline:true, muted:false}), await canAutoPlay.video({inline:true, muted:false}), constraints);
+        let canAutoPlayAudio = (!constraints || !constraints.audio)? {result: true} : await canAutoPlay.audio({inline:true, muted:false});
+        let canAutoPlayVideo = (!constraints || !constraints.video)? {result: true} : await canAutoPlay.video({inline:true, muted:false});
+        if(!canAutoPlayAudio.result || !canAutoPlayVideo.result) {
+          console.log('Auto-play check failed... will force preconfig', canAutoPlayAudio, canAutoPlayVideo);
+          return this.setState({preConfig: true}, () => {
+            resolve(true)
+          });
+        } else if(constraints && (constraints.audio || constraints.video)) {
+          //console.log('About to check preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
+          // Check cookies
+          if(constraints.audio && !Cookies.get("input")) {
+            console.log('Audio input not configured... will force preconfig');
+            return this.setState({preConfig: true}, () => {
+              resolve(true)
+            });
+          }
+          if(constraints.video && !Cookies.get("camera")) {
+            console.log('Camera input not configured... will force preconfig');
+            return this.setState({preConfig: true}, () => {
+              resolve(true)
+            });
+          }
+          // console.log('About to check availability of preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
+          // Check if exists device with Id set in cookies
+          let foundAudio = !constraints.audio?
+              true :
+              await VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
+                return devices.find( (source) => (Cookies.get("input") == source.deviceId) );
+              });
+          let foundVideo = !constraints.video?
+              true :
+              await VoxeetSDK.mediaDevice.enumerateVideoDevices().then((devices) => {
+                return devices.find( (source) => (Cookies.get("camera") == source.deviceId) );
+              });
+          // TODO: prevent read errors
+          console.log('About to check availability of preconfigured audio input / camera streams', Cookies.get("input"), Cookies.get("camera"));
+          let gotAudioStream = true;
+          if(constraints.audio) {
+            gotAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: Cookies.get("input") } } })
+                .then((stream) => {
+                  stream.getTracks().forEach(track => {
+                    track.stop();
+                  });
+                  return true;
+                })
+                .catch((err) => {
+                  console.error('error getting audio stream', err)
+                  return false;
+                });
+          }
+          let gotVideoStream = true;
+          if(constraints.video) {
+            gotVideoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: Cookies.get("camera") } } })
+                .then((stream) => {
+                  stream.getTracks().forEach(track => {
+                    track.stop();
+                  });
+                  return true;
+                })
+                .catch((err) => {
+                  console.error('error getting video stream', err)
+                  return false;
+                });
+          }
+          if(!foundAudio || !foundVideo || !gotAudioStream || !gotVideoStream) {
+            console.log('Failed to find preconfigured audio input / camera', foundAudio, foundVideo, gotAudioStream, gotVideoStream);
+            return this.setState({preConfig: true}, () => {
+              resolve(true)
+            });
+          }
+          // console.log('No need for preconfig');
+          return resolve(false);
+        } else {
+          // console.log('No need for preconfig');
+          return resolve(false);
+        }
+      });
     }
   }
 
@@ -304,13 +421,14 @@ class ConferenceRoom extends Component {
       isWebinar,
       isAdmin,
       logo,
+      dolbyVoice,
     } = this.props;
     const {
       screenShareEnabled,
       filePresentationEnabled,
       videoPresentationEnabled,
     } = this.props.participantsStore;
-    const { preConfig } = this.state;
+    const { preConfig, loading } = this.state;
     const {
       isJoined,
       conferenceId,
@@ -320,6 +438,7 @@ class ConferenceRoom extends Component {
       isDemo,
       conferencePincode,
       hasLeft,
+      dolbyVoiceEnabled,
     } = this.props.conferenceStore;
     const { errorMessage, isError } = this.props.errorStore;
     if (bowser.ios && bowser.chrome) {
@@ -343,7 +462,7 @@ class ConferenceRoom extends Component {
               {logo != null ? <img src={logo} /> : <div className="ddloader" />}
             </div>
             <div className="voxeet-loading-info-container">
-              {errorMessage == "NotAllowedError: Permission denied" &&
+              {errorMessage === "NotAllowedError: Permission denied" &&
                 strings.errorPermissionDeniedMicrophone}
               {bowser.msie && (
                 <Fragment>
@@ -361,7 +480,7 @@ class ConferenceRoom extends Component {
             </div>
           </div>
           <div className="voxeet-loading-info-container">
-            {errorMessage == "NotAllowedError: Permission denied" &&
+            {errorMessage === "NotAllowedError: Permission denied" &&
               strings.errorPermissionDenied}
             {bowser.msie && (
               <Fragment>
@@ -379,6 +498,8 @@ class ConferenceRoom extends Component {
           </div>
         </div>
       );
+    } else if (loading) {
+      return this.renderLoading();
     } else if (preConfig) {
       return (
         <ConferencePreConfigContainer
@@ -386,6 +507,7 @@ class ConferenceRoom extends Component {
           loadingScreen={this.props.loadingScreen}
           logo={this.props.logo}
           handleJoin={this.handleJoin}
+          dolbyVoiceEnabled={dolbyVoice}
         />
       );
     } else if (isJoined || !isWidget || conferenceReplayId != null) {
@@ -410,6 +532,7 @@ class ConferenceRoom extends Component {
           handleOnLeave={handleOnLeave}
           conferenceId={conferenceId}
           attendeesWaiting={attendeesWaiting}
+          dolbyVoiceEnabled={dolbyVoiceEnabled}
         />
       );
     }
@@ -435,8 +558,8 @@ ConferenceRoom.propTypes = {
   isWidget: PropTypes.bool,
   isAdmin: PropTypes.bool,
   ttl: PropTypes.number,
+  dolbyVoice: PropTypes.bool,
   simulcast: PropTypes.bool,
-  rtcpmode: PropTypes.string,
   mode: PropTypes.string,
   videoCodec: PropTypes.string,
   closeSessionAtHangUp: PropTypes.bool,
@@ -445,7 +568,6 @@ ConferenceRoom.propTypes = {
   preConfig: PropTypes.bool,
   chromeExtensionId: PropTypes.string,
   autoRecording: PropTypes.bool,
-  autoHls: PropTypes.bool,
   userInfo: PropTypes.object,
   invitedUsers: PropTypes.array,
   constraints: PropTypes.object,
@@ -468,8 +590,8 @@ ConferenceRoom.propTypes = {
 
 ConferenceRoom.defaultProps = {
   isWidget: true,
+  dolbyVoice: true,
   kickOnHangUp: false,
-  autoHls: false,
   autoRecording: false,
   disableSounds: false,
   invitedUsers: null,
@@ -485,7 +607,6 @@ ConferenceRoom.defaultProps = {
   liveRecordingEnabled: false,
   ttl: 0,
   simulcast: false,
-  rtcpmode: "worst",
   mode: "standard",
   videoCodec: "H264",
   preConfig: false,

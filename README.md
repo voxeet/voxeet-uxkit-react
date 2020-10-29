@@ -9,6 +9,64 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 3.0.0
+
+#### Features
+
+- Support for SDK 3.0 and Dolby Voice conference, including support for Audio Transparency Mode and listen-only mode.
+
+#### Bug fixes
+
+- Fixed a problem where Safari does not play audio when joining the conference in listen-only mode.
+- Corrected several issues related to network errors during the call.
+
+### 2.1.5
+
+#### Bug fixes
+
+- Fixed an issue with ignoring logo props during loading.
+- Added translation for an active speaker overlay.
+- Improved the file presentation UI, which introduces cropped images and removal of a grey bar in the thumbnails area.
+
+### 2.1.4
+
+#### Bug fixes
+
+- Fixed an issue with enabled participants' cameras after the end of a conference.
+
+### 2.1.3
+
+#### Device management overhaul
+
+- Now in the call, if you disconnect/connect new audio devices they show up correctly in the device list so you can switch freely between devices.
+- Improved device access failure error handling to provide the correct UI message to the user for troubleshooting purposes.
+- Allows output device selection in listen-only mode.
+- Previously used devices are saved in the device list.
+
+#### Tile layout improvement
+
+- In anticipation of future design of limited video users, an active speaker pop-up appears, similar to BlueJeans functionality.
+- The video frames are now uniform; inconsistent aspect ratio video frames are scaled down to fit the available rectangle for the user, making the tile layout uniform.
+
+#### Other changes
+
+- Addition of quality indicator and mute button in the Attendees list
+- Delayed active speaker switching (prevents switching too soon)
+- The view refreshed/updated if the active speaker leaves the conference
+
+### 2.1.1 / 2.1.2
+
+#### Features
+
+- Ability to customise sounds
+
+#### Bug fixes
+
+- Mobile layout improvements
+- Number of participant in the bottom bar is fixed (Listeners are now included)
+- Fix invite participant
+- RtcpMode option has been removed
+
 ### 2.1.0
 
 #### Features
@@ -212,7 +270,6 @@ The Widget is translate in english and french. The language will be automaticall
 | `isWidget`               | Boolean         | true                                                                                                                                           | Indicate if component used like widget or embedded in your app                                                                                                                                               |
 | `chromeExtensionId`      | String          | null                                                                                                                                           | The Id from your Chrome Web Extension to screenshare (needed only on Chrome)                                                                                                                                 |
 | `autoRecording`          | Boolean         | false                                                                                                                                          | Automatically record the conference when joining the conference (if it's not already start)                                                                                                                  |
-| `autoHls`                | Boolean         | false                                                                                                                                          | Automatically start Hls broadcast when the conference is created                                                                                                                                             |
 | `closeSessionAtHangUp`   | Boolean         | true                                                                                                                                           | Automatically close the session of the current user when hang up                                                                                                                                             |
 | `isModal`                | Boolean         | false                                                                                                                                          | Indicate if component displayed like modal                                                                                                                                                                   |
 | `loadingScreen`          | Component       | LoadingScreen                                                                                                                                  | Put your own loading screen instead of Voxeet loading screen                                                                                                                                                 |

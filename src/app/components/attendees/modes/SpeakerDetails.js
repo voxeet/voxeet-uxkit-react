@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import AttendeesParticipantVideo from "../AttendeesParticipantVideo";
 import AttendeesParticipantVuMeter from "../AttendeesParticipantVuMeter";
-import AttendeesParticipantMute from "../AttendeesParticipantMute";
 
 class SpeakerDetails extends Component {
   constructor(props) {

@@ -11,7 +11,7 @@ import { Actions as ActiveSpeakerActions } from "../../actions/ActiveSpeakerActi
 import {
   MODE_LIST,
   MODE_TILES,
-  MODE_SPEAKER
+  MODE_SPEAKER,
 } from "../../constants/DisplayModes";
 import { BROADCAST_KICK } from "../../constants/BroadcastMessageType";
 
@@ -19,22 +19,26 @@ import Modal from "./modal/Modal";
 import AttendeesHeader from "./AttendeesHeader";
 import OnBoardingMessage from "./onBoardingMessage/onBoardingMessage";
 import OnBoardingMessageWithAction from "./onBoardingMessage/onBoardingMessageWithAction";
+import OnBoardingMessageWithDescription from "./onBoardingMessage/onBoardingMessageWithDescription";
+import OnBoardingMessageOverlay from "./onBoardingMessage/onBoardingMessageOverlay";
+import ActiveSpeakerOverlay from "./modes/ActiveSpeakerOverlay";
 import {
   List,
   ListWidget,
   Speakers,
   Tiles,
   View3D,
-  ToggleModeButton
+  ToggleModeButton,
 } from "./modes";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
+import OnBoardingMessageWithConfirmation from "./onBoardingMessage/onBoardingMessageWithConfirmation";
 
-@connect(store => {
+@connect((store) => {
   return {
     participantStore: store.voxeet.participants,
-    errorStore: store.voxeet.error
+    errorStore: store.voxeet.error,
   };
 })
 class Attendees extends Component {
@@ -116,7 +120,8 @@ class Attendees extends Component {
       ...this.props,
       attendeesListOpened: this.props.attendeesListOpened,
       isWebinar: this.props.participantStore.isWebinar,
-      isAdmin: this.props.participantStore.isAdmin
+      isAdmin: this.props.participantStore.isAdmin,
+      toggleMicrophone: this.toggleMicrophone
     });
   }
 
@@ -125,7 +130,7 @@ class Attendees extends Component {
       ...this.props,
       attendeesChatOpened: this.props.attendeesChatOpened,
       participants: this.props.participantStore.participants,
-      currentUser: this.props.participantStore.currentUser
+      currentUser: this.props.participantStore.currentUser,
     });
   }
 
@@ -146,7 +151,8 @@ class Attendees extends Component {
       attendeesChatOpened,
       attendeesSettingsOpened,
       conferenceId,
-      isVideoPresentation
+      isVideoPresentation,
+      dolbyVoiceEnabled,
     } = this.props;
     const {
       participants,
@@ -160,9 +166,9 @@ class Attendees extends Component {
       userIdFilePresentation,
       userIdVideoPresentation,
       userStream,
-      currentUser
+      currentUser,
     } = this.props.participantStore;
-    const participantsConnected = participants.filter(p => p.isConnected);
+    const participantsConnected = participants.filter((p) => p.isConnected);
     return (
       <div
         id="conference-attendees"
@@ -190,13 +196,23 @@ class Attendees extends Component {
 
         {!forceFullscreen && !isWidgetFullScreenOn && <AttendeesHeader />}
 
+        <OnBoardingMessageWithConfirmation />
         <OnBoardingMessageWithAction />
+        <OnBoardingMessageWithDescription />
         <OnBoardingMessage />
+        <OnBoardingMessageOverlay />
+
+        { mode === MODE_TILES &&
+          (<ActiveSpeakerOverlay
+            participants={participantsConnected}
+            currentUser={currentUser}/>)}
 
         {!bowser.msie && (
           <AttendeesSettings
             videoEnabled={videoEnabled}
+            isListener={currentUser.isListener}
             attendeesSettingsOpened={this.props.attendeesSettingsOpened}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
           />
         )}
 
@@ -244,6 +260,7 @@ class Attendees extends Component {
                 setUserPosition={this.setUserPosition}
                 saveUserPosition={this.saveUserPosition}
                 toggleMicrophone={this.toggleMicrophone}
+                dolbyVoiceEnabled={dolbyVoiceEnabled}
               />
             )}
           {mode === MODE_TILES &&
@@ -268,6 +285,7 @@ class Attendees extends Component {
                 kickParticipant={this.kickParticipant}
                 toggleMicrophone={this.toggleMicrophone}
                 isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
+                dolbyVoiceEnabled={dolbyVoiceEnabled}
               />
             )}
           {mode === MODE_SPEAKER &&
@@ -304,6 +322,7 @@ class Attendees extends Component {
                 isScreenshare={isScreenshare}
                 isVideoPresentation={isVideoPresentation}
                 screenShareStream={userStreamScreenShare}
+                dolbyVoiceEnabled={dolbyVoiceEnabled}
               />
             )}
           {participantsConnected.length === 0 &&
@@ -337,7 +356,8 @@ Attendees.propTypes = {
   isFilePresentation: PropTypes.bool,
   attendeesWaiting: PropTypes.func,
   attendeesChat: PropTypes.func,
-  attendeesList: PropTypes.func
+  attendeesList: PropTypes.func,
+  dolbyVoiceEnabled: PropTypes.func,
 };
 
 export default Attendees;

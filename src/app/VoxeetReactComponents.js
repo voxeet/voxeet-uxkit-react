@@ -1,6 +1,7 @@
 import reducer from "./reducers";
 import ConferenceRoom from "./components/ConferenceRoom";
 import { Provider } from "@voxeet/react-redux-5.1.1";
+import ConferenceSounds from "./libs/sounds";
 
 import {
   ToggleMicrophoneButton,
@@ -36,5 +37,6 @@ module.exports = {
     ToggleAttendeesChatButton,
     TogglePSTN,
     ToggleAttendeesListButton
-  }
+  },
+  ConferenceSounds,
 };

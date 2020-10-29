@@ -29,12 +29,13 @@ export class Actions {
       }
     };
   }
-  static onParticipantWaitingStatusUpdated(userId, status) {
+  static onParticipantWaitingStatusUpdated(userId, status, type) {
     return {
       type: Types.PARTICIPANT_WAITING_STATUS_UPDATED,
       payload: {
         userId,
-        status
+        status,
+        type
       }
     };
   }
