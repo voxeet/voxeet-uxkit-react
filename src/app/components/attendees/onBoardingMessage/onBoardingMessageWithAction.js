@@ -40,7 +40,7 @@ class OnBoardingMessageWithAction extends Component {
       messageWithAction,
       linkWithAction,
       displayOnBoardingMessageWithAction,
-      isError
+      isError,
     } = this.props.onBoardingMessageWithAction;
     return (
       <div

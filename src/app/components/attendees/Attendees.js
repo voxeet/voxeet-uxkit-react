@@ -33,6 +33,7 @@ import {
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
+import OnBoardingMessageWithConfirmation from "./onBoardingMessage/onBoardingMessageWithConfirmation";
 
 @connect((store) => {
   return {
@@ -195,10 +196,12 @@ class Attendees extends Component {
 
         {!forceFullscreen && !isWidgetFullScreenOn && <AttendeesHeader />}
 
+        <OnBoardingMessageWithConfirmation />
         <OnBoardingMessageWithAction />
         <OnBoardingMessageWithDescription />
         <OnBoardingMessage />
         <OnBoardingMessageOverlay />
+
         { mode === MODE_TILES &&
           (<ActiveSpeakerOverlay
             participants={participantsConnected}

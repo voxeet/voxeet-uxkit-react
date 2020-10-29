@@ -280,9 +280,10 @@ class ConferenceRoom extends Component {
         (!isWebinar || (isWebinar && isAdmin))
             ? (preConfig)
             : false;
-    const shouldStart = await this.preConfigCheck(doPreConfig);
 
-    this.setState({loading:false, preConfig: shouldStart}, () => {
+    const shouldStartPreConfig = doPreConfig? await this.preConfigCheck(doPreConfig): preConfig;
+
+    this.setState({loading:false, preConfig: shouldStartPreConfig}, () => {
       if (!this.state.preConfig) {
         this.startConferenceWithParams();
       }

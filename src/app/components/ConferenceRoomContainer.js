@@ -88,6 +88,10 @@ class ConferenceRoomContainer extends Component {
     }
   }
 
+  playBlockedAudio() {
+    this.props.dispatch(ConferenceActions.playBlockedAudio());
+  }
+
   toggleMicrophone() {
     this.props.dispatch(ConferenceActions.toggleMicrophone());
   }
