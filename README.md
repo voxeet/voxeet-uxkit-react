@@ -9,6 +9,31 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 3.0.0
+
+#### Features
+
+- Support for SDK 3.0 and Dolby Voice conference, including support for Audio Transparency Mode and listen-only mode.
+
+#### Bug fixes
+
+- Fixed a problem where Safari does not play audio when joining the conference in listen-only mode.
+- Corrected several issues related to network errors during the call.
+
+### 2.1.5
+
+#### Bug fixes
+
+- Fixed an issue with ignoring logo props during loading.
+- Added translation for an active speaker overlay.
+- Improved the file presentation UI, which introduces cropped images and removal of a grey bar in the thumbnails area.
+
+### 2.1.4
+
+#### Bug fixes
+
+- Fixed an issue with enabled participants' cameras after the end of a conference.
+
 ### 2.1.3
 
 #### Device management overhaul
@@ -17,12 +42,12 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 - Improved device access failure error handling to provide the correct UI message to the user for troubleshooting purposes.
 - Allows output device selection in listen-only mode.
 - Previously used devices are saved in the device list.
- 
+
 #### Tile layout improvement
 
-- In anticipation of future design of limited video users, an active speaker pop-up appears, similar to BlueJeans functionality. 
+- In anticipation of future design of limited video users, an active speaker pop-up appears, similar to BlueJeans functionality.
 - The video frames are now uniform; inconsistent aspect ratio video frames are scaled down to fit the available rectangle for the user, making the tile layout uniform.
- 
+
 #### Other changes
 
 - Addition of quality indicator and mute button in the Attendees list
