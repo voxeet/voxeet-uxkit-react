@@ -3,7 +3,7 @@ name: Release build
 on:
   push:
     tags:
-    - 'rel/*'
+    - '*'
 
 jobs:
   release:
