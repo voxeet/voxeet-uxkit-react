@@ -24,7 +24,10 @@ jobs:
 
       - id: codeartifact_login
         name: Login to CodeArtifact
-        run: echo "::set-output name=code_artifact_token::$(/usr/local/bin/aws codeartifact get-authorization-token --duration-seconds 900 --domain ${{ secrets.CODEARTIFACT_DOMAIN }} --domain-owner ${{ secrets.CODEARTIFACT_DOMAIN_OWNER }} --region ${{ secrets.AWS_REGION }} --output text --query authorizationToken)"
+        run: |
+          CODEARTIFACT_TOKEN=$(/usr/local/bin/aws codeartifact get-authorization-token --duration-seconds 900 --domain ${{ secrets.CODEARTIFACT_DOMAIN }} --domain-owner ${{ secrets.CODEARTIFACT_DOMAIN_OWNER }} --region ${{ secrets.AWS_REGION }} --output text --query authorizationToken)
+          echo "::add-mask::$CODEARTIFACT_TOKEN"
+          echo "CODEARTIFACT_TOKEN=$CODEARTIFACT_TOKEN" >> $GITHUB_ENV
 
       - name: setting nodejs
         uses: actions/setup-node@v1
@@ -37,7 +40,7 @@ jobs:
         run: |
           yarn install
         env:
-          NODE_AUTH_TOKEN: ${{ steps.codeartifact_login.outputs.code_artifact_token }}
+          NODE_AUTH_TOKEN: ${{ env.CODEARTIFACT_TOKEN }}
 
       - name: build
         run: |
