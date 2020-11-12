@@ -273,6 +273,10 @@ class ConferenceRoom extends Component {
     console.log("UXKit Version: " + __VERSION__);
     let props = this.props;
     const { isWebinar, isAdmin, isListener, preConfig } = this.props;
+    let doPreConfigCheck =
+        (!isListener &&
+        // !isMobile() &&
+        (!isWebinar || (isWebinar && isAdmin)));
     let doPreConfig =
         !isListener &&
         !bowser.msie &&
@@ -281,7 +285,7 @@ class ConferenceRoom extends Component {
             ? (preConfig)
             : false;
 
-    const shouldStartPreConfig = doPreConfig? await this.preConfigCheck(doPreConfig): preConfig;
+    const shouldStartPreConfig = doPreConfigCheck? await this.preConfigCheck(doPreConfig): doPreConfig;
 
     this.setState({loading:false, preConfig: shouldStartPreConfig}, () => {
       if (!this.state.preConfig) {
@@ -324,45 +328,47 @@ class ConferenceRoom extends Component {
         // Request access to audio video devices
         await checkPermissions();
         //console.log('About to check Auto-play', await canAutoPlay.audio({inline:true, muted:false}), await canAutoPlay.video({inline:true, muted:false}), constraints);
-        let canAutoPlayAudio = (!constraints || !constraints.audio)? {result: true} : await canAutoPlay.audio({inline:true, muted:false});
+        /*let canAutoPlayAudio = (!constraints || !constraints.audio)? {result: true} : await canAutoPlay.audio({inline:true, muted:false});
         let canAutoPlayVideo = (!constraints || !constraints.video)? {result: true} : await canAutoPlay.video({inline:true, muted:false});
         if(!canAutoPlayAudio.result || !canAutoPlayVideo.result) {
           console.log('Auto-play check failed... will force preconfig', canAutoPlayAudio, canAutoPlayVideo);
           return this.setState({preConfig: true}, () => {
             resolve(true)
           });
-        } else if(constraints && (constraints.audio || constraints.video)) {
+        } else*/ if(constraints && (constraints.audio || constraints.video)) {
           //console.log('About to check preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
-          // Check cookies
-          if(constraints.audio && !Cookies.get("input")) {
+          // Check selected devices stored in cookies
+          if(constraints.audio && !Cookies.get("input") && !isMobile()) {
             console.log('Audio input not configured... will force preconfig');
             return this.setState({preConfig: true}, () => {
               resolve(true)
             });
           }
-          if(constraints.video && !Cookies.get("camera")) {
+          if(constraints.video && !Cookies.get("camera") && !isMobile()) {
             console.log('Camera input not configured... will force preconfig');
             return this.setState({preConfig: true}, () => {
               resolve(true)
             });
           }
+          let selectedAudio = Cookies.get("input") || "default",
+              selectedVideo = Cookies.get("camera") || "default";
           // console.log('About to check availability of preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
           // Check if exists device with Id set in cookies
           let foundAudio = !constraints.audio?
               true :
               await VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
-                return devices.find( (source) => (Cookies.get("input") == source.deviceId) );
+                return devices.find( (source) => (selectedAudio == source.deviceId) );
               });
           let foundVideo = !constraints.video?
               true :
               await VoxeetSDK.mediaDevice.enumerateVideoDevices().then((devices) => {
-                return devices.find( (source) => (Cookies.get("camera") == source.deviceId) );
+                return devices.find( (source) => (selectedVideo == source.deviceId) );
               });
           // TODO: prevent read errors
-          console.log('About to check availability of preconfigured audio input / camera streams', Cookies.get("input"), Cookies.get("camera"));
+          console.log('About to check availability of preconfigured audio input / camera streams', selectedAudio, selectedVideo);
           let gotAudioStream = true;
           if(constraints.audio) {
-            gotAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: Cookies.get("input") } } })
+            gotAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: selectedAudio } } })
                 .then((stream) => {
                   stream.getTracks().forEach(track => {
                     track.stop();
@@ -376,7 +382,7 @@ class ConferenceRoom extends Component {
           }
           let gotVideoStream = true;
           if(constraints.video) {
-            gotVideoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: Cookies.get("camera") } } })
+            gotVideoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: selectedVideo } } })
                 .then((stream) => {
                   stream.getTracks().forEach(track => {
                     track.stop();
