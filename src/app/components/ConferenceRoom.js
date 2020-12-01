@@ -97,6 +97,7 @@ class ConferenceRoom extends Component {
       isAdmin,
       oauthToken,
       disableSounds,
+      dvwc,
       simulcast,
       invitedUsers,
       refreshTokenCallback,
@@ -281,7 +282,8 @@ class ConferenceRoom extends Component {
               simulcast,
               dolbyVoice,
               maxVideoForwarding,
-              chatOptions
+              chatOptions,
+              dvwc
             )
           );
         });
@@ -710,6 +712,7 @@ ConferenceRoom.propTypes = {
   userInfo: PropTypes.object,
   chatOptions: PropTypes.object,
   invitedUsers: PropTypes.array,
+  dvwc: PropTypes.bool,
   constraints: PropTypes.object,
   videoRatio: PropTypes.object,
   autoJoin: PropTypes.bool,
@@ -751,6 +754,7 @@ ConferenceRoom.defaultProps = {
   mode: "standard",
   videoCodec: "H264",
   preConfig: false,
+  dvwc: false,
   conferenceId: null,
   isListener: false,
   isAdmin: false,
