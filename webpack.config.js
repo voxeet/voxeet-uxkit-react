@@ -80,7 +80,6 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([{ from: "./src/static", ignore: ["*.html"] }]),
-    new CopyWebpackPlugin([{ from: "./node_modules/@voxeet/voxeet-web-sdk/dist/dvwc_impl.wasm"}]),
     new HtmlWebpackPlugin({
       inject: true,
       template: "src/static/index.html",
