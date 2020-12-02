@@ -399,7 +399,7 @@ export class Actions {
             .then((conference) => {
               if ((participants.isWebinar && !isAdmin) || isListener) {
                 return VoxeetSDK.conference
-                  .listen(conference)
+                  .listen(conference, dvwc)
                   .then(function (res) {
                     dispatch(
                       ParticipantActions.saveCurrentUser(
