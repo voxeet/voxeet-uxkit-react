@@ -30,11 +30,14 @@ class AttendeesSettings extends Component {
       outputDevices: [],
       testAudio: null,
       testAudioPlaying: false,
+      vfsValue: 16,
     };
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
     this.setOutputDevice = this.setOutputDevice.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
+    this.onVfsValueChange = this.onVfsValueChange.bind(this);
+    this.onVfsValidate = this.onVfsValidate.bind(this);
     this.onAudioTransparentModeChange = this.onAudioTransparentModeChange.bind(this);
 
     this.isIOS = isIOS();
@@ -54,6 +57,11 @@ class AttendeesSettings extends Component {
   componentDidMount() {
     this.initDevices();
     navigator.mediaDevices.addEventListener('devicechange', this.onDeviceChange);
+  }
+
+  onVfsValidate(e) {
+    e.preventDefault();
+    VoxeetSDK.conference.videoForwarding(parseInt(this.state.vfsValue), []);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -79,6 +87,10 @@ class AttendeesSettings extends Component {
   onAudioTransparentModeChange() {
     const { audioTransparentMode } = this.props.controlsStore;
     this.props.dispatch(ConferenceActions.toggleAudioTransparentMode(!audioTransparentMode));
+  }
+
+  onVfsValueChange(e) {
+    this.setState({ vfsValue: e.target.value });
   }
 
   initDevices() {
@@ -323,9 +335,25 @@ class AttendeesSettings extends Component {
                       </label>
                     </div>
                   </div>}
-                  </Fragment>
-                )
-              }
+
+                  <div className="form-group number-input-mode">
+                      <input
+                          id="vfsValue"
+                          name="vfsValue"
+                          type="number"
+                          onChange={this.onVfsValueChange}
+                          value={this.state.vfsValue}
+                          min="0"
+                          max="16"
+                      />
+                      <label htmlFor="vfsValue">
+                        Video forwarding value
+                      </label>
+                      <button onClick={this.onVfsValidate}>Validate</button>
+                  </div>
+                  
+                </Fragment>
+                )}
               <div className="hint-text">
                 <p>{strings.problemSettings}</p>
                 <p>{strings.saveSettings}</p>
