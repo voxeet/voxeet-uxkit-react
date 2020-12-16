@@ -33,6 +33,8 @@ export const strings = new LocalizedStrings({
     titleCallSetupError:'Call Setup Error',
     titleProgramError:'Program Error',
     titleSystemError:'System Error',
+    titleConferenceCapacityError:'Unable to join the conference.',
+    descConferenceCapacityError:'Conference is at the maximum capacity and is not accepting new participants.',
     descPeerConnectionFailedError: 'Your computer cannot connect to the communications platform, check your network setup, and try again. ' +
         'If the problem persists, contact your app provider for help.',
     descPeerConnectionDisconnectedError: 'There was a temporary network glitch that may have affected your call, if the problem persists please disconnect and rejoin.',

@@ -504,6 +504,25 @@ class ConferenceRoom extends Component {
           </div>
         </div>
       );
+    } else if (!initialized && !isJoined && isError) {
+      return (
+        <div className="voxeet-loading-message-container">
+          <div className="voxeet-loading-center-container">
+            <div className="voxeet-loading-logo-container">
+              {logo != null ? <img src={logo} /> : <div className="ddloader" />}
+            </div>
+            <div className="voxeet-loading-info-container">
+              {errorMessage === "MaxCapacityError: Conference is at maximum capacity."}
+                <Fragment>
+                  {strings.titleConferenceCapacityError}
+                    <div>
+                      {strings.descConferenceCapacityError}
+                    </div>
+                </Fragment>
+            </div>
+          </div>
+        </div>
+      );
     } else if (loading) {
       return this.renderLoading();
     } else if (preConfig) {

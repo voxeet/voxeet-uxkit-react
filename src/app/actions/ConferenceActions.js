@@ -1378,6 +1378,11 @@ export class Actions {
             description = null;
             isError = true;
             break;
+          case "MaxCapacityError":
+            title = strings.titleConferenceCapacityError;
+            description = strings.descConferenceCapacityError;
+            isError = true;
+            break;
           default:
             // title = strings[`titleDefaultError`];
             // description = strings[`descDefaultError`];
