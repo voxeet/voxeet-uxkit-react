@@ -1705,6 +1705,7 @@ export class Actions {
   }
 
   static _conferenceJoined(conferenceId, conferencePincode, dolbyVoiceEnabled) {
+    VoxeetSDK.configureStateDump(60);
     return {
       type: Types.CONFERENCE_JOINED,
       payload: {
