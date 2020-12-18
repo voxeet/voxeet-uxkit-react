@@ -357,7 +357,7 @@ Attendees.propTypes = {
   attendeesWaiting: PropTypes.func,
   attendeesChat: PropTypes.func,
   attendeesList: PropTypes.func,
-  dolbyVoiceEnabled: PropTypes.func,
+  dolbyVoiceEnabled: PropTypes.bool,
 };
 
 export default Attendees;

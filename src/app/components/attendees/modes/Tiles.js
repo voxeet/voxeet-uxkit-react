@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import Tile from "./Tile";
 import OwnTile from "./OwnTile";
-import AttendeesWaitingWebinarListener from "../AttendeesWaitingWebinarListener";
 
 class Tiles extends Component {
   constructor(props) {
@@ -22,11 +21,28 @@ class Tiles extends Component {
       isWebinar,
       dolbyVoiceEnabled,
     } = this.props;
-    let nbParticipants = participants.filter(
-      (p) => p.isConnected && p.type == "user"
-    ).length;
-    if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
+    let tilesParticipants = participants.filter(
+        (p) => p.isConnected && p.type == "user"
+    );
+    let videoParticipants = tilesParticipants.filter(
+        (p) => p.isConnected && p.type == "user" &&
+            ((p.stream !== null) &&
+                (p.stream.active) &&
+                (p.stream.getVideoTracks().length > 0)
+            )
+    );
+    let hasVideoParticipants = videoParticipants && videoParticipants.length>0;
+    let IHaveVideo = (!currentUser || (currentUser.stream && currentUser.stream.getVideoTracks().length > 0));
+    if(hasVideoParticipants || IHaveVideo)
+      tilesParticipants = videoParticipants;
+    let showOwnTile = ((!isWebinar && !currentUser.isListener) ||
+        (isWebinar && isAdmin)) &&
+        (IHaveVideo || !hasVideoParticipants);
+
+    let nbParticipants = tilesParticipants.length;
+    if (showOwnTile)
       nbParticipants += 1;
+
     let count = -1;
     return (
       <div
@@ -34,12 +50,12 @@ class Tiles extends Component {
         data-number-user={nbParticipants <= 16 ? nbParticipants : 16}
       >
         <div className={"tiles-list list" + nbParticipants}>
-          {((!isWebinar && !currentUser.isListener) ||
-            (isWebinar && isAdmin)) && (
+          { showOwnTile && (
             <OwnTile
               participant={currentUser}
               isAdminActived={isAdminActived}
               mySelf={true}
+              nbParticipant={++count}
               kickParticipant={kickParticipant}
               isAdmin={isAdmin}
               toggleMicrophone={toggleMicrophone}
@@ -47,24 +63,22 @@ class Tiles extends Component {
               dolbyVoiceEnabled={dolbyVoiceEnabled}
             />
           )}
-          {participants.map((participant, i) => {
-            if (participant.isConnected && participant.type == "user") {
-              count = count + 1;
-              return (
-                <Tile
-                  participant={participant}
-                  nbParticipant={count}
-                  mySelf={false}
-                  isAdminActived={isAdminActived}
-                  key={i}
-                  kickParticipant={kickParticipant}
-                  isAdmin={isAdmin}
-                  toggleMicrophone={toggleMicrophone}
-                  isWidgetFullScreenOn={isWidgetFullScreenOn}
-                  dolbyVoiceEnabled={dolbyVoiceEnabled}
-                />
-              );
-            }
+          {tilesParticipants.map((participant, i) => {
+            count = count + 1;
+            return (
+              <Tile
+                participant={participant}
+                nbParticipant={count}
+                mySelf={false}
+                isAdminActived={isAdminActived}
+                key={i}
+                kickParticipant={kickParticipant}
+                isAdmin={isAdmin}
+                toggleMicrophone={toggleMicrophone}
+                isWidgetFullScreenOn={isWidgetFullScreenOn}
+                dolbyVoiceEnabled={dolbyVoiceEnabled}
+              />
+            );
           })}
         </div>
       </div>
