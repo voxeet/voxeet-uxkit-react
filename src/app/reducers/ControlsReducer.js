@@ -41,6 +41,7 @@ const defaultState = {
   displayAttendeesSettings: false,
   displayAttendeesChat: false,
   audioTransparentMode: false,
+  maxVideoForwarding: undefined
 };
 
 const ControlsReducer = (state = defaultState, action) => {
@@ -203,6 +204,19 @@ const ControlsReducer = (state = defaultState, action) => {
       return {
         ...state,
         audioTransparentMode: !currentStatus
+      };
+    }
+    case Types.SET_AUDIO_TRANSPARENT_MODE: {
+      const audioTransparentMode = action.payload.audioTransparentMode;
+      return {
+        ...state,
+        audioTransparentMode
+      };
+    }
+    case Types.TOGGLE_MAX_REMOTE_PARTICIPANTS: {
+      return {
+        ...state,
+        maxVideoForwarding: action.payload.maxVideoForwarding
       };
     }
     case Types.TOGGLE_AUDIO: {

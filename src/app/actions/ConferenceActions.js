@@ -340,8 +340,12 @@ export class Actions {
     autoRecording,
     pinCode,
     simulcast,
-    enableDolbyVoice
+    enableDolbyVoice,
+    maxVideoForwardingParam
   ) {
+    let maxVideoForwarding = (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined?
+        preConfigPayload.maxVideoForwarding:
+        maxVideoForwardingParam);
     return (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
@@ -407,6 +411,7 @@ export class Actions {
                   .join(conference, {
                     constraints: { audio: false, video: false },
                     simulcast: simulcast,
+                    maxVideoForwarding: maxVideoForwarding,
                   })
                   .then(function (res) {
                     if (isIOS() && navigator.userAgent.match(/AppleWebKit/)) {
@@ -471,6 +476,7 @@ export class Actions {
                     constraints,
                     simulcast: simulcast,
                     audio3D: false,
+                    maxVideoForwarding: maxVideoForwarding,
                   })
                   .then((res) => {
                     dispatch(
@@ -579,6 +585,7 @@ export class Actions {
                 constraints,
                 simulcast: simulcast,
                 audio3D: false,
+                maxVideoForwarding: maxVideoForwarding,
               })
               .then((res) => {
                 if (VoxeetSDK.extensions.hasElectron()) {
@@ -644,10 +651,16 @@ export class Actions {
                   }
                   if (
                     preConfigPayload &&
-                    preConfigPayload.audioTransparentMode
+                    preConfigPayload.audioTransparentMode !== undefined
                   ) {
                     dispatch(
-                      ConferenceActions.toggleAudioTransparentMode(true)
+                      ConferenceActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode)
+                    );
+                  }
+                  if (maxVideoForwarding!==undefined
+                  ) {
+                    dispatch(
+                      ControlsActions.setMaxVideoForwarding(maxVideoForwarding)
                     );
                   }
                 }
@@ -800,15 +813,23 @@ export class Actions {
     };
   }
 
-  static toggleAudioTransparentMode(enabled) {
+  static setAudioTransparentMode(enabled) {
     return (dispatch) => {
       return VoxeetSDK.conference
         .audioProcessing(VoxeetSDK.session.participant, {
-          send: { audioProcessing: !enabled },
+          send: { audioProcessing: enabled },
         })
         .then(() => {
-          dispatch(ControlsActions.toggleAudioTransparentMode());
+          dispatch(ControlsActions.setAudioTransparentMode(enabled));
         });
+    };
+  }
+
+  static setMaxVideoForwarding(value) {
+    return (dispatch) => {
+      return VoxeetSDK.conference.videoForwarding(value).then( () => {
+        dispatch(ControlsActions.setMaxVideoForwarding(value));
+      });
     };
   }
 

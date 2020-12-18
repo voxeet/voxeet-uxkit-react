@@ -222,6 +222,7 @@ class ConferenceRoomContainer extends Component {
       conferencePincode,
       conferenceId,
       dolbyVoiceEnabled,
+      maxVideoForwarding,
     } = this.props;
     const { errorMessage, isError } = this.props.errorStore;
     const { isModalExternalLiveOpen } = this.state;

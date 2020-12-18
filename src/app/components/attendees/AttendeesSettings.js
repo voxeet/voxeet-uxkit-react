@@ -12,7 +12,17 @@ import PreConfigVuMeter from "./../preConfig/PreConfigVuMeter";
 import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
-import { isIOS } from "./../../libs/browserDetection";
+import {isIOS, isMobile} from "./../../libs/browserDetection";
+import {Actions as ControlsActions} from "../../actions/ControlsActions";
+
+var today = new Date();
+today.setDate(today.getDate() + 365);
+const default_cookies_param = {
+  path: "/",
+  expires: today,
+  secure: true,
+  sameSite: 'none'
+};
 
 @connect(store => {
   return {
@@ -23,6 +33,12 @@ import { isIOS } from "./../../libs/browserDetection";
 class AttendeesSettings extends Component {
   constructor(props) {
     super(props);
+    // defaults
+    let maxVideoForwarding = ((this.props.controlsStore.maxVideoForwarding !== undefined) ? this.props.controlsStore.maxVideoForwarding : isMobile()?4:9);
+    let audioTransparentMode = ((this.props.controlsStore.audioTransparentMode !== undefined) ? this.props.controlsStore.audioTransparentMode : false);
+    let videoEnambled = ((this.props.controlsStore.videoEnambled !== undefined) ? this.props.controlsStore.videoEnambled : true);
+    let lowBandwidthMode = !videoEnambled && !maxVideoForwarding
+
     this.state = {
       runningAnimation: false,
       audioDevices: [],
@@ -30,25 +46,20 @@ class AttendeesSettings extends Component {
       outputDevices: [],
       testAudio: null,
       testAudioPlaying: false,
+      audioTransparentMode: audioTransparentMode,
+      maxVideoForwarding: maxVideoForwarding,
+      lowBandwidthMode: lowBandwidthMode
     };
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
     this.setOutputDevice = this.setOutputDevice.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
+    this.handleChangeLowBandwidthMode = this.handleChangeLowBandwidthMode.bind(this);
     this.onAudioTransparentModeChange = this.onAudioTransparentModeChange.bind(this);
+    this.handleMaxVideoForwardingChange = this.handleMaxVideoForwardingChange.bind(this);
+    this.maxVFTimer = null;
 
     this.isIOS = isIOS();
-  }
-
-  componentDidUpdate(nextProps, nextState) {
-    if (
-      this.props.controlsStore.videoEnabled !=
-      nextProps.controlsStore.videoEnabled ||
-      this.props.controlsStore.audioEnabled !=
-      nextProps.controlsStore.audioEnabled
-    ) {
-      this.initDevices();
-    }
   }
 
   componentDidMount() {
@@ -68,17 +79,49 @@ class AttendeesSettings extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+
+    //console.log(this.props.controlsStore.maxVideoForwarding, prevProps.controlsStore.maxVideoForwarding);
+    if (
+      this.props.controlsStore &&
+        prevProps.controlsStore.maxVideoForwarding !== this.props.controlsStore.maxVideoForwarding
+    ) {
+      this.setState({
+        maxVideoForwarding: this.props.controlsStore.maxVideoForwarding,
+        lowBandwidthMode: !this.props.controlsStore.videoEnabled && !this.props.controlsStore.maxVideoForwarding
+      });
+    }
+    if (
+      this.props.controlsStore &&
+        prevProps.controlsStore.audioTransparentMode !== this.props.controlsStore.audioTransparentMode
+    ) {
+      this.setState({
+        audioTransparentMode: this.props.controlsStore.audioTransparentMode,
+      });
+    }
+    if (
+      this.props.controlsStore &&
+        prevProps.controlsStore.videoEnabled !== this.props.controlsStore.videoEnabled
+    ) {
+      this.setState({ lowBandwidthMode: !this.props.controlsStore.videoEnabled && !this.props.controlsStore.maxVideoForwarding });
+    }
+
+    if (
+        this.props.controlsStore.videoEnabled !=
+        prevProps.controlsStore.videoEnabled ||
+        this.props.controlsStore.audioEnabled !=
+        prevProps.controlsStore.audioEnabled
+    ) {
+      this.initDevices();
+    }
+  }
+
   componentWillUnmount() {
     navigator.mediaDevices.removeEventListener('devicechange', this.onDeviceChange);
   }
 
   onDeviceChange() {
     this.initDevices();
-  }
-
-  onAudioTransparentModeChange() {
-    const { audioTransparentMode } = this.props.controlsStore;
-    this.props.dispatch(ConferenceActions.toggleAudioTransparentMode(!audioTransparentMode));
   }
 
   initDevices() {
@@ -91,19 +134,12 @@ class AttendeesSettings extends Component {
           }
         });
         if (!exist && devices.length) {
-          let selected_device = devices.find(device => device.deviceId=='default');
-          if(!selected_device)
+          let selected_device = devices.find(device => device.deviceId == 'default');
+          if (!selected_device)
             selected_device = devices[0];
-          var date = new Date();
-          date.setDate(date.getDate() + 365);
-          Cookies.set("input", selected_device.deviceId, {
-            path: "/",
-            expires: date,
-            secure: true,
-            sameSite: 'none'
-          });
+          Cookies.set("input", selected_device.deviceId, default_cookies_param);
           this.props.dispatch(
-              InputManagerActions.inputAudioChange(selected_device.deviceId)
+            InputManagerActions.inputAudioChange(selected_device.deviceId)
           );
         }
       }
@@ -117,25 +153,18 @@ class AttendeesSettings extends Component {
         let exist = false;
         devices.map((device, i) => {
           if (
-              device.deviceId == this.props.inputManager.currentOutputDevice && device.deviceId != ""
+            device.deviceId == this.props.inputManager.currentOutputDevice && device.deviceId != ""
           ) {
             exist = true;
           }
         });
         if (!exist && devices.length) {
-          let selected_device = devices.find(device => device.deviceId=='default');
-          if(!selected_device)
+          let selected_device = devices.find(device => device.deviceId == 'default');
+          if (!selected_device)
             selected_device = devices[0];
-          var date = new Date();
-          date.setDate(date.getDate() + 365);
-          Cookies.set("output", selected_device.deviceId, {
-            path: "/",
-            expires: date,
-            secure: true,
-            sameSite: 'none'
-          });
+          Cookies.set("output", selected_device.deviceId, default_cookies_param);
           this.props.dispatch(
-              InputManagerActions.outputAudioChange(selected_device.deviceId)
+            InputManagerActions.outputAudioChange(selected_device.deviceId)
           );
         }
       }
@@ -153,21 +182,14 @@ class AttendeesSettings extends Component {
           }
         });
         if (!exist && devices.length) {
-          let selected_device = devices.find(device => device.deviceId=='default');
-          if(!selected_device)
+          let selected_device = devices.find(device => device.deviceId == 'default');
+          if (!selected_device)
             selected_device = devices[0];
-          var date = new Date();
-          date.setDate(date.getDate() + 365);
-          Cookies.set("camera", selected_device.deviceId, {
-            path: "/",
-            expires: date,
-            secure: true,
-            sameSite: 'none'
-          });
+          Cookies.set("camera", selected_device.deviceId, default_cookies_param);
           getVideoDeviceName(selected_device.deviceId)
-          .then((isBackCamera) => {
-            this.props.dispatch(InputManagerActions.inputVideoChange(selected_device.deviceId, isBackCamera))
-          })
+            .then((isBackCamera) => {
+              this.props.dispatch(InputManagerActions.inputVideoChange(selected_device.deviceId, isBackCamera))
+            })
         }
       }
       this.setState({
@@ -176,31 +198,17 @@ class AttendeesSettings extends Component {
     });
   }
 
-
   setOutputDevice(e) {
-    VoxeetSDK.mediaDevice.selectAudioOutput(e.target.value);
-    var date = new Date();
-    date.setDate(date.getDate() + 365);
-    Cookies.set("output", e.target.value, {
-      path: "/",
-      expires: date,
-      secure: true,
-      sameSite: 'none'
-    });
-    this.props.dispatch(InputManagerActions.outputAudioChange(e.target.value));
+    const deviceId = e.target.value;
+    VoxeetSDK.mediaDevice.selectAudioOutput(deviceId);
+    Cookies.set("output", deviceId, default_cookies_param);
+    this.props.dispatch(InputManagerActions.outputAudioChange(deviceId));
   }
 
   setAudioDevice(e) {
     e.persist();
     VoxeetSDK.mediaDevice.selectAudioInput(e.target.value).then(() => {
-      var date = new Date();
-      date.setDate(date.getDate() + 365);
-      Cookies.set("input", e.target.value, {
-        path: "/",
-        expires: date,
-        secure: true,
-        sameSite: 'none'
-      });
+      Cookies.set("input", e.target.value, default_cookies_param);
       if (this.props.microphoneMuted) {
         VoxeetSDK.conference.toggleMute(VoxeetSDK.session.participant);
       }
@@ -212,25 +220,81 @@ class AttendeesSettings extends Component {
     const { videoEnabled } = this.props;
     const deviceId = e.target.value;
     if (videoEnabled) {
-      VoxeetSDK.mediaDevice.selectVideoInput(e.target.value);
+      VoxeetSDK.mediaDevice.selectVideoInput(deviceId);
     }
-    var date = new Date();
-    date.setDate(date.getDate() + 365);
-    Cookies.set("camera", e.target.value, {
-      path: "/",
-      expires: date,
-      secure: true,
-      sameSite: 'none'
-    });
+    Cookies.set("camera", deviceId, default_cookies_param);
     getVideoDeviceName(deviceId)
-    .then((isBackCamera, currentVideoDevice) => {
-      this.props.dispatch(InputManagerActions.inputVideoChange(deviceId, isBackCamera))
+      .then((isBackCamera, currentVideoDevice) => {
+        this.props.dispatch(InputManagerActions.inputVideoChange(deviceId, isBackCamera))
+      })
+  }
+
+  onAudioTransparentModeChange() {
+    const { audioTransparentMode } = this.props.controlsStore;
+    this.setState({
+      audioTransparentMode: !audioTransparentMode
+    }, () => {
+      Cookies.set('audioTransparentMode', this.state.audioTransparentMode, default_cookies_param);
+      this.props.dispatch(ConferenceActions.setAudioTransparentMode(this.state.audioTransparentMode));
     })
   }
 
+  handleChangeLowBandwidthMode(event) {
+    if (this.maxVFTimer) {
+      clearTimeout(this.maxVFTimer);
+      this.maxVFTimer = null;
+    }
+    const low_bandwidth = event.target.checked;
+
+    this.setState({
+      lowBandwidthMode: low_bandwidth,
+      maxVideoForwarding: 0
+    }, () => {
+      if(low_bandwidth) {
+        Cookies.set('videoEnabled', false, default_cookies_param);
+        this.props.dispatch(ConferenceActions.toggleVideo(low_bandwidth));
+        Cookies.set("maxVideoForwarding", 0, default_cookies_param);
+        this.props.dispatch(ConferenceActions.setMaxVideoForwarding(0));
+      } else {
+        Cookies.set('videoEnabled', true, default_cookies_param);
+        this.props.dispatch(ConferenceActions.toggleVideo(low_bandwidth));
+        let maxVideoForwarding = isMobile()?4:9
+        Cookies.set("maxVideoForwarding", maxVideoForwarding, default_cookies_param);
+        this.props.dispatch(ConferenceActions.setMaxVideoForwarding(maxVideoForwarding));
+      }
+    })
+  }
+
+  handleMaxVideoForwardingChange(event) {
+    if (this.maxVFTimer) {
+      clearTimeout(this.maxVFTimer);
+      this.maxVFTimer = null;
+    }
+    let num;
+    const maxVF = event.target.value;
+
+    try { num = parseInt(maxVF) } catch (e) { };
+    if (num !== undefined && !isNaN(num)) {
+      this.setState({ maxVideoForwarding: num }, () => {
+        this.maxVFTimer = setTimeout(() => {
+          console.log('handleMaxVideoForwardingChange', num);
+          Cookies.set("maxVideoForwarding", num, default_cookies_param);
+          this.props.dispatch(ConferenceActions.setMaxVideoForwarding(num));
+          clearTimeout(this.maxVFTimer);
+          this.maxVFTimer = null;
+        }, 1500);
+      });
+    }
+    else {
+      this.setState({ maxVideoForwarding: '' });
+    }
+  }
+
   render() {
-    const { audioTransparentMode } = this.props.controlsStore;
+    const { lowBandwidthMode, maxVideoForwarding, audioTransparentMode } = this.state;
+    //const { audioTransparentMode } = this.props.controlsStore;
     const { attendeesSettingsOpened, isListener, dolbyVoiceEnabled } = this.props;
+    const MAX_MAXVF = isMobile()?4:16;
     const {
       currentAudioDevice,
       currentVideoDevice,
@@ -247,7 +311,7 @@ class AttendeesSettings extends Component {
         }
       >
         <div className="attendees-settings-header">
-          <h1>{!isListener?strings.titleSettings:strings.titleSettingsListenerOnly}</h1>
+          <h1>{!isListener ? strings.titleSettings : strings.titleSettingsListenerOnly}</h1>
         </div>
 
         <div className="settings">
@@ -271,59 +335,93 @@ class AttendeesSettings extends Component {
                   </select>
                 </div>
               )}
-              { !isListener &&
+              {!isListener &&
                 (<Fragment>
-                    <div className="form-group last">
-                      {/* <label htmlFor="video">Camera</label> */}
-                      <select
-                          name="video"
-                          value={currentVideoDevice}
-                          className="form-control select-video-device"
-                          onChange={this.setVideoDevice}
-                          disabled={false}
-                      >
-                        {this.state.videoDevices.map((device, i) => (
-                            <option key={i} value={device.deviceId}>
-                              {device.label}
-                            </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      {/* <label htmlFor="video">Microphone</label> */}
-                      <select
+                  <div className="form-group last">
+                    {/* <label htmlFor="video">Camera</label> */}
+                    <select
+                      name="video"
+                      value={currentVideoDevice}
+                      className="form-control select-video-device"
+                      onChange={this.setVideoDevice}
+                      disabled={false}
+                    >
+                      {this.state.videoDevices.map((device, i) => (
+                        <option key={i} value={device.deviceId}>
+                          {device.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    {/* <label htmlFor="video">Microphone</label> */}
+                    <select
                       name="audio"
                       value={currentAudioDevice}
                       className="form-control select-audio-input"
                       onChange={this.setAudioDevice}
-                      >
+                    >
                       {this.state.audioDevices.map((device, i) => (
-                          <option key={i} value={device.deviceId}>
-                            {device.label}
-                          </option>
+                        <option key={i} value={device.deviceId}>
+                          {device.label}
+                        </option>
                       ))}
-                      </select>
-                    </div>
-                    <div className="form-group">
-                    { (this.isIOS) ?
-                      <AttendeesSettingsVuMeter maxLevel={21}/>:
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    {(this.isIOS) ?
+                      <AttendeesSettingsVuMeter maxLevel={21} /> :
                       <PreConfigVuMeter maxLevel={21} />}
-                    </div>
-                  { dolbyVoiceEnabled && <div className="form-group switch-enable">
+                  </div>
+                  {dolbyVoiceEnabled && <div className="form-group switch-enable">
                     <div className='switch-mode'>
                       <input
-                          id="audioTransparentMode"
-                          name="audioTransparentMode"
-                          type="checkbox"
-                          onChange={this.onAudioTransparentModeChange}
-                          checked={audioTransparentMode}
+                        id="audioTransparentMode"
+                        name="audioTransparentMode"
+                        type="checkbox"
+                        onChange={this.onAudioTransparentModeChange}
+                        checked={audioTransparentMode}
                       />
                       <label htmlFor="audioTransparentMode">
                         {strings.audioTransparentMode}
                       </label>
                     </div>
                   </div>}
-                  </Fragment>
+                  <div className="form-group switch-enable">
+                    <div className='switch-mode'>
+                      <input
+                        id="lowBandwidthMode"
+                        name="lowBandwidthMode"
+                        type="checkbox"
+                        onChange={this.handleChangeLowBandwidthMode}
+                        checked={lowBandwidthMode}
+                      />
+                      <label htmlFor="lowBandwidthMode">
+                        {strings.lowBandwidthMode}
+                      </label>
+                    </div>
+                  </div>
+                  <div className={`form-group switch-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
+                    <div className='input-wrapper'>
+                      <div className='input-value'>0</div>
+                      <input
+                        type="range"
+                        style={{ background: `linear-gradient(to right, #00afef 0%, #00afef ${(100 / MAX_MAXVF) * (!lowBandwidthMode ? maxVideoForwarding : 0)}%, #fff ${(100 / MAX_MAXVF) * (!lowBandwidthMode ? maxVideoForwarding : 0)}%, #fff 100%)` }}
+                        id="maxVideoForwarding"
+                        name="maxVideoForwarding"
+                        min={0}
+                        max={MAX_MAXVF}
+                        step={1}
+                        onChange={this.handleMaxVideoForwardingChange}
+                        value={!lowBandwidthMode ? maxVideoForwarding : 0}
+                      />
+                      <div className='input-value'>{MAX_MAXVF}</div>
+                    </div>
+                    <label htmlFor="maxVideoForwarding">
+                      <div className='maxVideoForwardingValue'>{`${strings.showVideoParticipants1} ${!lowBandwidthMode ? maxVideoForwarding : 0} ${strings.showVideoParticipants2}`}</div>
+                    </label>
+                  </div>
+                </Fragment>
                 )
               }
               <div className="hint-text">
@@ -342,7 +440,8 @@ AttendeesSettings.propTypes = {
   videoEnabled: PropTypes.bool.isRequired,
   isListener: PropTypes.bool.isRequired,
   attendeesSettingsOpened: PropTypes.bool.isRequired,
-  dolbyVoiceEnabled: PropTypes.bool
+  dolbyVoiceEnabled: PropTypes.bool,
+  maxVideoForwarding: PropTypes.number
 };
 
 export default AttendeesSettings;

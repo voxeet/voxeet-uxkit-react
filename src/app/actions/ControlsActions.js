@@ -31,6 +31,8 @@ export const Types = {
   CLOSE_SESSION_HANG_UP: "CLOSE_SESSION_HANG_UP",
   SET_SIMULCAST: "SET_SIMULCAST",
   TOGGLE_AUDIO_TRANSPARENT_MODE: "TOGGLE_AUDIO_TRANSPARENT_MODE",
+  SET_AUDIO_TRANSPARENT_MODE: "SET_AUDIO_TRANSPARENT_MODE",
+  TOGGLE_MAX_REMOTE_PARTICIPANTS: "TOGGLE_MAX_REMOTE_PARTICIPANTS"
 };
 
 export class Actions {
@@ -256,9 +258,27 @@ export class Actions {
     };
   }
 
+  static setAudioTransparentMode(state) {
+    return {
+      type: Types.SET_AUDIO_TRANSPARENT_MODE,
+      payload: {
+        audioTransparentMode : state
+      }
+    };
+  }
+
   static toggleAudioTransparentMode() {
     return {
       type: Types.TOGGLE_AUDIO_TRANSPARENT_MODE
+    };
+  }
+
+  static setMaxVideoForwarding(state) {
+    return {
+      type: Types.TOGGLE_MAX_REMOTE_PARTICIPANTS,
+      payload: {
+        maxVideoForwarding: state
+      }
     };
   }
 
