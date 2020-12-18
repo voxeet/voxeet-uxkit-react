@@ -18,7 +18,10 @@ class Tile extends Component {
       (checker != null && !nextProps.participant.stream.active) ||
       (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
       (checker == null && nextProps.participant.stream) ||
-      (this.props.mySelf && this.props.participant.name == null)
+      (this.props.mySelf && this.props.participant.name == null) ||
+      (this.props.participant.stream && nextProps.participant.stream &&
+          this.props.participant.stream.id != nextProps.participant.stream.id) ||
+      (!this.props.participant.stream && nextProps.participant.stream)
     ) {
       return true;
     }
