@@ -26,7 +26,6 @@ import {isMobile} from "../libs/browserDetection";
     conferenceStore: state.voxeet.conference,
     errorStore: state.voxeet.error,
     participantsStore: state.voxeet.participants,
-    controlsStore: state.voxeet.controls,
   };
 })
 class ConferenceRoom extends Component {
@@ -102,9 +101,11 @@ class ConferenceRoom extends Component {
       refreshTokenCallback,
       isListener,
     } = this.props;
-    let maxVideoForwarding = this.props.controlsStore.maxVideoForwarding;
-    if(preConfigPayload && preConfigPayload.maxVideoForwarding!==undefined)
+    let maxVideoForwarding = this.props.maxVideoForwarding;
+    if(preConfigPayload && preConfigPayload.maxVideoForwarding!==undefined) {
+      this.props.dispatch(ControlsActions.setMaxVideoForwarding(preConfigPayload.maxVideoForwarding));
       maxVideoForwarding = preConfigPayload.maxVideoForwarding;
+    }
     if(preConfigPayload && preConfigPayload.videoEnabled!==undefined) {
       this.props.dispatch(ControlsActions.toggleVideo(preConfigPayload.videoEnabled));
     }
@@ -173,10 +174,6 @@ class ConferenceRoom extends Component {
 
       if (isDemo) {
         this.props.dispatch(ConferenceActions.demo());
-      }
-
-      if (maxVideoForwarding!==undefined) {
-        this.props.dispatch(ControlsActions.setMaxVideoForwarding(maxVideoForwarding));
       }
 
       if (customLocalizedStrings) {
@@ -538,19 +535,6 @@ class ConferenceRoom extends Component {
       hasLeft,
       dolbyVoiceEnabled,
     } = this.props.conferenceStore;
-    let maxVideoForwarding = this.props.maxVideoForwarding;
-    if(this.props.controlsStore && this.props.controlsStore.maxVideoForwarding!==undefined)
-      maxVideoForwarding = this.props.controlsStore.maxVideoForwarding;
-    //console.log('maxVideoForwarding/props/store', maxVideoForwarding, this.props.maxVideoForwarding, this.props.controlsStore.maxVideoForwarding);
-    let audioTransparentMode = this.props.audioTransparentMode;
-    if(this.props.controlsStore && this.props.controlsStore.audioTransparentMode!==undefined)
-      audioTransparentMode = this.props.controlsStore.audioTransparentMode;
-    //console.log('audioTransparentMode/props/store', audioTransparentMode, this.props.audioTransparentMode, this.props.controlsStore.audioTransparentMode);
-    let videoEnabled = this.props.videoEnabled;
-    if(this.props.controlsStore && this.props.controlsStore.videoEnabled!==undefined)
-      videoEnabled = this.props.controlsStore.videoEnabled;
-    constraints.video = videoEnabled;
-    //console.log('videoEnabled/props/store', videoEnabled, this.props.videoEnabled, this.props.controlsStore.videoEnabled);
 
     const { errorMessage, isError } = this.props.errorStore;
     if (bowser.ios && bowser.chrome) {
@@ -640,9 +624,6 @@ class ConferenceRoom extends Component {
           logo={this.props.logo}
           handleJoin={this.handleJoin}
           dolbyVoiceEnabled={dolbyVoice}
-          videoEnabled={videoEnabled}
-          audioTransparentMode={audioTransparentMode}
-          maxVideoForwarding={maxVideoForwarding}
         />
       );
     } else if (isJoined || !isWidget || conferenceReplayId != null) {

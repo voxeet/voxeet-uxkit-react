@@ -36,7 +36,7 @@ class AttendeesSettings extends Component {
     // defaults
     let maxVideoForwarding = ((this.props.controlsStore.maxVideoForwarding !== undefined) ? this.props.controlsStore.maxVideoForwarding : isMobile()?4:9);
     let audioTransparentMode = ((this.props.controlsStore.audioTransparentMode !== undefined) ? this.props.controlsStore.audioTransparentMode : false);
-    let videoEnambled = ((this.props.controlsStore.videoEnambled !== undefined) ? this.props.controlsStore.videoEnambled : true);
+    let videoEnambled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
     let lowBandwidthMode = !videoEnambled && !maxVideoForwarding
 
     this.state = {

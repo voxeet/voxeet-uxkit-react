@@ -21,12 +21,20 @@ const default_cookies_param = {
 
 @connect(store => {
   return {
-    inputManager: store.voxeet.inputManager
+    inputManager: store.voxeet.inputManager,
+    controlsStore: store.voxeet.controls
   };
 })
 class ConferencePreConfigContainer extends Component {
   constructor(props) {
+
     super(props);
+    // defaults
+    let maxVideoForwarding = ((this.props.controlsStore.maxVideoForwarding !== undefined) ? this.props.controlsStore.maxVideoForwarding : isMobile()?4:9);
+    let audioTransparentMode = ((this.props.controlsStore.audioTransparentMode !== undefined) ? this.props.controlsStore.audioTransparentMode : false);
+    let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
+    let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
+
     this.state = {
       loading: true,
       lockJoin: false,
@@ -41,9 +49,9 @@ class ConferencePreConfigContainer extends Component {
       level: 0,
       videoEnabled: this.props.constraints.video,
       audioEnabled: true,
-      maxVideoForwarding: ((this.props.maxVideoForwarding !== undefined) ? this.props.maxVideoForwarding : isMobile()?4:9),
-      audioTransparentMode: ((this.props.audioTransparentMode !== undefined) ? this.props.audioTransparentMode : false),
-      lowBandwidthMode: false
+      audioTransparentMode: audioTransparentMode,
+      maxVideoForwarding: maxVideoForwarding,
+      lowBandwidthMode: lowBandwidthMode
     };
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
