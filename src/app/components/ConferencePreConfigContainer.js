@@ -32,7 +32,9 @@ class ConferencePreConfigContainer extends Component {
     // defaults
     let maxVideoForwarding = ((this.props.controlsStore.maxVideoForwarding !== undefined) ? this.props.controlsStore.maxVideoForwarding : isMobile()?4:9);
     let audioTransparentMode = ((this.props.controlsStore.audioTransparentMode !== undefined) ? this.props.controlsStore.audioTransparentMode : false);
-    let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
+    let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ?
+        this.props.controlsStore.videoEnabled :
+        (this.props.constraints? this.props.constraints.video: false));
     let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
 
     this.state = {
@@ -47,7 +49,7 @@ class ConferencePreConfigContainer extends Component {
       userStream: null,
       error: null,
       level: 0,
-      videoEnabled: this.props.constraints.video,
+      videoEnabled: videoEnabled,
       audioEnabled: true,
       audioTransparentMode: audioTransparentMode,
       maxVideoForwarding: maxVideoForwarding,
@@ -88,12 +90,14 @@ class ConferencePreConfigContainer extends Component {
   }
 
   handleJoin() {
-    const { handleJoin } = this.props;
+    const { handleJoin, constraints } = this.props;
+    constraints.video = this.state.videoEnabled;
     const payload = {
       audioDeviceSelected: this.state.audioDeviceSelected,
       videoDeviceSelected: this.state.videoDeviceSelected,
       outputDeviceSelected: this.state.outputDeviceSelected,
       videoEnabled: this.state.videoEnabled,
+      constraints,
       audioEnabled: this.state.audioEnabled,
       audioTransparentMode: this.state.audioTransparentMode,
       maxVideoForwarding: this.state.maxVideoForwarding
