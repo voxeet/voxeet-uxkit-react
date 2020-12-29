@@ -32,7 +32,9 @@ export const Types = {
   SET_SIMULCAST: "SET_SIMULCAST",
   TOGGLE_AUDIO_TRANSPARENT_MODE: "TOGGLE_AUDIO_TRANSPARENT_MODE",
   SET_AUDIO_TRANSPARENT_MODE: "SET_AUDIO_TRANSPARENT_MODE",
-  TOGGLE_MAX_REMOTE_PARTICIPANTS: "TOGGLE_MAX_REMOTE_PARTICIPANTS"
+  TOGGLE_MAX_REMOTE_PARTICIPANTS: "TOGGLE_MAX_REMOTE_PARTICIPANTS",
+  TOGGLE_REQUESTED_VIDEO: "TOGGLE_REQUESTED_VIDEO",
+  SET_REQUESTED_VIDEO: "SET_REQUESTED_VIDEO",
 };
 
 export class Actions {
@@ -285,6 +287,25 @@ export class Actions {
   static toggleAttendeesChat() {
     return {
       type: Types.TOGGLE_ATTENDEES_CHAT
+    };
+  }
+
+  static toggleRequestedVideo(participant_id) {
+    return {
+      type: Types.TOGGLE_REQUESTED_VIDEO,
+      payload: {
+        participant_id
+      }
+    };
+  }
+
+  static setRequestedVideo(participant_id, state) {
+    return {
+      type: Types.SET_REQUESTED_VIDEO,
+      payload: {
+        participant_id,
+        state
+      }
     };
   }
 }

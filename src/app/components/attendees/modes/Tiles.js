@@ -40,10 +40,10 @@ class Tiles extends Component {
         (IHaveVideo || !hasVideoParticipants);
 
     let nbParticipants = tilesParticipants.length;
-    if (showOwnTile)
-      nbParticipants += 1;
+    // if (showOwnTile)
+    //   nbParticipants += 1;
 
-    let count = -1;
+    let count = 0;
     return (
       <div
         className="SidebarTiles"
@@ -55,7 +55,6 @@ class Tiles extends Component {
               participant={currentUser}
               isAdminActived={isAdminActived}
               mySelf={true}
-              nbParticipant={++count}
               kickParticipant={kickParticipant}
               isAdmin={isAdmin}
               toggleMicrophone={toggleMicrophone}

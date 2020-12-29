@@ -27,30 +27,30 @@ class TileVideo extends Component {
     const photoUrl = participant.avatarUrl || userPlaceholder;
     return (
       <span className="tile-video video-frame">
-        {isWidgetFullScreenOn && (
-          <AttendeesParticipantBar
-            toggleAutomatically={true}
-            kickParticipant={kickParticipant}
-            isAdminActived={isAdminActived}
-            isAdmin={isAdmin}
-            participant={participant}
-            toggleMicrophone={toggleMicrophone}
-            dolbyVoiceEnabled={dolbyVoiceEnabled}
-          />
-        )}
         {participant.stream && participant.stream.active &&
-          participant.stream.getVideoTracks().length > 0? (
-          <div className={(mySelf && !isBackCamera) ? "stream-media myself" : "stream-media myself-not-mirrored"}>
-            <AttendeesParticipantVideo stream={participant.stream} />
-          </div>
-        ) : (
-          <AttendeesParticipantVuMeter
-            participant={participant}
-            width={80}
-            height={80}
-            customClass={"preview-avatar"}
-          />
-        )}
+          participant.stream.getVideoTracks().length > 0 ? (
+            <div className={(mySelf && !isBackCamera) ? "stream-media myself" : "stream-media myself-not-mirrored"}>
+              <AttendeesParticipantVideo stream={participant.stream} />
+              {isWidgetFullScreenOn && (
+                <AttendeesParticipantBar
+                  toggleAutomatically={true}
+                  kickParticipant={kickParticipant}
+                  isAdminActived={isAdminActived}
+                  isAdmin={isAdmin}
+                  participant={participant}
+                  toggleMicrophone={toggleMicrophone}
+                  dolbyVoiceEnabled={dolbyVoiceEnabled}
+                />
+              )}
+            </div>
+          ) : (
+            <AttendeesParticipantVuMeter
+              participant={participant}
+              width={80}
+              height={80}
+              customClass={"preview-avatar"}
+            />
+          )}
       </span>
     );
   }

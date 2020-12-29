@@ -135,8 +135,8 @@
 @media screen and (min-width: 3600px) {
   .vxt-conference-attendees
     .SidebarTiles
-    .list1
-    #video-undefined-video-on
+    .tiles-list
+    #video-local-video-on
     .tile-video
     .stream-media
     .video-participant {
@@ -333,6 +333,15 @@
   }
   .vxt-conference-attendees .SidebarTiles {
     height: 99%;
+    .tiles-list:not(.list0) .tile-local-item {
+      bottom: 67px;
+    }
+    &[data-number-user="0"] {
+      .tile-local-item {
+        height: ~"calc(100% - 23px)";
+        max-width: 100%;
+      }
+    }
     &[data-number-user="1"] {
       .tile-item {
         height: ~"calc(100% - 23px)";
@@ -497,6 +506,7 @@
       }
       div.name {
         min-width: 50px;
+        max-width: 50px;
         padding: 0;
         text-align: center;
         line-height: 21px;
@@ -510,7 +520,7 @@
       margin-left: -40px;
       min-height: 22px;
       padding: 0px 12px 0px 12px;
-      width: 55px;
+      width: 56px;
       border-radius: 0;
     }
     .participant-video {
@@ -676,6 +686,15 @@
       //     bottom: 1.5% !important;
       //   }
       // }
+    }
+    .tiles-list:not(.list0) .tile-local-item {
+      bottom: 67px;
+    }
+    &[data-number-user="0"] {
+      .tile-local-item {
+        height: ~"calc(100% - 22px)";
+        max-width: 100%;
+      }
     }
     &[data-number-user="1"] {
       .tile-item {
@@ -912,6 +931,15 @@
     .participant-bar {
       bottom: 2px !important;
     }
+    .tiles-list:not(.list0) .tile-local-item {
+      bottom: 67px !important;
+    }
+    &[data-number-user="0"] {
+      .tile-local-item {
+        height: ~"calc(100% - 28px)" !important;
+        max-width: 100% !important;
+      }
+    }
     &[data-number-user="1"] {
       .tile-item {
         height: ~"calc(100% - 28px)" !important;
@@ -1031,6 +1059,15 @@
     // width: 300px;
   }
   .vxt-conference-attendees .SidebarTiles {
+    .tiles-list:not(.list0) .tile-local-item {
+      bottom: 87px;
+    }
+    &[data-number-user="0"] {
+      .tile-local-item {
+        height: ~"calc(100% - 72px)";
+        max-width: 100%;
+      }
+    }
     &[data-number-user="1"] {
       .tile-item {
         height: ~"calc(100% - 72px)";
@@ -1213,6 +1250,18 @@
     margin-bottom: 10px;
   }
   .vxt-conference-attendees .SidebarTiles {
+    .tiles-list:not(.list0) .tile-local-item {
+      bottom: 87px;
+    }
+    .tiles-list .tile-item .tile-video .stream-media .video-participant {
+      max-height: calc(100vh - 72px);
+    }
+    &[data-number-user="0"] {
+      .tile-local-item {
+        height: ~"calc(100% - 72px)";
+        max-width: 100%;
+      }
+    }
     &[data-number-user="1"] {
       .tile-item {
         height: ~"calc(100% - 72px)";
@@ -1396,8 +1445,8 @@
 @media screen and (orientation: portrait) and (min-width: 3600px) {
   .vxt-conference-attendees
     .SidebarTiles
-    .list1
-    #video-undefined-video-on
+    .tiles-list
+    #video-local-video-on
     .tile-video
     .stream-media
     .video-participant {
@@ -1557,6 +1606,15 @@
   }
   .vxt-conference-attendees .SidebarTiles {
     height: 99%;
+    .tiles-list:not(.list0) .tile-local-item {
+      bottom: 67px;
+    }
+    &[data-number-user="0"] {
+      .tile-local-item {
+        height: ~"calc(100% - 28px)";
+        max-width: 100%;
+      }
+    }
     &[data-number-user="1"] {
       .tile-item {
         height: ~"calc(100% - 28px)";
@@ -1763,6 +1821,7 @@
       }
       div.name {
         min-width: 50px;
+        max-width: 50px;
         padding: 0;
         text-align: center;
         line-height: 21px;
@@ -1776,7 +1835,7 @@
       margin-left: -40px;
       min-height: 22px;
       padding: 0px 12px 0px 12px;
-      width: 55px;
+      width: 56px;
       border-radius: 0;
     }
     .participant-video {
@@ -1942,6 +2001,15 @@
       //     bottom: 1.5% !important;
       //   }
       // }
+    }
+    .tiles-list:not(.list0) .tile-local-item {
+      bottom: 67px;
+    }
+    &[data-number-user="0"] {
+      .tile-local-item {
+        height: ~"calc(100% - 24px)";
+        max-width: 100%;
+      }
     }
     &[data-number-user="1"] {
       .tile-item {

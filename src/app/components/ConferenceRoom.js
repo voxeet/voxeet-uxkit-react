@@ -36,6 +36,7 @@ class ConferenceRoom extends Component {
       loading: true,    // Start with loader
     };
     this.handleJoin = this.handleJoin.bind(this);
+    this.initializeControlsStore();
     this.startConferenceWithParams = this.startConferenceWithParams.bind(this);
   }
 
@@ -77,7 +78,7 @@ class ConferenceRoom extends Component {
       conferenceId,
       isDemo,
       closeSessionAtHangUp,
-      constraints,
+      // constraints,
       displayModes,
       customLocalizedStrings,
       displayActions,
@@ -101,17 +102,22 @@ class ConferenceRoom extends Component {
       refreshTokenCallback,
       isListener,
     } = this.props;
-    let maxVideoForwarding = this.props.maxVideoForwarding;
+    let { constraints } = this.props;
     if(preConfigPayload && preConfigPayload.maxVideoForwarding!==undefined) {
       this.props.dispatch(ControlsActions.setMaxVideoForwarding(preConfigPayload.maxVideoForwarding));
-      maxVideoForwarding = preConfigPayload.maxVideoForwarding;
+      this.maxVideoForwarding = preConfigPayload.maxVideoForwarding;
     }
+    let maxVideoForwarding = this.maxVideoForwarding;
     if(preConfigPayload && preConfigPayload.videoEnabled!==undefined) {
       this.props.dispatch(ControlsActions.toggleVideo(preConfigPayload.videoEnabled));
+      this.videoEnabled = preConfigPayload.videoEnabled;
     }
+    constraints.video = this.videoEnabled;
     if(preConfigPayload && preConfigPayload.audioTransparentMode!==undefined) {
       this.props.dispatch(ControlsActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode));
+      this.audioTransparentMode = preConfigPayload.audioTransparentMode;
     }
+    let audioTransparentMode = this.audioTransparentMode;
     let initialized;
     let pinCodeTmp = pinCode;
     if (oauthToken != null) {
@@ -307,6 +313,7 @@ class ConferenceRoom extends Component {
     }
     this.props.dispatch(ControlsActions.setMaxVideoForwarding(maxVideoForwarding));
     Cookies.set("maxVideoForwarding", maxVideoForwarding, default_cookie_params);
+    this.maxVideoForwarding = maxVideoForwarding;
     // videoEnabled
     let videoEnabled = Cookies.get("videoEnabled");
     if( videoEnabled!==undefined ) {
@@ -330,6 +337,7 @@ class ConferenceRoom extends Component {
     }
     this.props.dispatch(ControlsActions.toggleVideo(videoEnabled));
     Cookies.set("videoEnabled", videoEnabled, default_cookie_params);
+    this.videoEnabled = videoEnabled;
     // audioTransparentMode
     let audioTransparentMode = Cookies.get("audioTransparentMode");
     if( audioTransparentMode!==undefined ) {
@@ -353,6 +361,7 @@ class ConferenceRoom extends Component {
     }
     this.props.dispatch(ControlsActions.setAudioTransparentMode(audioTransparentMode));
     Cookies.set("audioTransparentMode", audioTransparentMode, default_cookie_params);
+    this.audioTransparentMode = audioTransparentMode;
   }
 
   async componentDidMount() {
@@ -371,8 +380,6 @@ class ConferenceRoom extends Component {
         (!isWebinar || (isWebinar && isAdmin))
             ? (preConfig)
             : false;
-
-    this.initializeControlsStore();
 
     const shouldStartPreConfig = doPreConfigCheck? await this.preConfigCheck(doPreConfig): doPreConfig;
 
