@@ -4,6 +4,7 @@ import { connect } from "@voxeet/react-redux-5.1.1";
 
 import TileVideo from "./TileVideo";
 import TileLegend from "./TileLegend";
+import Draggable from "react-draggable";
 
 @connect(store => {
   return {
@@ -45,42 +46,44 @@ class OwnTile extends Component {
     } = this.props;
     const { currentVideoDevice, isBackCamera } = this.props.inputManager;
     return (
-      <div
-        className={
-          "tile-local-item " +
-          (participant.isConnected
-            ? "participant-available"
-            : "participant-offline")
-        }
-        id={
-          "video-local-video-" +
-          (participant.stream &&
-          participant.stream.active &&
-          participant.stream.getVideoTracks().length > 0
-            ? "on"
-            : "off")
-        }
-      >
-        <TileVideo
-          isBackCamera={isBackCamera}
-          mySelf={mySelf}
-          kickParticipant={kickParticipant}
-          isAdminActived={isAdminActived}
-          isAdmin={isAdmin}
-          participant={participant}
-          toggleMicrophone={toggleMicrophone}
-          isWidgetFullScreenOn={isWidgetFullScreenOn}
-          dolbyVoiceEnabled={dolbyVoiceEnabled}
-        />
-        <TileLegend
-          participant={participant}
-          kickParticipant={kickParticipant}
-          isAdminActived={isAdminActived}
-          isAdmin={isAdmin}
-          toggleMicrophone={toggleMicrophone}
-          dolbyVoiceEnabled={dolbyVoiceEnabled}
-        />
-      </div>
+      <Draggable bounds="parent">
+        <div
+          className={
+            "tile-local-item " +
+            (participant.isConnected
+              ? "participant-available"
+              : "participant-offline")
+          }
+          id={
+            "video-local-video-" +
+            (participant.stream &&
+              participant.stream.active &&
+              participant.stream.getVideoTracks().length > 0
+              ? "on"
+              : "off")
+          }
+        >
+          <TileVideo
+            isBackCamera={isBackCamera}
+            mySelf={mySelf}
+            kickParticipant={kickParticipant}
+            isAdminActived={isAdminActived}
+            isAdmin={isAdmin}
+            participant={participant}
+            toggleMicrophone={toggleMicrophone}
+            isWidgetFullScreenOn={isWidgetFullScreenOn}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
+          />
+          <TileLegend
+            participant={participant}
+            kickParticipant={kickParticipant}
+            isAdminActived={isAdminActived}
+            isAdmin={isAdmin}
+            toggleMicrophone={toggleMicrophone}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
+          />
+        </div>
+      </Draggable>
     );
   }
 }

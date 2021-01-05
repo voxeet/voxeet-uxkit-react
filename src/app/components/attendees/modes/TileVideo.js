@@ -31,17 +31,6 @@ class TileVideo extends Component {
           participant.stream.getVideoTracks().length > 0 ? (
             <div className={(mySelf && !isBackCamera) ? "stream-media myself" : "stream-media myself-not-mirrored"}>
               <AttendeesParticipantVideo stream={participant.stream} />
-              {isWidgetFullScreenOn && (
-                <AttendeesParticipantBar
-                  toggleAutomatically={true}
-                  kickParticipant={kickParticipant}
-                  isAdminActived={isAdminActived}
-                  isAdmin={isAdmin}
-                  participant={participant}
-                  toggleMicrophone={toggleMicrophone}
-                  dolbyVoiceEnabled={dolbyVoiceEnabled}
-                />
-              )}
             </div>
           ) : (
             <AttendeesParticipantVuMeter
@@ -51,6 +40,17 @@ class TileVideo extends Component {
               customClass={"preview-avatar"}
             />
           )}
+        {isWidgetFullScreenOn && (
+          <AttendeesParticipantBar
+            toggleAutomatically={true}
+            kickParticipant={kickParticipant}
+            isAdminActived={isAdminActived}
+            isAdmin={isAdmin}
+            participant={participant}
+            toggleMicrophone={toggleMicrophone}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
+          />
+        )}
       </span>
     );
   }

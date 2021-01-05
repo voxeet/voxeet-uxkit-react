@@ -7,6 +7,7 @@ import OwnTile from "./OwnTile";
 class Tiles extends Component {
   constructor(props) {
     super(props);
+    this.draggableAreaRef = React.createRef();
   }
 
   render() {
@@ -49,7 +50,9 @@ class Tiles extends Component {
         className="SidebarTiles"
         data-number-user={nbParticipants <= 16 ? nbParticipants : 16}
       >
-        <div className={"tiles-list list" + nbParticipants}>
+        <div className={"tiles-list list" + nbParticipants}
+             ref={this.draggableAreaRef}
+        >
           { showOwnTile && (
             <OwnTile
               participant={currentUser}
@@ -60,6 +63,7 @@ class Tiles extends Component {
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={isWidgetFullScreenOn}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
+              bounds={this.draggableAreaRef.current}
             />
           )}
           {tilesParticipants.map((participant, i) => {
