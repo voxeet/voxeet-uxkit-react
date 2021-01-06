@@ -142,7 +142,13 @@ export const strings = new LocalizedStrings({
     invitedUsers: "Waiting for invitation",
     inviteUser: "Invite",
     autoPlayBlocked: "The browser has blocked automatic audio playback due to a security policy, proceed to start hearing audio from the conference",
-    autoPlayBlockedButton: "Play audio"
+    autoPlayBlockedButton: "Play audio",
+    lowBandwidthMode: "Low bandwidth mode",
+    sendMyVideo: "Send my video",
+    showVideoParticipants1: "Show video for up to",
+    showVideoParticipants2: "participants",
+    pinnedCameraOff: "Click icon to always view video from this participant",
+    pinnedCameraOn: "Click icon to only view video from this participant if he/she talked"
   },
   fr: {
     noPstnNumbers: "Pas de numéro PSTN ...",
@@ -251,6 +257,12 @@ export const strings = new LocalizedStrings({
     placeholderVideoPresentation: "URL de la vidéo",
     startVideoPresentationAutoplay: "Démarrer la video",
     invitedUsers: "En attente d'invitation",
-    inviteUser: "Inviter"
+    inviteUser: "Inviter",
+    lowBandwidthMode: "Mode à faible bande passante",
+    sendMyVideo: "Envoyez ma vidéo",
+    showVideoParticipants1: "Afficher la vidéo jusqu'à",
+    showVideoParticipants2: "participants",
+    pinnedCameraOff: "Cliquez sur l'icône pour toujours voir la vidéo de ce participant",
+    pinnedCameraOn: "Cliquez sur l'icône pour afficher la vidéo de ce participant uniquement s'il a parlé"
   }
 });

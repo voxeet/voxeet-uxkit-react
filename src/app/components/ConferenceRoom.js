@@ -36,6 +36,7 @@ class ConferenceRoom extends Component {
       loading: true,    // Start with loader
     };
     this.handleJoin = this.handleJoin.bind(this);
+    this.initializeControlsStore();
     this.startConferenceWithParams = this.startConferenceWithParams.bind(this);
   }
 
@@ -77,7 +78,7 @@ class ConferenceRoom extends Component {
       conferenceId,
       isDemo,
       closeSessionAtHangUp,
-      constraints,
+      // constraints,
       displayModes,
       customLocalizedStrings,
       displayActions,
@@ -101,6 +102,22 @@ class ConferenceRoom extends Component {
       refreshTokenCallback,
       isListener,
     } = this.props;
+    let { constraints } = this.props;
+    if(preConfigPayload && preConfigPayload.maxVideoForwarding!==undefined) {
+      this.props.dispatch(ControlsActions.setMaxVideoForwarding(preConfigPayload.maxVideoForwarding));
+      this.maxVideoForwarding = preConfigPayload.maxVideoForwarding;
+    }
+    let maxVideoForwarding = this.maxVideoForwarding;
+    if(preConfigPayload && preConfigPayload.videoEnabled!==undefined) {
+      this.props.dispatch(ControlsActions.toggleVideo(preConfigPayload.videoEnabled));
+      this.videoEnabled = preConfigPayload.videoEnabled;
+    }
+    constraints.video = this.videoEnabled;
+    if(preConfigPayload && preConfigPayload.audioTransparentMode!==undefined) {
+      this.props.dispatch(ControlsActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode));
+      this.audioTransparentMode = preConfigPayload.audioTransparentMode;
+    }
+    let audioTransparentMode = this.audioTransparentMode;
     let initialized;
     let pinCodeTmp = pinCode;
     if (oauthToken != null) {
@@ -258,6 +275,7 @@ class ConferenceRoom extends Component {
               pinCodeTmp,
               simulcast,
               dolbyVoice,
+              maxVideoForwarding
             )
           );
         });
@@ -266,6 +284,84 @@ class ConferenceRoom extends Component {
         //initialized.then(() => this.props.dispatch(ConferenceActions.subscribeConference(conferenceAlias)))
       }
     }
+  }
+
+  /**
+   * Set remembered from cookies or default values in controls store
+   * Cookies should contain last value user set in preconf form or AttendeesSettings
+   * Default values are set as Component param
+   */
+  initializeControlsStore() {
+    let date = new Date();
+    date.setDate(date.getDate() + 365);
+    const default_cookie_params = {
+      path: "/",
+      expires: date,
+      secure: true,
+      sameSite: 'none'
+    };
+    // maxVideoForwarding
+    let maxVideoForwarding = Cookies.get("maxVideoForwarding");
+    maxVideoForwarding = parseInt(maxVideoForwarding);
+    if( maxVideoForwarding===undefined || isNaN(maxVideoForwarding) ){
+      maxVideoForwarding = this.props.maxVideoForwarding;
+      //console.log('Setting default value for maxVideoForwarding to app default', maxVideoForwarding);
+    }
+    if( maxVideoForwarding===undefined || isNaN(maxVideoForwarding) ){
+      maxVideoForwarding = isMobile()?4:9;
+      //console.log('Setting default value for maxVideoForwarding to system default', maxVideoForwarding);
+    }
+    this.props.dispatch(ControlsActions.setMaxVideoForwarding(maxVideoForwarding));
+    Cookies.set("maxVideoForwarding", maxVideoForwarding, default_cookie_params);
+    this.maxVideoForwarding = maxVideoForwarding;
+    // videoEnabled
+    let videoEnabled = Cookies.get("videoEnabled");
+    if( videoEnabled!==undefined ) {
+      if (typeof videoEnabled === 'string' || videoEnabled instanceof String)
+        videoEnabled = videoEnabled.toLowerCase() !== 'false';
+      else
+        videoEnabled = Boolean(videoEnabled);
+      //console.log('Setting default value for videoEnabled to user default', videoEnabled);
+    } else {
+      videoEnabled = this.props.constraints?this.props.constraints.video:false;
+      //console.log('Setting default value for videoEnabled to app default', videoEnabled);
+    }
+    if( videoEnabled!==undefined ) {
+      if (typeof videoEnabled === 'string' || videoEnabled instanceof String)
+        videoEnabled = videoEnabled.toLowerCase() !== 'false';
+      else
+        videoEnabled = Boolean(videoEnabled);
+    } else {
+      videoEnabled = false;
+      //console.log('Setting default value for videoEnabled to system default', videoEnabled);
+    }
+    this.props.dispatch(ControlsActions.toggleVideo(videoEnabled));
+    Cookies.set("videoEnabled", videoEnabled, default_cookie_params);
+    this.videoEnabled = videoEnabled;
+    // audioTransparentMode
+    let audioTransparentMode = Cookies.get("audioTransparentMode");
+    if( audioTransparentMode!==undefined ) {
+      if (typeof audioTransparentMode === 'string' || audioTransparentMode instanceof String)
+        audioTransparentMode = audioTransparentMode.toLowerCase() !== 'false';
+      else
+        audioTransparentMode = Boolean(audioTransparentMode);
+      //console.log('Setting default value for audioTransparentMode to user default', audioTransparentMode);
+    } else {
+      audioTransparentMode = this.props.audioTransparentMode;
+      //console.log('Setting default value for audioTransparentMode to app default', audioTransparentMode);
+    }
+    if( audioTransparentMode!==undefined ) {
+      if (typeof audioTransparentMode === 'string' || audioTransparentMode instanceof String)
+        audioTransparentMode = audioTransparentMode.toLowerCase() !== 'false';
+      else
+        audioTransparentMode = Boolean(audioTransparentMode);
+    } else {
+      audioTransparentMode = false;
+      //console.log('Setting default value for audioTransparentMode to system default', audioTransparentMode);
+    }
+    this.props.dispatch(ControlsActions.setAudioTransparentMode(audioTransparentMode));
+    Cookies.set("audioTransparentMode", audioTransparentMode, default_cookie_params);
+    this.audioTransparentMode = audioTransparentMode;
   }
 
   async componentDidMount() {
@@ -446,6 +542,7 @@ class ConferenceRoom extends Component {
       hasLeft,
       dolbyVoiceEnabled,
     } = this.props.conferenceStore;
+
     const { errorMessage, isError } = this.props.errorStore;
     if (bowser.ios && bowser.chrome) {
       return (
@@ -585,6 +682,7 @@ ConferenceRoom.propTypes = {
   isAdmin: PropTypes.bool,
   ttl: PropTypes.number,
   dolbyVoice: PropTypes.bool,
+  maxVideoForwarding: PropTypes.number,
   simulcast: PropTypes.bool,
   mode: PropTypes.string,
   videoCodec: PropTypes.string,
@@ -617,6 +715,7 @@ ConferenceRoom.propTypes = {
 ConferenceRoom.defaultProps = {
   isWidget: true,
   dolbyVoice: true,
+  maxVideoForwarding: 9,
   kickOnHangUp: false,
   autoRecording: false,
   disableSounds: false,

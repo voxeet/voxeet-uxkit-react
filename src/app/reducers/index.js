@@ -12,6 +12,7 @@ import ParticipantsWaitingReducer from "./ParticipantsWaitingReducer";
 import ActiveSpeakerReducer from "./ActiveSpeakerReducer";
 import FilePresentationReducer from "./FilePresentationReducer";
 import VideoPresentationReducer from "./VideoPresentationReducer";
+import ForwardedVideoReducer from "./ForwardedVideoReducer";
 
 const reducers = combineReducers({
   error: ErrorReducer,
@@ -26,7 +27,8 @@ const reducers = combineReducers({
   participantsWaiting: ParticipantsWaitingReducer,
   filePresentation: FilePresentationReducer,
   activeSpeaker: ActiveSpeakerReducer,
-  videoPresentation: VideoPresentationReducer
+  videoPresentation: VideoPresentationReducer,
+  forwardedVideo: ForwardedVideoReducer
 });
 
 export default reducers;

@@ -7,6 +7,7 @@ import OwnTile from "./OwnTile";
 class Tiles extends Component {
   constructor(props) {
     super(props);
+    this.draggableAreaRef = React.createRef();
   }
 
   render() {
@@ -40,27 +41,29 @@ class Tiles extends Component {
         (IHaveVideo || !hasVideoParticipants);
 
     let nbParticipants = tilesParticipants.length;
-    if (showOwnTile)
-      nbParticipants += 1;
+    // if (showOwnTile)
+    //   nbParticipants += 1;
 
-    let count = -1;
+    let count = 0;
     return (
       <div
         className="SidebarTiles"
         data-number-user={nbParticipants <= 16 ? nbParticipants : 16}
       >
-        <div className={"tiles-list list" + nbParticipants}>
+        <div className={"tiles-list list" + nbParticipants}
+             ref={this.draggableAreaRef}
+        >
           { showOwnTile && (
             <OwnTile
               participant={currentUser}
               isAdminActived={isAdminActived}
               mySelf={true}
-              nbParticipant={++count}
               kickParticipant={kickParticipant}
               isAdmin={isAdmin}
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={isWidgetFullScreenOn}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
+              bounds={this.draggableAreaRef.current}
             />
           )}
           {tilesParticipants.map((participant, i) => {

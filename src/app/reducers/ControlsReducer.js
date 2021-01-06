@@ -41,6 +41,8 @@ const defaultState = {
   displayAttendeesSettings: false,
   displayAttendeesChat: false,
   audioTransparentMode: false,
+  maxVideoForwarding: undefined,
+  requestedVideos: [],
 };
 
 const ControlsReducer = (state = defaultState, action) => {
@@ -205,6 +207,19 @@ const ControlsReducer = (state = defaultState, action) => {
         audioTransparentMode: !currentStatus
       };
     }
+    case Types.SET_AUDIO_TRANSPARENT_MODE: {
+      const audioTransparentMode = action.payload.audioTransparentMode;
+      return {
+        ...state,
+        audioTransparentMode
+      };
+    }
+    case Types.TOGGLE_MAX_REMOTE_PARTICIPANTS: {
+      return {
+        ...state,
+        maxVideoForwarding: action.payload.maxVideoForwarding
+      };
+    }
     case Types.TOGGLE_AUDIO: {
       const currentStatus = action.payload.state;
       return {
@@ -288,6 +303,27 @@ const ControlsReducer = (state = defaultState, action) => {
         displayAttendeesSettings: !state.displayAttendeesSettings,
         displayAttendeesChat: false,
         displayAttendeesList: false
+      };
+    }
+    case Types.TOGGLE_REQUESTED_VIDEO: {
+      const participant_id = action.payload.participant_id;
+      const requested = state.requestedVideos.indexOf(participant_id)>-1;
+      let rv = !requested? [...state.requestedVideos, participant_id]:state.requestedVideos.filter(id=>id!=participant_id);
+      return {
+        ...state,
+        requestedVideos: rv
+      };
+    }
+    case Types.SET_REQUESTED_VIDEO: {
+      const participant_id = action.payload.participant_id;
+      const fw_state = action.payload.state;
+      const requested = state.requestedVideos.indexOf(participant_id)>-1;
+      if(fw_state===requested)
+        return state;
+      let rv = !requested? [...state.requestedVideos, participant_id]:state.requestedVideos.filter(id=>id!=participant_id);
+      return {
+        ...state,
+        requestedVideos: rv
       };
     }
     default:
