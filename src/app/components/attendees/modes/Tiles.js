@@ -64,6 +64,7 @@ class Tiles extends Component {
               isWidgetFullScreenOn={isWidgetFullScreenOn}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
               bounds={this.draggableAreaRef.current}
+              key={currentUser.participant_id}
             />
           )}
           {tilesParticipants.map((participant, i) => {
@@ -74,7 +75,7 @@ class Tiles extends Component {
                 nbParticipant={count}
                 mySelf={false}
                 isAdminActived={isAdminActived}
-                key={i}
+                key={participant.participant_id}
                 kickParticipant={kickParticipant}
                 isAdmin={isAdmin}
                 toggleMicrophone={toggleMicrophone}

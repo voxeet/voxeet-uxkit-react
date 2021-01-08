@@ -827,8 +827,15 @@ export class Actions {
   }
 
   static setMaxVideoForwarding(value) {
-    return (dispatch) => {
-      return VoxeetSDK.conference.videoForwarding(value).then( () => {
+    return (dispatch, getState) => {
+      const {
+        voxeet: { controls },
+      } = getState();
+      let { requestedVideos } = controls;
+      let request = requestedVideos.map(
+          (id) => VoxeetSDK.conference.participants.get(id)
+      );
+      return VoxeetSDK.conference.videoForwarding(value, request).then( () => {
         dispatch(ControlsActions.setMaxVideoForwarding(value));
       });
     };

@@ -36,8 +36,8 @@ class AttendeesSettings extends Component {
     // defaults
     let maxVideoForwarding = ((this.props.controlsStore.maxVideoForwarding !== undefined) ? this.props.controlsStore.maxVideoForwarding : isMobile()?4:9);
     let audioTransparentMode = ((this.props.controlsStore.audioTransparentMode !== undefined) ? this.props.controlsStore.audioTransparentMode : false);
-    let videoEnambled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
-    let lowBandwidthMode = !videoEnambled && !maxVideoForwarding
+    let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
+    let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
 
     this.state = {
       runningAnimation: false,
@@ -245,24 +245,19 @@ class AttendeesSettings extends Component {
       this.maxVFTimer = null;
     }
     const low_bandwidth = event.target.checked;
+    let maxVideoForwarding = low_bandwidth?0:(isMobile()?4:9);
 
-    this.setState({
-      lowBandwidthMode: low_bandwidth,
-      maxVideoForwarding: 0
-    }, () => {
-      if(low_bandwidth) {
-        Cookies.set('videoEnabled', false, default_cookies_param);
-        this.props.dispatch(ConferenceActions.toggleVideo(low_bandwidth));
-        Cookies.set("maxVideoForwarding", 0, default_cookies_param);
-        this.props.dispatch(ConferenceActions.setMaxVideoForwarding(0));
-      } else {
-        Cookies.set('videoEnabled', true, default_cookies_param);
-        this.props.dispatch(ConferenceActions.toggleVideo(low_bandwidth));
-        let maxVideoForwarding = isMobile()?4:9
-        Cookies.set("maxVideoForwarding", maxVideoForwarding, default_cookies_param);
-        this.props.dispatch(ConferenceActions.setMaxVideoForwarding(maxVideoForwarding));
-      }
-    })
+    if(low_bandwidth) {
+      Cookies.set('videoEnabled', false, default_cookies_param);
+      this.props.dispatch(ConferenceActions.toggleVideo(low_bandwidth));
+      Cookies.set("maxVideoForwarding", 0, default_cookies_param);
+      this.props.dispatch(ConferenceActions.setMaxVideoForwarding(maxVideoForwarding));
+    } else {
+      Cookies.set('videoEnabled', true, default_cookies_param);
+      this.props.dispatch(ConferenceActions.toggleVideo(low_bandwidth));
+      Cookies.set("maxVideoForwarding", maxVideoForwarding, default_cookies_param);
+      this.props.dispatch(ConferenceActions.setMaxVideoForwarding(maxVideoForwarding));
+    }
   }
 
   handleMaxVideoForwardingChange(event) {
