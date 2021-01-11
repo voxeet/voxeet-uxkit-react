@@ -14,6 +14,7 @@ class Tile extends Component {
       "video-" + this.props.nbParticipant + "-video-on"
     );
     if (
+      (this.props.participant.participant_id !== nextProps.participant.participant_id) ||
       (checker != null && nextProps.participant.stream == null) ||
       (checker != null && !nextProps.participant.stream.active) ||
       (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
