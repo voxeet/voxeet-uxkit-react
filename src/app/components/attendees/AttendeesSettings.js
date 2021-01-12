@@ -382,43 +382,42 @@ class AttendeesSettings extends Component {
                       </label>
                     </div>
                   </div>}
-                  <div className="form-group switch-enable">
-                    <div className='switch-mode'>
-                      <input
-                        id="lowBandwidthMode"
-                        name="lowBandwidthMode"
-                        type="checkbox"
-                        onChange={this.handleChangeLowBandwidthMode}
-                        checked={lowBandwidthMode}
-                      />
-                      <label htmlFor="lowBandwidthMode">
-                        {strings.lowBandwidthMode}
-                      </label>
-                    </div>
-                  </div>
-                  <div className={`form-group switch-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
-                    <div className='input-wrapper'>
-                      <div className='input-value'>0</div>
-                      <input
-                        type="range"
-                        style={{ background: `linear-gradient(to right, #00afef 0%, #00afef ${(100 / MAX_MAXVF) * (!lowBandwidthMode ? maxVideoForwarding : 0)}%, #fff ${(100 / MAX_MAXVF) * (!lowBandwidthMode ? maxVideoForwarding : 0)}%, #fff 100%)` }}
-                        id="maxVideoForwarding"
-                        name="maxVideoForwarding"
-                        min={0}
-                        max={MAX_MAXVF}
-                        step={1}
-                        onChange={this.handleMaxVideoForwardingChange}
-                        value={!lowBandwidthMode ? maxVideoForwarding : 0}
-                      />
-                      <div className='input-value'>{MAX_MAXVF}</div>
-                    </div>
-                    <label htmlFor="maxVideoForwarding">
-                      <div className='maxVideoForwardingValue'>{`${strings.showVideoParticipants1} ${!lowBandwidthMode ? maxVideoForwarding : 0} ${strings.showVideoParticipants2}`}</div>
+                </Fragment>)
+              }
+                <div className="form-group switch-enable">
+                  <div className='switch-mode'>
+                    <input
+                      id="lowBandwidthMode"
+                      name="lowBandwidthMode"
+                      type="checkbox"
+                      onChange={this.handleChangeLowBandwidthMode}
+                      checked={lowBandwidthMode}
+                    />
+                    <label htmlFor="lowBandwidthMode">
+                      {strings.lowBandwidthMode}
                     </label>
                   </div>
-                </Fragment>
-                )
-              }
+                </div>
+                <div className={`form-group switch-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
+                  <div className='input-wrapper'>
+                    <div className='input-value'>0</div>
+                    <input
+                      type="range"
+                      style={{ background: `linear-gradient(to right, #00afef 0%, #00afef ${(100 / MAX_MAXVF) * (!lowBandwidthMode ? maxVideoForwarding : 0)}%, #fff ${(100 / MAX_MAXVF) * (!lowBandwidthMode ? maxVideoForwarding : 0)}%, #fff 100%)` }}
+                      id="maxVideoForwarding"
+                      name="maxVideoForwarding"
+                      min={0}
+                      max={MAX_MAXVF}
+                      step={1}
+                      onChange={this.handleMaxVideoForwardingChange}
+                      value={!lowBandwidthMode ? maxVideoForwarding : 0}
+                    />
+                    <div className='input-value'>{MAX_MAXVF}</div>
+                  </div>
+                  <label htmlFor="maxVideoForwarding">
+                    <div className='maxVideoForwardingValue'>{`${strings.showVideoParticipants1} ${!lowBandwidthMode ? maxVideoForwarding : 0} ${strings.showVideoParticipants2}`}</div>
+                  </label>
+                </div>
               <div className="hint-text">
                 <p>{strings.problemSettings}</p>
                 <p>{strings.saveSettings}</p>
