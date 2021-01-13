@@ -156,7 +156,7 @@ class ActionsButtons extends Component {
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
             !bowser.msie &&
-            (!currentUser.isListener || bowser.chrome) && (
+            (
               <ToggleSettingsButton
                 attendeesSettingsOpened={attendeesSettingsOpened}
                 toggle={toggleAttendeesSettings}

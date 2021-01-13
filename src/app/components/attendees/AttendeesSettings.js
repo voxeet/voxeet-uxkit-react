@@ -306,7 +306,7 @@ class AttendeesSettings extends Component {
         }
       >
         <div className="attendees-settings-header">
-          <h1>{!isListener ? strings.titleSettings : strings.titleSettingsListenerOnly}</h1>
+          <h1>{strings.settings}</h1>
         </div>
 
         <div className="settings">
