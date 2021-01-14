@@ -715,7 +715,7 @@ ConferenceRoom.propTypes = {
 ConferenceRoom.defaultProps = {
   isWidget: true,
   dolbyVoice: true,
-  maxVideoForwarding: 9,
+  maxVideoForwarding: isMobile()?4:9,
   kickOnHangUp: false,
   autoRecording: false,
   disableSounds: false,
