@@ -245,17 +245,28 @@ class AttendeesSettings extends Component {
       this.maxVFTimer = null;
     }
     const low_bandwidth = event.target.checked;
-    let maxVideoForwarding = low_bandwidth?0:(isMobile()?4:9);
+    let maxVideoForwarding = low_bandwidth?0:(Cookies.get("maxVideoForwarding")!==undefined?Cookies.get("maxVideoForwarding"):(isMobile()?4:9));
+    if(typeof maxVideoForwarding === 'string' || maxVideoForwarding instanceof String)
+      maxVideoForwarding = parseInt(maxVideoForwarding);
 
     if(low_bandwidth) {
-      Cookies.set('videoEnabled', false, default_cookies_param);
-      this.props.dispatch(ConferenceActions.toggleVideo(low_bandwidth));
-      Cookies.set("maxVideoForwarding", 0, default_cookies_param);
+      // Get current videoEnabled status
+      let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
+      // Cookies.set('videoEnabled', false, default_cookies_param);
+      if(videoEnabled) {
+        // Disable if enabled, don't change if already disabled
+        this.props.dispatch(ConferenceActions.toggleVideo(true));
+      }
+      // Don't change maxVideoForwarding value in cookies
+      // Cookies.set("maxVideoForwarding", 0, default_cookies_param);
       this.props.dispatch(ConferenceActions.setMaxVideoForwarding(maxVideoForwarding));
     } else {
-      Cookies.set('videoEnabled', true, default_cookies_param);
-      this.props.dispatch(ConferenceActions.toggleVideo(low_bandwidth));
-      Cookies.set("maxVideoForwarding", maxVideoForwarding, default_cookies_param);
+      // Don't enable video, don't touch a value in cookies
+      // Cookies.set('videoEnabled', true, default_cookies_param);
+      // this.props.dispatch(ConferenceActions.toggleVideo(low_bandwidth));
+      // Don't change maxVideoForwarding value in cookies
+      // Cookies.set("maxVideoForwarding", maxVideoForwarding, default_cookies_param);
+      // Revert to value stored in cookies
       this.props.dispatch(ConferenceActions.setMaxVideoForwarding(maxVideoForwarding));
     }
   }
