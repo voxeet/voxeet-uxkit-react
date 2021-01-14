@@ -47,10 +47,8 @@ export class Actions {
     return (dispatch) => {
       return this._initializeListeners(dispatch)
         .then(() => {
-          VoxeetSDK.session.participant ||
-            VoxeetSDK.initialize(consumerKey, consumerSecret).catch((err) => {
-              this._throwErrorModal(err);
-            });
+          VoxeetSDK.initialize(consumerKey, consumerSecret);
+          return VoxeetSDK.session.participant;
         })
         .then((userId) => {
           dispatch(this._sdkInitializedSuccessful(userId));
@@ -65,12 +63,10 @@ export class Actions {
     return (dispatch) => {
       return this._initializeListeners(dispatch)
         .then(() => {
-          VoxeetSDK.session.participant ||
-            VoxeetSDK.initializeToken(token, () => {
-              return refreshTokenCallback();
-            }).catch((err) => {
-              this._throwErrorModal(err);
-            });
+          VoxeetSDK.initializeToken(token, () => {
+            return refreshTokenCallback();
+          });
+          return VoxeetSDK.session.participant;
         })
         .then((userId) => dispatch(this._sdkInitializedSuccessful(userId)))
         .catch((err) => {
