@@ -424,12 +424,15 @@ class ConferencePreConfigContainer extends Component {
       this.maxVFTimer = null;
     }
     const low_bandwidth = event.target.checked;
+    let maxVideoForwarding = low_bandwidth?0:(Cookies.get("maxVideoForwarding")!==undefined?Cookies.get("maxVideoForwarding"):(isMobile()?4:9));
+    if(typeof maxVideoForwarding === 'string' || maxVideoForwarding instanceof String)
+      maxVideoForwarding = parseInt(maxVideoForwarding);
 
     this.setState({
       lowBandwidthMode: low_bandwidth,
-      maxVideoForwarding: (low_bandwidth ? 0 : isMobile()?4:9)
+      maxVideoForwarding: maxVideoForwarding
     }, () => {
-      Cookies.set("maxVideoForwarding", this.state.maxVideoForwarding, default_cookies_param);
+      // Cookies.set("maxVideoForwarding", this.state.maxVideoForwarding, default_cookies_param);
       return this.switchVideoEnabled(!low_bandwidth);
     })
   }
