@@ -140,7 +140,7 @@ class Speakers extends Component {
               if (participant.isConnected && participant.type == "user")
                 return (
                   <Speaker
-                    key={i}
+                    key={participant.participant_id}
                     participant={participant}
                     toggleMicrophone={toggleMicrophone}
                     kickParticipant={kickParticipant}

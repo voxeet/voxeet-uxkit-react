@@ -24,10 +24,11 @@ class SpeakerActive extends Component {
     }
     const checker = document.getElementById("video-active-video-on");
     if (
-      (checker != null && nextProps.participant.stream == null) ||
-      (checker != null && !nextProps.participant.stream.active) ||
-      (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
-      (checker == null && nextProps.participant.stream) ||
+        (!this.props.screenShareEnabled &&
+          ((checker != null && nextProps.participant.stream == null) ||
+          (checker != null && !nextProps.participant.stream.active) ||
+          (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
+          (checker == null && nextProps.participant.stream))) ||
       (this.props.mySelf && this.props.participant.name == null) ||
       this.props.participant != nextProps.participant
     ) {
