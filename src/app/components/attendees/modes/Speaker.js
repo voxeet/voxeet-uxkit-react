@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "@voxeet/react-redux-5.1.1";
 
 import AttendeesParticipantBar from "../AttendeesParticipantBar";
 import AttendeesParticipantMute from "../AttendeesParticipantMute";
 import AttendeesKickParticipant from "../AttendeesKickParticipant";
 
-import { Actions as ActiveSpeakerActions } from "../../../actions/ActiveSpeakerActions";
-import SpeakerDetails from "./SpeakerDetails";
 import SpeakerVideo from "./SpeakerVideo";
 
 class Speaker extends Component {
@@ -93,10 +90,6 @@ class Speaker extends Component {
             dolbyVoiceEnabled={dolbyVoiceEnabled}
           />
         )}
-        <SpeakerDetails
-          participant={participant}
-          isWidgetFullScreenOn={isWidgetFullScreenOn}
-        />
         {!isWidgetFullScreenOn && !dolbyVoiceEnabled && (
           <AttendeesParticipantMute
             participant={participant}

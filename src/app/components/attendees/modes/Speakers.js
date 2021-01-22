@@ -5,9 +5,7 @@ import { strings } from "../../../languages/localizedStrings";
 import { Actions as ActiveSpeakerActions } from "../../../actions/ActiveSpeakerActions";
 
 import Speaker from "./Speaker";
-import SpeakerActive from "./SpeakerActive";
 import SpeakerVideo from "./SpeakerVideo";
-import SpeakerDetails from "./SpeakerDetails";
 import AttendeesParticipantBar from "../AttendeesParticipantBar";
 import ScreenshareMode from "./presentationMode/ScreenshareMode";
 import FilePresentationMode from "./presentationMode/FilePresentationMode";
@@ -132,10 +130,6 @@ class Speakers extends Component {
               <li
                 className={"item small-item participant-available myself-item"}
               >
-                <SpeakerDetails
-                  participant={currentUser}
-                  isWidgetFullScreenOn={isWidgetFullScreenOn}
-                />
                 <SpeakerVideo mySelf={true} participant={currentUser} />
                 {isWidgetFullScreenOn && (
                   <AttendeesParticipantBar participant={currentUser} dolbyVoiceEnabled={dolbyVoiceEnabled} />
