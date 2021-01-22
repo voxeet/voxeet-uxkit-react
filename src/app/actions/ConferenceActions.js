@@ -1320,24 +1320,13 @@ export class Actions {
         }
       });
 
-      VoxeetSDK.conference.on("autoplayBlocked", () => {
-        dispatch(
-          OnBoardingMessageWithConfirmationActions.
-          onBoardingMessageWithConfirmation(
-            strings.autoPlayBlocked,
-            strings.autoPlayBlockedButton,
-            false,
-            () => {
-                    VoxeetSDK.conference.playBlockedAudio();
-          })
-          );
-      });
-
       VoxeetSDK.conference.on("streamUpdated", (user, stream) => {
-        dispatch(
-          ParticipantWaitingActions.onParticipantWaitingUpdated(user.id, stream)
-        );
-        dispatch(this.checkIfUpdateUser(user, stream));
+        if(stream && stream.type=== "Camera") {
+          dispatch(
+              ParticipantWaitingActions.onParticipantWaitingUpdated(user.id, stream)
+          );
+          dispatch(this.checkIfUpdateUser(user, stream));
+        }
       });
 
       VoxeetSDK.conference.on("streamRemoved", (user, stream) => {
@@ -1348,6 +1337,19 @@ export class Actions {
           dispatch(ParticipantWaitingActions.onParticipantWaitingLeft(user.id));
           dispatch(ParticipantActions.onParticipantLeft(user.id));
         }
+      });
+
+      VoxeetSDK.conference.on("autoplayBlocked", () => {
+        dispatch(
+            OnBoardingMessageWithConfirmationActions.
+            onBoardingMessageWithConfirmation(
+                strings.autoPlayBlocked,
+                strings.autoPlayBlockedButton,
+                false,
+                () => {
+                  VoxeetSDK.conference.playBlockedAudio();
+                })
+        );
       });
 
       VoxeetSDK.conference.on("qualityIndicators", (indicators) => {
