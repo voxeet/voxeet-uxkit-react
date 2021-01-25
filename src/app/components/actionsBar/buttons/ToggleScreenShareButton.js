@@ -84,6 +84,10 @@ class ToggleScreenShareButton extends Component {
         });
       }
     } else {
+      this.setState({
+        opened: false,
+        openedVideoPresentation: false
+      });
       this.props.dispatch(
         OnBoardingMessageActions.onBoardingDisplay(
           strings.shareAlreadyStarted,
