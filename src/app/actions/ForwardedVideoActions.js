@@ -6,10 +6,9 @@ export const Types = {
 
 export class Actions {
 
-  static updateForwsrdedVideos(participantIds) {
+  static updateForwardedVideos() {
     return {
       type: Types.UPDATE_FORWARDED_VIDEOS,
-      payload: { participantIds },
     };
   }
 }
