@@ -7,10 +7,12 @@ const defaultState = {
 const ForwardedVideoReducer = (state = defaultState, action) => {
   switch (action.type) {
     case Types.UPDATE_FORWARDED_VIDEOS:
-      console.log('About to update FV participantIds', action.payload.participantIds || []);
+
+      let array = Array.from(state.participantIds, ([participant_id, value]) => (participant_id));
+      console.log('About to update FV participantIds', array || []);
       return {
         ...state,
-        participantIds: action.payload.participantIds || []
+        participantIds: array || []
       };
     default:
       return state;

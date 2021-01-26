@@ -1317,6 +1317,9 @@ export class Actions {
             )
           );
           dispatch(this.checkIfUserJoined(user, stream));
+          
+          // VFS
+          dispatch(ForwardedVideoActions.updateForwardedVideos());
         }
       });
 
@@ -1328,8 +1331,8 @@ export class Actions {
             strings.autoPlayBlockedButton,
             false,
             () => {
-                    VoxeetSDK.conference.playBlockedAudio();
-          })
+              VoxeetSDK.conference.playBlockedAudio();
+            })
           );
       });
 
@@ -1338,6 +1341,9 @@ export class Actions {
           ParticipantWaitingActions.onParticipantWaitingUpdated(user.id, stream)
         );
         dispatch(this.checkIfUpdateUser(user, stream));
+
+        // VFS
+        dispatch(ForwardedVideoActions.updateForwardedVideos());
       });
 
       VoxeetSDK.conference.on("streamRemoved", (user, stream) => {
@@ -1347,6 +1353,9 @@ export class Actions {
         } else {
           dispatch(ParticipantWaitingActions.onParticipantWaitingLeft(user.id));
           dispatch(ParticipantActions.onParticipantLeft(user.id));
+
+          // VFS
+          dispatch(ForwardedVideoActions.updateForwardedVideos());
         }
       });
 
@@ -1358,24 +1367,6 @@ export class Actions {
         } else {
           console.warn("No indicators");
         }
-      });
-
-      VoxeetSDK.conference.on("streamUpdated", (indicators) => {
-        let array = Array.from(VoxeetSDK.conference.videoForwardedParticipants, ([participant_id, value]) => (participant_id));
-        //console.log("streamUpdated videoForwardedParticipants:", array);
-        dispatch(ForwardedVideoActions.updateForwsrdedVideos(array));
-      });
-
-      VoxeetSDK.conference.on("streamAdded", (indicators) => {
-        let array = Array.from(VoxeetSDK.conference.videoForwardedParticipants, ([participant_id, value]) => (participant_id));
-        //console.log("streamAdded videoForwardedParticipants:", array);
-        dispatch(ForwardedVideoActions.updateForwsrdedVideos(array));
-      });
-
-      VoxeetSDK.conference.on("streamRemoved", (indicators) => {
-        let array = Array.from(VoxeetSDK.conference.videoForwardedParticipants, ([participant_id, value]) => (participant_id));
-        //console.log("streamRemoved videoForwardedParticipants:", array);
-        dispatch(ForwardedVideoActions.updateForwsrdedVideos(array));
       });
 
       VoxeetSDK.conference.on("error", (data) => {
