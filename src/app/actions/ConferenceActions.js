@@ -1323,7 +1323,7 @@ export class Actions {
       });
 
       VoxeetSDK.conference.on("streamUpdated", (user, stream) => {
-        if(stream && stream.type=== "Camera") {
+        if (stream && stream.type === "Camera") {
           dispatch(
               ParticipantWaitingActions.onParticipantWaitingUpdated(user.id, stream)
           );
