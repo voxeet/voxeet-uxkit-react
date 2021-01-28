@@ -1317,7 +1317,6 @@ export class Actions {
             )
           );
           dispatch(this.checkIfUserJoined(user, stream));
-
           // VFS
           dispatch(ForwardedVideoActions.updateForwardedVideos());
         }
@@ -1329,10 +1328,8 @@ export class Actions {
               ParticipantWaitingActions.onParticipantWaitingUpdated(user.id, stream)
           );
           dispatch(this.checkIfUpdateUser(user, stream));
-
           // VFS
           dispatch(ForwardedVideoActions.updateForwardedVideos());
-
         }
       });
 
@@ -1343,7 +1340,6 @@ export class Actions {
         } else {
           dispatch(ParticipantWaitingActions.onParticipantWaitingLeft(user.id));
           dispatch(ParticipantActions.onParticipantLeft(user.id));
-
           // VFS
           dispatch(ForwardedVideoActions.updateForwardedVideos());
         }
