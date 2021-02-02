@@ -24,6 +24,7 @@ class AttendeesParticipantBar extends Component {
       kickParticipant,
       isAdminActived /*, toggleAutomatically*/,
       dolbyVoiceEnabled,
+      kickPermission,
     } = this.props;
     const { quality } = this.props.participantStore;
     let audioq = 0,
@@ -63,7 +64,7 @@ class AttendeesParticipantBar extends Component {
                 toggleMicrophone={toggleMicrophone}
               />
             )}
-            {isAdmin && isAdminActived && !participant.isMyself && (
+            {isAdmin && isAdminActived && !participant.isMyself &&  kickPermission && (
               <AttendeesKickParticipant
                 participant={participant}
                 kickParticipant={kickParticipant}
@@ -85,6 +86,7 @@ AttendeesParticipantBar.propTypes = {
   isAdmin: PropTypes.bool,
   isAdminActived: PropTypes.bool,
   dolbyVoiceEnabled: PropTypes.bool,
+  kickPermission: PropTypes.bool
 };
 
 AttendeesParticipantBar.defaultProps = {

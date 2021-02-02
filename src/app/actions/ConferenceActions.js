@@ -1471,6 +1471,10 @@ export class Actions {
         }
       });
 
+      VoxeetSDK.conference.on("permissionsUpdated", (permissions) => {
+        dispatch(ControlsActions.setConferencePermissions(permissions));
+      });
+
       VoxeetSDK.videoPresentation.on("started", (data) => {
         dispatch(ControlsActions.forceMode("speaker"));
         if (VoxeetSDK.session.participant.id === data.ownerId) {

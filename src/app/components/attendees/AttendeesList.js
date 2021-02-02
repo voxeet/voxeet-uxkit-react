@@ -98,7 +98,7 @@ class AttendeesList extends Component {
       if (audioq > 0 && (videoq == 0 || videoq == -1)) avquality = audioq;
       //avquality = Math.max(audioq, videoq);
     }
-    const { isWebinar, isAdmin, attendeesListOpened, toggleMicrophone, toggleForwardedVideo, dolbyVoiceEnabled } = this.props;
+    const { isWebinar, isAdmin, attendeesListOpened, toggleMicrophone, toggleForwardedVideo, dolbyVoiceEnabled, invitePermission } = this.props;
     const { filteredUsers } = this.state;
     const participantsConnected = participants.filter(
       (p) => p.isConnected && p.type == "user"
@@ -477,6 +477,7 @@ class AttendeesList extends Component {
                             </span>
                           )}
                         </span>
+                        { invitePermission && (
                         <a
                           className="invite-user"
                           onClick={() =>
@@ -484,7 +485,7 @@ class AttendeesList extends Component {
                           }
                         >
                           {strings.inviteUser}
-                        </a>
+                        </a> )}
                       </span>
                     </li>
                   );
@@ -502,6 +503,7 @@ AttendeesList.propTypes = {
   isWebinar: PropTypes.bool.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
+  invitePermission: PropTypes.bool
 };
 
 export default AttendeesList;

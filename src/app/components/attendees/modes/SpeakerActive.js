@@ -54,7 +54,8 @@ class SpeakerActive extends Component {
       isAdminActived,
       userStream,
       isScreenshare,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
+      kickPermission
     } = this.props;
     const photoUrl = participant.avatarUrl || userPlaceholder;
     return (
@@ -82,6 +83,7 @@ class SpeakerActive extends Component {
                 participant={participant}
                 toggleMicrophone={toggleMicrophone}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
+                kickPermission={kickPermission}
               />
             )}
           {filePresentationEnabled && (
@@ -144,7 +146,8 @@ SpeakerActive.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   mySelf: PropTypes.bool.isRequired,
-  dolbyVoiceEnabled: PropTypes.bool
+  dolbyVoiceEnabled: PropTypes.bool,
+  kickPermission: PropTypes.bool
 };
 
 export default SpeakerActive;

@@ -87,7 +87,7 @@ class AttendeesChat extends Component {
   }
 
   render() {
-    const { participants, currentUser, attendeesChatOpened } = this.props;
+    const { participants, currentUser, attendeesChatOpened, conferencePermissions } = this.props;
     const { runningAnimation } = this.state;
     const { messages } = this.props.chatStore;
     return (
@@ -156,7 +156,8 @@ class AttendeesChat extends Component {
             }
           })}
         </ul>
-        <AttendeesChatInputContainer sendMessage={this.sendMessage} />
+        { conferencePermissions.has("SEND_MESSAGE") && (
+        <AttendeesChatInputContainer sendMessage={this.sendMessage} /> )}
       </div>
     );
   }

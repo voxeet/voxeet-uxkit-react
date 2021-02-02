@@ -22,7 +22,8 @@ class Tile extends Component {
       (this.props.mySelf && this.props.participant.name == null) ||
       (this.props.participant.stream && nextProps.participant.stream &&
           this.props.participant.stream.id != nextProps.participant.stream.id) ||
-      (!this.props.participant.stream && nextProps.participant.stream)
+      (!this.props.participant.stream && nextProps.participant.stream) ||
+      (this.props.kickPermission != nextProps.kickPermission)
     ) {
       return true;
     }
@@ -39,7 +40,8 @@ class Tile extends Component {
       isAdminActived,
       nbParticipant,
       mySelf,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
+      kickPermission
     } = this.props;
     return (
       <div
@@ -69,6 +71,7 @@ class Tile extends Component {
           toggleMicrophone={toggleMicrophone}
           isWidgetFullScreenOn={isWidgetFullScreenOn}
           dolbyVoiceEnabled={dolbyVoiceEnabled}
+          kickPermission={kickPermission}
         />
         <TileLegend
           participant={participant}
@@ -96,6 +99,7 @@ Tile.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   nbParticipant: PropTypes.number,
   dolbyVoiceEnabled: PropTypes.bool,
+  kickPermission: PropTypes.bool
 };
 
 export default Tile;
