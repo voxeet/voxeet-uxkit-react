@@ -9,6 +9,12 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 3.0.1
+
+#### Bug fixes
+
+- Fixed an echo issue that occurred after switching input and output devices.
+
 ### 3.0.0
 
 #### Features

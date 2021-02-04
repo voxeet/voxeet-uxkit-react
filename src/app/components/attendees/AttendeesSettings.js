@@ -178,24 +178,25 @@ class AttendeesSettings extends Component {
 
 
   setOutputDevice(e) {
-    VoxeetSDK.mediaDevice.selectAudioOutput(e.target.value);
+    const deviceId = e.target.value;
+    VoxeetSDK.mediaDevice.selectAudioOutput(deviceId);
     var date = new Date();
     date.setDate(date.getDate() + 365);
-    Cookies.set("output", e.target.value, {
+    Cookies.set("output", deviceId, {
       path: "/",
       expires: date,
       secure: true,
       sameSite: 'none'
     });
-    this.props.dispatch(InputManagerActions.outputAudioChange(e.target.value));
+    this.props.dispatch(InputManagerActions.outputAudioChange(deviceId));
   }
 
   setAudioDevice(e) {
-    e.persist();
-    VoxeetSDK.mediaDevice.selectAudioInput(e.target.value).then(() => {
+    const deviceId = e.target.value;
+    VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
       var date = new Date();
       date.setDate(date.getDate() + 365);
-      Cookies.set("input", e.target.value, {
+      Cookies.set("input", deviceId, {
         path: "/",
         expires: date,
         secure: true,
@@ -204,19 +205,20 @@ class AttendeesSettings extends Component {
       if (this.props.microphoneMuted) {
         VoxeetSDK.conference.toggleMute(VoxeetSDK.session.participant);
       }
+      this.props.dispatch(InputManagerActions.inputAudioChange(deviceId));
     });
-    this.props.dispatch(InputManagerActions.inputAudioChange(e.target.value));
+
   }
 
   setVideoDevice(e) {
     const { videoEnabled } = this.props;
     const deviceId = e.target.value;
     if (videoEnabled) {
-      VoxeetSDK.mediaDevice.selectVideoInput(e.target.value);
+      VoxeetSDK.mediaDevice.selectVideoInput(deviceId);
     }
     var date = new Date();
     date.setDate(date.getDate() + 365);
-    Cookies.set("camera", e.target.value, {
+    Cookies.set("camera", deviceId, {
       path: "/",
       expires: date,
       secure: true,
