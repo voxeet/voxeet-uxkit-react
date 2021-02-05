@@ -9,6 +9,45 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 3.1.0
+
+#### Features
+
+- Introduced the Video Forwarding feature to allow participants to dynamically control the number of transmitted video streams. The Video Forwarding article describes in detail the changes to Interactivity APIs.
+- Introduced updates to the client SDK to support the use of conference access tokens for limiting the scope of participant permissions. The Enhanced Conference Access Control article describes in detail the changes to Interactivity APIs.
+- Introduced the conference capacity limit, limiting the number of conference participants based on type, in order to preserve audio and video quality. The Conference Capacity Limitations article describes the capacity limits and the ConferenceAtMaxCapacityError.
+
+### 3.0.1
+
+#### Bug fixes
+
+- Fixed an echo issue that occurred after switching input and output devices.
+
+### 3.0.0
+
+#### Features
+
+- Support for SDK 3.0 and Dolby Voice conference, including support for Audio Transparency Mode and listen-only mode.
+
+#### Bug fixes
+
+- Fixed a problem where Safari does not play audio when joining the conference in listen-only mode.
+- Corrected several issues related to network errors during the call.
+
+### 2.1.5
+
+#### Bug fixes
+
+- Fixed an issue with ignoring logo props during loading.
+- Added translation for an active speaker overlay.
+- Improved the file presentation UI, which introduces cropped images and removal of a grey bar in the thumbnails area.
+
+### 2.1.4
+
+#### Bug fixes
+
+- Fixed an issue with enabled participants' cameras after the end of a conference.
+
 ### 2.1.3
 
 #### Device management overhaul
