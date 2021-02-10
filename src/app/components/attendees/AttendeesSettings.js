@@ -206,14 +206,15 @@ class AttendeesSettings extends Component {
   }
 
   setAudioDevice(e) {
-    e.persist();
-    VoxeetSDK.mediaDevice.selectAudioInput(e.target.value).then(() => {
-      Cookies.set("input", e.target.value, default_cookies_param);
+    const deviceId = e.target.value;
+    VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
+      Cookies.set("input", deviceId, default_cookies_param);
       if (this.props.microphoneMuted) {
         VoxeetSDK.conference.toggleMute(VoxeetSDK.session.participant);
       }
+      this.props.dispatch(InputManagerActions.inputAudioChange(deviceId));
     });
-    this.props.dispatch(InputManagerActions.inputAudioChange(e.target.value));
+
   }
 
   setVideoDevice(e) {
