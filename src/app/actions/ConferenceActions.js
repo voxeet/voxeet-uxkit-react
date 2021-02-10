@@ -258,10 +258,24 @@ export class Actions {
           secure: true,
           sameSite: "none",
         });
+        VoxeetSDK.mediaDevice
+            .selectAudioOutput(
+                selected_device.deviceId
+            )
+            .catch((err) => {
+              console.log(err);
+            });
         dispatch(
           InputManagerActions.outputAudioChange(selected_device.deviceId)
         );
       } else {
+        VoxeetSDK.mediaDevice
+            .selectAudioOutput(
+                Cookies.get("output")
+            )
+            .catch((err) => {
+              console.log(err);
+            });
         dispatch(InputManagerActions.outputAudioChange(Cookies.get("output")));
       }
     });
