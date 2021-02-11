@@ -303,6 +303,7 @@ export class Actions {
           );
           dispatch(ConferenceActions._conferenceJoined());
           dispatch(ControlsActions.toggleWidget());
+          dispatch(ControlsActions.setConferencePermissions(res.permissions));
           dispatch(ParticipantActions.triggerHandleOnConnect());
         }
       });
@@ -410,6 +411,7 @@ export class Actions {
                       )
                     );
                     dispatch(ControlsActions.toggleWidget());
+                    dispatch(ControlsActions.setConferencePermissions(res.permissions));
                     dispatch(ParticipantActions.triggerHandleOnConnect());
                     if (VoxeetSDK.recording.current) {
                       dispatch(ControlsActions.lockRecording());
@@ -451,6 +453,7 @@ export class Actions {
                       )
                     );
                     dispatch(ControlsActions.toggleWidget());
+                    dispatch(ControlsActions.setConferencePermissions(res.permissions));
                     dispatch(ParticipantActions.triggerHandleOnConnect());
                     if (VoxeetSDK.recording.current) {
                       dispatch(ControlsActions.lockRecording());
@@ -510,6 +513,7 @@ export class Actions {
                     );
                     dispatch(ControlsActions.toggleWidget());
                     dispatch(ControlsActions.saveConstraints(constraints));
+                    dispatch(ControlsActions.setConferencePermissions(res.permissions));
                     dispatch(ParticipantActions.triggerHandleOnConnect());
                     if (VoxeetSDK.recording.current) {
                       dispatch(ControlsActions.lockRecording());
@@ -622,6 +626,7 @@ export class Actions {
                   );
                   dispatch(ControlsActions.toggleWidget());
                   dispatch(ControlsActions.saveConstraints(constraints));
+                  dispatch(ControlsActions.setConferencePermissions(res.permissions));
                   dispatch(ParticipantActions.triggerHandleOnConnect());
                   if (VoxeetSDK.recording.current) {
                     dispatch(ControlsActions.lockRecording());
@@ -1483,6 +1488,10 @@ export class Actions {
             )
           );
         }
+      });
+
+      VoxeetSDK.conference.on("permissionsUpdated", (permissions) => {
+        dispatch(ControlsActions.setConferencePermissions(permissions));
       });
 
       VoxeetSDK.videoPresentation.on("started", (data) => {

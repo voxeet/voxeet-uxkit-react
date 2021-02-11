@@ -33,6 +33,20 @@ const defaultState = {
     "chat",
     "pstn"
   ],
+  conferencePermissions: new Set([
+    "INVITE",
+    "UPDATE_PERMISSIONS",
+    "KICK",
+    "JOIN",
+    "SEND_AUDIO",
+    "SEND_VIDEO",
+    "SHARE_SCREEN",
+    "SHARE_VIDEO",
+    "SHARE_FILE",
+    "SEND_MESSAGE",
+    "RECORD",
+    "STREAM"
+  ]),
   shareActions: ["screenshare", "filepresentation", "videopresentation"],
   displayModes: ["tiles", "speaker", "list"],
   mode: "tiles",
@@ -324,6 +338,12 @@ const ControlsReducer = (state = defaultState, action) => {
       return {
         ...state,
         requestedVideos: rv
+      };
+    }
+    case Types.SET_CONFERENCE_PERMISSIONS: {
+      return {
+        ...state,
+        conferencePermissions: action.payload.conferencePermissions
       };
     }
     default:

@@ -22,7 +22,8 @@ class TileVideo extends Component {
       isAdminActived,
       mySelf,
       isBackCamera,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
+      kickPermission
     } = this.props;
     const photoUrl = participant.avatarUrl || userPlaceholder;
     return (
@@ -49,6 +50,7 @@ class TileVideo extends Component {
             participant={participant}
             toggleMicrophone={toggleMicrophone}
             dolbyVoiceEnabled={dolbyVoiceEnabled}
+            kickPermission={kickPermission}
           />
         )}
       </span>
@@ -71,6 +73,7 @@ TileVideo.propTypes = {
   isAdminActived: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
   isBackCamera: PropTypes.bool,
+  kickPermission: PropTypes.bool
 };
 
 export default TileVideo;

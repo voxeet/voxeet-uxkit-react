@@ -21,6 +21,7 @@ class Tiles extends Component {
       currentUser,
       isWebinar,
       dolbyVoiceEnabled,
+      kickPermission
     } = this.props;
     let tilesParticipants = participants.filter(
         (p) => p.isConnected && p.type == "user"
@@ -81,6 +82,7 @@ class Tiles extends Component {
                 toggleMicrophone={toggleMicrophone}
                 isWidgetFullScreenOn={isWidgetFullScreenOn}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
+                kickPermission={kickPermission}
               />
             );
           })}
@@ -100,6 +102,7 @@ Tiles.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
+  kickPermission: PropTypes.bool,
 };
 
 export default Tiles;

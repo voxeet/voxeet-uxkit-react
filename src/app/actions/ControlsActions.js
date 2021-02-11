@@ -35,6 +35,7 @@ export const Types = {
   TOGGLE_MAX_REMOTE_PARTICIPANTS: "TOGGLE_MAX_REMOTE_PARTICIPANTS",
   TOGGLE_REQUESTED_VIDEO: "TOGGLE_REQUESTED_VIDEO",
   SET_REQUESTED_VIDEO: "SET_REQUESTED_VIDEO",
+  SET_CONFERENCE_PERMISSIONS: "SET_CONFERENCE_PERMISSIONS"
 };
 
 export class Actions {
@@ -305,6 +306,15 @@ export class Actions {
       payload: {
         participant_id,
         state
+      }
+    };
+  }
+
+  static setConferencePermissions(conferencePermissions) {
+    return {
+      type: Types.SET_CONFERENCE_PERMISSIONS,
+      payload: {
+        conferencePermissions
       }
     };
   }

@@ -53,6 +53,7 @@ class Speakers extends Component {
       videoPresentationEnabled,
       isVideoPresentation,
       dolbyVoiceEnabled,
+      kickPermission
     } = this.props;
     const {
       activeSpeaker,
@@ -157,6 +158,7 @@ class Speakers extends Component {
                     disableForceActiveSpeaker={disableForceActiveSpeaker}
                     forceActiveSpeaker={forceActiveSpeaker}
                     dolbyVoiceEnabled={dolbyVoiceEnabled}
+                    kickPermission={kickPermission}
                   />
                 );
             })}
@@ -189,6 +191,7 @@ Speakers.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
+  kickPermission: PropTypes.bool
 };
 
 export default Speakers;
