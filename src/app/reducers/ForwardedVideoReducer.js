@@ -9,7 +9,7 @@ const ForwardedVideoReducer = (state = defaultState, action) => {
     case Types.UPDATE_FORWARDED_VIDEOS:
 
       let array = Array.from(state.participantIds, ([participant_id, value]) => (participant_id));
-      console.log('About to update FV participantIds', array || []);
+      //console.log('About to update FV participantIds', array || []);
       return {
         ...state,
         participantIds: array || []
