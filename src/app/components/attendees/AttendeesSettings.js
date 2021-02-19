@@ -284,7 +284,7 @@ class AttendeesSettings extends Component {
     if (num !== undefined && !isNaN(num)) {
       this.setState({ maxVideoForwarding: num }, () => {
         this.maxVFTimer = setTimeout(() => {
-          console.log('handleMaxVideoForwardingChange', num);
+          //console.log('handleMaxVideoForwardingChange', num);
           Cookies.set("maxVideoForwarding", num, default_cookies_param);
           this.props.dispatch(ConferenceActions.setMaxVideoForwarding(num));
           clearTimeout(this.maxVFTimer);
