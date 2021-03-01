@@ -45,6 +45,7 @@ class Attendees extends Component {
   constructor(props) {
     super(props);
     this.toggleMicrophone = this.toggleMicrophone.bind(this);
+    this.toggleForwardedVideo = this.toggleForwardedVideo.bind(this);
     this.kickParticipant = this.kickParticipant.bind(this);
     this.toggleVideo = this.toggleVideo.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
@@ -61,6 +62,12 @@ class Attendees extends Component {
   toggleMicrophone(participant_id, isMuted) {
     this.props.dispatch(
       ConferenceActions.toggleMicrophone(participant_id, isMuted)
+    );
+  }
+
+  toggleForwardedVideo(participant_id) {
+    this.props.dispatch(
+      ConferenceActions.toggleForwardedVideo(participant_id)
     );
   }
 
@@ -121,7 +128,9 @@ class Attendees extends Component {
       attendeesListOpened: this.props.attendeesListOpened,
       isWebinar: this.props.participantStore.isWebinar,
       isAdmin: this.props.participantStore.isAdmin,
-      toggleMicrophone: this.toggleMicrophone
+      toggleMicrophone: this.toggleMicrophone,
+      toggleForwardedVideo: this.toggleForwardedVideo,
+      invitePermission: this.props.conferencePermissions.has("INVITE")
     });
   }
 
@@ -153,6 +162,7 @@ class Attendees extends Component {
       conferenceId,
       isVideoPresentation,
       dolbyVoiceEnabled,
+      conferencePermissions
     } = this.props;
     const {
       participants,
@@ -169,6 +179,7 @@ class Attendees extends Component {
       currentUser,
     } = this.props.participantStore;
     const participantsConnected = participants.filter((p) => p.isConnected);
+    const kickPermission = conferencePermissions.has("KICK");
     return (
       <div
         id="conference-attendees"
@@ -261,6 +272,7 @@ class Attendees extends Component {
                 saveUserPosition={this.saveUserPosition}
                 toggleMicrophone={this.toggleMicrophone}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
+                kickPermission={kickPermission}
               />
             )}
           {mode === MODE_TILES &&
@@ -286,6 +298,7 @@ class Attendees extends Component {
                 toggleMicrophone={this.toggleMicrophone}
                 isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
+                kickPermission={kickPermission}
               />
             )}
           {mode === MODE_SPEAKER &&
@@ -323,6 +336,7 @@ class Attendees extends Component {
                 isVideoPresentation={isVideoPresentation}
                 screenShareStream={userStreamScreenShare}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
+                kickPermission={kickPermission}
               />
             )}
           {participantsConnected.length === 0 &&
@@ -357,7 +371,8 @@ Attendees.propTypes = {
   attendeesWaiting: PropTypes.func,
   attendeesChat: PropTypes.func,
   attendeesList: PropTypes.func,
-  dolbyVoiceEnabled: PropTypes.func,
+  dolbyVoiceEnabled: PropTypes.bool,
+  conferencePermissions: PropTypes.object,
 };
 
 export default Attendees;

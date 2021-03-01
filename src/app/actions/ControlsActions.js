@@ -31,6 +31,11 @@ export const Types = {
   CLOSE_SESSION_HANG_UP: "CLOSE_SESSION_HANG_UP",
   SET_SIMULCAST: "SET_SIMULCAST",
   TOGGLE_AUDIO_TRANSPARENT_MODE: "TOGGLE_AUDIO_TRANSPARENT_MODE",
+  SET_AUDIO_TRANSPARENT_MODE: "SET_AUDIO_TRANSPARENT_MODE",
+  TOGGLE_MAX_REMOTE_PARTICIPANTS: "TOGGLE_MAX_REMOTE_PARTICIPANTS",
+  TOGGLE_REQUESTED_VIDEO: "TOGGLE_REQUESTED_VIDEO",
+  SET_REQUESTED_VIDEO: "SET_REQUESTED_VIDEO",
+  SET_CONFERENCE_PERMISSIONS: "SET_CONFERENCE_PERMISSIONS"
 };
 
 export class Actions {
@@ -256,15 +261,61 @@ export class Actions {
     };
   }
 
+  static setAudioTransparentMode(state) {
+    return {
+      type: Types.SET_AUDIO_TRANSPARENT_MODE,
+      payload: {
+        audioTransparentMode : state
+      }
+    };
+  }
+
   static toggleAudioTransparentMode() {
     return {
       type: Types.TOGGLE_AUDIO_TRANSPARENT_MODE
     };
   }
 
+  static setMaxVideoForwarding(state) {
+    return {
+      type: Types.TOGGLE_MAX_REMOTE_PARTICIPANTS,
+      payload: {
+        maxVideoForwarding: state
+      }
+    };
+  }
+
   static toggleAttendeesChat() {
     return {
       type: Types.TOGGLE_ATTENDEES_CHAT
+    };
+  }
+
+  static toggleRequestedVideo(participant_id) {
+    return {
+      type: Types.TOGGLE_REQUESTED_VIDEO,
+      payload: {
+        participant_id
+      }
+    };
+  }
+
+  static setRequestedVideo(participant_id, state) {
+    return {
+      type: Types.SET_REQUESTED_VIDEO,
+      payload: {
+        participant_id,
+        state
+      }
+    };
+  }
+
+  static setConferencePermissions(conferencePermissions) {
+    return {
+      type: Types.SET_CONFERENCE_PERMISSIONS,
+      payload: {
+        conferencePermissions
+      }
     };
   }
 }

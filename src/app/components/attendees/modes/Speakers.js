@@ -5,9 +5,7 @@ import { strings } from "../../../languages/localizedStrings";
 import { Actions as ActiveSpeakerActions } from "../../../actions/ActiveSpeakerActions";
 
 import Speaker from "./Speaker";
-import SpeakerActive from "./SpeakerActive";
 import SpeakerVideo from "./SpeakerVideo";
-import SpeakerDetails from "./SpeakerDetails";
 import AttendeesParticipantBar from "../AttendeesParticipantBar";
 import ScreenshareMode from "./presentationMode/ScreenshareMode";
 import FilePresentationMode from "./presentationMode/FilePresentationMode";
@@ -55,6 +53,7 @@ class Speakers extends Component {
       videoPresentationEnabled,
       isVideoPresentation,
       dolbyVoiceEnabled,
+      kickPermission
     } = this.props;
     const {
       activeSpeaker,
@@ -132,10 +131,6 @@ class Speakers extends Component {
               <li
                 className={"item small-item participant-available myself-item"}
               >
-                <SpeakerDetails
-                  participant={currentUser}
-                  isWidgetFullScreenOn={isWidgetFullScreenOn}
-                />
                 <SpeakerVideo mySelf={true} participant={currentUser} />
                 {isWidgetFullScreenOn && (
                   <AttendeesParticipantBar participant={currentUser} dolbyVoiceEnabled={dolbyVoiceEnabled} />
@@ -146,7 +141,7 @@ class Speakers extends Component {
               if (participant.isConnected && participant.type == "user")
                 return (
                   <Speaker
-                    key={i}
+                    key={participant.participant_id}
                     participant={participant}
                     toggleMicrophone={toggleMicrophone}
                     kickParticipant={kickParticipant}
@@ -163,6 +158,7 @@ class Speakers extends Component {
                     disableForceActiveSpeaker={disableForceActiveSpeaker}
                     forceActiveSpeaker={forceActiveSpeaker}
                     dolbyVoiceEnabled={dolbyVoiceEnabled}
+                    kickPermission={kickPermission}
                   />
                 );
             })}
@@ -195,6 +191,7 @@ Speakers.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
+  kickPermission: PropTypes.bool
 };
 
 export default Speakers;

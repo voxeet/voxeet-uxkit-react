@@ -8,7 +8,7 @@ export const strings = new LocalizedStrings({
     errorPermissionDeniedMicrophone:
       "An error occured when joining the conference. Please make sure to allow access to your microphone.",
     errorPermissionDeniedMicrophoneCamera:
-      "An error occured when joining the conference. Please make sure to allow access to your microphone and camera.",
+      "An error occured when joining the conference. Please make sure to allow access to your microphone and camera. Check if there’s another application using your camera and microphone",
     errorIE11:
       "A plugin is mandatory for IE11, please download and install the plugin. When the installation is complete, please refresh this page.",
     titleNotAllowedError:'Access to media devices not granted',
@@ -33,6 +33,8 @@ export const strings = new LocalizedStrings({
     titleCallSetupError:'Call Setup Error',
     titleProgramError:'Program Error',
     titleSystemError:'System Error',
+    titleConferenceCapacityError:'Unable to join the conference.',
+    descConferenceCapacityError:'Conference is at the maximum capacity and is not accepting new participants.',
     descPeerConnectionFailedError: 'Your computer cannot connect to the communications platform, check your network setup, and try again. ' +
         'If the problem persists, contact your app provider for help.',
     descPeerConnectionDisconnectedError: 'There was a temporary network glitch that may have affected your call, if the problem persists please disconnect and rejoin.',
@@ -140,7 +142,13 @@ export const strings = new LocalizedStrings({
     invitedUsers: "Waiting for invitation",
     inviteUser: "Invite",
     autoPlayBlocked: "The browser has blocked automatic audio playback due to a security policy, proceed to start hearing audio from the conference",
-    autoPlayBlockedButton: "Play audio"
+    autoPlayBlockedButton: "Play audio",
+    lowBandwidthMode: "Low bandwidth mode",
+    sendMyVideo: "Send my video",
+    showVideoParticipants1: "Show video for up to",
+    showVideoParticipants2: "participants",
+    pinnedCameraOff: "Click icon to always view video from this participant",
+    pinnedCameraOn: "Click icon to only view video from this participant if he/she talked"
   },
   fr: {
     noPstnNumbers: "Pas de numéro PSTN ...",
@@ -249,6 +257,12 @@ export const strings = new LocalizedStrings({
     placeholderVideoPresentation: "URL de la vidéo",
     startVideoPresentationAutoplay: "Démarrer la video",
     invitedUsers: "En attente d'invitation",
-    inviteUser: "Inviter"
+    inviteUser: "Inviter",
+    lowBandwidthMode: "Mode à faible bande passante",
+    sendMyVideo: "Envoyez ma vidéo",
+    showVideoParticipants1: "Afficher la vidéo jusqu'à",
+    showVideoParticipants2: "participants",
+    pinnedCameraOff: "Cliquez sur l'icône pour toujours voir la vidéo de ce participant",
+    pinnedCameraOn: "Cliquez sur l'icône pour afficher la vidéo de ce participant uniquement s'il a parlé"
   }
 });

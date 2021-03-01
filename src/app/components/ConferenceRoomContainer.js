@@ -222,6 +222,7 @@ class ConferenceRoomContainer extends Component {
       conferencePincode,
       conferenceId,
       dolbyVoiceEnabled,
+      maxVideoForwarding,
     } = this.props;
     const { errorMessage, isError } = this.props.errorStore;
     const { isModalExternalLiveOpen } = this.state;
@@ -246,7 +247,8 @@ class ConferenceRoomContainer extends Component {
       displayModes,
       displayAttendeesList,
       displayAttendeesChat,
-      displayAttendeesSettings
+      displayAttendeesSettings,
+      conferencePermissions,
     } = this.props.controlsStore;
 
     return (
@@ -336,6 +338,7 @@ class ConferenceRoomContainer extends Component {
               attendeesChat={attendeesChat}
               attendeesList={attendeesList}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
+              conferencePermissions={conferencePermissions}
             />
           )}
           {isJoined && (isWidgetFullScreenOn || forceFullscreen) && (
@@ -383,6 +386,7 @@ class ConferenceRoomContainer extends Component {
               toggleAttendeesSettings={this.toggleAttendeesSettings}
               attendeesSettingsOpened={displayAttendeesSettings}
               actionsButtons={actionsButtons}
+              conferencePermissions={conferencePermissions}
             />
           )}
         </aside>
@@ -419,6 +423,7 @@ ConferenceRoomContainer.propTypes = {
   attendeesChat: PropTypes.func,
   attendeesWaiting: PropTypes.func,
   dolbyVoiceEnabled: PropTypes.bool,
+  conferencePermissions: PropTypes.object,
 };
 
 export default ConferenceRoomContainer;

@@ -134,10 +134,17 @@
   .participant-details {
     display: flex;
     margin-bottom: 10px;
+
+    &.speaking {
+      .participant-avatar {
+        box-shadow: 0px 0px 0px 3px #fabe04;
+      }
+    }
     .participant-avatar {
       border-radius: 50%;
       height: 48px;
       width: 48px;
+      margin: 3px;
       margin-right: 10px;
 
       &.active {
@@ -149,7 +156,7 @@
       color: @white;
       font-size: 17px;
       font-family: 'DINNextLTPro-Regular';
-      width: 200px;
+      width: 165px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -158,10 +165,17 @@
         color: #00AFEF;
       }
     }
-    .participant-mute {
+    .participant-camera {
       img {
         position: absolute;
         right: 15px;
+        margin-top: 12px;
+      }
+    }
+    .participant-mute {
+      img {
+        position: absolute;
+        right: 45px;
         margin-top: 12px;
       }
     }

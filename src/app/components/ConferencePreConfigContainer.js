@@ -8,15 +8,35 @@ import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
+import {isMobile} from "../libs/browserDetection";
+
+var today = new Date();
+today.setDate(today.getDate() + 365);
+const default_cookies_param = {
+  path: "/",
+  expires: today,
+  secure: true,
+  sameSite: 'none'
+};
 
 @connect(store => {
   return {
-    inputManager: store.voxeet.inputManager
+    inputManager: store.voxeet.inputManager,
+    controlsStore: store.voxeet.controls
   };
 })
 class ConferencePreConfigContainer extends Component {
   constructor(props) {
+
     super(props);
+    // defaults
+    let maxVideoForwarding = ((this.props.controlsStore.maxVideoForwarding !== undefined) ? this.props.controlsStore.maxVideoForwarding : isMobile()?4:9);
+    let audioTransparentMode = ((this.props.controlsStore.audioTransparentMode !== undefined) ? this.props.controlsStore.audioTransparentMode : false);
+    let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ?
+        this.props.controlsStore.videoEnabled :
+        (this.props.constraints? this.props.constraints.video: false));
+    let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
+
     this.state = {
       loading: true,
       lockJoin: false,
@@ -27,20 +47,25 @@ class ConferencePreConfigContainer extends Component {
       videoDevices: [],
       outputDevices: [],
       userStream: null,
-      videoEnabled: this.props.constraints.video,
-      audioTransparentMode: false,
-      audioEnabled: true,
       error: null,
-      level: 0
+      level: 0,
+      videoEnabled: videoEnabled,
+      audioEnabled: true,
+      audioTransparentMode: audioTransparentMode,
+      maxVideoForwarding: maxVideoForwarding,
+      lowBandwidthMode: lowBandwidthMode
     };
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
     this.setOutputDevice = this.setOutputDevice.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleVideoEnabledChanged = this.handleVideoEnabledChanged.bind(this);
+    this.handleChangeLowBandwidthMode = this.handleChangeLowBandwidthMode.bind(this);
+    this.handleMaxVideoForwardingChange = this.handleMaxVideoForwardingChange.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
     this.releaseStream = this.releaseStream.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
     this.handleAudioTransparentModeChange = this.handleAudioTransparentModeChange.bind(this);
+    this.maxVFTimer = null;
   }
 
   componentDidMount() {
@@ -65,14 +90,17 @@ class ConferencePreConfigContainer extends Component {
   }
 
   handleJoin() {
-    const { handleJoin } = this.props;
+    const { handleJoin, constraints } = this.props;
+    constraints.video = this.state.videoEnabled;
     const payload = {
       audioDeviceSelected: this.state.audioDeviceSelected,
       videoDeviceSelected: this.state.videoDeviceSelected,
       outputDeviceSelected: this.state.outputDeviceSelected,
       videoEnabled: this.state.videoEnabled,
+      constraints,
       audioEnabled: this.state.audioEnabled,
       audioTransparentMode: this.state.audioTransparentMode,
+      maxVideoForwarding: this.state.maxVideoForwarding
     };
     handleJoin(payload);
   }
@@ -138,14 +166,7 @@ class ConferencePreConfigContainer extends Component {
           userStream: stream,
           lockJoin: false
         });
-        var date = new Date();
-        date.setDate(date.getDate() + 365);
-        Cookies.set("input", deviceId, {
-          path: "/",
-          expires: date,
-          secure: true,
-          sameSite: 'none'
-        });
+        Cookies.set("input", deviceId, default_cookies_param);
         if (this.state.videoDeviceSelected != null)
           navigator.attachMediaStream(this.video, stream);
       });
@@ -154,14 +175,7 @@ class ConferencePreConfigContainer extends Component {
   setOutputDevice(e) {
     const deviceId = e.target.value;
     this.props.dispatch(InputManagerActions.outputAudioChange(deviceId));
-    var date = new Date();
-    date.setDate(date.getDate() + 365);
-    Cookies.set("output", deviceId, {
-      path: "/",
-      expires: date,
-      secure: true,
-      sameSite: 'none'
-    });
+    Cookies.set("output", deviceId, default_cookies_param);
     this.setState({ outputDeviceSelected: deviceId });
   }
 
@@ -176,22 +190,15 @@ class ConferencePreConfigContainer extends Component {
       })
       .then(stream => {
         getVideoDeviceName(deviceId)
-        .then((isBackCamera) => {
-          this.props.dispatch(InputManagerActions.inputVideoChange(deviceId, isBackCamera))
-        })
+          .then((isBackCamera) => {
+            this.props.dispatch(InputManagerActions.inputVideoChange(deviceId, isBackCamera))
+          })
         this.setState({
           videoDeviceSelected: deviceId,
           userStream: stream,
           lockJoin: false
         });
-        var date = new Date();
-        date.setDate(date.getDate() + 365);
-        Cookies.set("camera", deviceId, {
-          path: "/",
-          expires: date,
-          secure: true,
-          sameSite: 'none'
-        });
+        Cookies.set("camera", deviceId, default_cookies_param);
         navigator.attachMediaStream(this.video, stream);
       });
   }
@@ -268,19 +275,12 @@ class ConferencePreConfigContainer extends Component {
                   });
 
                   /* OUTPUT AUDIO MANAGMENT */
-                  if (bowser.chrome && resultAudioOutput && resultAudioOutput.length>0) {
-                    let selected_device = resultAudioOutput.find(device => device.deviceId=='default');
-                    if(!selected_device)
+                  if (bowser.chrome && resultAudioOutput && resultAudioOutput.length > 0) {
+                    let selected_device = resultAudioOutput.find(device => device.deviceId == 'default');
+                    if (!selected_device)
                       selected_device = resultAudioOutput[0];
                     if (!outputCookieExist) {
-                      var date = new Date();
-                      date.setDate(date.getDate() + 365);
-                      Cookies.set("output", selected_device.deviceId, {
-                        path: "/",
-                        expires: date,
-                        secure: true,
-                        sameSite: 'none'
-                      });
+                      Cookies.set("output", selected_device.deviceId, default_cookies_param);
                       this.props.dispatch(
                         InputManagerActions.outputAudioChange(
                           selected_device.deviceId
@@ -306,30 +306,23 @@ class ConferencePreConfigContainer extends Component {
                   /* INPUT VIDEO MANAGMENT */
                   if (resultVideo.length > 0) {
                     if (!videoCookieExist) {
-                      let selected_device = resultVideo.find(device => device.deviceId=='default');
-                      if(!selected_device)
+                      let selected_device = resultVideo.find(device => device.deviceId == 'default');
+                      if (!selected_device)
                         selected_device = resultVideo[0];
-                      var date = new Date();
-                      date.setDate(date.getDate() + 365);
-                      Cookies.set("camera", selected_device.deviceId, {
-                        path: "/",
-                        expires: date,
-                        secure: true,
-                        sameSite: 'none'
-                      });
+                      Cookies.set("camera", selected_device.deviceId, default_cookies_param);
                       getVideoDeviceName(selected_device.deviceId)
-                      .then((isBackCamera) => {
-                        this.props.dispatch(InputManagerActions.inputVideoChange(selected_device.deviceId, isBackCamera))
-                      })
+                        .then((isBackCamera) => {
+                          this.props.dispatch(InputManagerActions.inputVideoChange(selected_device.deviceId, isBackCamera))
+                        })
                       this.setState({
                         videoDevices: resultVideo,
                         videoDeviceSelected: selected_device.deviceId
                       });
                     } else {
                       getVideoDeviceName(Cookies.get("camera"))
-                      .then((isBackCamera) => {
-                        this.props.dispatch(InputManagerActions.inputVideoChange(Cookies.get("camera"), isBackCamera))
-                      })
+                        .then((isBackCamera) => {
+                          this.props.dispatch(InputManagerActions.inputVideoChange(Cookies.get("camera"), isBackCamera))
+                        })
                       this.setState({
                         videoDevices: resultVideo,
                         videoDeviceSelected: Cookies.get("camera")
@@ -342,20 +335,13 @@ class ConferencePreConfigContainer extends Component {
                   /* INPUT AUDIO MANAGMENT */
                   if (resultAudio.length > 0) {
                     if (!inputCookieExist) {
-                      let selected_device = resultAudio.find(device => device.deviceId=='default');
-                      if(!selected_device)
+                      let selected_device = resultAudio.find(device => device.deviceId == 'default');
+                      if (!selected_device)
                         selected_device = resultAudio[0];
-                      var date = new Date();
-                      date.setDate(date.getDate() + 365);
-                      Cookies.set("input", selected_device.deviceId, {
-                        path: "/",
-                        expires: date,
-                        secure: true,
-                        sameSite: 'none'
-                      });
+                      Cookies.set("input", selected_device.deviceId, default_cookies_param);
                       this.props.dispatch(
                         InputManagerActions.inputAudioChange(
-                            selected_device.deviceId
+                          selected_device.deviceId
                         )
                       );
                       this.setState({
@@ -432,42 +418,72 @@ class ConferencePreConfigContainer extends Component {
     });
   }
 
-  async handleInputChange(event) {
-    const target = event.target;
-    const value = target.checked;
-    const name = target.name;
+  handleChangeLowBandwidthMode(event) {
+    if (this.maxVFTimer) {
+      clearTimeout(this.maxVFTimer);
+      this.maxVFTimer = null;
+    }
+    const low_bandwidth = event.target.checked;
+    let maxVideoForwarding = low_bandwidth?0:(Cookies.get("maxVideoForwarding")!==undefined?Cookies.get("maxVideoForwarding"):(isMobile()?4:9));
+    if(typeof maxVideoForwarding === 'string' || maxVideoForwarding instanceof String)
+      maxVideoForwarding = parseInt(maxVideoForwarding);
 
-    if (!target.checked && this.state.userStream != null) {
+    this.setState({
+      lowBandwidthMode: low_bandwidth,
+      maxVideoForwarding: maxVideoForwarding
+    }, () => {
+      // Cookies.set("maxVideoForwarding", this.state.maxVideoForwarding, default_cookies_param);
+      return this.switchVideoEnabled(!low_bandwidth);
+    })
+  }
+
+  async handleVideoEnabledChanged(event) {
+    const target = event.target;
+    const video_on = target.checked;
+
+    return this.switchVideoEnabled(video_on);
+
+  }
+
+  async switchVideoEnabled(video_on) {
+
+    if (!video_on && this.state.userStream != null) {
       this.state.userStream.getTracks().forEach(track => {
         if (track.kind == "video") track.stop();
       });
       this.video.srcObject = null;
       this.video.height = "0";
     }
-    if (target.checked) {
+    if (video_on) {
       let approved = this.state.videoDevices.length > 0;
-      if(this.state.videoDevices.length === 0){
+      if (this.state.videoDevices.length === 0) {
         // ask for video permission
-        approved = await navigator.mediaDevices.getUserMedia({ video: true})
-            .then((stream) => {
-              stream.getTracks().forEach(track => {
-                track.stop();
-              });
-              return true;
-            })
-            .catch((err) => {
-              return false;
+        approved = await navigator.mediaDevices.getUserMedia({ video: true })
+          .then((stream) => {
+            stream.getTracks().forEach(track => {
+              track.stop();
             });
+            return true;
+          })
+          .catch((err) => {
+            return false;
+          });
       }
       if (approved) {
         this.setState({
-          videoEnabled: value
-        }, this.init.bind(this));
+          videoEnabled: video_on
+        }, () => {
+          Cookies.set('videoEnabled', video_on, default_cookies_param);
+          this.init();
+        });
       }
     } else {
       if (this.state.videoDevices.length > 0) {
         this.setState({
-          videoEnabled: value
+          videoEnabled: video_on
+        }, () => {
+          Cookies.set('videoEnabled', video_on, default_cookies_param);
+          this.init();
         });
       }
     }
@@ -477,7 +493,30 @@ class ConferencePreConfigContainer extends Component {
   handleAudioTransparentModeChange() {
     this.setState({
       audioTransparentMode: !this.state.audioTransparentMode
+    }, () => {
+      Cookies.set("audioTransparentMode", this.state.audioTransparentMode, default_cookies_param);
     });
+  }
+
+  handleMaxVideoForwardingChange(event) {
+    if (this.maxVFTimer) {
+      clearTimeout(this.maxVFTimer);
+      this.maxVFTimer = null;
+    }
+    let num;
+    try { num = parseInt(event.target.value) } catch (e) { };
+    if (num !== undefined && !isNaN(num)) {
+      this.setState({ maxVideoForwarding: num }, () => {
+        this.maxVFTimer = setTimeout(() => {
+          Cookies.set("maxVideoForwarding", num, default_cookies_param);
+          clearTimeout(this.maxVFTimer);
+          this.maxVFTimer = null;
+        }, 1500);
+      });
+    }
+    else {
+      this.setState({ maxVideoForwarding: '' });
+    }
   }
 
   renderLoading() {
@@ -496,8 +535,11 @@ class ConferencePreConfigContainer extends Component {
       audioDeviceSelected,
       outputDeviceSelected,
       error,
-      loading
+      loading,
+      maxVideoForwarding,
+      lowBandwidthMode
     } = this.state;
+    const MAX_MAXVF = isMobile()?4:16;
 
     return (
       <Fragment>
@@ -608,34 +650,68 @@ class ConferencePreConfigContainer extends Component {
                               )}
                             </div>
                             <div className='group-switch'>
-                            <div className="group-enable">
-                              <div className='enable-item'>
-                                <input
-                                  id="videoEnabled"
-                                  name="videoEnabled"
-                                  type="checkbox"
-                                  onChange={this.handleInputChange}
-                                  checked={this.state.videoEnabled}
-                                />
-                                <label htmlFor="videoEnabled">
-                                  {strings.video}
-                                </label>
-                              </div>
-                            </div>
-                            {dolbyVoiceEnabled && <div className="group-enable">
-                              <div className='enable-item'>
-                                <input
+                              {dolbyVoiceEnabled && <div className="group-enable">
+                                <div className='enable-item'>
+                                  <input
                                     id="audioTransparentMode"
                                     name="audioTransparentMode"
                                     type="checkbox"
                                     onChange={this.handleAudioTransparentModeChange}
                                     checked={this.state.audioTransparentMode}
-                                />
-                                <label htmlFor="audioTransparentMode">
-                                  {strings.audioTransparentMode}
+                                  />
+                                  <label htmlFor="audioTransparentMode">
+                                    {strings.audioTransparentMode}
+                                  </label>
+                                </div>
+                              </div>}
+                              <div className="group-enable">
+                                <div className='enable-item'>
+                                  <input
+                                    id="lowBandwidthMode"
+                                    name="lowBandwidthMode"
+                                    type="checkbox"
+                                    onChange={this.handleChangeLowBandwidthMode}
+                                    checked={lowBandwidthMode}
+                                  />
+                                  <label htmlFor="lowBandwidthMode">
+                                    {strings.lowBandwidthMode}
+                                  </label>
+                                </div>
+                              </div>
+                              <div className={`group-enable ${lowBandwidthMode ? 'disabled-form' : ''}`}>
+                                <div className='enable-item'>
+                                  <input
+                                    id="videoEnabled"
+                                    name="videoEnabled"
+                                    type="checkbox"
+                                    onChange={this.handleVideoEnabledChanged}
+                                    checked={!lowBandwidthMode ? this.state.videoEnabled : false}
+                                  />
+                                  <label htmlFor="videoEnabled">
+                                    {strings.sendMyVideo}
+                                  </label>
+                                </div>
+                              </div>
+                              <div className={`group-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
+                                <div className='input-wrapper'>
+                                  <div className='input-value'>0</div>
+                                  <input
+                                    type="range"
+                                    style={{ background: `linear-gradient(to right, #00afef 0%, #00afef ${(100 / MAX_MAXVF) * (!lowBandwidthMode ? maxVideoForwarding : 0)}%, #fff ${(100 / MAX_MAXVF) * (!lowBandwidthMode ? maxVideoForwarding : 0)}%, #fff 100%)` }}
+                                    id="maxVideoForwarding"
+                                    name="maxVideoForwarding"
+                                    min={0}
+                                    max={MAX_MAXVF}
+                                    step={1}
+                                    onChange={this.handleMaxVideoForwardingChange}
+                                    value={!lowBandwidthMode ? maxVideoForwarding : 0}
+                                  />
+                                  <div className='input-value'>{MAX_MAXVF}</div>
+                                </div>
+                                <label htmlFor="maxVideoForwarding">
+                                  <div className='maxVideoForwardingValue'>{`${strings.showVideoParticipants1} ${!lowBandwidthMode ? maxVideoForwarding : 0} ${strings.showVideoParticipants2}`}</div>
                                 </label>
                               </div>
-                            </div>}
                             </div>
                             <div>
                               <button
@@ -679,7 +755,10 @@ ConferencePreConfigContainer.propTypes = {
   constraints: PropTypes.object.isRequired,
   loadingScreen: PropTypes.func,
   logo: PropTypes.string,
-  dolbyVoiceEnabled: PropTypes.bool
+  dolbyVoiceEnabled: PropTypes.bool,
+  videoeEnabled: PropTypes.bool,
+  audioTransparentMode: PropTypes.bool,
+  maxVideoForwarding: PropTypes.bool
 };
 
 export default ConferencePreConfigContainer;

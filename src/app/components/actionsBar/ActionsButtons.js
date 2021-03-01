@@ -61,6 +61,7 @@ class ActionsButtons extends Component {
       isFilePresentation,
       isScreenshare,
       isDemo,
+      conferencePermissions,
     } = this.props;
     let nbParticipants = 0;
     if (participants && participants.length) {
@@ -76,6 +77,7 @@ class ActionsButtons extends Component {
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
             displayActions.indexOf("mute") > -1 &&
+            conferencePermissions.has("SEND_AUDIO") &&
             !isDemo && (
               <ToggleMicrophoneButton
                 isMuted={isMuted}
@@ -88,6 +90,7 @@ class ActionsButtons extends Component {
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
             displayActions.indexOf("video") > -1 &&
+            conferencePermissions.has("SEND_VIDEO") &&
             !isDemo && (
               <ToggleVideoButton
                 videoEnabled={videoEnabled}
@@ -102,6 +105,7 @@ class ActionsButtons extends Component {
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
             displayActions.indexOf("recording") > -1 &&
+            conferencePermissions.has("RECORD") &&
             !isDemo && (
               <ToggleRecordingButton
                 isRecording={isRecording}
@@ -115,6 +119,7 @@ class ActionsButtons extends Component {
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
             displayActions.indexOf("share") > -1 &&
+            conferencePermissions.has("SHARE_SCREEN") &&
             !isDemo &&
             shareActions.length > 0 && (
               <ToggleScreenShareButton
@@ -156,7 +161,7 @@ class ActionsButtons extends Component {
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
             !bowser.msie &&
-            (!currentUser.isListener || bowser.chrome) && (
+            (
               <ToggleSettingsButton
                 attendeesSettingsOpened={attendeesSettingsOpened}
                 toggle={toggleAttendeesSettings}
@@ -227,6 +232,7 @@ ActionsButtons.propTypes = {
   attendeesChatOpened: PropTypes.bool.isRequired,
   toggleAttendeesSettings: PropTypes.func.isRequired,
   attendeesSettingsOpened: PropTypes.bool.isRequired,
+  conferencePermissions: PropTypes.object.isRequired,
 };
 
 ActionsButtons.defaultProps = {

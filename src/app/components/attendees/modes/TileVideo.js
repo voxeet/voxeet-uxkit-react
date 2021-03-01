@@ -22,11 +22,25 @@ class TileVideo extends Component {
       isAdminActived,
       mySelf,
       isBackCamera,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
+      kickPermission
     } = this.props;
     const photoUrl = participant.avatarUrl || userPlaceholder;
     return (
       <span className="tile-video video-frame">
+        {participant.stream && participant.stream.active &&
+          participant.stream.getVideoTracks().length > 0 ? (
+            <div className={(mySelf && !isBackCamera) ? "stream-media myself" : "stream-media myself-not-mirrored"}>
+              <AttendeesParticipantVideo stream={participant.stream} />
+            </div>
+          ) : (
+            <AttendeesParticipantVuMeter
+              participant={participant}
+              width={80}
+              height={80}
+              customClass={"preview-avatar"}
+            />
+          )}
         {isWidgetFullScreenOn && (
           <AttendeesParticipantBar
             toggleAutomatically={true}
@@ -36,19 +50,7 @@ class TileVideo extends Component {
             participant={participant}
             toggleMicrophone={toggleMicrophone}
             dolbyVoiceEnabled={dolbyVoiceEnabled}
-          />
-        )}
-        {participant.stream && participant.stream.active &&
-          participant.stream.getVideoTracks().length > 0? (
-          <div className={(mySelf && !isBackCamera) ? "stream-media myself" : "stream-media myself-not-mirrored"}>
-            <AttendeesParticipantVideo stream={participant.stream} />
-          </div>
-        ) : (
-          <AttendeesParticipantVuMeter
-            participant={participant}
-            width={80}
-            height={80}
-            customClass={"preview-avatar"}
+            kickPermission={kickPermission}
           />
         )}
       </span>
@@ -71,6 +73,7 @@ TileVideo.propTypes = {
   isAdminActived: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
   isBackCamera: PropTypes.bool,
+  kickPermission: PropTypes.bool
 };
 
 export default TileVideo;

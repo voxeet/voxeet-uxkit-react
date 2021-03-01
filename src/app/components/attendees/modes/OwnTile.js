@@ -4,6 +4,7 @@ import { connect } from "@voxeet/react-redux-5.1.1";
 
 import TileVideo from "./TileVideo";
 import TileLegend from "./TileLegend";
+import Draggable from "react-draggable";
 
 @connect(store => {
   return {
@@ -17,7 +18,7 @@ class OwnTile extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const checker = document.getElementById(
-      "video-" + this.props.nbParticipant + "-video-on"
+      "video-local-video-on"
     );
     if (
       (checker != null && nextProps.participant.stream == null) ||
@@ -40,50 +41,49 @@ class OwnTile extends Component {
       isAdmin,
       kickParticipant,
       isAdminActived,
-      nbParticipant,
       mySelf,
       dolbyVoiceEnabled
     } = this.props;
     const { currentVideoDevice, isBackCamera } = this.props.inputManager;
     return (
-      <div
-        className={
-          "tile-item " +
-          (participant.isConnected
-            ? "participant-available"
-            : "participant-offline")
-        }
-        id={
-          "video-" +
-          nbParticipant +
-          "-video-" +
-          (participant.stream &&
-          participant.stream.active &&
-          participant.stream.getVideoTracks().length > 0
-            ? "on"
-            : "off")
-        }
-      >
-        <TileVideo
-          isBackCamera={isBackCamera}
-          mySelf={mySelf}
-          kickParticipant={kickParticipant}
-          isAdminActived={isAdminActived}
-          isAdmin={isAdmin}
-          participant={participant}
-          toggleMicrophone={toggleMicrophone}
-          isWidgetFullScreenOn={isWidgetFullScreenOn}
-          dolbyVoiceEnabled={dolbyVoiceEnabled}
-        />
-        <TileLegend
-          participant={participant}
-          kickParticipant={kickParticipant}
-          isAdminActived={isAdminActived}
-          isAdmin={isAdmin}
-          toggleMicrophone={toggleMicrophone}
-          dolbyVoiceEnabled={dolbyVoiceEnabled}
-        />
-      </div>
+      <Draggable bounds="parent">
+        <div
+          className={
+            "tile-local-item " +
+            (participant.isConnected
+              ? "participant-available"
+              : "participant-offline")
+          }
+          id={
+            "video-local-video-" +
+            (participant.stream &&
+              participant.stream.active &&
+              participant.stream.getVideoTracks().length > 0
+              ? "on"
+              : "off")
+          }
+        >
+          <TileVideo
+            isBackCamera={isBackCamera}
+            mySelf={mySelf}
+            kickParticipant={kickParticipant}
+            isAdminActived={isAdminActived}
+            isAdmin={isAdmin}
+            participant={participant}
+            toggleMicrophone={toggleMicrophone}
+            isWidgetFullScreenOn={isWidgetFullScreenOn}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
+          />
+          <TileLegend
+            participant={participant}
+            kickParticipant={kickParticipant}
+            isAdminActived={isAdminActived}
+            isAdmin={isAdmin}
+            toggleMicrophone={toggleMicrophone}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
+          />
+        </div>
+      </Draggable>
     );
   }
 }
@@ -99,7 +99,6 @@ OwnTile.propTypes = {
   kickParticipant: PropTypes.func.isRequired,
   mySelf: PropTypes.bool.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  nbParticipant: PropTypes.number,
   dolbyVoiceEnabled: PropTypes.bool,
 };
 

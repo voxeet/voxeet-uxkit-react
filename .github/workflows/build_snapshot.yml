@@ -1,0 +1,47 @@
+name: Snapshot build
+
+on:
+  push:
+    branches-ignore:
+      - 'develop'
+      - 'master'
+      - 'release-**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: rlespinasse/github-slug-action@v3.x
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - id: codeartifact_login
+        name: Login to CodeArtifact
+        run: |
+          CODEARTIFACT_TOKEN=$(/usr/local/bin/aws codeartifact get-authorization-token --duration-seconds 900 --domain ${{ secrets.CODEARTIFACT_DOMAIN }} --domain-owner ${{ secrets.CODEARTIFACT_DOMAIN_OWNER }} --region ${{ secrets.AWS_REGION }} --output text --query authorizationToken)
+          echo "::add-mask::$CODEARTIFACT_TOKEN"
+          echo "CODEARTIFACT_TOKEN=$CODEARTIFACT_TOKEN" >> $GITHUB_ENV
+
+      - name: setting nodejs
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: ${{ secrets.CODEARTIFACT_NPM_RELEASES_REPOSITORY_URL }}
+          always-auth: true
+
+      - name: install dependencies
+        run: |
+          yarn install
+        env:
+          NODE_AUTH_TOKEN: ${{ env.CODEARTIFACT_TOKEN }}
+
+      - name: build
+        run: |
+          npm run build

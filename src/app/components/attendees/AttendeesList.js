@@ -8,11 +8,13 @@ import iconPlus from "../../../static/images/icons/icon-plus.svg";
 import iconSlideLeft from "../../../static/images/icons/icon-slide-left.svg";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
 import AttendeesParticipantMute from "./AttendeesParticipantMute";
+import AttendeesParticipantCamera from "./AttendeesParticipantCamera";
 
 @connect((store) => {
   return {
     participantStore: store.voxeet.participants,
     participantWaiting: store.voxeet.participantsWaiting,
+    activeSpeakerStore: store.voxeet.activeSpeaker,
   };
 })
 class AttendeesList extends Component {
@@ -76,6 +78,10 @@ class AttendeesList extends Component {
 
   render() {
     const {
+      activeSpeaker,
+      forceActiveUserEnabled
+    } = this.props.activeSpeakerStore;
+    const {
       participants,
       currentUser,
       invitedUsers,
@@ -92,7 +98,7 @@ class AttendeesList extends Component {
       if (audioq > 0 && (videoq == 0 || videoq == -1)) avquality = audioq;
       //avquality = Math.max(audioq, videoq);
     }
-    const { isWebinar, isAdmin, attendeesListOpened, toggleMicrophone, dolbyVoiceEnabled } = this.props;
+    const { isWebinar, isAdmin, attendeesListOpened, toggleMicrophone, toggleForwardedVideo, dolbyVoiceEnabled, invitePermission } = this.props;
     const { filteredUsers } = this.state;
     const participantsConnected = participants.filter(
       (p) => p.isConnected && p.type == "user"
@@ -149,7 +155,8 @@ class AttendeesList extends Component {
                 <ul>
                   {isAdmin && (
                     <li>
-                      <span className="participant-details">
+                      <span className={"participant-details " +
+                        ((activeSpeaker && currentUser.participant_id == activeSpeaker.participant_id && activeSpeaker.isSpeaking) ? "speaking" : "")}>
                         <img
                           src={currentUser.avatarUrl || userPlaceholder}
                           className="participant-avatar"
@@ -163,7 +170,8 @@ class AttendeesList extends Component {
                   {participantsConnected.map((participant, i) => {
                     return (
                       <li key={i}>
-                        <span className="participant-details">
+                        <span className={"participant-details " +
+                          ((activeSpeaker && participant.participant_id == activeSpeaker.participant_id && activeSpeaker.isSpeaking) ? "speaking" : "")}>
                           <img
                             src={participant.avatarUrl || userPlaceholder}
                             className="participant-avatar"
@@ -193,7 +201,8 @@ class AttendeesList extends Component {
                 <ul>
                   {!isAdmin && (
                     <li>
-                      <span className="participant-details">
+                      <span className={"participant-details " +
+                        ((activeSpeaker && currentUser.participant_id == activeSpeaker.participant_id && activeSpeaker.isSpeaking) ? "speaking" : "")}>
                         <img
                           src={currentUser.avatarUrl || userPlaceholder}
                           className="participant-avatar"
@@ -207,7 +216,8 @@ class AttendeesList extends Component {
                   {participantsListener.map((participant, i) => {
                     return (
                       <li key={i}>
-                        <span className="participant-details">
+                        <span className={"participant-details " +
+                          ((activeSpeaker && participant.participant_id == activeSpeaker.participant_id && activeSpeaker.isSpeaking) ? "speaking" : "")}>
                           <img
                             src={participant.avatarUrl || userPlaceholder}
                             className="participant-avatar"
@@ -224,21 +234,21 @@ class AttendeesList extends Component {
             )}
           </div>
         ) : (
-          <Fragment>
-            {(participantsConnected.length > 0 || !currentUser.isListener) && (
-              <div>
-                <div className="title-section">
-                  {strings.joined}{" "}
-                  <span>
-                    (
+            <Fragment>
+              {(participantsConnected.length > 0 || !currentUser.isListener) && (
+                <div>
+                  <div className="title-section">
+                    {strings.joined}{" "}
+                    <span>
+                      (
                     {!currentUser.isListener
-                      ? participantsConnected.length + 1
-                      : participantsConnected.length}
-                    )
+                        ? participantsConnected.length + 1
+                        : participantsConnected.length}
+                      )
                   </span>
-                </div>
-                <ul>
-                  {/* <li>
+                  </div>
+                  <ul>
+                    {/* <li>
                         <span className="participant-details">
                           <img
                             src={iconPlus}
@@ -252,7 +262,8 @@ class AttendeesList extends Component {
                       </li> */}
                     {!currentUser.isListener && (
                       <li>
-                        <span className="participant-details">
+                        <span className={"participant-details " +
+                          ((activeSpeaker && currentUser.participant_id == activeSpeaker.participant_id && activeSpeaker.isSpeaking) ? "speaking" : "")}>
                           <img
                             src={currentUser.avatarUrl || userPlaceholder}
                             className="participant-avatar"
@@ -284,7 +295,8 @@ class AttendeesList extends Component {
                       }
                       return (
                         <li key={i}>
-                          <span className="participant-details">
+                          <span className={"participant-details " +
+                            ((activeSpeaker && participant.participant_id == activeSpeaker.participant_id && activeSpeaker.isSpeaking) ? "speaking" : "")}>
                             <img
                               src={participant.avatarUrl || userPlaceholder}
                               className="participant-avatar"
@@ -305,6 +317,10 @@ class AttendeesList extends Component {
                                 toggleMicrophone={toggleMicrophone}
                               />
                             )}
+                            <AttendeesParticipantCamera
+                              participant={participant}
+                              toggleForwardedVideo={toggleForwardedVideo}
+                            />
                           </span>
                         </li>
                       );
@@ -321,63 +337,63 @@ class AttendeesList extends Component {
                       <span>
                         (
                     {currentUser.isListener
-                      ? participantsInactive.length +
-                        participantsListener.length +
-                        1
-                      : participantsInactive.length +
-                        participantsListener.length}
-                    )
+                          ? participantsInactive.length +
+                          participantsListener.length +
+                          1
+                          : participantsInactive.length +
+                          participantsListener.length}
+                        )
                   </span>
-                </div>
-                <ul>
-                  {currentUser.isListener && (
-                    <li>
-                      <span className="participant-details">
-                        <img
-                          src={currentUser.avatarUrl || userPlaceholder}
-                          className="participant-avatar"
-                        />
-                        <span className="participant-username">
-                          {currentUser.name}
-                        </span>
-                      </span>
-                    </li>
-                  )}
-                  {participantsListener.map((participant, i) => {
-                    return (
-                      <li key={i}>
-                        <span className="participant-details">
-                          <img
-                            src={participant.avatarUrl || userPlaceholder}
-                            className="participant-avatar"
-                          />
-                          <span className="participant-username">
-                            {participant.name}
+                    </div>
+                    <ul>
+                      {currentUser.isListener && (
+                        <li>
+                          <span className="participant-details">
+                            <img
+                              src={currentUser.avatarUrl || userPlaceholder}
+                              className="participant-avatar"
+                            />
+                            <span className="participant-username">
+                              {currentUser.name}
+                            </span>
                           </span>
-                        </span>
-                      </li>
-                    );
-                  })}
-                  {participantsInactive.map((participant, i) => {
-                    return (
-                      <li key={i}>
-                        <span className="participant-details">
-                          <img
-                            src={participant.avatarUrl || userPlaceholder}
-                            className="participant-avatar"
-                          />
-                          <span className="participant-username">
-                            {participant.name}
-                          </span>
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-          </Fragment>
-        )}
+                        </li>
+                      )}
+                      {participantsListener.map((participant, i) => {
+                        return (
+                          <li key={i}>
+                            <span className="participant-details">
+                              <img
+                                src={participant.avatarUrl || userPlaceholder}
+                                className="participant-avatar"
+                              />
+                              <span className="participant-username">
+                                {participant.name}
+                              </span>
+                            </span>
+                          </li>
+                        );
+                      })}
+                      {participantsInactive.map((participant, i) => {
+                        return (
+                          <li key={i}>
+                            <span className="participant-details">
+                              <img
+                                src={participant.avatarUrl || userPlaceholder}
+                                className="participant-avatar"
+                              />
+                              <span className="participant-username">
+                                {participant.name}
+                              </span>
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+            </Fragment>
+          )}
         {participantsInvited.length > 0 && (
           <div>
             <div className="title-section">
@@ -461,6 +477,7 @@ class AttendeesList extends Component {
                             </span>
                           )}
                         </span>
+                        { invitePermission && (
                         <a
                           className="invite-user"
                           onClick={() =>
@@ -468,7 +485,7 @@ class AttendeesList extends Component {
                           }
                         >
                           {strings.inviteUser}
-                        </a>
+                        </a> )}
                       </span>
                     </li>
                   );
@@ -486,6 +503,7 @@ AttendeesList.propTypes = {
   isWebinar: PropTypes.bool.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
+  invitePermission: PropTypes.bool
 };
 
 export default AttendeesList;

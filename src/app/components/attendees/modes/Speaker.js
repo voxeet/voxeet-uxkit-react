@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "@voxeet/react-redux-5.1.1";
 
 import AttendeesParticipantBar from "../AttendeesParticipantBar";
 import AttendeesParticipantMute from "../AttendeesParticipantMute";
 import AttendeesKickParticipant from "../AttendeesKickParticipant";
 
-import { Actions as ActiveSpeakerActions } from "../../../actions/ActiveSpeakerActions";
-import SpeakerDetails from "./SpeakerDetails";
 import SpeakerVideo from "./SpeakerVideo";
 
 class Speaker extends Component {
@@ -50,7 +47,8 @@ class Speaker extends Component {
       forceActiveUserEnabled,
       screenShareEnabled,
       nbParticipant,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
+      kickPermission
     } = this.props;
     let forcedActive = "";
     if (
@@ -91,12 +89,9 @@ class Speaker extends Component {
             participant={participant}
             toggleMicrophone={toggleMicrophone}
             dolbyVoiceEnabled={dolbyVoiceEnabled}
+            kickPermission={kickPermission}
           />
         )}
-        <SpeakerDetails
-          participant={participant}
-          isWidgetFullScreenOn={isWidgetFullScreenOn}
-        />
         {!isWidgetFullScreenOn && !dolbyVoiceEnabled && (
           <AttendeesParticipantMute
             participant={participant}
@@ -132,6 +127,7 @@ Speaker.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
+  kickPermission: PropTypes.bool
 };
 
 export default Speaker;

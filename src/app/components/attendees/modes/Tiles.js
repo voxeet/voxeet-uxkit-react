@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 
 import Tile from "./Tile";
 import OwnTile from "./OwnTile";
-import AttendeesWaitingWebinarListener from "../AttendeesWaitingWebinarListener";
 
 class Tiles extends Component {
   constructor(props) {
     super(props);
+    this.draggableAreaRef = React.createRef();
   }
 
   render() {
@@ -21,21 +21,40 @@ class Tiles extends Component {
       currentUser,
       isWebinar,
       dolbyVoiceEnabled,
+      kickPermission
     } = this.props;
-    let nbParticipants = participants.filter(
-      (p) => p.isConnected && p.type == "user"
-    ).length;
-    if ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin))
-      nbParticipants += 1;
-    let count = -1;
+    let tilesParticipants = participants.filter(
+        (p) => p.isConnected && p.type == "user"
+    );
+    let videoParticipants = tilesParticipants.filter(
+        (p) => p.isConnected && p.type == "user" &&
+            ((p.stream !== null) &&
+                (p.stream.active) &&
+                (p.stream.getVideoTracks().length > 0)
+            )
+    );
+    let hasVideoParticipants = videoParticipants && videoParticipants.length>0;
+    let IHaveVideo = (!currentUser || (currentUser.stream && currentUser.stream.getVideoTracks().length > 0));
+    if(hasVideoParticipants || IHaveVideo)
+      tilesParticipants = videoParticipants;
+    let showOwnTile = ((!isWebinar && !currentUser.isListener) ||
+        (isWebinar && isAdmin)) &&
+        (IHaveVideo || !hasVideoParticipants);
+
+    let nbParticipants = tilesParticipants.length;
+    // if (showOwnTile)
+    //   nbParticipants += 1;
+
+    let count = 0;
     return (
       <div
         className="SidebarTiles"
         data-number-user={nbParticipants <= 16 ? nbParticipants : 16}
       >
-        <div className={"tiles-list list" + nbParticipants}>
-          {((!isWebinar && !currentUser.isListener) ||
-            (isWebinar && isAdmin)) && (
+        <div className={"tiles-list list" + nbParticipants}
+             ref={this.draggableAreaRef}
+        >
+          { showOwnTile && (
             <OwnTile
               participant={currentUser}
               isAdminActived={isAdminActived}
@@ -45,26 +64,27 @@ class Tiles extends Component {
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={isWidgetFullScreenOn}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
+              bounds={this.draggableAreaRef.current}
+              key={currentUser.participant_id}
             />
           )}
-          {participants.map((participant, i) => {
-            if (participant.isConnected && participant.type == "user") {
-              count = count + 1;
-              return (
-                <Tile
-                  participant={participant}
-                  nbParticipant={count}
-                  mySelf={false}
-                  isAdminActived={isAdminActived}
-                  key={i}
-                  kickParticipant={kickParticipant}
-                  isAdmin={isAdmin}
-                  toggleMicrophone={toggleMicrophone}
-                  isWidgetFullScreenOn={isWidgetFullScreenOn}
-                  dolbyVoiceEnabled={dolbyVoiceEnabled}
-                />
-              );
-            }
+          {tilesParticipants.map((participant, i) => {
+            count = count + 1;
+            return (
+              <Tile
+                participant={participant}
+                nbParticipant={count}
+                mySelf={false}
+                isAdminActived={isAdminActived}
+                key={participant.participant_id}
+                kickParticipant={kickParticipant}
+                isAdmin={isAdmin}
+                toggleMicrophone={toggleMicrophone}
+                isWidgetFullScreenOn={isWidgetFullScreenOn}
+                dolbyVoiceEnabled={dolbyVoiceEnabled}
+                kickPermission={kickPermission}
+              />
+            );
           })}
         </div>
       </div>
@@ -82,6 +102,7 @@ Tiles.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
+  kickPermission: PropTypes.bool,
 };
 
 export default Tiles;

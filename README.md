@@ -9,6 +9,12 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 3.1.0
+
+#### Features
+
+- Introduced the Video Forwarding feature to allow participants to dynamically control the number of transmitted video streams. The Video Forwarding article describes in detail the changes to Interactivity APIs.
+
 ### 3.0.1
 
 #### Bug fixes
