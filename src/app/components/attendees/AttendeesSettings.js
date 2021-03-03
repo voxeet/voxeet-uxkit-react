@@ -41,6 +41,7 @@ class AttendeesSettings extends Component {
 
     this.state = {
       runningAnimation: false,
+      attendeesSettingsOpened: props.attendeesSettingsOpened,
       audioDevices: [],
       videoDevices: [],
       outputDevices: [],
@@ -67,12 +68,24 @@ class AttendeesSettings extends Component {
     navigator.mediaDevices.addEventListener('devicechange', this.onDeviceChange);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  static getDerivedStateFromProps(nextProps, prevState){
+    let stateUpdate = {attendeesSettingsOpened: nextProps.attendeesSettingsOpened};
+    // Check if it should run animation
     if (
-      this.props.attendeesSettingsOpened == true &&
-      nextProps.attendeesSettingsOpened == false
+        prevState.attendeesSettingsOpened == true &&
+        nextProps.attendeesSettingsOpened == false
     ) {
-      this.setState({ runningAnimation: true });
+      stateUpdate.runningAnimation = true;
+    }
+    return stateUpdate;
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    // Check if it should stop animation
+    if (
+        prevProps.attendeesListOpened == true &&
+        this.props.attendeesListOpened == false
+    ) {
       setTimeout(() => {
         this.setState({ runningAnimation: false });
       }, 250);
@@ -81,6 +94,14 @@ class AttendeesSettings extends Component {
 
   componentDidUpdate(prevProps, prevState) {
 
+    if (
+        prevProps.attendeesSettingsOpened == true &&
+        this.props.attendeesSettingsOpened == false
+    ) {
+      setTimeout(() => {
+        this.setState({ runningAnimation: false });
+      }, 250);
+    }
     //console.log(this.props.controlsStore.maxVideoForwarding, prevProps.controlsStore.maxVideoForwarding);
     if (
       this.props.controlsStore &&

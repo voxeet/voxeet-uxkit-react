@@ -1336,7 +1336,7 @@ export class Actions {
             )
           );
           dispatch(this.checkIfUserJoined(user, stream));
-          
+
           // VFS
           dispatch(ForwardedVideoActions.updateForwardedVideos());
         }

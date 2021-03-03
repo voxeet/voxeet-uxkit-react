@@ -18,12 +18,33 @@ class AttendeesChat extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      runningAnimation: false
+      runningAnimation: false,
+      attendeesChatOpened: props.attendeesChatOpened
     };
     this.sendMessage = this.sendMessage.bind(this);
   }
 
+  static getDerivedStateFromProps(nextProps, prevState){
+    let stateUpdate = {attendeesChatOpened: nextProps.attendeesChatOpened};
+    // Check if it should run animation
+    if (
+        prevState.attendeesChatOpened == true &&
+        nextProps.attendeesChatOpened == false
+    ) {
+      stateUpdate.runningAnimation = true;
+    }
+    return stateUpdate;
+  }
+
   componentDidUpdate(prevProps) {
+    if (
+        prevProps.attendeesChatOpened == true &&
+        this.props.attendeesChatOpened == false
+    ) {
+      setTimeout(() => {
+        this.setState({ runningAnimation: false });
+      }, 250);
+    }
     if (this.props.attendeesChatOpened) {
       var scrollBar = document.getElementById("chat-scrollbar");
       if (scrollBar && (prevProps.chatStore != this.props.chatStore)) scrollBar.scrollTop = scrollBar.scrollHeight;
@@ -42,18 +63,6 @@ class AttendeesChat extends Component {
   componentDidMount() {
     var scrollBar = document.getElementById("chat-scrollbar");
     if (scrollBar) scrollBar.scrollTop = scrollBar.scrollHeight;
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (
-      this.props.attendeesChatOpened == true &&
-      nextProps.attendeesChatOpened == false
-    ) {
-      this.setState({ runningAnimation: true });
-      setTimeout(() => {
-        this.setState({ runningAnimation: false });
-      }, 250);
-    }
   }
 
   sendMessage(content) {
