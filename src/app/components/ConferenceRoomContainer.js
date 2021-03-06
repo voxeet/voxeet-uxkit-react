@@ -311,6 +311,7 @@ class ConferenceRoomContainer extends Component {
               toggleModal={this.toggleModal}
               toggleMode={this.toggleMode}
               actionsButtons={actionsButtons}
+              conferencePermissions={conferencePermissions}
             />
           )}
 
