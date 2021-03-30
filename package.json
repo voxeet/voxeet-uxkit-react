@@ -71,7 +71,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "peerDependencies": {
-    "@voxeet/voxeet-web-sdk": "2.3.0"
+    "@voxeet/voxeet-web-sdk": "^3.1.1"
   },
   "files": [
     "README.md",
