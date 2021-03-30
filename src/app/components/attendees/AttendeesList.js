@@ -22,43 +22,60 @@ class AttendeesList extends Component {
     super(props);
     this.state = {
       runningAnimation: false,
+      attendeesListOpened: props.attendeesListOpened,
       q: "",
       // view: 'participants',
       filteredUsers: this.props.participantStore.invitedUsers,
     };
+    this.filterList = this.filterList.bind(this);
     this.inviteUserSelected = this.inviteUserSelected.bind(this);
     this.onChange = this.onChange.bind(this);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    // Check if it should stop animation
     if (
-      this.props.attendeesListOpened == true &&
-      nextProps.attendeesListOpened == false
+        prevProps.attendeesListOpened == true &&
+        this.props.attendeesListOpened == false
     ) {
-      this.setState({ runningAnimation: true });
       setTimeout(() => {
         this.setState({ runningAnimation: false });
       }, 250);
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(
-      { filteredUsers: nextProps.participantStore.invitedUsers, q: "" },
-      () => this.filterList()
-    );
+  static getDerivedStateFromProps(nextProps, prevState){
+    let stateUpdate = {attendeesListOpened: nextProps.attendeesListOpened};
+    // Check if it should run animation
+    if (
+        prevState.attendeesListOpened == true &&
+        nextProps.attendeesListOpened == false
+    ) {
+      stateUpdate.runningAnimation = true;
+    }
+    // Filter invited users
+    if (nextProps.participantStore.invitedUsers != null) {
+      let q = prevState.q;
+      let users = nextProps.participantStore.invitedUsers.filter( (user) => {
+        return user.name.toLowerCase().indexOf(q) != -1; // returns true or false
+      });
+      stateUpdate.filteredUsers = users;
+    } else {
+      stateUpdate.filteredUsers = nextProps.participantStore.invitedUsers;
+      stateUpdate.q = "";
+    }
+    return stateUpdate;
   }
 
   onChange(event) {
     const q = event.target.value.toLowerCase();
-    this.setState({ q }, () => this.filterList());
+    this.setState({ q }, this.filterList);
   }
 
   filterList() {
     if (this.props.participantStore.invitedUsers != null) {
       let q = this.state.q;
-      let users = this.props.participantStore.invitedUsers;
-      users = this.props.participantStore.invitedUsers.filter(function (user) {
+      let users = this.props.participantStore.invitedUsers.filter( (user) => {
         return user.name.toLowerCase().indexOf(q) != -1; // returns true or false
       });
       this.setState({ filteredUsers: users });
