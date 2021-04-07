@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import { Actions as ChatActions } from "../../actions/ChatActions";
-import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
-import { strings } from "../../languages/localizedStrings";
+import { Actions as ChatActions } from "../../../actions/ChatActions";
+import { Actions as ConferenceActions } from "../../../actions/ConferenceActions";
+import { strings } from "../../../languages/localizedStrings";
 import Autolinker from "autolinker";
-import { CHAT_MESSAGE } from "./../../constants/BroadcastMessageType";
-import userPlaceholder from "../../../static/images/user-placeholder.png";
+import { CHAT_MESSAGE } from "../../../constants/BroadcastMessageType";
+import userPlaceholder from "../../../../static/images/user-placeholder.png";
 import AttendeesChatInputContainer from "./AttendeesChatInputContainer";
 
 @connect(store => {

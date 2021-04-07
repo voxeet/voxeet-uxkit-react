@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import attachIcon from '../../../static/images/icons/icon-attach.svg';
-import sendIcon from '../../../static/images/icons/icon-tag.svg';
-import { strings } from "../../languages/localizedStrings";
+import attachIcon from '../../../../static/images/icons/icon-attach.svg';
+import sendIcon from '../../../../static/images/icons/icon-tag.svg';
+import { strings } from "../../../languages/localizedStrings";
 
 class AttendeesChatInputContainer extends Component {
   constructor(props) {

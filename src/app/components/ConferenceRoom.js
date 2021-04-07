@@ -16,7 +16,7 @@ import ConferenceRoomContainer from "./ConferenceRoomContainer";
 import ConferencePreConfigContainer from "./ConferencePreConfigContainer";
 import AttendeesWaiting from "./attendees/AttendeesWaiting";
 import AttendeesList from "./attendees/AttendeesList";
-import AttendeesChat from "./attendees/AttendeesChat";
+import AttendeesChat from "./attendees/chat/AttendeesChat";
 import LoadingScreen from "./attendees/LoadingScreen";
 import { setPstnNumbers } from "../constants/PinCode";
 import {isMobile} from "../libs/browserDetection";
