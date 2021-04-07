@@ -44,9 +44,9 @@ export const Types = {
 };
 
 export class Actions {
-  static initialize(consumerKey, consumerSecret) {
+  static initialize(consumerKey, consumerSecret, options) {
     return (dispatch) => {
-      return this._initializeListeners(dispatch)
+      return this._initializeListeners(dispatch, options)
         .then(() => {
           VoxeetSDK.session.participant ||
             VoxeetSDK.initialize(consumerKey, consumerSecret).catch((err) => {
@@ -62,9 +62,9 @@ export class Actions {
     };
   }
 
-  static initializeWithToken(token, refreshTokenCallback) {
+  static initializeWithToken(token, refreshTokenCallback, options) {
     return (dispatch) => {
-      return this._initializeListeners(dispatch)
+      return this._initializeListeners(dispatch, options)
         .then(() => {
           VoxeetSDK.session.participant ||
             VoxeetSDK.initializeToken(token, () => {
@@ -1212,7 +1212,8 @@ export class Actions {
     });
   }
 
-  static _initializeListeners(dispatch) {
+  static _initializeListeners(dispatch, options) {
+    let {chatOptions} = options || {};
     return new Promise((resolve, reject) => {
       VoxeetSDK.conference.on("left", () => {
         dispatch(this.handleLeave());
@@ -1580,7 +1581,9 @@ export class Actions {
           case CHAT_MESSAGE:
             dispatch(this._newBadgeMessage());
             // Run autolinker
-            dataParsed.content = dataParsed.content && Autolinker.link(dataParsed.content.trim());
+            if(chatOptions && chatOptions.autoLinker) {
+              dataParsed.content = dataParsed.content && Autolinker.link(dataParsed.content.trim());
+            }
             dispatch(ChatActions.addMessage(dataParsed));
             break;
           case BROADCAST_KICK_ADMIN_HANG_UP:

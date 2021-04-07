@@ -123,11 +123,11 @@ class ConferenceRoom extends Component {
     let pinCodeTmp = pinCode;
     if (oauthToken != null) {
       initialized = this.props.dispatch(
-        ConferenceActions.initializeWithToken(oauthToken, refreshTokenCallback)
+        ConferenceActions.initializeWithToken(oauthToken, refreshTokenCallback, {chatOptions})
       );
     } else {
       initialized = this.props.dispatch(
-        ConferenceActions.initialize(consumerKey, consumerSecret)
+        ConferenceActions.initialize(consumerKey, consumerSecret, {chatOptions})
       );
     }
 
