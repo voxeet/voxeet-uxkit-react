@@ -18,6 +18,7 @@ import { Actions as TimerActions } from "./TimerActions";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
 import { isIOS } from "./../libs/browserDetection";
+import Autolinker from "autolinker";
 import { getOrganizedPosition, getRelativePosition } from "./../libs/position";
 import {
   STATUS_CONNECTING,
@@ -357,7 +358,8 @@ export class Actions {
     pinCode,
     simulcast,
     enableDolbyVoice,
-    maxVideoForwardingParam
+    maxVideoForwardingParam,
+    chatOptions
   ) {
     let maxVideoForwarding = (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined?
         preConfigPayload.maxVideoForwarding:
@@ -1577,6 +1579,8 @@ export class Actions {
             break;
           case CHAT_MESSAGE:
             dispatch(this._newBadgeMessage());
+            // Run autolinker
+            dataParsed.content = dataParsed.content && Autolinker.link(dataParsed.content.trim());
             dispatch(ChatActions.addMessage(dataParsed));
             break;
           case BROADCAST_KICK_ADMIN_HANG_UP:

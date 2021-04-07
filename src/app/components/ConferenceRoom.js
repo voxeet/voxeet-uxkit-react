@@ -101,6 +101,7 @@ class ConferenceRoom extends Component {
       invitedUsers,
       refreshTokenCallback,
       isListener,
+      chatOptions
     } = this.props;
     let { constraints } = this.props;
     if(preConfigPayload && preConfigPayload.maxVideoForwarding!==undefined) {
@@ -275,7 +276,8 @@ class ConferenceRoom extends Component {
               pinCodeTmp,
               simulcast,
               dolbyVoice,
-              maxVideoForwarding
+              maxVideoForwarding,
+              chatOptions
             )
           );
         });
@@ -524,6 +526,7 @@ class ConferenceRoom extends Component {
       isAdmin,
       logo,
       dolbyVoice,
+      chatOptions
     } = this.props;
     const {
       screenShareEnabled,
@@ -656,6 +659,7 @@ class ConferenceRoom extends Component {
           conferenceId={conferenceId}
           attendeesWaiting={attendeesWaiting}
           dolbyVoiceEnabled={dolbyVoiceEnabled}
+          chatOptions={chatOptions}
         />
       );
     }
@@ -693,6 +697,7 @@ ConferenceRoom.propTypes = {
   chromeExtensionId: PropTypes.string,
   autoRecording: PropTypes.bool,
   userInfo: PropTypes.object,
+  chatOptions: PropTypes.object,
   invitedUsers: PropTypes.array,
   constraints: PropTypes.object,
   videoRatio: PropTypes.object,
@@ -754,6 +759,9 @@ ConferenceRoom.defaultProps = {
   constraints: {
     audio: true,
     video: false,
+  },
+  chatOptions: {
+    autoLinker: true
   },
   actionsButtons: ActionsButtons,
   attendeesList: AttendeesList,
