@@ -18,6 +18,7 @@ import { Actions as TimerActions } from "./TimerActions";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
 import { isIOS } from "./../libs/browserDetection";
+import Autolinker from "autolinker";
 import { getOrganizedPosition, getRelativePosition } from "./../libs/position";
 import {
   STATUS_CONNECTING,
@@ -43,9 +44,9 @@ export const Types = {
 };
 
 export class Actions {
-  static initialize(consumerKey, consumerSecret) {
+  static initialize(consumerKey, consumerSecret, options) {
     return (dispatch) => {
-      return this._initializeListeners(dispatch)
+      return this._initializeListeners(dispatch, options)
         .then(() => {
           VoxeetSDK.session.participant ||
             VoxeetSDK.initialize(consumerKey, consumerSecret).catch((err) => {
@@ -61,9 +62,9 @@ export class Actions {
     };
   }
 
-  static initializeWithToken(token, refreshTokenCallback) {
+  static initializeWithToken(token, refreshTokenCallback, options) {
     return (dispatch) => {
-      return this._initializeListeners(dispatch)
+      return this._initializeListeners(dispatch, options)
         .then(() => {
           VoxeetSDK.session.participant ||
             VoxeetSDK.initializeToken(token, () => {
@@ -357,7 +358,8 @@ export class Actions {
     pinCode,
     simulcast,
     enableDolbyVoice,
-    maxVideoForwardingParam
+    maxVideoForwardingParam,
+    chatOptions
   ) {
     let maxVideoForwarding = (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined?
         preConfigPayload.maxVideoForwarding:
@@ -1210,7 +1212,8 @@ export class Actions {
     });
   }
 
-  static _initializeListeners(dispatch) {
+  static _initializeListeners(dispatch, options) {
+    let {chatOptions} = options || {};
     return new Promise((resolve, reject) => {
       VoxeetSDK.conference.on("left", () => {
         dispatch(this.handleLeave());
@@ -1577,6 +1580,10 @@ export class Actions {
             break;
           case CHAT_MESSAGE:
             dispatch(this._newBadgeMessage());
+            // Run autolinker
+            if(chatOptions && chatOptions.autoLinker) {
+              dataParsed.content = dataParsed.content && Autolinker.link(dataParsed.content.trim());
+            }
             dispatch(ChatActions.addMessage(dataParsed));
             break;
           case BROADCAST_KICK_ADMIN_HANG_UP:
