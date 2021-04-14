@@ -210,7 +210,7 @@ class AttendeesSettings extends Component {
     VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
       Cookies.set("input", deviceId, default_cookies_param);
       if (this.props.microphoneMuted) {
-        VoxeetSDK.conference.toggleMute(VoxeetSDK.session.participant);
+        VoxeetSDK.conference.mute(VoxeetSDK.session.participant, true);
       }
       this.props.dispatch(InputManagerActions.inputAudioChange(deviceId));
     });
