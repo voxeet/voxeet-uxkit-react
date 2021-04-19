@@ -41,7 +41,8 @@ class Tile extends Component {
       nbParticipant,
       mySelf,
       dolbyVoiceEnabled,
-      kickPermission
+      kickPermission,
+      currentUser
     } = this.props;
     return (
       <div
@@ -80,6 +81,7 @@ class Tile extends Component {
           isAdmin={isAdmin}
           toggleMicrophone={toggleMicrophone}
           dolbyVoiceEnabled={dolbyVoiceEnabled}
+          currentUser={currentUser}
         />
       </div>
     );

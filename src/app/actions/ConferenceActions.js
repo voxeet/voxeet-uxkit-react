@@ -765,9 +765,10 @@ export class Actions {
       const {
         voxeet: { controls },
       } = getState();
-      let user = VoxeetSDK.session.participant;
+      let user;
       if (!userId) {
-        userId = VoxeetSDK.session.participant.id;
+        user = VoxeetSDK.session.participant;
+        userId = user.id;
         isMuted = controls.isMuted;
       } else {
         user = VoxeetSDK.conference.participants.get(userId);
@@ -807,7 +808,17 @@ export class Actions {
             });
         }
       } else {
-        VoxeetSDK.conference.mute(user, isMuted ? false : true);
+        if (userId === VoxeetSDK.session.participant.id) {
+          VoxeetSDK.conference.mute(user, !isMuted);
+        } else {
+          let promise;
+          if (isMuted) {
+            promise = VoxeetSDK.conference.startAudio(user);
+          } else {
+            promise = VoxeetSDK.conference.stopAudio(user);
+          }
+          return promise.then(() => dispatch(ParticipantActions.onToogleMicrophone(userId)));
+        }
       }
 
       if (userId === VoxeetSDK.session.participant.id) {

@@ -311,7 +311,7 @@ class AttendeesList extends Component {
                             <span className="participant-username">
                               {participant.name}
                             </span>
-                            {toggleMicrophone != null && !participant.isMyself && !dolbyVoiceEnabled && (
+                            {toggleMicrophone != null && !participant.isMyself && !(dolbyVoiceEnabled && currentUser.isListener) && (
                               <AttendeesParticipantMute
                                 participant={participant}
                                 toggleMicrophone={toggleMicrophone}

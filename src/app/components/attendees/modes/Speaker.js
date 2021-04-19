@@ -48,7 +48,8 @@ class Speaker extends Component {
       screenShareEnabled,
       nbParticipant,
       dolbyVoiceEnabled,
-      kickPermission
+      kickPermission,
+      currentUser
     } = this.props;
     let forcedActive = "";
     if (
@@ -92,7 +93,7 @@ class Speaker extends Component {
             kickPermission={kickPermission}
           />
         )}
-        {!isWidgetFullScreenOn && !dolbyVoiceEnabled && (
+        {!isWidgetFullScreenOn && !(dolbyVoiceEnabled && currentUser.isListener) && (
           <AttendeesParticipantMute
             participant={participant}
             toggleMicrophone={toggleMicrophone}
