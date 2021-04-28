@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import ReactTooltip from "react-tooltip";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-import Cookies from "js-cookie";
+import Cookies from "./../../libs/Storage";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
