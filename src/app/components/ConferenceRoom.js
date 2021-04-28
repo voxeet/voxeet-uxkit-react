@@ -3,7 +3,7 @@ import { connect } from "@voxeet/react-redux-5.1.1";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import { strings } from "../languages/localizedStrings";
-import Cookies from "js-cookie";
+import Cookies from "./../libs/Storage";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import canAutoPlay from 'can-autoplay';
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
