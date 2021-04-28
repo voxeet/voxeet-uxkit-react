@@ -1,6 +1,6 @@
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import bowser from "bowser";
-import Cookies from "js-cookie";
+import Cookies from "./../libs/Storage";
 import { Actions as InputManagerActions } from "./InputManagerActions";
 import { Actions as ErrorActions } from "./ErrorActions";
 import { Actions as ControlsActions } from "./ControlsActions";

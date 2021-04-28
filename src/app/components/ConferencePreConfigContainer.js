@@ -3,7 +3,7 @@ import { connect } from "@voxeet/react-redux-5.1.1";
 import { Actions as InputManagerActions } from "../actions/InputManagerActions";
 import AttendeesParticipantVideo from "./attendees/AttendeesParticipantVideo";
 import PropTypes from "prop-types";
-import Cookies from "js-cookie";
+import Cookies from "./../libs/Storage";
 import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
