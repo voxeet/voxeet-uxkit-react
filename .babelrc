@@ -1,16 +1,15 @@
 {
   "presets":[
-    ["@babel/preset-env", {
-      useBuiltIns: 'usage',
-      corejs: '2',
-      debug: false
-    }],
+    ["@babel/preset-env"],
     "@babel/preset-react"
   ],
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     "@babel/plugin-proposal-class-properties",
     ["@babel/plugin-transform-modules-commonjs"],
-    "@babel/plugin-transform-regenerator"
+    "@babel/plugin-transform-regenerator",
+    ["polyfill-corejs3", {
+      "method": "usage-global"
+    }]
   ]
 }
