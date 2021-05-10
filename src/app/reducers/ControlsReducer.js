@@ -57,6 +57,7 @@ const defaultState = {
   audioTransparentMode: false,
   maxVideoForwarding: undefined,
   requestedVideos: [],
+  virtualBackgroundMode: 'none'
 };
 
 const ControlsReducer = (state = defaultState, action) => {
@@ -346,6 +347,11 @@ const ControlsReducer = (state = defaultState, action) => {
         conferencePermissions: action.payload.conferencePermissions
       };
     }
+    case Types.SET_VIRTUAL_BACKGROUND_MODE:
+      return {
+        ...state,
+        virtualBackgroundMode: action.payload.mode
+      };
     default:
       return state;
   }

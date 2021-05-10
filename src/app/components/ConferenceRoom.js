@@ -364,6 +364,11 @@ class ConferenceRoom extends Component {
     this.props.dispatch(ControlsActions.setAudioTransparentMode(audioTransparentMode));
     Cookies.set("audioTransparentMode", audioTransparentMode, default_cookie_params);
     this.audioTransparentMode = audioTransparentMode;
+
+    let virtualBackgroundMode = Cookies.get("virtualBackgroundMode");
+    this.props.dispatch(ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode));
+    this.virtualBackgroundMode = virtualBackgroundMode
+    console.log('virtualBackgroundMode', this.virtualBackgroundMode);
   }
 
   async componentDidMount() {
