@@ -360,7 +360,10 @@ export class Actions {
     let maxVideoForwarding = (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined?
         preConfigPayload.maxVideoForwarding:
         maxVideoForwardingParam);
-    return async (dispatch, getState) => {
+    let virtualBackgroundMode = (preConfigPayload && preConfigPayload.virtualBackgroundMode !== undefined?
+        preConfigPayload.maxVideoForwarding:
+        null);
+    return (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
       dispatch(this._conferenceConnecting());
@@ -556,6 +559,11 @@ export class Actions {
                         this.setOutputAudio(dispatch);
                       }
                     }
+                    if (virtualBackgroundMode!==undefined) {
+                      dispatch(
+                          ConferenceActions.setVirtualBackgroundMode(virtualBackgroundMode)
+                      );
+                    }
                     //}
                   })
                   .catch((err) => {
@@ -668,12 +676,16 @@ export class Actions {
                 ) {
                   dispatch(
                       ConferenceActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode)
+                    );
+                  }
+                if (maxVideoForwarding!==undefined) {
+                  dispatch(
+                    ControlsActions.setMaxVideoForwarding(maxVideoForwarding)
                   );
                 }
-                if (maxVideoForwarding!==undefined
-                ) {
+                if (virtualBackgroundMode!==undefined) {
                   dispatch(
-                      ControlsActions.setMaxVideoForwarding(maxVideoForwarding)
+                    ConferenceActions.setVirtualBackgroundMode(virtualBackgroundMode)
                   );
                 }
               })
@@ -727,6 +739,15 @@ export class Actions {
         dispatch(TimerActions.stopTime());
         dispatch(ConferenceActions._conferenceLeave());
         dispatch(ConferenceActions._conferenceLeave(controls.disableSounds));
+        if (controls.closeSessionAtHangUp) {
+          this._removeListeners().then(() => {
+            VoxeetSDK.session.close().catch((err)=>{
+              console.error(err);
+            });
+          });
+        }
+      }).catch((err)=>{
+        console.error(err);
       });
     };
   }
@@ -1128,6 +1149,44 @@ export class Actions {
       }
     };
   }
+
+  static setVirtualBackgroundMode(mode) {
+    return (dispatch, getState) => {
+      const {
+        voxeet: { controls },
+      } = getState();
+      let { virtualBackgroundMode } = controls;
+      if (virtualBackgroundMode==mode || !virtualBackgroundMode) {
+        // Set to null
+        if(VoxeetSDK.virtualBackground) {
+          return VoxeetSDK.virtualBackground.setDisabledModeInConference().then(() => {
+            Cookies.set("virtualBackgroundMode", null);
+            dispatch(ControlsActions.setVirtualBackgroundMode(null));
+          });
+        } else {
+          Cookies.set("virtualBackgroundMode", null);
+          dispatch(ControlsActions.setVirtualBackgroundMode(null));
+          return Promise.resolve();
+        }
+      } else {
+        // Set to bokeh
+        if(!VoxeetSDK.virtualBackground){
+          Cookies.set("virtualBackgroundMode", 'bokeh');
+          dispatch(ControlsActions.setVirtualBackgroundMode(mode));
+          return Promise.resolve();
+        }
+        let setMode = (mode=='bokeh')?
+            VoxeetSDK.virtualBackground.setBokehModeInConference.bind(VoxeetSDK.virtualBackground):
+            VoxeetSDK.virtualBackground.setBokehModeInConference.bind(VoxeetSDK.virtualBackground); // TODO: image mode
+
+        return setMode().then(() => {
+          Cookies.set("virtualBackgroundMode", 'bokeh');
+          dispatch(ControlsActions.setVirtualBackgroundMode(mode));
+        });
+      }
+    };
+  }
+
 
   static checkIfUpdateStatusUser(user) {
     return (dispatch, getState) => {
