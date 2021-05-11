@@ -368,7 +368,7 @@ class ConferenceRoom extends Component {
     let virtualBackgroundMode = Cookies.get("virtualBackgroundMode");
     this.props.dispatch(ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode));
     this.virtualBackgroundMode = virtualBackgroundMode
-    console.log('virtualBackgroundMode', this.virtualBackgroundMode);
+    console.log('initializeControlsStore virtualBackgroundMode', this.virtualBackgroundMode);
   }
 
   async componentDidMount() {
