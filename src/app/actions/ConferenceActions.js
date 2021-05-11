@@ -365,8 +365,8 @@ export class Actions {
         preConfigPayload.maxVideoForwarding:
         maxVideoForwardingParam);
     let virtualBackgroundMode = (preConfigPayload && preConfigPayload.virtualBackgroundMode !== undefined?
-        preConfigPayload.maxVideoForwarding:
-        null);
+        preConfigPayload.virtualBackgroundMode:
+        Cookies.get('virtualBackgroundMode'));
     return (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
@@ -1138,12 +1138,13 @@ export class Actions {
   }
 
   static setVirtualBackgroundMode(mode) {
+    console.log('About to set vb mode to', mode)
     return (dispatch, getState) => {
       const {
         voxeet: { controls },
       } = getState();
       let { virtualBackgroundMode } = controls;
-      if (virtualBackgroundMode==mode || !virtualBackgroundMode) {
+      if (virtualBackgroundMode==mode || !mode) {
         // Set to null
         if(VoxeetSDK.virtualBackground) {
           return VoxeetSDK.virtualBackground.setDisabledModeInConference().then(() => {

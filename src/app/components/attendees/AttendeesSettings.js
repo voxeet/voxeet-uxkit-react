@@ -38,7 +38,7 @@ class AttendeesSettings extends Component {
     let audioTransparentMode = ((this.props.controlsStore.audioTransparentMode !== undefined) ? this.props.controlsStore.audioTransparentMode : false);
     let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
     let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
-    let virtualBackgroundMode = ((this.props.controlsStore.virtualBackgroundMode !== undefined) ? this.props.controlsStore.virtualBackgroundMode : 'none');
+    let virtualBackgroundMode = ((this.props.controlsStore.virtualBackgroundMode !== undefined) ? this.props.controlsStore.virtualBackgroundMode : Cookies.get("virtualBackgroundMode"));
 
     this.state = {
       runningAnimation: false,
@@ -49,6 +49,7 @@ class AttendeesSettings extends Component {
       testAudio: null,
       testAudioPlaying: false,
       audioTransparentMode: audioTransparentMode,
+      videoEnabled: videoEnabled,
       maxVideoForwarding: maxVideoForwarding,
       lowBandwidthMode: lowBandwidthMode,
       virtualBackgroundMode: virtualBackgroundMode
@@ -127,6 +128,14 @@ class AttendeesSettings extends Component {
       this.props.controlsStore &&
         prevProps.controlsStore.videoEnabled !== this.props.controlsStore.videoEnabled
     ) {
+      this.setState({
+        videoEnabled: this.props.controlsStore.videoEnabled,
+      });
+    }
+    if (
+      this.props.controlsStore &&
+        prevProps.controlsStore.videoEnabled !== this.props.controlsStore.videoEnabled
+    ) {
       this.setState({ lowBandwidthMode: !this.props.controlsStore.videoEnabled && !this.props.controlsStore.maxVideoForwarding });
     }
 
@@ -134,6 +143,7 @@ class AttendeesSettings extends Component {
       this.props.controlsStore &&
         prevProps.controlsStore.virtualBackgroundMode !== this.props.controlsStore.virtualBackgroundMode
     ) {
+      console.log('virtualBackgroundMode changed', this.props.controlsStore.virtualBackgroundMode)
       this.setState({ virtualBackgroundMode: this.props.controlsStore.virtualBackgroundMode });
     }
 
@@ -337,8 +347,9 @@ class AttendeesSettings extends Component {
   }
 
   render() {
-    const { lowBandwidthMode, maxVideoForwarding, audioTransparentMode, virtualBackgroundMode } = this.state;
+    const { lowBandwidthMode, maxVideoForwarding, audioTransparentMode, virtualBackgroundMode, videoEnabled } = this.state;
     //const { audioTransparentMode } = this.props.controlsStore;
+
     const { attendeesSettingsOpened, isListener, dolbyVoiceEnabled } = this.props;
     const MAX_MAXVF = isMobile()?4:16;
     const {
@@ -449,14 +460,14 @@ class AttendeesSettings extends Component {
                     </label>
                   </div>
                 </div>
-                <div className="form-group switch-enable">
+                <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
                   <div className='switch-mode'>
                     <input
                         id="vbModeBokeh"
                         name="vbModeBokeh"
                         type="checkbox"
                         onChange={() => this.onVirtualBackgroundModeChange('bokeh')}
-                        checked={virtualBackgroundMode==='bokeh'}
+                        checked={virtualBackgroundMode=='bokeh'}
                     />
                     <label htmlFor="vbModeBokeh">
                       {strings.bokehMode}
@@ -501,7 +512,6 @@ AttendeesSettings.propTypes = {
   attendeesSettingsOpened: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
   maxVideoForwarding: PropTypes.number,
-  virtualBackgroundMode: PropTypes.string,
 };
 
 export default AttendeesSettings;
