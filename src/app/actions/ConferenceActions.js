@@ -367,6 +367,8 @@ export class Actions {
     let virtualBackgroundMode = (preConfigPayload && preConfigPayload.virtualBackgroundMode !== undefined?
         preConfigPayload.virtualBackgroundMode:
         Cookies.get('virtualBackgroundMode'));
+    if(virtualBackgroundMode=='null')
+      virtualBackgroundMode = null;
     return (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
@@ -564,6 +566,7 @@ export class Actions {
                       }
                     }
                     if (virtualBackgroundMode!==undefined) {
+                      console.log('about to call setVirtualBackgroundMode 1', virtualBackgroundMode);
                       dispatch(
                           ConferenceActions.setVirtualBackgroundMode(virtualBackgroundMode)
                       );
@@ -693,6 +696,7 @@ export class Actions {
                     );
                   }
                   if (virtualBackgroundMode!==undefined) {
+                    console.log('about to call setVirtualBackgroundMode 2', virtualBackgroundMode);
                     dispatch(
                       ConferenceActions.setVirtualBackgroundMode(virtualBackgroundMode)
                     );
@@ -1144,7 +1148,8 @@ export class Actions {
         voxeet: { controls },
       } = getState();
       let { virtualBackgroundMode } = controls;
-      if (virtualBackgroundMode==mode || !mode) {
+      if (!mode) {
+        console.log('About to set vb to null');
         // Set to null
         if(VoxeetSDK.virtualBackground) {
           return VoxeetSDK.virtualBackground.setDisabledModeInConference().then(() => {
@@ -1157,6 +1162,7 @@ export class Actions {
           return Promise.resolve();
         }
       } else {
+        console.log('About to set vb to bokeh', mode, VoxeetSDK.virtualBackground);
         // Set to bokeh
         if(!VoxeetSDK.virtualBackground){
           Cookies.set("virtualBackgroundMode", 'bokeh');

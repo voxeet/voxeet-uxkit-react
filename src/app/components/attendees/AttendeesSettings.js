@@ -39,6 +39,8 @@ class AttendeesSettings extends Component {
     let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
     let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
     let virtualBackgroundMode = ((this.props.controlsStore.virtualBackgroundMode !== undefined) ? this.props.controlsStore.virtualBackgroundMode : Cookies.get("virtualBackgroundMode"));
+    if(virtualBackgroundMode=='null')
+      virtualBackgroundMode = null;
 
     this.state = {
       runningAnimation: false,
@@ -143,7 +145,7 @@ class AttendeesSettings extends Component {
       this.props.controlsStore &&
         prevProps.controlsStore.virtualBackgroundMode !== this.props.controlsStore.virtualBackgroundMode
     ) {
-      console.log('virtualBackgroundMode changed', this.props.controlsStore.virtualBackgroundMode)
+      console.log('virtualBackgroundMode changed %s -> %s', prevProps.controlsStore.virtualBackgroundMode, this.props.controlsStore.virtualBackgroundMode)
       this.setState({ virtualBackgroundMode: this.props.controlsStore.virtualBackgroundMode });
     }
 
@@ -282,9 +284,11 @@ class AttendeesSettings extends Component {
   }
 
   onVirtualBackgroundModeChange(mode) {
+    console.log('onVirtualBackgroundModeChange', mode);
     this.setState({
       virtualBackgroundMode: mode!==this.state.virtualBackgroundMode?mode:null
     }, () => {
+      console.log('about to call ConferenceActions.setVirtualBackgroundMode', this.state.virtualBackgroundMode);
       this.props.dispatch(ConferenceActions.setVirtualBackgroundMode(this.state.virtualBackgroundMode));
     });
   }
