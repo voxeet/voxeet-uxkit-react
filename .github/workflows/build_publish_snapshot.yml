@@ -2,9 +2,9 @@ name: Snapshot build and publish
 
 on:
   push:
-    branches:
-      - 'develop'
-      - 'mmsd-demo'
+    branches-ignore:
+      - 'master'
+      - 'release-**'
 
 jobs:
   build:
@@ -48,16 +48,10 @@ jobs:
           registry-url: ${{ secrets.CODEARTIFACT_NPM_SNAPSHOTS_REPOSITORY_URL }}
           always-auth: true
 
-      - name: build and publish
+      - name: build publish and create NPM dist tag
         run: |
           npm --no-git-tag-version version $(npm run --silent get-version)-$GITHUB_SHA
-          yarn publish
-        env:
-          NODE_AUTH_TOKEN: ${{ env.CODEARTIFACT_TOKEN }}
-
-      - name: create NPM tag for develop version
-        run: |
-          npm dist-tag add @voxeet/react-components@$(npm run --silent get-version) ${{ env.GITHUB_REF_SLUG }}
+          yarn publish --tag ${{ env.GITHUB_REF_SLUG }}
         env:
           NODE_AUTH_TOKEN: ${{ env.CODEARTIFACT_TOKEN }}
 
