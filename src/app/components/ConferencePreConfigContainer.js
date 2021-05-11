@@ -109,7 +109,8 @@ class ConferencePreConfigContainer extends Component {
       constraints,
       audioEnabled: this.state.audioEnabled,
       audioTransparentMode: this.state.audioTransparentMode,
-      maxVideoForwarding: this.state.maxVideoForwarding
+      maxVideoForwarding: this.state.maxVideoForwarding,
+      virtualBackgroundMode: this.state.virtualBackgroundMode
     };
     handleJoin(payload);
   }
@@ -841,9 +842,10 @@ ConferencePreConfigContainer.propTypes = {
   loadingScreen: PropTypes.func,
   logo: PropTypes.string,
   dolbyVoiceEnabled: PropTypes.bool,
-  videoeEnabled: PropTypes.bool,
+  videoEnabled: PropTypes.bool,
   audioTransparentMode: PropTypes.bool,
-  maxVideoForwarding: PropTypes.bool
+  maxVideoForwarding: PropTypes.bool,
+  virtualBackgroundMode: PropTypes.string,
 };
 
 export default ConferencePreConfigContainer;
