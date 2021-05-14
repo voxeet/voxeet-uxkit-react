@@ -57,7 +57,7 @@ const defaultState = {
   audioTransparentMode: false,
   maxVideoForwarding: undefined,
   requestedVideos: [],
-  virtualBackgroundMode: 'none'
+  virtualBackgroundMode: null
 };
 
 const ControlsReducer = (state = defaultState, action) => {
