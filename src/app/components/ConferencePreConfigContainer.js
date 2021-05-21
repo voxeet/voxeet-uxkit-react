@@ -78,6 +78,20 @@ class ConferencePreConfigContainer extends Component {
     this.releaseStream();
   }
 
+  reportError(error) {
+    console.error(error);
+    //console.trace()
+
+    // this.props.dispatch(
+    //     OnBoardingMessageWithActionActions.onBoardingMessageWithDescription(
+    //         error,
+    //         "description",
+    //         null,
+    //         true
+    //     )
+    // );
+  }
+
   onDeviceChange() {
     this.releaseStream();
 
@@ -141,6 +155,7 @@ class ConferencePreConfigContainer extends Component {
         }
       })
       .catch(error => {
+        this.reportError(error.message);
         this.setState({ videoEnabled: false });
       });
   }
@@ -235,22 +250,38 @@ class ConferencePreConfigContainer extends Component {
         })
         .then(() => {
           if (resultAudio.length > 0) {
-            navigator.mediaDevices
-              .getUserMedia({
-                audio: true,
-                video:
-                  this.state.videoEnabled && resultVideo.length > 0
-                    ? true
-                    : false
-              })
+            Promise.resolve()
+                .then(() =>{
+                  return navigator.mediaDevices
+                      .getUserMedia({
+                        audio: true,
+                        video: this.state.videoEnabled && resultVideo.length > 0
+                      }).catch((error) => {
+                        console.warn('Could not get audio or video', error && error.message)
+                        // Try audio only
+                        return  navigator.mediaDevices
+                            .getUserMedia({
+                              audio: true,
+                              video: false
+                            }).then((stream) => {
+                              // Disable video
+                              this.setState({
+                                videoEnabled: false,
+                                error: strings.errorPermissionDeniedMicrophoneCamera,
+                                loading: false
+                              });
+                              return stream;
+                            });
+                      });
+                })
               .then(stream => {
+                stream.getTracks().forEach(track => {
+                  track.stop();
+                });
                 resultAudio = new Array();
                 resultVideo = new Array();
                 resultAudioOutput = new Array();
                 navigator.mediaDevices.enumerateDevices().then(sources => {
-                  stream.getTracks().forEach(track => {
-                    track.stop();
-                  });
                   let videoCookieExist = false;
                   let outputCookieExist = false;
                   let inputCookieExist = false;
@@ -360,6 +391,7 @@ class ConferencePreConfigContainer extends Component {
                       });
                     }
                   } else {
+                    this.reportError(strings.noAudioDevice);
                     this.setState({
                       error: strings.noAudioDevice,
                       loading: false
@@ -387,17 +419,20 @@ class ConferencePreConfigContainer extends Component {
                         this.forceUpdate();
                       });
                   } else {
+                    this.reportError("No input device detected");
                     console.error("No input device detected");
                   }
                 });
               })
               .catch(error => {
                 if (this.state.videoEnabled) {
+                  this.reportError(strings.errorPermissionDeniedMicrophoneCamera);
                   this.setState({
                     error: strings.errorPermissionDeniedMicrophoneCamera,
                     loading: false
                   });
                 } else {
+                  this.reportError(strings.errorPermissionDeniedMicrophone);
                   this.setState({
                     error: strings.errorPermissionDeniedMicrophone,
                     loading: false
@@ -405,6 +440,7 @@ class ConferencePreConfigContainer extends Component {
                 }
               });
           } else {
+            this.reportError(strings.noAudioDevice);
             this.setState({ error: strings.noAudioDevice, loading: false });
           }
         });
@@ -414,7 +450,7 @@ class ConferencePreConfigContainer extends Component {
   attachSinkId(sinkId) {
     const element = document.getElementById("outputTester");
     element.setSinkId(sinkId).catch(error => {
-      console.error(errorMessage);
+      this.reportError(err.message);
     });
   }
 
@@ -466,6 +502,7 @@ class ConferencePreConfigContainer extends Component {
             return true;
           })
           .catch((err) => {
+            this.reportError(err.message);
             return false;
           });
       }
@@ -736,6 +773,7 @@ class ConferencePreConfigContainer extends Component {
                                 }
                               </div>
                               <div className="voxeet-loading-info-container">{error}</div>
+                              <div className="voxeet-loading-info-container"><button className={'retry-devices'} onClick={this.onDeviceChange}>Retry</button></div>
                             </div>
                           </div>
                         )}
