@@ -290,23 +290,19 @@ export class Actions {
         voxeet: { participants },
       } = getState();
       return VoxeetSDK.createDemoConference().then(function (res) {
-        if (VoxeetSDK.extensions.hasElectron()) {
-          dispatch(ConferenceActions.hasElectron());
-        } else {
-          dispatch(
+        dispatch(
             ParticipantActions.saveCurrentUser(
-              "Me",
-              "https://gravatar.com/avatar/" +
+                "Me",
+                "https://gravatar.com/avatar/" +
                 Math.floor(Math.random() * 1000000) +
                 "?s=200&d=identicon",
-              "123456"
+                "123456"
             )
-          );
-          dispatch(ConferenceActions._conferenceJoined());
-          dispatch(ControlsActions.toggleWidget());
-          dispatch(ControlsActions.setConferencePermissions(res.permissions));
-          dispatch(ParticipantActions.triggerHandleOnConnect());
-        }
+        );
+        dispatch(ConferenceActions._conferenceJoined());
+        dispatch(ControlsActions.toggleWidget());
+        dispatch(ControlsActions.setConferencePermissions(res.permissions));
+        dispatch(ParticipantActions.triggerHandleOnConnect());
       });
     };
   }
@@ -609,82 +605,78 @@ export class Actions {
                 maxVideoForwarding: maxVideoForwarding,
               })
               .then((res) => {
-                if (VoxeetSDK.extensions.hasElectron()) {
-                  dispatch(ConferenceActions.hasElectron());
-                } else {
-                  dispatch(
+                dispatch(
                     ParticipantActions.saveCurrentUser(
-                      userInfo.name,
-                      userInfo.avatarUrl,
-                      userInfo.externalId
+                        userInfo.name,
+                        userInfo.avatarUrl,
+                        userInfo.externalId
                     )
-                  );
-                  dispatch(
+                );
+                dispatch(
                     ConferenceActions._conferenceJoined(
-                      res.id,
-                      pinCode,
-                      res.params.dolbyVoice
+                        res.id,
+                        pinCode,
+                        res.params.dolbyVoice
                     )
-                  );
-                  dispatch(ControlsActions.toggleWidget());
-                  dispatch(ControlsActions.saveConstraints(constraints));
-                  dispatch(ControlsActions.setConferencePermissions(res.permissions));
-                  dispatch(ParticipantActions.triggerHandleOnConnect());
-                  if (VoxeetSDK.recording.current) {
-                    dispatch(ControlsActions.lockRecording());
-                    dispatch(
+                );
+                dispatch(ControlsActions.toggleWidget());
+                dispatch(ControlsActions.saveConstraints(constraints));
+                dispatch(ControlsActions.setConferencePermissions(res.permissions));
+                dispatch(ParticipantActions.triggerHandleOnConnect());
+                if (VoxeetSDK.recording.current) {
+                  dispatch(ControlsActions.lockRecording());
+                  dispatch(
                       OnBoardingMessageActions.onBoardingDisplay(
-                        strings.recordConferenceStart,
-                        2000
+                          strings.recordConferenceStart,
+                          2000
                       )
-                    );
-                  } else if (autoRecording) {
-                    dispatch(ConferenceActions.toggleRecording(res.id, false));
-                    dispatch(
+                  );
+                } else if (autoRecording) {
+                  dispatch(ConferenceActions.toggleRecording(res.id, false));
+                  dispatch(
                       ConferenceActions.sendBroadcastMessage(
-                        RECORDING_STATE,
-                        null,
-                        {
-                          name: userInfo.name,
-                          userId: userInfo.participant_id,
-                          recordingRunning: true,
-                        }
+                          RECORDING_STATE,
+                          null,
+                          {
+                            name: userInfo.name,
+                            userId: userInfo.participant_id,
+                            recordingRunning: true,
+                          }
                       )
-                    );
-                  }
-                  if (constraints.video) {
-                    dispatch(ControlsActions.toggleVideo(true));
-                  }
-                  if (!constraints.audio)
-                    dispatch(ControlsActions.toggleAudio(false));
-                  if (bowser.chrome) {
-                    if (preConfigPayload != null) {
-                      if (preConfigPayload.outputDeviceSelected)
-                        VoxeetSDK.mediaDevice
+                  );
+                }
+                if (constraints.video) {
+                  dispatch(ControlsActions.toggleVideo(true));
+                }
+                if (!constraints.audio)
+                  dispatch(ControlsActions.toggleAudio(false));
+                if (bowser.chrome) {
+                  if (preConfigPayload != null) {
+                    if (preConfigPayload.outputDeviceSelected)
+                      VoxeetSDK.mediaDevice
                           .selectAudioOutput(
-                            preConfigPayload.outputDeviceSelected
+                              preConfigPayload.outputDeviceSelected
                           )
                           .catch((err) => {
                             console.log(err);
                           });
-                    } else {
-                      this.setOutputAudio(dispatch);
-                    }
+                  } else {
+                    this.setOutputAudio(dispatch);
                   }
-                  if (
+                }
+                if (
                     preConfigPayload &&
                     preConfigPayload.audioTransparentMode !== undefined
-                  ) {
-                    dispatch(
+                ) {
+                  dispatch(
                       ConferenceActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode)
-                    );
-                  }
-                  if (maxVideoForwarding!==undefined
-                  ) {
-                    dispatch(
+                  );
+                }
+                if (maxVideoForwarding!==undefined
+                ) {
+                  dispatch(
                       ControlsActions.setMaxVideoForwarding(maxVideoForwarding)
-                    );
-                  }
+                  );
                 }
               })
               .catch((err) => {
