@@ -80,16 +80,6 @@ class ConferencePreConfigContainer extends Component {
 
   reportError(error) {
     console.error(error);
-    //console.trace()
-
-    // this.props.dispatch(
-    //     OnBoardingMessageWithActionActions.onBoardingMessageWithDescription(
-    //         error,
-    //         "description",
-    //         null,
-    //         true
-    //     )
-    // );
   }
 
   onDeviceChange() {
