@@ -66,6 +66,7 @@ class Tiles extends Component {
               dolbyVoiceEnabled={dolbyVoiceEnabled}
               bounds={this.draggableAreaRef.current}
               key={currentUser.participant_id}
+              currentUser={currentUser}
             />
           )}
           {tilesParticipants.map((participant, i) => {
@@ -83,6 +84,7 @@ class Tiles extends Component {
                 isWidgetFullScreenOn={isWidgetFullScreenOn}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
                 kickPermission={kickPermission}
+                currentUser={currentUser}
               />
             );
           })}

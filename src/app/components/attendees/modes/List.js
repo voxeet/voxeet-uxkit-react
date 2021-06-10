@@ -15,6 +15,7 @@ class List extends Component {
       kickParticipant,
       isAdmin,
       isAdminActived,
+      currentUser  // TODO no usages found for this component
     } = this.props;
     return (
       <div className="SidebarList">
@@ -29,6 +30,7 @@ class List extends Component {
                   key={i}
                   kickParticipant={kickParticipant}
                   toggleMicrophone={toggleMicrophone}
+                  currentUser={currentUser}
                 />
               );
           })}
