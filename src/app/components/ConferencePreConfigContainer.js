@@ -118,13 +118,13 @@ class ConferencePreConfigContainer extends Component {
   attachMediaStream(stream){
     if(stream){
       let tracks = stream.getVideoTracks();
-      if(VoxeetSDK.virtualBackground && tracks && tracks[0]) {
+      if(VoxeetSDK.videoFilters && tracks && tracks[0]) {
         switch (this.state.virtualBackgroundMode) {
           case 'bokeh':
-            VoxeetSDK.virtualBackground.setBokehMode(tracks[0]);
+            VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0]});
             break;
           default:
-            VoxeetSDK.virtualBackground.setDisabledMode(tracks[0]);
+            VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0]});
         }
       }
     }
@@ -551,15 +551,15 @@ class ConferencePreConfigContainer extends Component {
     this.setState({
       virtualBackgroundMode: mode!==this.state.virtualBackgroundMode?mode:null
     }, () => {
-      if(this.state.userStream && VoxeetSDK.virtualBackground) {
+      if(this.state.userStream && VoxeetSDK.videoFilters) {
         let tracks = this.state.userStream.getVideoTracks();
         if(tracks && tracks[0]) {
           switch (this.state.virtualBackgroundMode) {
             case 'bokeh':
-              VoxeetSDK.virtualBackground.setBokehMode(tracks[0]);
+              VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0]});
               break;
             default:
-              VoxeetSDK.virtualBackground.setDisabledMode(tracks[0]);
+              VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0]});
           }
         }
       }

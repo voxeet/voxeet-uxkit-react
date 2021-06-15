@@ -1154,8 +1154,8 @@ export class Actions {
       if (!mode) {
         console.log('About to set vb to null');
         // Set to null
-        if(VoxeetSDK.virtualBackground) {
-          return VoxeetSDK.virtualBackground.setDisabledModeInConference().then(() => {
+        if(VoxeetSDK.videoFilters) {
+          return VoxeetSDK.videoFilters.setFilter('none').then(() => {
             Cookies.set("virtualBackgroundMode", null);
             dispatch(ControlsActions.setVirtualBackgroundMode(null));
           });
@@ -1165,16 +1165,16 @@ export class Actions {
           return Promise.resolve();
         }
       } else {
-        console.log('About to set vb to bokeh', mode, VoxeetSDK.virtualBackground);
+        console.log('About to set vb to bokeh', mode, VoxeetSDK.videoFilters);
         // Set to bokeh
-        if(!VoxeetSDK.virtualBackground){
+        if(!VoxeetSDK.videoFilters){
           Cookies.set("virtualBackgroundMode", 'bokeh');
           dispatch(ControlsActions.setVirtualBackgroundMode(mode));
           return Promise.resolve();
         }
         let setMode = (mode=='bokeh')?
-            VoxeetSDK.virtualBackground.setBokehModeInConference.bind(VoxeetSDK.virtualBackground):
-            VoxeetSDK.virtualBackground.setBokehModeInConference.bind(VoxeetSDK.virtualBackground); // TODO: image mode
+            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters):
+            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters); // TODO: image mode
 
         return setMode().then(() => {
           Cookies.set("virtualBackgroundMode", 'bokeh');
