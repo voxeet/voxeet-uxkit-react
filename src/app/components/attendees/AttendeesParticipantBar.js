@@ -26,7 +26,7 @@ class AttendeesParticipantBar extends Component {
       dolbyVoiceEnabled,
       kickPermission,
     } = this.props;
-    const { quality } = this.props.participantStore;
+    const { quality, currentUser } = this.props.participantStore;
     let audioq = 0,
       videoq = 0,
       avquality = 0;
@@ -58,7 +58,7 @@ class AttendeesParticipantBar extends Component {
         <div className="name">{participant.name}</div>
         <ul className="bar-icons">
           <li>
-            {toggleMicrophone != null && !participant.isMyself && !dolbyVoiceEnabled && (
+            {toggleMicrophone != null && !participant.isMyself && !(dolbyVoiceEnabled && currentUser.isListener) && (
               <AttendeesParticipantMute
                 participant={participant}
                 toggleMicrophone={toggleMicrophone}
