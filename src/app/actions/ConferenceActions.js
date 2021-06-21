@@ -498,6 +498,7 @@ export class Actions {
                     simulcast: simulcast,
                     audio3D: false,
                     maxVideoForwarding: maxVideoForwarding,
+                    videoFilter: virtualBackgroundMode,
                   })
                   .then((res) => {
                     dispatch(
@@ -561,13 +562,6 @@ export class Actions {
                         this.setOutputAudio(dispatch);
                       }
                     }
-                    if (virtualBackgroundMode!==undefined) {
-                      console.log('about to call setVirtualBackgroundMode 1', virtualBackgroundMode);
-                      dispatch(
-                          ConferenceActions.setVirtualBackgroundMode(virtualBackgroundMode)
-                      );
-                    }
-                    //}
                   })
                   .catch((err) => {
                     console.error(err);
@@ -614,6 +608,7 @@ export class Actions {
                 simulcast: simulcast,
                 audio3D: false,
                 maxVideoForwarding: maxVideoForwarding,
+                videoFilter: virtualBackgroundMode,
               })
               .then((res) => {
                 dispatch(
@@ -686,12 +681,6 @@ export class Actions {
                 if (maxVideoForwarding!==undefined) {
                   dispatch(
                       ControlsActions.setMaxVideoForwarding(maxVideoForwarding)
-                  );
-                }
-                if (virtualBackgroundMode!==undefined) {
-                  console.log('about to call setVirtualBackgroundMode 2', virtualBackgroundMode);
-                  dispatch(
-                      ConferenceActions.setVirtualBackgroundMode(virtualBackgroundMode)
                   );
                 }
               })
@@ -1173,8 +1162,8 @@ export class Actions {
           return Promise.resolve();
         }
         let setMode = (mode=='bokeh')?
-            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters):
-            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters); // TODO: image mode
+            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'bokeh'):
+            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'none'); // TODO: image mode
 
         return setMode().then(() => {
           Cookies.set("virtualBackgroundMode", 'bokeh');
