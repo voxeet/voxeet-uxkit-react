@@ -175,7 +175,7 @@ class AttendeesSettings extends Component {
 
   async onDvcDumpClicked(e) {
     e.preventDefault();
-    let dump = await VoxeetSDK.createStateDump();
+    let dump = await VoxeetSDK.conference.createStateDump();
     var link = document.createElement("a");
     if (link.download !== undefined && dump) {
       let filename = "DVWC_State_dump_" + new Date().toISOString() + ".zip";
