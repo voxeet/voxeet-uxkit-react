@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - 'master'
       - 'release-**'
+      - 'feature/dvwc'
 
 jobs:
   build:
