@@ -787,6 +787,11 @@ export class Actions {
         voxeet: { participants, controls },
       } = getState();
       if (participants.handleOnLeave != null) participants.handleOnLeave();
+      if (controls.closeSessionAtHangUp) {
+        this._removeListeners().then(() => {
+          VoxeetSDK.session.close();
+        });
+      }
     };
   }
 
