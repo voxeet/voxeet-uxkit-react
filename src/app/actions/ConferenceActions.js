@@ -956,9 +956,14 @@ export class Actions {
   static handleLeave() {
     return (dipatch, getState) => {
       const {
-        voxeet: { participants },
+        voxeet: { participants, controls },
       } = getState();
       if (participants.handleOnLeave != null) participants.handleOnLeave();
+      if (controls.closeSessionAtHangUp) {
+        this._removeListeners().then(() => {
+          VoxeetSDK.session.close();
+        });
+      }
     };
   }
 
