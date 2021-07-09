@@ -1466,7 +1466,7 @@ export class Actions {
 
       VoxeetSDK.conference.on("error", (data) => {
         let title, description, isError;
-        // console.error('error', JSON.stringify(data), data.message, data.name);
+        console.error('error', JSON.stringify(data), data.message, data.name);
         switch (data.name) {
           case "NotAllowedError":
           case "OverconstrainedError":
@@ -1537,6 +1537,21 @@ export class Actions {
           case "MaxCapacityError":
             title = strings.titleConferenceCapacityError;
             description = strings.descConferenceCapacityError;
+            isError = true;
+            break;
+          case 'DataChannelError':
+            title = data.message;
+            description = null;
+            isError = true;
+            break;
+          case 'MediaServerConnectionError':
+            title = data.message;
+            description = null;
+            isError = true;
+            break;
+          case 'DolbyVoiceNotSupported':
+            title = strings.dolbyVoiceNotSupported;
+            description = data.message;
             isError = true;
             break;
           default:
