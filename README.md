@@ -14,7 +14,7 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 #### Features
 
 - Support for muting individual remote user for the participant
-- Added “Retry” button to retry accessing the media devices in case of a temporary error
+- Added "Retry" button to retry accessing the media devices in case of a temporary error
 - Disabled autolinker unless specified in chat options.
 
 ### 3.1.0
