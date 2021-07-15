@@ -30,6 +30,7 @@ class ListWidget extends Component {
               isAdmin={isAdmin}
               mySelf={true}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
+              currentUser={currentUser}
             />
           )}
           {participants.map((participant, i) => {
@@ -44,6 +45,7 @@ class ListWidget extends Component {
                   kickParticipant={kickParticipant}
                   toggleMicrophone={toggleMicrophone}
                   dolbyVoiceEnabled={dolbyVoiceEnabled}
+                  currentUser={currentUser}
                 />
               );
           })}

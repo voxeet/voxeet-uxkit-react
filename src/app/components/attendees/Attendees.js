@@ -373,6 +373,7 @@ Attendees.propTypes = {
   attendeesList: PropTypes.func,
   dolbyVoiceEnabled: PropTypes.bool,
   conferencePermissions: PropTypes.object,
+  chatOptions: PropTypes.object,
 };
 
 export default Attendees;
