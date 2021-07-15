@@ -4,9 +4,10 @@ import PropTypes from "prop-types";
 class AttendeesParticipantVideo extends Component {
   constructor(props) {
     super(props);
-    this.toggleScreenShareFullScreen = this.toggleScreenShareFullScreen.bind(
-      this
-    );
+    this.state = {
+      videoRef: React.createRef()
+    }
+    this.toggleScreenShareFullScreen = this.toggleScreenShareFullScreen.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -17,22 +18,26 @@ class AttendeesParticipantVideo extends Component {
     this.updateStream(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.updateStream(nextProps);
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { stream } = nextProps;
+    if(prevState && prevState.videoRef && prevState.videoRef.current )
+      navigator.attachMediaStream(prevState.videoRef.current, stream);
+    return null;
   }
 
   updateStream(props) {
     const { stream } = props;
-    navigator.attachMediaStream(this.video, stream);
+    if(this.state.videoRef)
+      navigator.attachMediaStream(this.state.videoRef.current, stream);
   }
 
   toggleScreenShareFullScreen() {
-    if (this.video.requestFullscreen) {
-      this.video.requestFullscreen();
-    } else if (this.video.mozRequestFullScreen) {
-      this.video.mozRequestFullScreen();
-    } else if (this.video.webkitRequestFullscreen) {
-      this.video.webkitRequestFullscreen();
+    if (this.videoRef.current.requestFullscreen) {
+      this.videoRef.current.requestFullscreen();
+    } else if (this.videoRef.current.mozRequestFullScreen) {
+      this.videoRef.current.mozRequestFullScreen();
+    } else if (this.videoRef.current.webkitRequestFullscreen) {
+      this.videoRef.current.webkitRequestFullscreen();
     }
   }
 
@@ -43,7 +48,7 @@ class AttendeesParticipantVideo extends Component {
         className="video-participant"
         width={width}
         height={height}
-        ref={ref => (this.video = ref)}
+        ref={this.state.videoRef}
       />
     ) : (
       <video
@@ -52,7 +57,7 @@ class AttendeesParticipantVideo extends Component {
         id="fullscreen-video"
         playsInline
         height={height}
-        ref={ref => (this.video = ref)}
+        ref={this.state.videoRef}
         onDoubleClick={this.toggleScreenShareFullScreen}
         autoPlay
         muted

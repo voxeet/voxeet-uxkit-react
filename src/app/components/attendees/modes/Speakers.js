@@ -159,6 +159,7 @@ class Speakers extends Component {
                     forceActiveSpeaker={forceActiveSpeaker}
                     dolbyVoiceEnabled={dolbyVoiceEnabled}
                     kickPermission={kickPermission}
+                    currentUser={currentUser}
                   />
                 );
             })}

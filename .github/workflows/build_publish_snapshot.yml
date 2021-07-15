@@ -2,8 +2,9 @@ name: Snapshot build and publish
 
 on:
   push:
-    branches:
-      - 'develop'
+    branches-ignore:
+      - 'master'
+      - 'release-**'
 
 jobs:
   build:
@@ -47,15 +48,25 @@ jobs:
           registry-url: ${{ secrets.CODEARTIFACT_NPM_SNAPSHOTS_REPOSITORY_URL }}
           always-auth: true
 
-      - name: build and publish
+      - name: build publish and create NPM dist tag
         run: |
           npm --no-git-tag-version version $(npm run --silent get-version)-$GITHUB_SHA
-          yarn publish
+          yarn publish --tag ${{ env.GITHUB_REF_SLUG }}
         env:
           NODE_AUTH_TOKEN: ${{ env.CODEARTIFACT_TOKEN }}
 
-      - name: create NPM tag for develop version
-        run: |
-          npm dist-tag add @voxeet/react-components@$(npm run --silent get-version) ${{ env.GITHUB_REF_SLUG }}
-        env:
-          NODE_AUTH_TOKEN: ${{ env.CODEARTIFACT_TOKEN }}
+      - name: Generate github app token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.VOXEET_IO_WEB_APP_ID }}
+          private_key: ${{ secrets.VOXEET_IO_WEB_APP_PRIVATE_KEY }}
+          repository: voxeet/voxeet-io-web
+
+      - name: Send repository dispatch to voxeet-io-web
+        uses: peter-evans/repository-dispatch@v1
+        continue-on-error: true
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          event-type: uxkit-${{ env.GITHUB_REF_SLUG }}
+          repository: voxeet/voxeet-io-web
