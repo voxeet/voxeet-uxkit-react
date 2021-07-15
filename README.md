@@ -62,12 +62,12 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 - Improved device access failure error handling to provide the correct UI message to the user for troubleshooting purposes.
 - Allows output device selection in listen-only mode.
 - Previously used devices are saved in the device list.
- 
+
 #### Tile layout improvement
 
-- In anticipation of future design of limited video users, an active speaker pop-up appears, similar to BlueJeans functionality. 
+- In anticipation of future design of limited video users, an active speaker pop-up appears, similar to BlueJeans functionality.
 - The video frames are now uniform; inconsistent aspect ratio video frames are scaled down to fit the available rectangle for the user, making the tile layout uniform.
- 
+
 #### Other changes
 
 - Addition of quality indicator and mute button in the Attendees list
