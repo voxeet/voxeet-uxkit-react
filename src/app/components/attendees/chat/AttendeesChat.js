@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import MessageList from './MessageList';
 import attachIcon from '../../../../static/images/icons/icon-attach.svg';
 import sendIcon from '../../../../static/images/icons/icon-tag.svg';

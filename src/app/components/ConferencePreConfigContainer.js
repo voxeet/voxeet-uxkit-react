@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import { Actions as InputManagerActions } from "../actions/InputManagerActions";
 import AttendeesParticipantVideo from "./attendees/AttendeesParticipantVideo";
 import PropTypes from "prop-types";

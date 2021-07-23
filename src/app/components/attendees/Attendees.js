@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";

@@ -1,6 +1,6 @@
 import reducer from "./reducers";
 import ConferenceRoom from "./components/ConferenceRoom";
-import { Provider } from "@voxeet/react-redux-5.1.1";
+import { Provider } from "react-redux";
 import ConferenceSounds from "./libs/sounds";
 
 import {

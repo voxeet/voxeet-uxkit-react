@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import { strings } from "../../languages/localizedStrings";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import userPlaceholder from "../../../static/images/user-placeholder.png";
 import iconPlus from "../../../static/images/icons/icon-plus.svg";

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import AttendeesParticipantMute from "./AttendeesParticipantMute";
 import AttendeesKickParticipant from "./AttendeesKickParticipant";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 
 @connect((store) => {
   return {

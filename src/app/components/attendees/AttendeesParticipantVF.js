@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import IconVfSoundOff from "../../../static/images/icons/icon-vf-sound-off.svg";
 import IconVfSoundOn from "../../../static/images/icons/icon-vf-sound-on.svg";
 

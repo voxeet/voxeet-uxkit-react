@@ -1,11 +1,13 @@
 {
   "presets":[
     ["@babel/preset-env", {
-      useBuiltIns: 'usage',
-      corejs: '2',
-      debug: false
+      "useBuiltIns": "usage",
+      "corejs": "3",
+      "debug": false
     }],
-    "@babel/preset-react"
+    ["@babel/preset-react", {
+      "runtime": "automatic"
+    }]
   ],
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],

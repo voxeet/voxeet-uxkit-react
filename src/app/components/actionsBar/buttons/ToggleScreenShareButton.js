@@ -2,7 +2,7 @@ import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import browser from "bowser";
 import ReactTooltip from "react-tooltip";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import { Actions as OnBoardingMessageActions } from "../../../actions/OnBoardingMessageActions";
 import { strings } from "../../../languages/localizedStrings";
 import ShareScreenOn from "../../../../static/images/icons/btn-share-screen-on.svg";

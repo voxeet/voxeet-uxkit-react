@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import { strings } from "../languages/localizedStrings";
@@ -704,8 +704,8 @@ ConferenceRoom.propTypes = {
   autoJoin: PropTypes.bool,
   pinCode: PropTypes.string,
   actionsButtons: PropTypes.func,
-  attendeesList: PropTypes.func,
-  attendeesChat: PropTypes.func,
+  attendeesList: PropTypes.object,
+  attendeesChat: PropTypes.object,
   loadingScreen: PropTypes.func,
   handleOnLeave: PropTypes.func,
   refreshTokenCallback: PropTypes.func,

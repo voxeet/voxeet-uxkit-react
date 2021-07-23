@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { strings } from "../languages/localizedStrings";
 
@@ -423,8 +423,8 @@ ConferenceRoomContainer.propTypes = {
   handleOnLeave: PropTypes.func,
   conferenceId: PropTypes.string,
   conferencePincode: PropTypes.string,
-  attendeesList: PropTypes.func,
-  attendeesChat: PropTypes.func,
+  attendeesList: PropTypes.object,
+  attendeesChat: PropTypes.object,
   attendeesWaiting: PropTypes.func,
   dolbyVoiceEnabled: PropTypes.bool,
   conferencePermissions: PropTypes.object,
