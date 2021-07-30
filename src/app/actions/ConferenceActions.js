@@ -1515,7 +1515,7 @@ export class Actions {
           dispatch(ControlsActions.toggleVideoPresentationMode(true));
         }
         dispatch(ParticipantActions.onVideoPresentationStarted(data.ownerId));
-        dispatch(VideoPresentationActions.startVideoPresentation(data.url));
+        dispatch(VideoPresentationActions.startVideoPresentation(data.url, data.timestamp / 1000));
         setTimeout(() => {
           dispatch(VideoPresentationActions.seek(data.timestamp / 1000));
         }, 200);
@@ -1542,7 +1542,7 @@ export class Actions {
         }
       });
 
-      VoxeetSDK.videoPresentation.on("seek", (data) => {
+      VoxeetSDK.videoPresentation.on("sought", (data) => {
         if (VoxeetSDK.session.participant.id != data.ownerId) {
           dispatch(VideoPresentationActions.seek(data.timestamp / 1000));
         }

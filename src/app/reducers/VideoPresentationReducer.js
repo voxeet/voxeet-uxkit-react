@@ -37,6 +37,7 @@ const VideoPresentationReducer = (state = defaultState, action) => {
       return {
         ...state,
         playing: true,
+        ts: action.payload.ts,
         url: action.payload.url
       };
     }
