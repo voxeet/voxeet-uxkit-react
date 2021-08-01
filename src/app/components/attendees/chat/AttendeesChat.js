@@ -9,6 +9,7 @@ import { Actions as ChatActions } from "../../../actions/ChatActions";
 import { Actions as ConferenceActions } from "../../../actions/ConferenceActions";
 import { CHAT_MESSAGE } from "../../../constants/BroadcastMessageType";
 import Autolinker from "autolinker";
+import {getUxKitContext} from "../../../context";
 
 class AttendeesChat extends Component {
     constructor(props) {
@@ -194,7 +195,9 @@ const mapDispatchToProps = (dispatch) => {
 
 const AttendeesChatContainer = connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    null,
+    { context: getUxKitContext() }
 )(AttendeesChat);
 
 export default AttendeesChatContainer;

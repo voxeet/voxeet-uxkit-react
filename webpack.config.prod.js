@@ -117,7 +117,9 @@ module.exports = {
     //       {from: "./src/static"}
     //   ]
     // }),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'voxeet-react-components.css'
+    }),
     new webpack.NoEmitOnErrorsPlugin(),
   ],
 };

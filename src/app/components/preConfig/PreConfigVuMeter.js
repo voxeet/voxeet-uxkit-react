@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import {getUxKitContext} from "../../context";
 
 @connect(store => {
   return {
     inputManager: store.voxeet.inputManager
   };
-})
+}, null, null, { context: getUxKitContext() })
 class PreConfigVuMeter extends Component {
   constructor(props) {
     super(props);

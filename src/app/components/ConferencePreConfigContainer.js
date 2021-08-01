@@ -9,6 +9,7 @@ import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
 import {isMobile} from "../libs/browserDetection";
+import {getUxKitContext} from "../context";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);
@@ -24,7 +25,7 @@ const default_cookies_param = {
     inputManager: store.voxeet.inputManager,
     controlsStore: store.voxeet.controls
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ConferencePreConfigContainer extends Component {
   constructor(props) {
 

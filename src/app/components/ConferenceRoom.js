@@ -20,6 +20,7 @@ import AttendeesChat from "./attendees/chat/AttendeesChat";
 import LoadingScreen from "./attendees/LoadingScreen";
 import { setPstnNumbers } from "../constants/PinCode";
 import {isMobile} from "../libs/browserDetection";
+import {getUxKitContext} from "../context";
 
 @connect((state) => {
   return {
@@ -27,7 +28,7 @@ import {isMobile} from "../libs/browserDetection";
     errorStore: state.voxeet.error,
     participantsStore: state.voxeet.participants,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ConferenceRoom extends Component {
   constructor(props) {
     super(props);

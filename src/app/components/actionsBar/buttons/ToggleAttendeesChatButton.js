@@ -6,12 +6,13 @@ import { connect } from "react-redux";
 import ChatOn from "../../../../static/images/icons/btn-chat-on.svg";
 import ChatOff from "../../../../static/images/icons/btn-chat-off.svg";
 import { isMobile } from "../../../libs/browserDetection";
+import {getUxKitContext} from "../../../context";
 
 @connect(store => {
   return {
     chatStore: store.voxeet.chat
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ToggleAttendeesChatButton extends Component {
   constructor(props) {
     super(props);

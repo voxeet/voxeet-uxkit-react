@@ -4,12 +4,13 @@ import PropTypes from "prop-types";
 import AttendeesParticipantMute from "./AttendeesParticipantMute";
 import AttendeesKickParticipant from "./AttendeesKickParticipant";
 import { connect } from "react-redux";
+import {getUxKitContext} from "../../context";
 
 @connect((store) => {
   return {
     participantStore: store.voxeet.participants,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesParticipantBar extends Component {
   constructor(props) {
     super(props);

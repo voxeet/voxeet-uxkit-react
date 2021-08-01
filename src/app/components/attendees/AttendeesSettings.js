@@ -14,6 +14,7 @@ import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
 import {isIOS, isMobile} from "./../../libs/browserDetection";
 import {Actions as ControlsActions} from "../../actions/ControlsActions";
+import {getUxKitContext} from "../../context";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);
@@ -29,7 +30,7 @@ const default_cookies_param = {
     inputManager: store.voxeet.inputManager,
     controlsStore: store.voxeet.controls
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesSettings extends Component {
   constructor(props) {
     super(props);

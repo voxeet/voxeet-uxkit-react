@@ -9,6 +9,7 @@ import iconSlideLeft from "../../../static/images/icons/icon-slide-left.svg";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
 import AttendeesParticipantMute from "./AttendeesParticipantMute";
 import AttendeesParticipantCamera from "./AttendeesParticipantCamera";
+import {getUxKitContext} from "../../context";
 
 @connect((store) => {
   return {
@@ -16,7 +17,7 @@ import AttendeesParticipantCamera from "./AttendeesParticipantCamera";
     participantWaiting: store.voxeet.participantsWaiting,
     activeSpeakerStore: store.voxeet.activeSpeaker,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesList extends Component {
   constructor(props) {
     super(props);

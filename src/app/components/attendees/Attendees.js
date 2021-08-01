@@ -34,13 +34,14 @@ import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
 import OnBoardingMessageWithConfirmation from "./onBoardingMessage/onBoardingMessageWithConfirmation";
+import {getUxKitContext} from "../../context";
 
 @connect((store) => {
   return {
     participantStore: store.voxeet.participants,
     errorStore: store.voxeet.error,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class Attendees extends Component {
   constructor(props) {
     super(props);
@@ -227,9 +228,13 @@ class Attendees extends Component {
           />
         )}
 
-        {this.renderParticipantList()}
+        <React.Fragment>
+          {this.renderParticipantList()}
+        </React.Fragment>
 
-        {this.renderChat()}
+        <React.Fragment>
+          {this.renderChat()}
+        </React.Fragment>
 
         <section
           className={`sidebar-container ${
@@ -342,7 +347,7 @@ class Attendees extends Component {
           {participantsConnected.length === 0 &&
             (!isWebinar || (isWebinar && !isAdmin)) &&
             mode === MODE_TILES &&
-            this.renderWaiting()}
+            <React.Fragment>this.renderWaiting()</React.Fragment>}
         </section>
       </div>
     );

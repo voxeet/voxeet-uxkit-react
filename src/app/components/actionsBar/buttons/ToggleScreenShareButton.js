@@ -17,12 +17,13 @@ import WindowShareOn from "../../../../static/images/icons/icon-window.svg";
 import WindowShareOff from "../../../../static/images/icons/icon-window-hover.svg";
 import dolbyLogo from "../../../../static/images/DDLoader.gif";
 import { isMobile } from "../../../libs/browserDetection";
+import {getUxKitContext} from "../../../context";
 
 @connect(store => {
   return {
     filePresentationStore: store.voxeet.filePresentation
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ToggleScreenShareButton extends Component {
   constructor(props) {
     super(props);

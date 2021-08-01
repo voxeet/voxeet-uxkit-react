@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import {getUxKitContext} from "../../../context";
 
 @connect(store => {
   return {
     controlsStore: store.voxeet.controls
   };
-})
+}, null, null, { context: getUxKitContext() })
 class BottomBar extends Component {
   constructor(props) {
     super(props);

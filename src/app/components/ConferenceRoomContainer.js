@@ -21,6 +21,7 @@ import ModalClose from "./attendees/modal/ModalClose";
 import Modal from "./attendees/modal/Modal";
 
 import BottomBar from "./actionsBar/bottomBar/BottomBar";
+import {getUxKitContext} from "../context";
 
 @connect(store => {
   return {
@@ -28,7 +29,7 @@ import BottomBar from "./actionsBar/bottomBar/BottomBar";
     participantsStore: store.voxeet.participants,
     errorStore: store.voxeet.error
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ConferenceRoomContainer extends Component {
   constructor(props) {
     super(props);

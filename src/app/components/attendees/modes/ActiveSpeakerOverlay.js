@@ -8,13 +8,14 @@ import cameraOn from "../../../../static/images/icons/btn-camera-dark.svg";
 import microphoneOn from "../../../../static/images/icons/btn-mute-dark.svg";
 import microphoneOff from "../../../../static/images/icons/btn-mute-on.svg";
 import {Actions as OnBoardingMessageWithActionActions} from "../../../actions/OnBoardingMessageWithActionActions";
+import {getUxKitContext} from "../../../context";
 
 
 @connect(store => {
     return {
         activeSpeakerStore: store.voxeet.activeSpeaker
     };
-})
+}, null, null, { context: getUxKitContext() })
 class ActiveSpeakerOverlay extends Component {
     constructor(props) {
         super(props);

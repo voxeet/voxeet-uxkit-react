@@ -7,12 +7,13 @@ import { Actions as VideoPresentationActions } from "../../actions/VideoPresenta
 import ReactPlayer from "react-player";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import bowser from "bowser";
+import {getUxKitContext} from "../../context";
 
 @connect(store => {
   return {
     videoPresentationStore: store.voxeet.videoPresentation
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesParticipantVideoPresentation extends Component {
   constructor(props) {
     super(props);

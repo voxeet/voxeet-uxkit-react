@@ -6,13 +6,14 @@ import { strings } from "../../../languages/localizedStrings";
 import ListOn from "../../../../static/images/icons/btn-participant-on.svg";
 import ListOff from "../../../../static/images/icons/btn-participant-off.svg";
 import { isMobile } from "../../../libs/browserDetection";
+import {getUxKitContext} from "../../../context";
 
 @connect((store) => {
   return {
     participantStore: store.voxeet.participants,
     participantWaiting: store.voxeet.participantsWaiting,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ToggleAttendeesListButton extends Component {
   constructor(props) {
     super(props);

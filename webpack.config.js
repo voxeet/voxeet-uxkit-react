@@ -30,6 +30,7 @@ module.exports = {
     host: "0.0.0.0",
     contentBase: path.join(__dirname, 'dist'),
     publicPath: '/',
+    hot: true,
     watchOptions: {
       poll: true,
     },

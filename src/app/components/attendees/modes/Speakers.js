@@ -10,12 +10,13 @@ import AttendeesParticipantBar from "../AttendeesParticipantBar";
 import ScreenshareMode from "./presentationMode/ScreenshareMode";
 import FilePresentationMode from "./presentationMode/FilePresentationMode";
 import VideoPresentationMode from "./presentationMode/VideoPresentationMode";
+import {getUxKitContext} from "../../../context";
 
 @connect((store) => {
   return {
     activeSpeakerStore: store.voxeet.activeSpeaker,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class Speakers extends Component {
   constructor(props) {
     super(props);

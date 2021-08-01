@@ -39,3 +39,8 @@ ReactDOM.render(
   </VoxeetProvider>,
   document.getElementById("app")
 );
+
+
+if (module.hot) {
+  module.hot.accept();
+}

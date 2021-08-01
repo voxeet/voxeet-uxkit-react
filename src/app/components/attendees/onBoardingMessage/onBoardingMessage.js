@@ -3,12 +3,13 @@ import PropTypes from "prop-types";
 import { strings } from "../../../languages/localizedStrings";
 import { connect } from "react-redux";
 import { Actions as OnBoardingMessageActions } from "../../../actions/OnBoardingMessageActions";
+import {getUxKitContext} from "../../../context";
 
 @connect(state => {
   return {
     onBoardingMessage: state.voxeet.onBoardingMessage
   };
-})
+}, null, null, { context: getUxKitContext() })
 class OnBoardingMessage extends Component {
   constructor(props) {
     super(props);
