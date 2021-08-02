@@ -120,7 +120,7 @@ class Attendees extends Component {
   }
 
   renderWaiting() {
-    return React.createElement(this.props.attendeesWaiting, { ...this.props });
+    return React.createElement(this.props.attendeesWaiting, { ...this.props, key: 'waiting' });
   }
 
   renderParticipantList() {
@@ -131,7 +131,8 @@ class Attendees extends Component {
       isAdmin: this.props.participantStore.isAdmin,
       toggleMicrophone: this.toggleMicrophone,
       toggleForwardedVideo: this.toggleForwardedVideo,
-      invitePermission: this.props.conferencePermissions.has("INVITE")
+      invitePermission: this.props.conferencePermissions.has("INVITE"),
+      key: 'participant_list',
     });
   }
 
@@ -141,6 +142,7 @@ class Attendees extends Component {
       attendeesChatOpened: this.props.attendeesChatOpened,
       participants: this.props.participantStore.participants,
       currentUser: this.props.participantStore.currentUser,
+      key: 'chat',
     });
   }
 
@@ -228,13 +230,9 @@ class Attendees extends Component {
           />
         )}
 
-        <React.Fragment>
           {this.renderParticipantList()}
-        </React.Fragment>
 
-        <React.Fragment>
           {this.renderChat()}
-        </React.Fragment>
 
         <section
           className={`sidebar-container ${
@@ -347,7 +345,7 @@ class Attendees extends Component {
           {participantsConnected.length === 0 &&
             (!isWebinar || (isWebinar && !isAdmin)) &&
             mode === MODE_TILES &&
-            <React.Fragment>this.renderWaiting()</React.Fragment>}
+            this.renderWaiting()}
         </section>
       </div>
     );
