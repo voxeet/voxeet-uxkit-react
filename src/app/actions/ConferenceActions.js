@@ -730,11 +730,6 @@ export class Actions {
         dispatch(TimerActions.stopTime());
         dispatch(ConferenceActions._conferenceLeave());
         dispatch(ConferenceActions._conferenceLeave(controls.disableSounds));
-        if (controls.closeSessionAtHangUp) {
-          this._removeListeners().then(() => {
-            VoxeetSDK.session.close();
-          });
-        }
       });
     };
   }
@@ -958,6 +953,19 @@ export class Actions {
         voxeet: { participants },
       } = getState();
       if (participants.handleOnLeave != null) participants.handleOnLeave();
+    };
+  }
+
+  static handleConferenceLeft() {
+    return (dipatch, getState) => {
+      const {
+        voxeet: { participants, controls },
+      } = getState();
+      if (controls.closeSessionAtHangUp) {
+        this._removeListeners().then(() => {
+          VoxeetSDK.session.close();
+        });
+      }
     };
   }
 
@@ -1225,6 +1233,7 @@ export class Actions {
         dispatch(ParticipantActions.clearParticipantsList());
         dispatch(ParticipantActions.onParticipantReset());
         dispatch(ParticipantWaitingActions.onParticipantWaitingReset());
+        dispatch(this.handleConferenceLeft());
       });
 
       VoxeetSDK.conference.on("ended", () => {
@@ -1506,7 +1515,7 @@ export class Actions {
           dispatch(ControlsActions.toggleVideoPresentationMode(true));
         }
         dispatch(ParticipantActions.onVideoPresentationStarted(data.ownerId));
-        dispatch(VideoPresentationActions.startVideoPresentation(data.url));
+        dispatch(VideoPresentationActions.startVideoPresentation(data.url, data.timestamp / 1000));
         setTimeout(() => {
           dispatch(VideoPresentationActions.seek(data.timestamp / 1000));
         }, 200);
@@ -1533,7 +1542,7 @@ export class Actions {
         }
       });
 
-      VoxeetSDK.videoPresentation.on("seek", (data) => {
+      VoxeetSDK.videoPresentation.on("sought", (data) => {
         if (VoxeetSDK.session.participant.id != data.ownerId) {
           dispatch(VideoPresentationActions.seek(data.timestamp / 1000));
         }

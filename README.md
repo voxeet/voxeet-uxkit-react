@@ -9,6 +9,13 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 3.2.1
+
+#### Bug fixes
+
+- Fixed video presentation seek behavior
+- Fixed echo issue when the pre-configuration settings is accessed
+
 ### 3.2.0
 
 #### Features
