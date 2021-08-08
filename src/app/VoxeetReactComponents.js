@@ -1,6 +1,6 @@
 import reducer from "./reducers";
 import ConferenceRoom from "./components/ConferenceRoom";
-import { Provider } from "react-redux";
+import Provider from "./components/VoxeetProvider";
 import ConferenceSounds from "./libs/sounds";
 import {getUxKitContext, setUxKitContext} from "./context";
 
