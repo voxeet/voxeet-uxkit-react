@@ -216,6 +216,7 @@ class ConferencePreConfigContainer extends Component {
     let videoCookieExist = false;
     let outputCookieExist = false;
     let inputCookieExist = false;
+    if (this.state.userStream) this.releaseStream();
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
       navigator.mediaDevices
         .enumerateDevices()
