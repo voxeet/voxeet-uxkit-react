@@ -842,7 +842,7 @@ export class Actions {
     return (dispatch) => {
       return VoxeetSDK.conference
         .audioProcessing(VoxeetSDK.session.participant, {
-          send: { audioProcessing: !enabled },
+          send: { audioProcessing: enabled },
         })
         .then(() => {
           dispatch(ControlsActions.setAudioTransparentMode(enabled));

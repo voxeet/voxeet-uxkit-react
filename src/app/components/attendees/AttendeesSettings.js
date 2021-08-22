@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import bowser from "bowser";
 import PropTypes from "prop-types";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import Cookies from "./../../libs/Storage";
@@ -14,6 +14,7 @@ import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
 import {isIOS, isMobile} from "./../../libs/browserDetection";
 import {Actions as ControlsActions} from "../../actions/ControlsActions";
+import {getUxKitContext} from "../../context";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);
@@ -29,7 +30,7 @@ const default_cookies_param = {
     inputManager: store.voxeet.inputManager,
     controlsStore: store.voxeet.controls
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesSettings extends Component {
   constructor(props) {
     super(props);

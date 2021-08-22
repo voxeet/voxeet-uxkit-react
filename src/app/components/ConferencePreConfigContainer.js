@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Actions as InputManagerActions } from "../actions/InputManagerActions";
 import AttendeesParticipantVideo from "./attendees/AttendeesParticipantVideo";
@@ -10,6 +10,7 @@ import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
 import {isMobile} from "../libs/browserDetection";
+import {getUxKitContext} from "../context";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);
@@ -25,7 +26,7 @@ const default_cookies_param = {
     inputManager: store.voxeet.inputManager,
     controlsStore: store.voxeet.controls
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ConferencePreConfigContainer extends Component {
   constructor(props) {
 

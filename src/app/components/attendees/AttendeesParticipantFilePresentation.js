@@ -1,14 +1,15 @@
 import React, { Fragment, Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { strings } from "../../languages/localizedStrings";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
+import {getUxKitContext} from "../../context";
 
 @connect((store) => {
   return {
     filePresentationStore: store.voxeet.filePresentation,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesParticipantFilePresentation extends Component {
   constructor(props) {
     super(props);
