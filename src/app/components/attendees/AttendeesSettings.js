@@ -272,6 +272,20 @@ class AttendeesSettings extends Component {
     );
   }
 
+  onAudioDeviceSelected(e) {
+    this.setAudioDevice(e.target.value).catch(e =>
+      console.error("Selecting audio input device failed.", e)
+    );
+  }
+
+  setAudioDevice(deviceId) {
+    return VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
+      if (this.props.microphoneMuted) {
+        VoxeetSDK.conference
+          .mute(VoxeetSDK.session.participant, true)
+          .catch((e) => console.warn("Muting a new selected input device failed.", e));
+      }
+
   setAudioDevice(deviceId, guiDeviceId = deviceId) {
     return VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
       if (this.props.microphoneMuted) {
