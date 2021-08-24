@@ -1266,6 +1266,7 @@ export class Actions {
       dispatch(
         ParticipantActions.onParticipantJoined(
           user,
+          stream,
           controls.disableSounds
         )
       );
@@ -1379,7 +1380,7 @@ export class Actions {
             userInfo
           )
         );
-        dispatch(this.checkIfUserJoined(userInfo, null));
+        //dispatch(this.checkIfUserJoined(userInfo.id, null));
       });
 
       VoxeetSDK.conference.on("participantUpdated", (user) => {
@@ -1411,12 +1412,7 @@ export class Actions {
               stream
             )
           );
-          dispatch(
-            ParticipantActions.onStreamAddedForParticipant(
-              user,
-              stream,
-            )
-          );
+          dispatch(this.checkIfUserJoined(user, stream));
 
           // VFS
           dispatch(ForwardedVideoActions.updateForwardedVideos());
