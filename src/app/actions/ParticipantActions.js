@@ -27,7 +27,6 @@ export const Types = {
   PARTICIPANT_ADDED_UPDATED: "PARTICIPANT_ADDED_UPDATED",
   USER_INVITED: "USER_INVITED",
   PARTICIPANT_QUALITY_UPDATED: "PARTICIPANT_QUALITY_UPDATED",
-  STREAM_ADDED_FOR_PARTICIPANT: "STREAM_ADDED_FOR_PARTICIPANT",
 };
 
 export class Actions {
@@ -147,6 +146,7 @@ export class Actions {
       type: Types.PARTICIPANT_JOINED,
       payload: {
         user,
+        stream,
         disableSounds,
       },
     };
@@ -266,15 +266,6 @@ export class Actions {
     return {
       type: Types.SAVE_USER_POSITION,
       payload: { userId, relativePosition, position },
-    };
-  }
-
-  static onStreamAddedForParticipant(user, stream, disableSounds) {
-    return {
-      type: Types.STREAM_ADDED_FOR_PARTICIPANT,
-      payload: {
-        user,
-        stream},
     };
   }
 }
