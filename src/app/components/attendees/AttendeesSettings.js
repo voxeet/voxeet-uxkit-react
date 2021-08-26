@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from "react";
 import bowser from "bowser";
 import PropTypes from "prop-types";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-import Cookies from "js-cookie";
+import Cookies from "./../../libs/Storage";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
@@ -14,6 +14,7 @@ import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
 import {isIOS, isMobile} from "./../../libs/browserDetection";
 import {Actions as ControlsActions} from "../../actions/ControlsActions";
+import {getUxKitContext} from "../../context";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);
@@ -29,7 +30,7 @@ const default_cookies_param = {
     inputManager: store.voxeet.inputManager,
     controlsStore: store.voxeet.controls
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesSettings extends Component {
   constructor(props) {
     super(props);
@@ -38,6 +39,9 @@ class AttendeesSettings extends Component {
     let audioTransparentMode = ((this.props.controlsStore.audioTransparentMode !== undefined) ? this.props.controlsStore.audioTransparentMode : false);
     let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
     let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
+    let virtualBackgroundMode = ((this.props.controlsStore.virtualBackgroundMode !== undefined) ? this.props.controlsStore.virtualBackgroundMode : Cookies.get("virtualBackgroundMode"));
+    if(virtualBackgroundMode=='null')
+      virtualBackgroundMode = null;
 
     this.state = {
       runningAnimation: false,
@@ -48,8 +52,10 @@ class AttendeesSettings extends Component {
       testAudio: null,
       testAudioPlaying: false,
       audioTransparentMode: audioTransparentMode,
+      videoEnabled: videoEnabled,
       maxVideoForwarding: maxVideoForwarding,
-      lowBandwidthMode: lowBandwidthMode
+      lowBandwidthMode: lowBandwidthMode,
+      virtualBackgroundMode: virtualBackgroundMode
     };
     this.onAudioDeviceSelected = this.onAudioDeviceSelected.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
@@ -58,6 +64,7 @@ class AttendeesSettings extends Component {
     this.handleChangeLowBandwidthMode = this.handleChangeLowBandwidthMode.bind(this);
     this.onAudioTransparentModeChange = this.onAudioTransparentModeChange.bind(this);
     this.handleMaxVideoForwardingChange = this.handleMaxVideoForwardingChange.bind(this);
+    this.onVirtualBackgroundModeChange = this.onVirtualBackgroundModeChange.bind(this);
     this.maxVFTimer = null;
 
     this.isIOS = isIOS();
@@ -124,7 +131,23 @@ class AttendeesSettings extends Component {
       this.props.controlsStore &&
         prevProps.controlsStore.videoEnabled !== this.props.controlsStore.videoEnabled
     ) {
+      this.setState({
+        videoEnabled: this.props.controlsStore.videoEnabled,
+      });
+    }
+    if (
+      this.props.controlsStore &&
+        prevProps.controlsStore.videoEnabled !== this.props.controlsStore.videoEnabled
+    ) {
       this.setState({ lowBandwidthMode: !this.props.controlsStore.videoEnabled && !this.props.controlsStore.maxVideoForwarding });
+    }
+
+    if (
+      this.props.controlsStore &&
+        prevProps.controlsStore.virtualBackgroundMode !== this.props.controlsStore.virtualBackgroundMode
+    ) {
+      console.log('virtualBackgroundMode changed %s -> %s', prevProps.controlsStore.virtualBackgroundMode, this.props.controlsStore.virtualBackgroundMode)
+      this.setState({ virtualBackgroundMode: this.props.controlsStore.virtualBackgroundMode });
     }
 
     if (
@@ -264,6 +287,16 @@ class AttendeesSettings extends Component {
     })
   }
 
+  onVirtualBackgroundModeChange(mode) {
+    console.log('onVirtualBackgroundModeChange', mode);
+    this.setState({
+      virtualBackgroundMode: mode!==this.state.virtualBackgroundMode?mode:null
+    }, () => {
+      console.log('about to call ConferenceActions.setVirtualBackgroundMode', this.state.virtualBackgroundMode);
+      this.props.dispatch(ConferenceActions.setVirtualBackgroundMode(this.state.virtualBackgroundMode));
+    });
+  }
+
   handleChangeLowBandwidthMode(event) {
     if (this.maxVFTimer) {
       clearTimeout(this.maxVFTimer);
@@ -322,8 +355,9 @@ class AttendeesSettings extends Component {
   }
 
   render() {
-    const { lowBandwidthMode, maxVideoForwarding, audioTransparentMode } = this.state;
+    const { lowBandwidthMode, maxVideoForwarding, audioTransparentMode, virtualBackgroundMode, videoEnabled } = this.state;
     //const { audioTransparentMode } = this.props.controlsStore;
+
     const { attendeesSettingsOpened, isListener, dolbyVoiceEnabled } = this.props;
     const MAX_MAXVF = isMobile()?4:16;
     const {
@@ -434,6 +468,20 @@ class AttendeesSettings extends Component {
                     </label>
                   </div>
                 </div>
+                <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
+                  <div className='switch-mode'>
+                    <input
+                        id="vbModeBokeh"
+                        name="vbModeBokeh"
+                        type="checkbox"
+                        onChange={() => this.onVirtualBackgroundModeChange('bokeh')}
+                        checked={virtualBackgroundMode=='bokeh'}
+                    />
+                    <label htmlFor="vbModeBokeh">
+                      {strings.bokehMode}
+                    </label>
+                  </div>
+                </div>
                 <div className={`form-group switch-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
                   <div className='input-wrapper'>
                     <div className='input-value'>0</div>
@@ -471,7 +519,7 @@ AttendeesSettings.propTypes = {
   isListener: PropTypes.bool.isRequired,
   attendeesSettingsOpened: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
-  maxVideoForwarding: PropTypes.number
+  maxVideoForwarding: PropTypes.number,
 };
 
 export default AttendeesSettings;

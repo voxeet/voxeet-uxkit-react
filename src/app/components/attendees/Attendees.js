@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
@@ -34,13 +34,14 @@ import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
 import OnBoardingMessageWithConfirmation from "./onBoardingMessage/onBoardingMessageWithConfirmation";
+import {getUxKitContext} from "../../context";
 
 @connect((store) => {
   return {
     participantStore: store.voxeet.participants,
     errorStore: store.voxeet.error,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class Attendees extends Component {
   constructor(props) {
     super(props);
@@ -119,7 +120,7 @@ class Attendees extends Component {
   }
 
   renderWaiting() {
-    return React.createElement(this.props.attendeesWaiting, { ...this.props });
+    return React.createElement(this.props.attendeesWaiting, { ...this.props, key: 'waiting' });
   }
 
   renderParticipantList() {
@@ -130,7 +131,8 @@ class Attendees extends Component {
       isAdmin: this.props.participantStore.isAdmin,
       toggleMicrophone: this.toggleMicrophone,
       toggleForwardedVideo: this.toggleForwardedVideo,
-      invitePermission: this.props.conferencePermissions.has("INVITE")
+      invitePermission: this.props.conferencePermissions.has("INVITE"),
+      key: 'participant_list',
     });
   }
 
@@ -140,6 +142,7 @@ class Attendees extends Component {
       attendeesChatOpened: this.props.attendeesChatOpened,
       participants: this.props.participantStore.participants,
       currentUser: this.props.participantStore.currentUser,
+      key: 'chat',
     });
   }
 
@@ -227,9 +230,9 @@ class Attendees extends Component {
           />
         )}
 
-        {this.renderParticipantList()}
+          {this.renderParticipantList()}
 
-        {this.renderChat()}
+          {this.renderChat()}
 
         <section
           className={`sidebar-container ${
@@ -369,8 +372,8 @@ Attendees.propTypes = {
   videoPresentationEnabled: PropTypes.bool,
   isFilePresentation: PropTypes.bool,
   attendeesWaiting: PropTypes.func,
-  attendeesChat: PropTypes.func,
-  attendeesList: PropTypes.func,
+  attendeesChat: PropTypes.object,
+  attendeesList: PropTypes.object,
   dolbyVoiceEnabled: PropTypes.bool,
   conferencePermissions: PropTypes.object,
   chatOptions: PropTypes.object,

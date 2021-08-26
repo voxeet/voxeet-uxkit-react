@@ -2,10 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import thunkMiddleware from "redux-thunk";
 import { combineReducers, createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
 
 import {
-  VoxeetProvider,
   reducer as voxeetReducer,
+  getUxKitContext,
 } from "./VoxeetReactComponents";
 import Main from "./components/main/Main";
 
@@ -32,10 +33,15 @@ const settings = {
 };
 
 ReactDOM.render(
-  <VoxeetProvider store={configureStore()}>
+  <Provider store={configureStore()} context={getUxKitContext()}>
     <div>
       <Main settings={settings} />
     </div>
-  </VoxeetProvider>,
+  </Provider>,
   document.getElementById("app")
 );
+
+
+if (module.hot) {
+  module.hot.accept();
+}

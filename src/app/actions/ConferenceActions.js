@@ -1,6 +1,6 @@
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import bowser from "bowser";
-import Cookies from "js-cookie";
+import Cookies from "./../libs/Storage";
 import { Actions as InputManagerActions } from "./InputManagerActions";
 import { Actions as ErrorActions } from "./ErrorActions";
 import { Actions as ControlsActions } from "./ControlsActions";
@@ -360,6 +360,11 @@ export class Actions {
     let maxVideoForwarding = (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined?
         preConfigPayload.maxVideoForwarding:
         maxVideoForwardingParam);
+    let virtualBackgroundMode = (preConfigPayload && preConfigPayload.virtualBackgroundMode !== undefined?
+        preConfigPayload.virtualBackgroundMode:
+        Cookies.get('virtualBackgroundMode'));
+    if(virtualBackgroundMode=='null')
+      virtualBackgroundMode = null;
     return (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
@@ -493,6 +498,7 @@ export class Actions {
                     simulcast: simulcast,
                     audio3D: false,
                     maxVideoForwarding: maxVideoForwarding,
+                    videoFilter: virtualBackgroundMode,
                   })
                   .then((res) => {
                     dispatch(
@@ -556,7 +562,6 @@ export class Actions {
                         this.setOutputAudio(dispatch);
                       }
                     }
-                    //}
                   })
                   .catch((err) => {
                     console.error(err);
@@ -603,6 +608,7 @@ export class Actions {
                 simulcast: simulcast,
                 audio3D: false,
                 maxVideoForwarding: maxVideoForwarding,
+                videoFilter: virtualBackgroundMode,
               })
               .then((res) => {
                 dispatch(
@@ -669,11 +675,10 @@ export class Actions {
                     preConfigPayload.audioTransparentMode !== undefined
                 ) {
                   dispatch(
-                      ConferenceActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode)
+                    ConferenceActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode)
                   );
                 }
-                if (maxVideoForwarding!==undefined
-                ) {
+                if (maxVideoForwarding!==undefined) {
                   dispatch(
                       ControlsActions.setMaxVideoForwarding(maxVideoForwarding)
                   );
@@ -1131,6 +1136,47 @@ export class Actions {
       }
     };
   }
+
+  static setVirtualBackgroundMode(mode) {
+    console.log('About to set vb mode to', mode)
+    return (dispatch, getState) => {
+      const {
+        voxeet: { controls },
+      } = getState();
+      let { virtualBackgroundMode } = controls;
+      if (!mode) {
+        console.log('About to set vb to null');
+        // Set to null
+        if(VoxeetSDK.videoFilters) {
+          return VoxeetSDK.videoFilters.setFilter('none').then(() => {
+            Cookies.set("virtualBackgroundMode", null);
+            dispatch(ControlsActions.setVirtualBackgroundMode(null));
+          });
+        } else {
+          Cookies.set("virtualBackgroundMode", null);
+          dispatch(ControlsActions.setVirtualBackgroundMode(null));
+          return Promise.resolve();
+        }
+      } else {
+        console.log('About to set vb to bokeh', mode, VoxeetSDK.videoFilters);
+        // Set to bokeh
+        if(!VoxeetSDK.videoFilters){
+          Cookies.set("virtualBackgroundMode", 'bokeh');
+          dispatch(ControlsActions.setVirtualBackgroundMode(mode));
+          return Promise.resolve();
+        }
+        let setMode = (mode=='bokeh')?
+            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'bokeh'):
+            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'none'); // TODO: image mode
+
+        return setMode().then(() => {
+          Cookies.set("virtualBackgroundMode", 'bokeh');
+          dispatch(ControlsActions.setVirtualBackgroundMode(mode));
+        });
+      }
+    };
+  }
+
 
   static checkIfUpdateStatusUser(user) {
     return (dispatch, getState) => {
