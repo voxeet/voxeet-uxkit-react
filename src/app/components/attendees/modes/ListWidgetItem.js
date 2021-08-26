@@ -47,7 +47,8 @@ class ListWidgetItem extends Component {
       kickParticipant,
       isAdminActived,
       mySelf,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
+      currentUser
     } = this.props;
     return (
       <li
@@ -72,7 +73,7 @@ class ListWidgetItem extends Component {
           )}
           <span className="participant-username">{participant.name}</span>
         </span>
-        {!mySelf && !dolbyVoiceEnabled && (
+        {!mySelf && !(dolbyVoiceEnabled && currentUser.isListener) && (
           <AttendeesParticipantMute
             participant={participant}
             toggleMicrophone={toggleMicrophone}

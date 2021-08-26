@@ -42,7 +42,8 @@ class OwnTile extends Component {
       kickParticipant,
       isAdminActived,
       mySelf,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
+      currentUser
     } = this.props;
     const { currentVideoDevice, isBackCamera } = this.props.inputManager;
     return (
@@ -81,6 +82,7 @@ class OwnTile extends Component {
             isAdmin={isAdmin}
             toggleMicrophone={toggleMicrophone}
             dolbyVoiceEnabled={dolbyVoiceEnabled}
+            currentUser={currentUser}
           />
         </div>
       </Draggable>

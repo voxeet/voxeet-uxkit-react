@@ -8,11 +8,12 @@ export const Types = {
 };
 
 export class Actions {
-  static startVideoPresentation(url) {
+  static startVideoPresentation(url, ts) {
     return {
       type: Types.VIDEO_PRESENTATION_START,
       payload: {
-        url: url
+        url: url,
+        ts: ts
       }
     };
   }
