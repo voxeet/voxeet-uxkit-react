@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import { Actions as OnBoardingMessageWithConfirmationActions } from "../../../actions/OnBoardingMessageWithConfirmationActions";
+import {getUxKitContext} from "../../../context";
 
 @connect(state => {
   return {
     onBoardingMessageWithAction: state.voxeet.onBoardingMessageWithAction
   };
-})
+}, null, null, { context: getUxKitContext() })
 class OnBoardingMessageWithConfirmation extends Component {
   constructor(props) {
     super(props);

@@ -1,14 +1,16 @@
 import React, { Fragment, Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Actions as InputManagerActions } from "../actions/InputManagerActions";
 import AttendeesParticipantVideo from "./attendees/AttendeesParticipantVideo";
 import PropTypes from "prop-types";
-import Cookies from "js-cookie";
+import Cookies from "./../libs/Storage";
 import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
 import {isMobile} from "../libs/browserDetection";
+import {getUxKitContext} from "../context";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);
@@ -24,7 +26,7 @@ const default_cookies_param = {
     inputManager: store.voxeet.inputManager,
     controlsStore: store.voxeet.controls
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ConferencePreConfigContainer extends Component {
   constructor(props) {
 
@@ -36,6 +38,7 @@ class ConferencePreConfigContainer extends Component {
         this.props.controlsStore.videoEnabled :
         (this.props.constraints? this.props.constraints.video: false));
     let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
+    let virtualBackgroundMode = ((this.props.controlsStore.virtualBackgroundMode !== undefined) ? this.props.controlsStore.virtualBackgroundMode : null);
 
     this.state = {
       loading: true,
@@ -53,7 +56,8 @@ class ConferencePreConfigContainer extends Component {
       audioEnabled: true,
       audioTransparentMode: audioTransparentMode,
       maxVideoForwarding: maxVideoForwarding,
-      lowBandwidthMode: lowBandwidthMode
+      lowBandwidthMode: lowBandwidthMode,
+      virtualBackgroundMode
     };
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
@@ -65,6 +69,8 @@ class ConferencePreConfigContainer extends Component {
     this.releaseStream = this.releaseStream.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
     this.handleAudioTransparentModeChange = this.handleAudioTransparentModeChange.bind(this);
+    this.handleVirtualBackgroundModeChange = this.handleVirtualBackgroundModeChange.bind(this);
+    this.attachMediaStream = this.attachMediaStream.bind(this);
     this.maxVFTimer = null;
   }
 
@@ -104,9 +110,26 @@ class ConferencePreConfigContainer extends Component {
       constraints,
       audioEnabled: this.state.audioEnabled,
       audioTransparentMode: this.state.audioTransparentMode,
-      maxVideoForwarding: this.state.maxVideoForwarding
+      maxVideoForwarding: this.state.maxVideoForwarding,
+      virtualBackgroundMode: this.state.virtualBackgroundMode
     };
     handleJoin(payload);
+  }
+
+  attachMediaStream(stream){
+    if(stream){
+      let tracks = stream.getVideoTracks();
+      if(VoxeetSDK.videoFilters && tracks && tracks[0]) {
+        switch (this.state.virtualBackgroundMode) {
+          case 'bokeh':
+            VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0]});
+            break;
+          default:
+            VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0]});
+        }
+      }
+    }
+    navigator.attachMediaStream(this.video, stream);
   }
 
   releaseStream() {
@@ -129,7 +152,7 @@ class ConferencePreConfigContainer extends Component {
         video: videoConstraints
       })
       .then(stream => {
-        navigator.attachMediaStream(this.video, stream);
+        this.attachMediaStream(stream);
         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
           return navigator.mediaDevices.enumerateDevices().then(sources => {
             let resultVideo = new Array();
@@ -173,7 +196,7 @@ class ConferencePreConfigContainer extends Component {
         });
         Cookies.set("input", deviceId, default_cookies_param);
         if (this.state.videoDeviceSelected != null)
-          navigator.attachMediaStream(this.video, stream);
+          this.attachMediaStream(stream);
       });
   }
 
@@ -204,7 +227,7 @@ class ConferencePreConfigContainer extends Component {
           lockJoin: false
         });
         Cookies.set("camera", deviceId, default_cookies_param);
-        navigator.attachMediaStream(this.video, stream);
+        this.attachMediaStream(stream);
       });
   }
 
@@ -405,7 +428,7 @@ class ConferencePreConfigContainer extends Component {
                             : false
                       })
                       .then(stream => {
-                        navigator.attachMediaStream(this.video, stream);
+                        this.attachMediaStream(stream);
                         this.setState({ userStream: stream });
                         this.forceUpdate();
                       });
@@ -526,6 +549,26 @@ class ConferencePreConfigContainer extends Component {
     });
   }
 
+  handleVirtualBackgroundModeChange(mode) {
+    this.setState({
+      virtualBackgroundMode: mode!==this.state.virtualBackgroundMode?mode:null
+    }, () => {
+      if(this.state.userStream && VoxeetSDK.videoFilters) {
+        let tracks = this.state.userStream.getVideoTracks();
+        if(tracks && tracks[0]) {
+          switch (this.state.virtualBackgroundMode) {
+            case 'bokeh':
+              VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0]});
+              break;
+            default:
+              VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0]});
+          }
+        }
+      }
+      Cookies.set("virtualBackgroundMode", this.state.virtualBackgroundMode, default_cookies_param);
+    });
+  }
+
   handleMaxVideoForwardingChange(event) {
     if (this.maxVFTimer) {
       clearTimeout(this.maxVFTimer);
@@ -565,7 +608,8 @@ class ConferencePreConfigContainer extends Component {
       error,
       loading,
       maxVideoForwarding,
-      lowBandwidthMode
+      lowBandwidthMode,
+      virtualBackgroundMode
     } = this.state;
     const MAX_MAXVF = isMobile()?4:16;
 
@@ -720,6 +764,20 @@ class ConferencePreConfigContainer extends Component {
                                   </label>
                                 </div>
                               </div>
+                              <div className={`group-enable ${!this.state.videoEnabled ? 'disabled-form' : ''}`}>
+                                <div className='enable-item'>
+                                  <input
+                                      id="virtualBackgroundMode"
+                                      name="virtualBackgroundMode"
+                                      type="checkbox"
+                                      onChange={() => {this.handleVirtualBackgroundModeChange('bokeh')}}
+                                      checked={virtualBackgroundMode=='bokeh' ? true : false}
+                                  />
+                                  <label htmlFor="virtualBackgroundMode">
+                                    {strings.bokehMode}
+                                  </label>
+                                </div>
+                              </div>
                               <div className={`group-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
                                 <div className='input-wrapper'>
                                   <div className='input-value'>0</div>
@@ -785,9 +843,10 @@ ConferencePreConfigContainer.propTypes = {
   loadingScreen: PropTypes.func,
   logo: PropTypes.string,
   dolbyVoiceEnabled: PropTypes.bool,
-  videoeEnabled: PropTypes.bool,
+  videoEnabled: PropTypes.bool,
   audioTransparentMode: PropTypes.bool,
-  maxVideoForwarding: PropTypes.bool
+  maxVideoForwarding: PropTypes.bool,
+  virtualBackgroundMode: PropTypes.string,
 };
 
 export default ConferencePreConfigContainer;

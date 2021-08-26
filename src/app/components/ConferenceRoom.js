@@ -1,9 +1,9 @@
 import React, { Fragment, Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import { strings } from "../languages/localizedStrings";
-import Cookies from "js-cookie";
+import Cookies from "./../libs/Storage";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import canAutoPlay from 'can-autoplay';
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
@@ -20,6 +20,7 @@ import AttendeesChat from "./attendees/chat/AttendeesChat";
 import LoadingScreen from "./attendees/LoadingScreen";
 import { setPstnNumbers } from "../constants/PinCode";
 import {isMobile} from "../libs/browserDetection";
+import {getUxKitContext} from "../context";
 
 @connect((state) => {
   return {
@@ -27,7 +28,7 @@ import {isMobile} from "../libs/browserDetection";
     errorStore: state.voxeet.error,
     participantsStore: state.voxeet.participants,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ConferenceRoom extends Component {
   constructor(props) {
     super(props);
@@ -119,6 +120,10 @@ class ConferenceRoom extends Component {
       this.audioTransparentMode = preConfigPayload.audioTransparentMode;
     }
     let audioTransparentMode = this.audioTransparentMode;
+    if(preConfigPayload && preConfigPayload.virtualBackgroundMode!==undefined) {
+      this.props.dispatch(ControlsActions.setVirtualBackgroundMode(preConfigPayload.virtualBackgroundMode));
+      this.virtualBackgroundMode = preConfigPayload.virtualBackgroundMode;
+    }
     let initialized;
     let pinCodeTmp = pinCode;
     if (oauthToken != null) {
@@ -364,6 +369,13 @@ class ConferenceRoom extends Component {
     this.props.dispatch(ControlsActions.setAudioTransparentMode(audioTransparentMode));
     Cookies.set("audioTransparentMode", audioTransparentMode, default_cookie_params);
     this.audioTransparentMode = audioTransparentMode;
+
+    let virtualBackgroundMode = Cookies.get("virtualBackgroundMode");
+    if(virtualBackgroundMode=='null')
+      virtualBackgroundMode = null;
+    this.props.dispatch(ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode));
+    this.virtualBackgroundMode = virtualBackgroundMode;
+    console.log('initializeControlsStore virtualBackgroundMode', this.virtualBackgroundMode);
   }
 
   async componentDidMount() {
@@ -704,8 +716,8 @@ ConferenceRoom.propTypes = {
   autoJoin: PropTypes.bool,
   pinCode: PropTypes.string,
   actionsButtons: PropTypes.func,
-  attendeesList: PropTypes.func,
-  attendeesChat: PropTypes.func,
+  attendeesList: PropTypes.object,
+  attendeesChat: PropTypes.object,
   loadingScreen: PropTypes.func,
   handleOnLeave: PropTypes.func,
   refreshTokenCallback: PropTypes.func,

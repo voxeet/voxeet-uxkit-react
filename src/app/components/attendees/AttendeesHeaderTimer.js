@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import { Actions as TimerActions } from "../../actions/TimerActions";
+import {getUxKitContext} from "../../context";
 
 @connect(state => {
   return {
     timerStore: state.voxeet.timer
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesHeaderTimer extends Component {
   constructor(props) {
     super(props);

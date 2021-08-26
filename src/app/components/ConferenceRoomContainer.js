@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { strings } from "../languages/localizedStrings";
 
@@ -21,6 +21,7 @@ import ModalClose from "./attendees/modal/ModalClose";
 import Modal from "./attendees/modal/Modal";
 
 import BottomBar from "./actionsBar/bottomBar/BottomBar";
+import {getUxKitContext} from "../context";
 
 @connect(store => {
   return {
@@ -28,7 +29,7 @@ import BottomBar from "./actionsBar/bottomBar/BottomBar";
     participantsStore: store.voxeet.participants,
     errorStore: store.voxeet.error
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ConferenceRoomContainer extends Component {
   constructor(props) {
     super(props);
@@ -423,8 +424,8 @@ ConferenceRoomContainer.propTypes = {
   handleOnLeave: PropTypes.func,
   conferenceId: PropTypes.string,
   conferencePincode: PropTypes.string,
-  attendeesList: PropTypes.func,
-  attendeesChat: PropTypes.func,
+  attendeesList: PropTypes.object,
+  attendeesChat: PropTypes.object,
   attendeesWaiting: PropTypes.func,
   dolbyVoiceEnabled: PropTypes.bool,
   conferencePermissions: PropTypes.object,

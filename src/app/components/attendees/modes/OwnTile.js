@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 
 import TileVideo from "./TileVideo";
 import TileLegend from "./TileLegend";
 import Draggable from "react-draggable";
+import {getUxKitContext} from "../../../context";
 
 @connect(store => {
   return {
     inputManager: store.voxeet.inputManager
   };
-})
+}, null, null, { context: getUxKitContext() })
 class OwnTile extends Component {
   constructor(props) {
     super(props);
