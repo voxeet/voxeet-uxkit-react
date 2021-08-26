@@ -46,7 +46,8 @@ class ListItem extends Component {
       toggleMicrophone,
       kickParticipant,
       isAdminActived,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
+      currentUser
     } = this.props;
     return (
       <li
@@ -71,7 +72,7 @@ class ListItem extends Component {
           )}
           <span className="participant-username">{participant.name}</span>
         </span>
-        {!dolbyVoiceEnabled && <AttendeesParticipantMute
+        {!(dolbyVoiceEnabled && currentUser.isListener) && <AttendeesParticipantMute
           participant={participant}
           toggleMicrophone={toggleMicrophone}
         />}
