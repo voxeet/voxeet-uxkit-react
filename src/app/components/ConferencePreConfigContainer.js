@@ -11,7 +11,7 @@ import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
 import {isMobile} from "../libs/browserDetection";
 import {getUxKitContext} from "../context";
-import {isElectron} from "./browserDetection";
+import {isElectron} from "./../libs/browserDetection";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);
