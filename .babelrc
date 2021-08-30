@@ -1,10 +1,6 @@
 {
   "presets":[
-    ["@babel/preset-env", {
-      "useBuiltIns": "usage",
-      "corejs": "3",
-      "debug": false
-    }],
+    ["@babel/preset-env"],
     ["@babel/preset-react", {
       "runtime": "automatic"
     }]
@@ -13,6 +9,7 @@
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     "@babel/plugin-proposal-class-properties",
     ["@babel/plugin-transform-modules-commonjs"],
-    "@babel/plugin-transform-regenerator"
+    "@babel/plugin-transform-regenerator",
+    ["@babel/plugin-transform-runtime", { "corejs": 3 }]
   ]
 }
