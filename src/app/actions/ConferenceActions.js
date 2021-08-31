@@ -360,7 +360,7 @@ export class Actions {
     let maxVideoForwarding = (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined?
         preConfigPayload.maxVideoForwarding:
         maxVideoForwardingParam);
-    return (dispatch, getState) => {
+    return async (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
       dispatch(this._conferenceConnecting());
@@ -372,9 +372,11 @@ export class Actions {
         externalId: userInfoRaw.externalId,
         avatarUrl: userInfoRaw.avatarUrl,
       };
+      if (!VoxeetSDK.session.participant) {
+        await VoxeetSDK.session.open(userInfo);
+      }
 
       if (isListener || (participants.isWebinar && !isAdmin)) {
-        return VoxeetSDK.session.open(userInfo).then(() => {
           return VoxeetSDK.conference
             .create({
               alias: conferenceAlias,
@@ -465,14 +467,12 @@ export class Actions {
                   });
               }
             });
-        });
       }
 
       if (preConfigPayload == null && !bowser.msie && !participants.isWebinar) {
         this.setVideoConstraints(constraints, videoRatio, dispatch);
         if (constraints.audio) {
           constraints = this.setInputAudio(constraints, dispatch);
-          return VoxeetSDK.session.open(userInfo).then(() => {
             return VoxeetSDK.conference
               .create({
                 alias: conferenceAlias,
@@ -567,7 +567,6 @@ export class Actions {
                 console.error(err);
                 dispatch(ErrorActions.onError(err));
               });
-          });
         }
       } else {
         constraints = this.setConstraintsWithPreconfigPayload(
@@ -582,7 +581,6 @@ export class Actions {
       }
       if (bowser.msie) constraints.video = false;
 
-      return VoxeetSDK.session.open(userInfo).then(() => {
         return VoxeetSDK.conference
           .create({
             alias: conferenceAlias,
@@ -688,7 +686,6 @@ export class Actions {
             console.log(err);
             dispatch(ErrorActions.onError(err));
           });
-      });
     };
   }
 
