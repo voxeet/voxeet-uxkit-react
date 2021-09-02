@@ -148,7 +148,8 @@ export const strings = new LocalizedStrings({
     showVideoParticipants1: "Show video for up to",
     showVideoParticipants2: "participants",
     pinnedCameraOff: "Click icon to always view video from this participant",
-    pinnedCameraOn: "Click icon to only view video from this participant if he/she talked"
+    pinnedCameraOn: "Click icon to only view video from this participant if he/she talked",
+    bokehMode: "Bokeh mode",
   },
   fr: {
     noPstnNumbers: "Pas de numéro PSTN ...",

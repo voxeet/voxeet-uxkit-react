@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const package = require("./package.json");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 try {
   require("os").networkInterfaces();
@@ -34,11 +34,12 @@ module.exports = {
         include: path.resolve(__dirname),
       },
       {
-        test: /.less$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: [{ loader: "css-loader" }, { loader: "less-loader" }],
-        }),
+        test: /\.(less)$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "less-loader"
+        ]
       },
       {
         test: /\.mp3$/,
@@ -88,7 +89,9 @@ module.exports = {
       __VERSION__: JSON.stringify(package.version),
     }),
     new CopyWebpackPlugin([{ from: "./src/static", ignore: ["*.html"] }]),
-    new ExtractTextPlugin("voxeet-react-components.css"),
+    new MiniCssExtractPlugin({
+      filename: "voxeet-react-components.css"
+    }),
     new webpack.NoEmitOnErrorsPlugin(),
   ],
 };
