@@ -115,6 +115,6 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'voxeet-react-components.css'
     }),
-    new webpack.NoEmitOnErrorsPlugin(),
+    // new webpack.NoEmitOnErrorsPlugin(),
   ],
 };
