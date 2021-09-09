@@ -183,6 +183,16 @@ class AttendeesSettings extends Component {
             || devices[0]
           );
 
+        // If the selected device is default, select it by using its proper deviceId
+        // (other than "default") but keep UI informed that the "default" is still selected.
+        if (deviceInfo.deviceId === "default") {
+          return this.setAudioDevice(
+            devices.find(e => e.groupId === deviceInfo.groupId
+                           && e.deviceId !== "default")
+              .deviceId,
+            "default");
+        }
+
         return this.setAudioDevice(deviceInfo.deviceId);
       })
       .catch(e => console.error("Initializing an audio input device failed.", e));
@@ -251,7 +261,7 @@ class AttendeesSettings extends Component {
     );
   }
 
-  setAudioDevice(deviceId) {
+  setAudioDevice(deviceId, guiDeviceId = deviceId) {
     return VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
       if (this.props.microphoneMuted) {
         VoxeetSDK.conference
@@ -259,8 +269,8 @@ class AttendeesSettings extends Component {
           .catch((e) => console.warn("Muting a new selected input device failed.", e));
       }
 
-      Cookies.set("input", deviceId, default_cookies_param);
-      this.props.dispatch(InputManagerActions.inputAudioChange(deviceId));
+      Cookies.set("input", guiDeviceId, default_cookies_param);
+      this.props.dispatch(InputManagerActions.inputAudioChange(guiDeviceId));
     });
   }
 
