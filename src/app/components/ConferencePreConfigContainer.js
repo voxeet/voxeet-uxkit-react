@@ -38,6 +38,7 @@ class ConferencePreConfigContainer extends Component {
         (this.props.constraints? this.props.constraints.video: false));
     let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
     let virtualBackgroundMode = ((this.props.controlsStore.virtualBackgroundMode !== undefined) ? this.props.controlsStore.virtualBackgroundMode : null);
+    let videoDenoise = ((this.props.controlsStore.videoDenoise !== undefined) ? this.props.controlsStore.videoDenoise : false);
 
     this.state = {
       loading: true,
@@ -56,7 +57,8 @@ class ConferencePreConfigContainer extends Component {
       audioTransparentMode: audioTransparentMode,
       maxVideoForwarding: maxVideoForwarding,
       lowBandwidthMode: lowBandwidthMode,
-      virtualBackgroundMode
+      virtualBackgroundMode: virtualBackgroundMode,
+      videoDenoise: videoDenoise,
     };
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
@@ -69,6 +71,7 @@ class ConferencePreConfigContainer extends Component {
     this.onDeviceChange = this.onDeviceChange.bind(this);
     this.handleAudioTransparentModeChange = this.handleAudioTransparentModeChange.bind(this);
     this.handleVirtualBackgroundModeChange = this.handleVirtualBackgroundModeChange.bind(this);
+    this.handleVideoDenoiseChange = this.handleVideoDenoiseChange.bind(this);
     this.attachMediaStream = this.attachMediaStream.bind(this);
     this.maxVFTimer = null;
   }
@@ -110,7 +113,8 @@ class ConferencePreConfigContainer extends Component {
       audioEnabled: this.state.audioEnabled,
       audioTransparentMode: this.state.audioTransparentMode,
       maxVideoForwarding: this.state.maxVideoForwarding,
-      virtualBackgroundMode: this.state.virtualBackgroundMode
+      virtualBackgroundMode: this.state.virtualBackgroundMode,
+      videoDenoise: this.state.videoDenoise,
     };
     handleJoin(payload);
   }
@@ -121,10 +125,10 @@ class ConferencePreConfigContainer extends Component {
       if(VoxeetSDK.videoFilters && tracks && tracks[0]) {
         switch (this.state.virtualBackgroundMode) {
           case 'bokeh':
-            VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0]});
+            VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0], videoDenoise: this.state.videoDenoise});
             break;
           default:
-            VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0]});
+            VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0], videoDenoise: this.state.videoDenoise});
         }
       }
     }
@@ -557,14 +561,28 @@ class ConferencePreConfigContainer extends Component {
         if(tracks && tracks[0]) {
           switch (this.state.virtualBackgroundMode) {
             case 'bokeh':
-              VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0]});
+              VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0], videoDenoise: this.state.videoDenoise});
               break;
             default:
-              VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0]});
+              VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0], videoDenoise: this.state.videoDenoise});
           }
         }
       }
       Cookies.set("virtualBackgroundMode", this.state.virtualBackgroundMode, default_cookies_param);
+    });
+  }
+
+  handleVideoDenoiseChange() {
+    this.setState({
+      videoDenoise: !this.state.videoDenoise
+    }, () => {
+      if(this.state.userStream) {
+        const videoFilter = ['none', 'bokeh'].indexOf(this.state.virtualBackgroundMode) >= 0 ? this.state.virtualBackgroundMode : 'none';
+        VoxeetSDK.videoFilters.setFilter(videoFilter, {stream: this.state.userStream, videoDenoise: this.state.videoDenoise}).then(() => {
+          Cookies.set("videoDenoise", this.state.videoDenoise, default_cookies_param);
+        })
+        .catch((e) => console.warn(e));
+      }
     });
   }
 
@@ -608,7 +626,8 @@ class ConferencePreConfigContainer extends Component {
       loading,
       maxVideoForwarding,
       lowBandwidthMode,
-      virtualBackgroundMode
+      virtualBackgroundMode,
+      videoDenoise
     } = this.state;
     const MAX_MAXVF = isMobile()?4:16;
 
@@ -777,6 +796,20 @@ class ConferencePreConfigContainer extends Component {
                                   </label>
                                 </div>
                               </div>
+                              <div className={`group-enable ${!this.state.videoEnabled ? 'disabled-form' : ''}`}>
+                                <div className='enable-item'>
+                                  <input
+                                      id="videoDenoise"
+                                      name="videoDenoise"
+                                      type="checkbox"
+                                      onChange={this.handleVideoDenoiseChange}
+                                      checked={videoDenoise}
+                                  />
+                                  <label htmlFor="videoDenoise">
+                                    {strings.videoDenoise}
+                                  </label>
+                                </div>
+                              </div>
                               <div className={`group-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
                                 <div className='input-wrapper'>
                                   <div className='input-value'>0</div>
@@ -846,6 +879,7 @@ ConferencePreConfigContainer.propTypes = {
   audioTransparentMode: PropTypes.bool,
   maxVideoForwarding: PropTypes.bool,
   virtualBackgroundMode: PropTypes.string,
+  videoDenoise: PropTypes.bool,
 };
 
 export default ConferencePreConfigContainer;

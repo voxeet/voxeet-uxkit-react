@@ -41,6 +41,7 @@ class AttendeesSettings extends Component {
     let virtualBackgroundMode = ((this.props.controlsStore.virtualBackgroundMode !== undefined) ? this.props.controlsStore.virtualBackgroundMode : Cookies.get("virtualBackgroundMode"));
     if(virtualBackgroundMode=='null')
       virtualBackgroundMode = null;
+    let videoDenoise = ((this.props.controlsStore.videoDenoise !== undefined) ? this.props.controlsStore.videoDenoise : false);
 
     this.state = {
       runningAnimation: false,
@@ -54,7 +55,8 @@ class AttendeesSettings extends Component {
       videoEnabled: videoEnabled,
       maxVideoForwarding: maxVideoForwarding,
       lowBandwidthMode: lowBandwidthMode,
-      virtualBackgroundMode: virtualBackgroundMode
+      virtualBackgroundMode: virtualBackgroundMode,
+      videoDenoise: videoDenoise
     };
     this.onAudioDeviceSelected = this.onAudioDeviceSelected.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
@@ -64,6 +66,7 @@ class AttendeesSettings extends Component {
     this.onAudioTransparentModeChange = this.onAudioTransparentModeChange.bind(this);
     this.handleMaxVideoForwardingChange = this.handleMaxVideoForwardingChange.bind(this);
     this.onVirtualBackgroundModeChange = this.onVirtualBackgroundModeChange.bind(this);
+    this.onVideoDenoiseChange = this.onVideoDenoiseChange.bind(this);
     this.maxVFTimer = null;
 
     this.isIOS = isIOS();
@@ -147,6 +150,14 @@ class AttendeesSettings extends Component {
     ) {
       console.log('virtualBackgroundMode changed %s -> %s', prevProps.controlsStore.virtualBackgroundMode, this.props.controlsStore.virtualBackgroundMode)
       this.setState({ virtualBackgroundMode: this.props.controlsStore.virtualBackgroundMode });
+    }
+
+    if (
+      this.props.controlsStore &&
+        prevProps.controlsStore.videoDenoise !== this.props.controlsStore.videoDenoise
+    ) {
+      console.log('videoDenoise changed %s -> %s', prevProps.controlsStore.videoDenoise, this.props.controlsStore.videoDenoise)
+      this.setState({ videoDenoise: this.props.controlsStore.videoDenoise });
     }
 
     if (
@@ -306,6 +317,15 @@ class AttendeesSettings extends Component {
     });
   }
 
+  onVideoDenoiseChange() {
+    const { videoDenoise } = this.props.controlsStore;
+    this.setState({
+      videoDenoise: !videoDenoise
+    }, () => {
+      this.props.dispatch(ConferenceActions.setVideoDenoise(this.state.videoDenoise));
+    });
+  }
+
   handleChangeLowBandwidthMode(event) {
     if (this.maxVFTimer) {
       clearTimeout(this.maxVFTimer);
@@ -364,7 +384,7 @@ class AttendeesSettings extends Component {
   }
 
   render() {
-    const { lowBandwidthMode, maxVideoForwarding, audioTransparentMode, virtualBackgroundMode, videoEnabled } = this.state;
+    const { lowBandwidthMode, maxVideoForwarding, audioTransparentMode, virtualBackgroundMode, videoEnabled, videoDenoise } = this.state;
     //const { audioTransparentMode } = this.props.controlsStore;
 
     const { attendeesSettingsOpened, isListener, dolbyVoiceEnabled } = this.props;
@@ -488,6 +508,20 @@ class AttendeesSettings extends Component {
                     />
                     <label htmlFor="vbModeBokeh">
                       {strings.bokehMode}
+                    </label>
+                  </div>
+                </div>
+                <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
+                  <div className='switch-mode'>
+                    <input
+                        id="videoDenoise"
+                        name="videoDenoise"
+                        type="checkbox"
+                        onChange={this.onVideoDenoiseChange}
+                        checked={videoDenoise}
+                    />
+                    <label htmlFor="videoDenoise">
+                      {strings.videoDenoise}
                     </label>
                   </div>
                 </div>
