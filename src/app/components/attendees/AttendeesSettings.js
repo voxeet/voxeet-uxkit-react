@@ -12,7 +12,7 @@ import PreConfigVuMeter from "./../preConfig/PreConfigVuMeter";
 import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
-import {isIOS, isMobile} from "./../../libs/browserDetection";
+import {isIOS, isMobile, isElectron} from "./../../libs/browserDetection";
 import {Actions as ControlsActions} from "../../actions/ControlsActions";
 import {getUxKitContext} from "../../context";
 
@@ -183,6 +183,16 @@ class AttendeesSettings extends Component {
             || devices[0]
           );
 
+        // If the selected device is default, select it by using its proper deviceId
+        // (other than "default") but keep UI informed that the "default" is still selected.
+        if (deviceInfo.deviceId === "default") {
+          return this.setAudioDevice(
+            devices.find(e => e.groupId === deviceInfo.groupId
+                           && e.deviceId !== "default")
+              .deviceId,
+            "default");
+        }
+
         return this.setAudioDevice(deviceInfo.deviceId);
       })
       .catch(e => console.error("Initializing an audio input device failed.", e));
@@ -251,7 +261,7 @@ class AttendeesSettings extends Component {
     );
   }
 
-  setAudioDevice(deviceId) {
+  setAudioDevice(deviceId, guiDeviceId = deviceId) {
     return VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
       if (this.props.microphoneMuted) {
         VoxeetSDK.conference
@@ -259,8 +269,8 @@ class AttendeesSettings extends Component {
           .catch((e) => console.warn("Muting a new selected input device failed.", e));
       }
 
-      Cookies.set("input", deviceId, default_cookies_param);
-      this.props.dispatch(InputManagerActions.inputAudioChange(deviceId));
+      Cookies.set("input", guiDeviceId, default_cookies_param);
+      this.props.dispatch(InputManagerActions.inputAudioChange(guiDeviceId));
     });
   }
 
@@ -382,7 +392,7 @@ class AttendeesSettings extends Component {
         <div className="settings">
           <div className="content">
             <form>
-              {bowser.chrome && (
+              {(bowser.chrome || isElectron()) && (
                 <div className="form-group form-output">
                   {/* <label htmlFor="output">Sound Output</label> */}
                   <select
@@ -468,20 +478,20 @@ class AttendeesSettings extends Component {
                     </label>
                   </div>
                 </div>
-                <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
+                {isElectron() && <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
                   <div className='switch-mode'>
                     <input
                         id="vbModeBokeh"
                         name="vbModeBokeh"
                         type="checkbox"
                         onChange={() => this.onVirtualBackgroundModeChange('bokeh')}
-                        checked={virtualBackgroundMode=='bokeh'}
+                        checked={virtualBackgroundMode == 'bokeh'}
                     />
                     <label htmlFor="vbModeBokeh">
                       {strings.bokehMode}
                     </label>
                   </div>
-                </div>
+                </div>}
                 <div className={`form-group switch-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
                   <div className='input-wrapper'>
                     <div className='input-value'>0</div>
