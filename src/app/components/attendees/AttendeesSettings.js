@@ -392,7 +392,7 @@ class AttendeesSettings extends Component {
         <div className="settings">
           <div className="content">
             <form>
-              {bowser.chrome && (
+              {(bowser.chrome || isElectron()) && (
                 <div className="form-group form-output">
                   {/* <label htmlFor="output">Sound Output</label> */}
                   <select

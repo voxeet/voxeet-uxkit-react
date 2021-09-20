@@ -9,9 +9,8 @@ import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
-import {isMobile} from "../libs/browserDetection";
+import {isMobile, isElectron} from "../libs/browserDetection";
 import {getUxKitContext} from "../context";
-import {isElectron} from "./../libs/browserDetection";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);
@@ -668,7 +667,7 @@ class ConferencePreConfigContainer extends Component {
                               </select>
                             </div>
                             <div className="content-first-container">
-                              {bowser.chrome && (
+                              {(bowser.chrome || isElectron()) && (
                                 <div className="form-group">
                                   <label htmlFor="video">{strings.output}</label>
                                   <select
