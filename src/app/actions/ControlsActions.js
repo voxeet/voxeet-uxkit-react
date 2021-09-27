@@ -37,6 +37,7 @@ export const Types = {
   SET_REQUESTED_VIDEO: "SET_REQUESTED_VIDEO",
   SET_CONFERENCE_PERMISSIONS: "SET_CONFERENCE_PERMISSIONS",
   SET_VIRTUAL_BACKGROUND_MODE: "SET_VIRTUAL_BACKGROUND_MODE",
+  SET_VIDEO_DENOISE: "SET_VIDEO_DENOISE",
 };
 
 export class Actions {
@@ -325,6 +326,15 @@ export class Actions {
       type: Types.SET_VIRTUAL_BACKGROUND_MODE,
       payload: {
         mode: mode
+      }
+    };
+  }
+
+  static setVideoDenoise(enabled) {
+    return {
+      type: Types.SET_VIDEO_DENOISE,
+      payload: {
+        videoDenoise: enabled
       }
     };
   }
