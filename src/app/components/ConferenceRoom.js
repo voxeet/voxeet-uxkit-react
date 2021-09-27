@@ -124,6 +124,10 @@ class ConferenceRoom extends Component {
       this.props.dispatch(ControlsActions.setVirtualBackgroundMode(preConfigPayload.virtualBackgroundMode));
       this.virtualBackgroundMode = preConfigPayload.virtualBackgroundMode;
     }
+    if(preConfigPayload && preConfigPayload.videoDenoise!==undefined) {
+      this.props.dispatch(ControlsActions.setVideoDenoise(preConfigPayload.videoDenoise));
+      this.videoDenoise = preConfigPayload.videoDenoise;
+    }
     let initialized;
     let pinCodeTmp = pinCode;
     if (oauthToken != null) {
@@ -376,6 +380,30 @@ class ConferenceRoom extends Component {
     this.props.dispatch(ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode));
     this.virtualBackgroundMode = virtualBackgroundMode;
     console.log('initializeControlsStore virtualBackgroundMode', this.virtualBackgroundMode);
+
+    let videoDenoise = Cookies.get("videoDenoise");
+    if( videoDenoise!==undefined ) {
+      if (typeof videoDenoise === 'string' || videoDenoise instanceof String)
+        videoDenoise = videoDenoise.toLowerCase() !== 'false';
+      else
+        videoDenoise = Boolean(videoDenoise);
+      //console.log('Setting default value for videoDenoise to user default', videoDenoise);
+    } else {
+      videoDenoise = this.props.videoDenoise?this.props.videoDenoise:false;
+      //console.log('Setting default value for videoDenoise to app default', videoDenoise);
+    }
+    if( videoDenoise!==undefined ) {
+      if (typeof videoDenoise === 'string' || videoDenoise instanceof String)
+        videoDenoise = videoDenoise.toLowerCase() !== 'false';
+      else
+        videoDenoise = Boolean(videoDenoise);
+    } else {
+      videoDenoise = false;
+      //console.log('Setting default value for videoDenoise to system default', videoDenoise);
+    }
+    this.props.dispatch(ControlsActions.setVideoDenoise(videoDenoise));
+    Cookies.set("videoDenoise", videoDenoise, default_cookie_params);
+    this.videoDenoise = videoDenoise;
   }
 
   async componentDidMount() {
