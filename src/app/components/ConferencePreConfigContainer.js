@@ -2,7 +2,6 @@ import React, { Fragment, Component } from "react";
 import { connect } from "react-redux";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Actions as InputManagerActions } from "../actions/InputManagerActions";
-import AttendeesParticipantVideo from "./attendees/AttendeesParticipantVideo";
 import PropTypes from "prop-types";
 import Cookies from "./../libs/Storage";
 import bowser from "bowser";
@@ -798,8 +797,8 @@ class ConferencePreConfigContainer extends Component {
                                     {strings.bokehMode}
                                   </label>
                                 </div>
-                              </div>
-                              <div className={`group-enable ${!this.state.videoEnabled ? 'disabled-form' : ''}`}>
+                              </div>}
+                              {isElectron() &&  <div className={`group-enable ${!this.state.videoEnabled ? 'disabled-form' : ''}`}>
                                 <div className='enable-item'>
                                   <input
                                       id="videoDenoise"
