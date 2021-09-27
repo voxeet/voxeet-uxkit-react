@@ -511,8 +511,8 @@ class AttendeesSettings extends Component {
                       {strings.bokehMode}
                     </label>
                   </div>
-                </div>
-                <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
+                </div>}
+                {isElectron() && <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
                   <div className='switch-mode'>
                     <input
                         id="videoDenoise"
