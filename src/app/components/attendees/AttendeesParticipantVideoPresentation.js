@@ -50,10 +50,16 @@ class AttendeesParticipantVideoPresentation extends Component {
   onPlay() {
     const { isVideoPresentation } = this.props;
     this.setState | { safariAutoplay: false };
-    if (isVideoPresentation)
+    if (isVideoPresentation) {
+      const { url } = this.props.videoPresentationStore;
+      // Just for YouTube seek to current position before play (CC-1205)
+      if (url && (url.indexOf('youtube.com')!==-1
+          || url.indexOf('youtu.be')!==-1))
+        VoxeetSDK.videoPresentation.seek(this.videoPresentation.getCurrentTime() * 1000);
       VoxeetSDK.videoPresentation.play(
-        this.videoPresentation.getCurrentTime() * 1000
+          this.videoPresentation.getCurrentTime() * 1000
       );
+    }
   }
 
   startVideoForSafari() {
