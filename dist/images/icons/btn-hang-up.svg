@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>btn-hang-up</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="btn_hang-up">
+            <g id="btn-hang-up">
+                <circle id="bg" fill="#EB1000" fill-rule="nonzero" cx="25" cy="25" r="25"></circle>
+                <path d="M16.808514,25.4141349 L16.8796568,25.4033487 C22.2358868,24.653713 27.6769409,24.7089919 33.0523248,25.5678372 L33.1234675,25.5786233 L33.6419889,30.1114928 L43,31 L42.957588,27.8261823 C42.9302254,25.1485265 41.1968043,22.6933345 38.6452413,21.7198866 L38.2019671,21.5500051 C29.4158345,18.1955199 19.7992468,18.1483306 11.1198283,21.4219199 C10.2496974,21.7495485 9.48764886,22.2416655 8.86378146,22.8578229 C7.67213999,24.0321624 6.9812342,25.6527779 7.00038802,27.4176578 L7.04143193,30.63462 L16.4021793,29.9200391 L16.808514,25.4141349 Z" id="phone" stroke="#FFFFFF" stroke-width="2"></path>
+            </g>
+        </g>
+    </g>
+</svg>

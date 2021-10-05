@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>btn-more-on</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="btn-more-on">
+            <g>
+                <circle id="bg" fill="#3E44FE" cx="25" cy="25" r="25"></circle>
+                <path d="M16,14 L34,14 C35.1045695,14 36,14.8954305 36,16 C36,17.1045695 35.1045695,18 34,18 L16,18 C14.8954305,18 14,17.1045695 14,16 C14,14.8954305 14.8954305,14 16,14 Z M16,32 L34,32 C35.1045695,32 36,32.8954305 36,34 C36,35.1045695 35.1045695,36 34,36 L16,36 C14.8954305,36 14,35.1045695 14,34 C14,32.8954305 14.8954305,32 16,32 Z M16,23 L34,23 C35.1045695,23 36,23.8954305 36,25 C36,26.1045695 35.1045695,27 34,27 L16,27 C14.8954305,27 14,26.1045695 14,25 C14,23.8954305 14.8954305,23 16,23 Z" id="icon" stroke="#FFFFFF" stroke-width="1.5"></path>
+            </g>
+        </g>
+    </g>
+</svg>

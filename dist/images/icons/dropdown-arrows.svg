@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="8px" height="16px" viewBox="0 0 8 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Dropdown Arrows</title>
+    <desc>Created with Sketch.</desc>
+    <g id="PC-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="conference-speaker-settings-dark" transform="translate(-300.000000, -692.000000)" fill="#13141C">
+            <g id="popup-settings" transform="translate(15.000000, 479.000000)">
+                <g id="buttons" transform="translate(20.000000, 201.000000)">
+                    <g id="Dropdown-Arrows" transform="translate(265.000000, 12.000000)">
+                        <g transform="translate(0.000000, -0.000000)">
+                            <polygon id="Triangle-1" points="0 10 8 10 4 16"></polygon>
+                            <polygon id="Triangle-2" transform="translate(4.000000, 3.000000) rotate(-180.000000) translate(-4.000000, -3.000000) " points="0 0 8 0 4 6"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

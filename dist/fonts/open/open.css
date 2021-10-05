@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "open-sans-regular";
+  src: url("./OpenSans-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "open-sans-light";
+  src: url("./OpenSans-Light.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "open-sans-semibold";
+  src: url("./OpenSans-SemiBold.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "open-sans-bold";
+  src: url("./OpenSans-Bold.ttf");
+  font-weight: normal;
+  font-style: normal;
+}

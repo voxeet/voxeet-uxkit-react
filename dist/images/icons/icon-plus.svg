@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>icon-plus</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Plus-Icon" transform="translate(1.000000, 1.000000)" stroke="#00AFEF" stroke-width="1">
+            <path d="M22,11 C22,17.0758015 17.0760245,22 11.0004981,22 C4.9249717,22 0,17.0758015 0,11 C0,4.92419851 4.9249717,0 11.0004981,0 C17.0760245,0 22,4.92419851 22,11 Z M11,5 L11,17 M5,11 L17,11" id="icon-plus"></path>
+        </g>
+    </g>
+</svg>

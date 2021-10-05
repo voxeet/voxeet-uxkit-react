@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>btn-share-screen-off</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="btn-share-screen-off">
+            <g>
+                <circle id="bg" fill="#13141C" fill-rule="nonzero" cx="25" cy="25" r="25"></circle>
+                <path d="M21,34.8157065 L21,40.8157065 M29,34.8157065 L29,40.8157065 M17.0595833,41 L33.32375,41 M31.8541667,24.0779891 L16,24.0779891 M27,18.1559783 L33,24.155015 L27,30.1559783 M39.8563487,35 L10.1452397,35 C9.5114663,35 9,34.4055551 9,33.6708064 L9,14.3291936 C9,13.5944449 9.5114663,13 10.1452397,13 L39.8563487,13 C40.4869453,13 41,13.5944449 41,14.3291936 L41,33.6708064 C41,34.4055551 40.4869453,35 39.8563487,35 Z" id="icon" stroke="#FF9235" stroke-width="1.75"></path>
+            </g>
+        </g>
+    </g>
+</svg>

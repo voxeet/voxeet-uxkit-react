@@ -1,0 +1,249 @@
+@font-face {
+  font-family: "icomoon";
+  src: url("icomoon.eot?nbvoof");
+  src: url("icomoon.eot?nbvoof#iefix") format("embedded-opentype"),
+    url("icomoon.ttf?nbvoof") format("truetype"),
+    url("icomoon.woff?nbvoof") format("woff"),
+    url("icomoon.svg?nbvoof#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "icomoon" !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: inherit;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-fullscreen-off:before {
+  content: "\e948";
+}
+.icon-fullscreen-on:before {
+  content: "\e949";
+}
+.icon-google-plus:before {
+  content: "\e900";
+}
+.icon-twitter:before {
+  content: "\e901";
+}
+.icon-add-circle:before {
+  content: "\e902";
+}
+.icon-add-contact:before {
+  content: "\e903";
+}
+.icon-add:before {
+  content: "\e904";
+}
+.icon-andriod:before {
+  content: "\e905";
+}
+.icon-apple:before {
+  content: "\e906";
+}
+.icon-arrow-back-large:before {
+  content: "\e907";
+}
+.icon-arrow-next-large:before {
+  content: "\e908";
+}
+.icon-attach:before {
+  content: "\e909";
+}
+.icon-calender:before {
+  content: "\e90a";
+}
+.icon-chat-filled:before {
+  content: "\e90b";
+}
+.icon-chat:before {
+  content: "\e90c";
+}
+.icon-check-circle-unchecked:before {
+  content: "\e90d";
+}
+.icon-check-circle:before {
+  content: "\e90e";
+}
+.icon-check:before {
+  content: "\e90f";
+}
+.icon-clock:before {
+  content: "\e910";
+}
+.icon-close-sidebar:before {
+  content: "\e911";
+}
+.icon-close:before {
+  content: "\e912";
+}
+.icon-dial-in:before {
+  content: "\e913";
+}
+.icon-download:before {
+  content: "\e914";
+}
+.icon-facebook:before {
+  content: "\e915";
+}
+.icon-file:before {
+  content: "\e916";
+}
+.icon-hashtag:before {
+  content: "\e917";
+}
+.icon-invite:before {
+  content: "\e918";
+}
+.icon-mention:before {
+  content: "\e919";
+}
+.icon-menu-close:before {
+  content: "\e91a";
+}
+.icon-menu-closed-circle:before {
+  content: "\e91b";
+}
+.icon-menu-open-circle:before {
+  content: "\e91c";
+}
+.icon-menu-open:before {
+  content: "\e91d";
+}
+.icon-microphone:before {
+  content: "\e91e";
+}
+.icon-minimize:before {
+  content: "\e91f";
+}
+.icon-mute:before {
+  content: "\e920";
+}
+.icon-pause:before {
+  content: "\e921";
+}
+.icon-pencil:before {
+  content: "\e922";
+}
+.icon-person:before {
+  content: "\e923";
+}
+.icon-phone-end-call:before {
+  content: "\e924";
+}
+.icon-phone-right:before {
+  content: "\e925";
+}
+.icon-phone:before {
+  content: "\e926";
+}
+.icon-play:before {
+  content: "\e927";
+}
+.icon-present:before {
+  content: "\e928";
+}
+.icon-present2:before {
+  content: "\e929";
+}
+.icon-record:before {
+  content: "\e92a";
+}
+.icon-recurring:before {
+  content: "\e92b";
+}
+.icon-search:before {
+  content: "\e92c";
+}
+.icon-slack:before {
+  content: "\e92d";
+}
+.icon-star-filled:before {
+  content: "\e92e";
+}
+.icon-tag:before {
+  content: "\e92f";
+}
+.icon-text:before {
+  content: "\e930";
+}
+.icon-trash:before {
+  content: "\e931";
+}
+.icon-upload:before {
+  content: "\e932";
+}
+.icon-volume:before {
+  content: "\e933";
+}
+.icon-voxeet-logo:before {
+  content: "\e934";
+}
+.icon-camera:before {
+  content: "\e935";
+}
+.icon-present-arrow:before {
+  content: "\e936";
+}
+.icon-gear:before {
+  content: "\e937";
+}
+.icon-contact-waiting:before {
+  content: "\e938";
+}
+.icon-camera-filled:before {
+  content: "\e939";
+}
+.icon-star-outline:before {
+  content: "\e93a";
+}
+.icon-bell:before {
+  content: "\e93b";
+}
+.icon-facebook2:before {
+  content: "\e93c";
+}
+.icon-appleinc:before {
+  content: "\e93d";
+}
+.icon-android:before {
+  content: "\e93e";
+}
+.icon-smile-chat-bubble:before {
+  content: "\e93f";
+}
+.icon-screen-share:before {
+  content: "\e940";
+}
+.icon-camera-video:before {
+  content: "\e941";
+}
+.icon-bubble:before {
+  content: "\e942";
+}
+.icon-tile:before {
+  content: "\e943";
+}
+.icon-speaker:before {
+  content: "\e944";
+}
+.icon-share-your-screen:before {
+  content: "\e945";
+}
+.icon-window:before {
+  content: "\e946";
+}
+.icon-question-mark:before {
+  content: "\e947";
+}
