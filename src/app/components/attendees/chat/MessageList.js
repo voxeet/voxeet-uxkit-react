@@ -111,6 +111,7 @@ class MessageList extends Component {
         let Row = ({ index, style, data }) => {
             return <ListRow
                 index={index}
+                key={index}
                 style={style}
                 name={data[index].name}
                 avatarUrl={data[index].avatarUrl}

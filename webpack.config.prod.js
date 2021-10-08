@@ -2,8 +2,9 @@ const path = require("path");
 const webpack = require("webpack");
 const package = require("./package.json");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 try {
   require("os").networkInterfaces();
@@ -14,11 +15,14 @@ try {
 module.exports = {
   mode: "production",
   entry: ["./src/app/VoxeetReactComponents.js"],
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
   output: {
     path: path.join(__dirname, "dist"),
     filename: "bundle.js",
-    library: "VoxeetReactComponents",
-    libraryTarget: "commonjs2",
+    libraryTarget: "umd",
   },
   externals: {
     "@voxeet/voxeet-web-sdk": true,
@@ -29,7 +33,7 @@ module.exports = {
     rules: [
       {
         test: /.jsx?$/,
-        loaders: ["babel-loader"],
+        loader: "babel-loader",
         exclude: /node_modules/,
         include: path.resolve(__dirname),
       },
@@ -37,47 +41,67 @@ module.exports = {
         test: /\.(less)$/,
         use: [
           MiniCssExtractPlugin.loader,
-          "css-loader",
-          "less-loader"
-        ]
+          'css-loader',
+          'less-loader'
+        ],
       },
       {
         test: /\.mp3$/,
         exclude: /node_modules/,
-        loader: "file-loader",
-        options: {
-          name: "sounds/[name].[ext]",
+        type: 'asset/resource',
+        generator: {
+          filename: 'sounds/[name][ext][query]'
+        }
+      },
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
+      },
+      {
+        test: /\.otf(\?v=\d+\.\d+\.\d+)?$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
+      },
+      {
+        test: /\.svg$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name][ext][query]'
         },
       },
       {
         test: /\.(jpg|jpeg|gif|png)$/,
         exclude: /node_modules/,
-        loader: "url-loader?limit=65000&name=images/[name].[ext]",
-      },
-      {
-        test: /\.svg$/,
-        loader:
-          "url-loader?limit=65000&mimetype=image/svg+xml&name=fonts/[name].[ext]",
-      },
-      {
-        test: /\.woff$/,
-        loader:
-          "url-loader?limit=65000&mimetype=application/font-woff&name=fonts/[name].[ext]",
-      },
-      {
-        test: /\.woff2$/,
-        loader:
-          "url-loader?limit=65000&mimetype=application/font-woff2&name=fonts/[name].[ext]",
-      },
-      {
-        test: /\.[ot]tf$/,
-        loader:
-          "url-loader?limit=65000&mimetype=application/octet-stream&name=fonts/[name].[ext]",
-      },
-      {
-        test: /\.eot$/,
-        loader:
-          "url-loader?limit=65000&mimetype=application/vnd.ms-fontobject&name=fonts/[name].[ext]",
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name][ext][query]'
+        }
       },
     ],
   },
@@ -88,10 +112,9 @@ module.exports = {
       },
       __VERSION__: JSON.stringify(package.version),
     }),
-    new CopyWebpackPlugin([{ from: "./src/static", ignore: ["*.html"] }]),
     new MiniCssExtractPlugin({
-      filename: "voxeet-react-components.css"
+      filename: 'voxeet-react-components.css'
     }),
-    new webpack.NoEmitOnErrorsPlugin(),
+    // new webpack.NoEmitOnErrorsPlugin(),
   ],
 };
