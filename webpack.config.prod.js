@@ -13,7 +13,8 @@ try {
 }
 
 module.exports = {
-  mode: "production",
+  devtool: "inline-source-map",
+  mode: "development",
   entry: ["./src/app/VoxeetReactComponents.js"],
   optimization: {
     minimize: true,
