@@ -355,7 +355,8 @@ export class Actions {
     simulcast,
     enableDolbyVoice,
     maxVideoForwardingParam,
-    chatOptions
+    chatOptions,
+    enableSpatialAudio
   ) {
     let maxVideoForwarding = (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined?
         preConfigPayload.maxVideoForwarding:
@@ -436,6 +437,7 @@ export class Actions {
                     constraints: { audio: false, video: false },
                     simulcast: simulcast,
                     maxVideoForwarding: maxVideoForwarding,
+                    spatialAudio: enableSpatialAudio,
                   })
                   .then(function (res) {
                     if (isIOS() && navigator.userAgent.match(/AppleWebKit/)) {
@@ -501,7 +503,8 @@ export class Actions {
                     audio3D: false,
                     maxVideoForwarding: maxVideoForwarding,
                     videoFilter: virtualBackgroundMode,
-                    videoFilterOptions: {videoDenoise: videoDenoise}
+                    videoFilterOptions: {videoDenoise: videoDenoise},
+                    spatialAudio: enableSpatialAudio,
                   })
                   .then((res) => {
                     dispatch(
@@ -611,6 +614,7 @@ export class Actions {
                 maxVideoForwarding: maxVideoForwarding,
                 videoFilter: virtualBackgroundMode,
                 videoFilterOptions: {videoDenoise: videoDenoise},
+                spatialAudio: enableSpatialAudio,
               })
               .then((res) => {
                 dispatch(
