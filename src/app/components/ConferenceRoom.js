@@ -102,7 +102,8 @@ class ConferenceRoom extends Component {
       invitedUsers,
       refreshTokenCallback,
       isListener,
-      chatOptions
+      chatOptions,
+      spatialAudio
     } = this.props;
     let { constraints } = this.props;
     if(preConfigPayload && preConfigPayload.maxVideoForwarding!==undefined) {
@@ -174,6 +175,10 @@ class ConferenceRoom extends Component {
       this.props.dispatch(
         ControlsActions.displayActionsAllowed(displayActions)
       );
+    }
+
+    if (spatialAudio) {
+      this.props.dispatch(ParticipantActions.spatialAudioActivated());
     }
 
     if (conferenceReplayId != null) {
@@ -286,7 +291,8 @@ class ConferenceRoom extends Component {
               simulcast,
               dolbyVoice,
               maxVideoForwarding,
-              chatOptions
+              chatOptions,
+              spatialAudio
             )
           );
         });
@@ -566,7 +572,8 @@ class ConferenceRoom extends Component {
       isAdmin,
       logo,
       dolbyVoice,
-      chatOptions
+      chatOptions,
+      spatialAudio
     } = this.props;
     const {
       screenShareEnabled,
@@ -584,6 +591,7 @@ class ConferenceRoom extends Component {
       conferencePincode,
       hasLeft,
       dolbyVoiceEnabled,
+      spatialAudioEnabled,
     } = this.props.conferenceStore;
 
     const { errorMessage, isError } = this.props.errorStore;
@@ -674,6 +682,7 @@ class ConferenceRoom extends Component {
           logo={this.props.logo}
           handleJoin={this.handleJoin}
           dolbyVoiceEnabled={dolbyVoice}
+          spatialAudioEnabled={spatialAudio}
         />
       );
     } else if (isJoined || !isWidget || conferenceReplayId != null) {
@@ -699,6 +708,7 @@ class ConferenceRoom extends Component {
           conferenceId={conferenceId}
           attendeesWaiting={attendeesWaiting}
           dolbyVoiceEnabled={dolbyVoiceEnabled}
+          spatialAudioEnabled={spatialAudioEnabled}
           chatOptions={chatOptions}
         />
       );
@@ -726,6 +736,7 @@ ConferenceRoom.propTypes = {
   isAdmin: PropTypes.bool,
   ttl: PropTypes.number,
   dolbyVoice: PropTypes.bool,
+  spatialAudio: PropTypes.bool,
   maxVideoForwarding: PropTypes.number,
   simulcast: PropTypes.bool,
   mode: PropTypes.string,
@@ -790,6 +801,7 @@ ConferenceRoom.defaultProps = {
   isModal: false,
   isWebinar: false,
   autoJoin: false,
+  spatialAudio: false,
   userInfo: {
     name: "Guest " + Math.floor(Math.random() * 100 + 1),
     externalId: "",
