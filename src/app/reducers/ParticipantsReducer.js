@@ -296,7 +296,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         action.payload.stream &&
         action.payload.stream.getVideoTracks().length > 0
       ) {
-        participants[index].stream = action.payload.stream;
+        participants[index] = {...participants[index], stream: action.payload.stream}
       }
       return {
         ...state,
@@ -540,7 +540,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         action.payload.stream &&
         action.payload.stream.getVideoTracks().length > 0
       ) {
-        participants[index].stream = action.payload.stream;
+        participants[index] = {...participants[index], stream: action.payload.stream}
         }
       return {
         ...state,
