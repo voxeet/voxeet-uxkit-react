@@ -12,7 +12,6 @@ export const Types = {
   SAVE_USER_POSITION: "SAVE_USER_POSITION",
   PARTICIPANTS_SAVE: "PARTICIPANTS_SAVE",
   WEBINAR_ACTIVATED: "WEBINAR_ACTIVATED",
-  SPATIAL_AUDIO_ACTIVATED: "SPATIAL_AUDIO_ACTIVATED",
   PARTICIPANTS_RESET: "PARTICIPANTS_RESET",
   PARTICIPANT_SPEAK: "PARTICIPANT_SPEAK",
   SAVE_CURRENT_USER: "SAVE_CURRENT_USER",
@@ -69,12 +68,6 @@ export class Actions {
   static webinarActivated() {
     return {
       type: Types.WEBINAR_ACTIVATED,
-    };
-  }
-
-  static spatialAudioActivated() {
-    return {
-      type: Types.SPATIAL_AUDIO_ACTIVATED,
     };
   }
 

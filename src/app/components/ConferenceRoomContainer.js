@@ -225,7 +225,6 @@ class ConferenceRoomContainer extends Component {
       dolbyVoiceEnabled,
       maxVideoForwarding,
       chatOptions,
-      spatialAudioEnabled,
     } = this.props;
     const { errorMessage, isError } = this.props.errorStore;
     const { isModalExternalLiveOpen } = this.state;
@@ -315,7 +314,6 @@ class ConferenceRoomContainer extends Component {
               toggleMode={this.toggleMode}
               actionsButtons={actionsButtons}
               conferencePermissions={conferencePermissions}
-              spatialAudioEnabled={spatialAudioEnabled}
             />
           )}
 
@@ -345,7 +343,6 @@ class ConferenceRoomContainer extends Component {
               dolbyVoiceEnabled={dolbyVoiceEnabled}
               conferencePermissions={conferencePermissions}
               chatOptions={chatOptions}
-              spatialAudioEnabled={spatialAudioEnabled}
             />
           )}
           {isJoined && (isWidgetFullScreenOn || forceFullscreen) && (
@@ -395,7 +392,6 @@ class ConferenceRoomContainer extends Component {
               actionsButtons={actionsButtons}
               conferencePermissions={conferencePermissions}
               chatOptions={chatOptions}
-              spatialAudioEnabled={spatialAudioEnabled}
             />
           )}
         </aside>
@@ -432,7 +428,6 @@ ConferenceRoomContainer.propTypes = {
   attendeesChat: PropTypes.object,
   attendeesWaiting: PropTypes.func,
   dolbyVoiceEnabled: PropTypes.bool,
-  spatialAudioEnabled: PropTypes.bool,
   conferencePermissions: PropTypes.object,
   chatOptions: PropTypes.object,
 };
