@@ -187,7 +187,7 @@ class ConferencePreConfigContainer extends Component {
       };
     navigator.mediaDevices
       .getUserMedia({
-        audio: { exact: { deviceId: deviceId } },
+        audio: { deviceId: { exact: deviceId } },
         video: videoConstraints
       })
       .then(stream => {
@@ -216,7 +216,7 @@ class ConferencePreConfigContainer extends Component {
     const deviceId = e.target.value;
     navigator.mediaDevices
       .getUserMedia({
-        audio: { exact: { deviceId: this.state.audioDeviceSelected } },
+        audio: { deviceId: { exact: this.state.audioDeviceSelected } },
         video: { deviceId: { exact: deviceId } }
       })
       .then(stream => {
@@ -420,7 +420,7 @@ class ConferencePreConfigContainer extends Component {
                     this.setState({ loading: false });
                     navigator.mediaDevices
                       .getUserMedia({
-                        audio: true,
+                        audio: { deviceId: { exact: this.state.audioDeviceSelected } },
                         video:
                           resultVideo.length > 0 && this.state.videoEnabled
                             ? {
@@ -734,6 +734,7 @@ class ConferencePreConfigContainer extends Component {
                                   <div className="form-group">
                                     <PreConfigVuMeter
                                       stream={this.state.userStream}
+                                      maxLevel = {21}
                                     />
                                   </div>
                                 </div>
