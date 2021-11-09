@@ -8,8 +8,8 @@ import Cookies from "./../../libs/Storage";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
-import PreConfigVuMeter from "./../preConfig/PreConfigVuMeter";
-import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
+import AttendeesSettingsVuMeterFromAudioLevel from "./AttendeesSettingsVuMeterFromAudioLevel";
+import AttendeesSettingsVuMeterFromMediaStream from "./AttendeesSettingsVuMeterFromMediaStream";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
 import {isIOS, isMobile} from "./../../libs/browserDetection";
@@ -443,9 +443,9 @@ class AttendeesSettings extends Component {
                     </select>
                   </div>
                   <div className="form-group">
-                    {(this.isIOS) ?
-                      <AttendeesSettingsVuMeter maxLevel={21} /> :
-                      <PreConfigVuMeter maxLevel={21} />}
+                    {(this.isIOS || bowser.safari) ?
+                      <AttendeesSettingsVuMeterFromAudioLevel maxLevel={21} /> :
+                      <AttendeesSettingsVuMeterFromMediaStream maxLevel={21} />}
                   </div>
                   {dolbyVoiceEnabled && <div className="form-group switch-enable">
                     <div className='switch-mode'>
