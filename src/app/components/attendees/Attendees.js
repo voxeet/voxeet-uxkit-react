@@ -1,39 +1,29 @@
-import React, { Component } from "react";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import PropTypes from "prop-types";
 import bowser from "bowser";
-import VoxeetSDK from "@voxeet/voxeet-web-sdk";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { Actions as ActiveSpeakerActions } from "../../actions/ActiveSpeakerActions";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
-import { Actions as ActiveSpeakerActions } from "../../actions/ActiveSpeakerActions";
-
-import {
-  MODE_LIST,
-  MODE_TILES,
-  MODE_SPEAKER,
-} from "../../constants/DisplayModes";
 import { BROADCAST_KICK } from "../../constants/BroadcastMessageType";
-
-import Modal from "./modal/Modal";
-import AttendeesHeader from "./AttendeesHeader";
-import OnBoardingMessage from "./onBoardingMessage/onBoardingMessage";
-import OnBoardingMessageWithAction from "./onBoardingMessage/onBoardingMessageWithAction";
-import OnBoardingMessageWithDescription from "./onBoardingMessage/onBoardingMessageWithDescription";
-import OnBoardingMessageOverlay from "./onBoardingMessage/onBoardingMessageOverlay";
-import ActiveSpeakerOverlay from "./modes/ActiveSpeakerOverlay";
 import {
-  List,
-  ListWidget,
-  Speakers,
-  Tiles,
-  View3D,
-  ToggleModeButton,
-} from "./modes";
-import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
+  MODE_LIST, MODE_SPEAKER, MODE_TILES
+} from "../../constants/DisplayModes";
+import AttendeesHeader from "./AttendeesHeader";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
+import {
+  ListWidget,
+  Speakers,
+  Tiles, ToggleModeButton, View3D
+} from "./modes";
+import ActiveSpeakerOverlay from "./modes/ActiveSpeakerOverlay";
+import OnBoardingMessage from "./onBoardingMessage/onBoardingMessage";
+import OnBoardingMessageOverlay from "./onBoardingMessage/onBoardingMessageOverlay";
+import OnBoardingMessageWithAction from "./onBoardingMessage/onBoardingMessageWithAction";
 import OnBoardingMessageWithConfirmation from "./onBoardingMessage/onBoardingMessageWithConfirmation";
+import OnBoardingMessageWithDescription from "./onBoardingMessage/onBoardingMessageWithDescription";
 
 @connect((store) => {
   return {

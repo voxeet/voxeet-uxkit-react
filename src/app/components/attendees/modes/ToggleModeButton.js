@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
 import LayoutSpeaker from "../../../../static/images/icons/icon-layout-speaker.svg";
 import LayoutTiles from "../../../../static/images/icons/icon-layout-tile.svg";

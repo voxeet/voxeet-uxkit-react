@@ -1,26 +1,22 @@
-import React, { Component } from "react";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import PropTypes from "prop-types";
-import { strings } from "../languages/localizedStrings";
-
+import React, { Component } from "react";
+import { Actions as ChatActions } from "../actions/ChatActions";
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../actions/ControlsActions";
-import { Actions as TimerActions } from "../actions/TimerActions";
 import { Actions as ErrorActions } from "../actions/ErrorActions";
-import { Actions as ChatActions } from "../actions/ChatActions";
 import { Actions as OnBoardingMessageActions } from "../actions/OnBoardingMessageActions";
-import VoxeetSDK from "@voxeet/voxeet-web-sdk";
+import { Actions as TimerActions } from "../actions/TimerActions";
 import {
   BROADCAST_KICK_ADMIN_HANG_UP,
   RECORDING_STATE
 } from "../constants/BroadcastMessageType";
-
+import { strings } from "../languages/localizedStrings";
 import { Sidebar } from "./actionsBar";
-import Attendees from "./attendees/Attendees";
-import ModalClose from "./attendees/modal/ModalClose";
-import Modal from "./attendees/modal/Modal";
-
 import BottomBar from "./actionsBar/bottomBar/BottomBar";
+import Attendees from "./attendees/Attendees";
+import Modal from "./attendees/modal/Modal";
+import ModalClose from "./attendees/modal/ModalClose";
 
 @connect(store => {
   return {

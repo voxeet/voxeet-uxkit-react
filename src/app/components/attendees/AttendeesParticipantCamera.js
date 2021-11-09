@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import { strings } from "../../languages/localizedStrings";
-import CameraOff from "../../../static/images/icons/btn-camera-off.svg";
 import CameraOn from "../../../static/images/icons/btn-camera-dark.svg";
 import CameraPinned from "../../../static/images/icons/btn-camera-green.svg";
 

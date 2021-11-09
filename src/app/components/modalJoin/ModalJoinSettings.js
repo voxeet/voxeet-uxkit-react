@@ -1,12 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import ReactTooltip from "react-tooltip";
-import { connect } from "@voxeet/react-redux-5.1.1";
-
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-import AttendeesParticipantVideo from "../attendees/AttendeesParticipantVideo";
-import AttendeesParticipantVuMeter from "../attendees/AttendeesParticipantVuMeter";
+import React, { Component } from "react";
 import { strings } from "../../languages/localizedStrings";
+import AttendeesParticipantVuMeter from "../attendees/AttendeesParticipantVuMeter";
 
 class ModalJoinSettings extends Component {
   constructor(props) {

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactTooltip from "react-tooltip";
 import { strings } from "../../languages/localizedStrings";
 
 class AttendeesToggleFullscreen extends Component {

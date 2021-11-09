@@ -1,5 +1,3 @@
-import { Actions as TimerActions } from "./TimerActions";
-
 export const Types = {
   START_TIMER: "START_TIMER",
   STOP_TIMER: "STOP_TIMER",

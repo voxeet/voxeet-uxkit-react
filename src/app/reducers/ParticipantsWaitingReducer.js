@@ -1,11 +1,6 @@
-import { Types } from "../actions/ParticipantWaitingActions";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-import {
-  STATUS_CONNECTING,
-  STATUS_LEFT,
-  STATUS_INACTIVE,
-  STATUS_CONNECTED,
-} from "../constants/ParticipantStatus";
+import { Types } from "../actions/ParticipantWaitingActions";
+import { STATUS_LEFT } from "../constants/ParticipantStatus";
 
 const defaultState = {
   participants: [],

@@ -2,7 +2,7 @@ import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Types } from "../actions/ParticipantActions";
 import { getOrganizedPosition, getRelativePosition } from "../libs/position";
 import sounds from "../libs/sounds";
-import { STATUS_CONNECTING, STATUS_LEFT } from "../constants/ParticipantStatus";
+import { STATUS_LEFT } from "../constants/ParticipantStatus";
 
 const defaultState = {
   participants: [],

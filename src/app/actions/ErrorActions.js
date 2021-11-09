@@ -1,5 +1,3 @@
-import { Actions as ControlsActions } from "./ControlsActions";
-
 export const Types = {
   ERROR: "ERROR",
   CLEAR_ERROR: "CLEAR_ERROR"

@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-
-import AttendeesHeaderTimer from "./AttendeesHeaderTimer";
-import { strings } from "../../languages/localizedStrings";
 import LiveIndicatorOn from "../../../static/images/icons/btn-live-on.svg";
-import LiveIndicatorOff from "../../../static/images/icons/btn-live-off.svg";
+import { strings } from "../../languages/localizedStrings";
+import AttendeesHeaderTimer from "./AttendeesHeaderTimer";
 
 class AttendeesHeader extends Component {
   constructor(props) {

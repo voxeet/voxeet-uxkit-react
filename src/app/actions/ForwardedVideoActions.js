@@ -1,5 +1,3 @@
-import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-
 export const Types = {
   UPDATE_FORWARDED_VIDEOS: "UPDATE_FORWARDED_VIDEOS",
 };

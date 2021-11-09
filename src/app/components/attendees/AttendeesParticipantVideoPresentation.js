@@ -1,12 +1,11 @@
-import React, { Fragment, Component } from "react";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import PropTypes from "prop-types";
-import { strings } from "../../languages/localizedStrings";
-import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
-import { Actions as VideoPresentationActions } from "../../actions/VideoPresentationActions";
-import ReactPlayer from "react-player";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import bowser from "bowser";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import ReactPlayer from "react-player";
+import { Actions as VideoPresentationActions } from "../../actions/VideoPresentationActions";
+import { strings } from "../../languages/localizedStrings";
 
 @connect(store => {
   return {

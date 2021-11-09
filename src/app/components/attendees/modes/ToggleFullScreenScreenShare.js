@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import ReactTooltip from "react-tooltip";
 import Fullscreen from "../../../../static/images/icons/icon-fullscreen.svg";
 
 class ToggleFullScreenScreenShare extends Component {

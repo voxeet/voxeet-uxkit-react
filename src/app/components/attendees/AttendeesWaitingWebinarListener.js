@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { strings } from "../../languages/localizedStrings";
 
 class AttendeesWaitingWebinarListener extends Component {

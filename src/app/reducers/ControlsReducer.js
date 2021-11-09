@@ -1,5 +1,4 @@
 import { Types } from "../actions/ControlsActions";
-import modes from "../constants/DisplayModes";
 import sounds from "../libs/sounds";
 
 const defaultState = {

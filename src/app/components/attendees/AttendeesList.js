@@ -4,8 +4,6 @@ import { strings } from "../../languages/localizedStrings";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import userPlaceholder from "../../../static/images/user-placeholder.png";
-import iconPlus from "../../../static/images/icons/icon-plus.svg";
-import iconSlideLeft from "../../../static/images/icons/icon-slide-left.svg";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
 import AttendeesParticipantMute from "./AttendeesParticipantMute";
 import AttendeesParticipantCamera from "./AttendeesParticipantCamera";

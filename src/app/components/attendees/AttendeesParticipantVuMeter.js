@@ -1,11 +1,9 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
-
-import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import userPlaceholder from "../../../static/images/user-placeholder.png";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
+
 
 class AttendeesParticipantVuMeter extends Component {
   constructor(props) {

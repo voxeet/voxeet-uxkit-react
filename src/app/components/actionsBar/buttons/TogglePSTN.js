@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import browser from "bowser";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
 import PhoneOff from "../../../../static/images/icons/btn-dialin-off.svg";

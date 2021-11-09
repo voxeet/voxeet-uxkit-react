@@ -1,14 +1,13 @@
-import React, { Fragment, Component } from "react";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import { Actions as InputManagerActions } from "../actions/InputManagerActions";
-import AttendeesParticipantVideo from "./attendees/AttendeesParticipantVideo";
-import PropTypes from "prop-types";
-import Cookies from "js-cookie";
 import bowser from "bowser";
-import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
+import Cookies from "js-cookie";
+import PropTypes from "prop-types";
+import React, { Component, Fragment } from "react";
+import { Actions as InputManagerActions } from "../actions/InputManagerActions";
 import { strings } from "../languages/localizedStrings.js";
+import { isMobile } from "../libs/browserDetection";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
-import {isMobile} from "../libs/browserDetection";
+import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);

@@ -1,25 +1,23 @@
-import React, { Fragment, Component } from "react";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import PropTypes from "prop-types";
-import bowser from "bowser";
-import { strings } from "../languages/localizedStrings";
-import Cookies from "js-cookie";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-import canAutoPlay from 'can-autoplay';
+import bowser from "bowser";
+import Cookies from "js-cookie";
+import PropTypes from "prop-types";
+import React, { Component, Fragment } from "react";
+import "../../styles/main.less";
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../actions/ParticipantActions";
-import { Actions as ErrorActions } from "../actions/ErrorActions";
+import { setPstnNumbers } from "../constants/PinCode";
+import { strings } from "../languages/localizedStrings";
+import { isMobile } from "../libs/browserDetection";
 import ActionsButtons from "./actionsBar/ActionsButtons";
-import "../../styles/main.less";
-import ConferenceRoomContainer from "./ConferenceRoomContainer";
-import ConferencePreConfigContainer from "./ConferencePreConfigContainer";
-import AttendeesWaiting from "./attendees/AttendeesWaiting";
 import AttendeesList from "./attendees/AttendeesList";
+import AttendeesWaiting from "./attendees/AttendeesWaiting";
 import AttendeesChat from "./attendees/chat/AttendeesChat";
 import LoadingScreen from "./attendees/LoadingScreen";
-import { setPstnNumbers } from "../constants/PinCode";
-import {isMobile} from "../libs/browserDetection";
+import ConferencePreConfigContainer from "./ConferencePreConfigContainer";
+import ConferenceRoomContainer from "./ConferenceRoomContainer";
 
 @connect((state) => {
   return {

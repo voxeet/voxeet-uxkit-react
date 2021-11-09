@@ -1,6 +1,3 @@
-import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-import bowser from "bowser";
-
 export const Types = {
   PARTICIPANT_WAITING_ADDED: "PARTICIPANT_WAITING_ADDED",
   PARTICIPANT_WAITING_STATUS_UPDATED: "PARTICIPANT_WAITING_STATUS_UPDATED",

@@ -1,36 +1,30 @@
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
+import Autolinker from "autolinker";
 import bowser from "bowser";
 import Cookies from "js-cookie";
-import { Actions as InputManagerActions } from "./InputManagerActions";
-import { Actions as ErrorActions } from "./ErrorActions";
-import { Actions as ControlsActions } from "./ControlsActions";
-import { Actions as ParticipantActions } from "./ParticipantActions";
-import { Actions as ForwardedVideoActions } from "./ForwardedVideoActions";
-import { Actions as ConferenceActions } from "./ConferenceActions";
-import { Actions as FilePresentationActions } from "./FilePresentationActions";
-import { Actions as VideoPresentationActions } from "./VideoPresentationActions";
-import { Actions as ChatActions } from "./ChatActions";
-import { Actions as ParticipantWaitingActions } from "./ParticipantWaitingActions";
-import { Actions as OnBoardingMessageActions } from "./OnBoardingMessageActions";
-import { Actions as OnBoardingMessageWithActionActions } from "./OnBoardingMessageWithActionActions";
-import { Actions as OnBoardingMessageWithConfirmationActions } from "./OnBoardingMessageWithConfirmationActions";
-import { Actions as TimerActions } from "./TimerActions";
 import { strings } from "../languages/localizedStrings.js";
-import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
-import { isIOS } from "./../libs/browserDetection";
-import Autolinker from "autolinker";
-import { getOrganizedPosition, getRelativePosition } from "./../libs/position";
-import {
-  STATUS_CONNECTING,
-  STATUS_CONNECTED,
-  STATUS_ON_AIR,
-} from "./../constants/ParticipantStatus";
 import {
   BROADCAST_KICK,
   BROADCAST_KICK_ADMIN_HANG_UP,
   CHAT_MESSAGE,
-  RECORDING_STATE,
+  RECORDING_STATE
 } from "./../constants/BroadcastMessageType";
+import { isIOS } from "./../libs/browserDetection";
+import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
+import { Actions as ChatActions } from "./ChatActions";
+import { Actions as ConferenceActions } from "./ConferenceActions";
+import { Actions as ControlsActions } from "./ControlsActions";
+import { Actions as ErrorActions } from "./ErrorActions";
+import { Actions as FilePresentationActions } from "./FilePresentationActions";
+import { Actions as ForwardedVideoActions } from "./ForwardedVideoActions";
+import { Actions as InputManagerActions } from "./InputManagerActions";
+import { Actions as OnBoardingMessageActions } from "./OnBoardingMessageActions";
+import { Actions as OnBoardingMessageWithActionActions } from "./OnBoardingMessageWithActionActions";
+import { Actions as OnBoardingMessageWithConfirmationActions } from "./OnBoardingMessageWithConfirmationActions";
+import { Actions as ParticipantActions } from "./ParticipantActions";
+import { Actions as ParticipantWaitingActions } from "./ParticipantWaitingActions";
+import { Actions as TimerActions } from "./TimerActions";
+import { Actions as VideoPresentationActions } from "./VideoPresentationActions";
 
 export const Types = {
   INITIALIZED_SUCCESS: "INITIALIZED_SUCCESS",

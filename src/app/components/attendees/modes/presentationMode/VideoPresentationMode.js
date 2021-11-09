@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
 import PropTypes from "prop-types";
-import { strings } from "../../../../languages/localizedStrings";
 import SpeakerActive from "../SpeakerActive";
 
 class VideoPresentationMode extends Component {

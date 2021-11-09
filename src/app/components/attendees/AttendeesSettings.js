@@ -1,19 +1,16 @@
-import React, { Component, Fragment } from "react";
-import bowser from "bowser";
-import PropTypes from "prop-types";
 import { connect } from "@voxeet/react-redux-5.1.1";
-import ReactTooltip from "react-tooltip";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
+import bowser from "bowser";
 import Cookies from "js-cookie";
-import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
+import PropTypes from "prop-types";
+import React, { Component, Fragment } from "react";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
-import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
+import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
+import { strings } from "../../languages/localizedStrings";
+import { isIOS, isMobile } from "./../../libs/browserDetection";
+import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
 import PreConfigVuMeter from "./../preConfig/PreConfigVuMeter";
 import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
-import { strings } from "../../languages/localizedStrings";
-import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
-import {isIOS, isMobile} from "./../../libs/browserDetection";
-import {Actions as ControlsActions} from "../../actions/ControlsActions";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);

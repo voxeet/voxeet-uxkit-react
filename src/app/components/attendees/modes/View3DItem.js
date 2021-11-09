@@ -1,18 +1,13 @@
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
 import Draggable from "react-draggable";
-
-import AttendeesParticipantVuMeter from "../AttendeesParticipantVuMeter";
-import AttendeesParticipantVideo from "../AttendeesParticipantVideo";
-import AttendeesParticipantBar from "../AttendeesParticipantBar";
-
-import { Actions as ParticipantActions } from "../../../actions/ParticipantActions";
-
 import {
   getOrganizedPosition,
   getRelativePosition
 } from "../../../libs/position";
+import AttendeesParticipantBar from "../AttendeesParticipantBar";
+import AttendeesParticipantVuMeter from "../AttendeesParticipantVuMeter";
 
 class View3DItem extends Component {
   constructor(props) {
