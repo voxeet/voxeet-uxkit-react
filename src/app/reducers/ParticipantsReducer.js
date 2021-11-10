@@ -336,7 +336,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         action.payload.stream &&
         action.payload.stream.getVideoTracks().length > 0
       ) {
-        participants[index].stream = action.payload.stream;
+        participants[index] = {...participants[index], stream: action.payload.stream}
       }
       return {
         ...state,
@@ -529,6 +529,62 @@ const ParticipantReducer = (state = defaultState, action) => {
       return {
         ...state,
         quality: { ...action.payload.quality },
+      };
+    }
+    case Types.STREAM_ADDED_FOR_PARTICIPANT: {
+      if (VoxeetSDK.session.participant.id === action.payload.user.id) {
+        let currentUser = { ...state.currentUser };
+        if (
+          action.payload.stream &&
+          action.payload.stream.getTracks().length > 0
+        ) {
+          currentUser = {
+            ...currentUser,
+            stream: action.payload.stream,
+          };
+          return {
+            ...state,
+            currentUser: currentUser,
+            userStream: action.payload.stream,
+          };
+        }
+        if (action.payload.stream && !action.payload.stream.active) {
+          currentUser = {
+            ...currentUser,
+            stream: null,
+          };
+          return {
+            ...state,
+            currentUser: currentUser,
+            userStream: null,
+          };
+        }
+
+        if (currentUser != null) {
+          currentUser.stream = null;
+          return {
+            ...state,
+          };
+        }
+        return state;
+      }
+      const participants = [...state.participants];
+      const index = participants.findIndex(
+        (p) => p.participant_id === action.payload.user.id
+      );
+      if (index === -1) {
+        return state;
+      }
+      participants[index].stream = null;
+      if (
+        action.payload.stream &&
+        action.payload.stream.getVideoTracks().length > 0
+      ) {
+        participants[index] = {...participants[index], stream: action.payload.stream}
+        }
+      return {
+        ...state,
+        participants: [...participants],
       };
     }
     default:

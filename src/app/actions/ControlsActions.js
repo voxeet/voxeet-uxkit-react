@@ -35,7 +35,8 @@ export const Types = {
   TOGGLE_MAX_REMOTE_PARTICIPANTS: "TOGGLE_MAX_REMOTE_PARTICIPANTS",
   TOGGLE_REQUESTED_VIDEO: "TOGGLE_REQUESTED_VIDEO",
   SET_REQUESTED_VIDEO: "SET_REQUESTED_VIDEO",
-  SET_CONFERENCE_PERMISSIONS: "SET_CONFERENCE_PERMISSIONS"
+  SET_CONFERENCE_PERMISSIONS: "SET_CONFERENCE_PERMISSIONS",
+  SET_VIRTUAL_BACKGROUND_MODE: "SET_VIRTUAL_BACKGROUND_MODE",
 };
 
 export class Actions {
@@ -315,6 +316,15 @@ export class Actions {
       type: Types.SET_CONFERENCE_PERMISSIONS,
       payload: {
         conferencePermissions
+      }
+    };
+  }
+
+  static setVirtualBackgroundMode(mode) {
+    return {
+      type: Types.SET_VIRTUAL_BACKGROUND_MODE,
+      payload: {
+        mode: mode
       }
     };
   }
