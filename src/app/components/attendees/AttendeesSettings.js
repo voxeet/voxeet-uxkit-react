@@ -4,12 +4,12 @@ import PropTypes from "prop-types";
 import { connect } from "@voxeet/react-redux-5.1.1";
 import ReactTooltip from "react-tooltip";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-import Cookies from "js-cookie";
+import Cookies from "./../../libs/Storage";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
-import PreConfigVuMeter from "./../preConfig/PreConfigVuMeter";
-import AttendeesSettingsVuMeter from "./AttendeesSettingsVuMeter";
+import AttendeesSettingsVuMeterFromAudioLevel from "./AttendeesSettingsVuMeterFromAudioLevel";
+import AttendeesSettingsVuMeterFromMediaStream from "./AttendeesSettingsVuMeterFromMediaStream";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
 import {isIOS, isMobile} from "./../../libs/browserDetection";
@@ -38,6 +38,9 @@ class AttendeesSettings extends Component {
     let audioTransparentMode = ((this.props.controlsStore.audioTransparentMode !== undefined) ? this.props.controlsStore.audioTransparentMode : false);
     let videoEnabled = ((this.props.controlsStore.videoEnabled !== undefined) ? this.props.controlsStore.videoEnabled : true);
     let lowBandwidthMode = !videoEnabled && !maxVideoForwarding
+    let virtualBackgroundMode = ((this.props.controlsStore.virtualBackgroundMode !== undefined) ? this.props.controlsStore.virtualBackgroundMode : Cookies.get("virtualBackgroundMode"));
+    if(virtualBackgroundMode=='null')
+      virtualBackgroundMode = null;
 
     this.state = {
       runningAnimation: false,
@@ -48,16 +51,19 @@ class AttendeesSettings extends Component {
       testAudio: null,
       testAudioPlaying: false,
       audioTransparentMode: audioTransparentMode,
+      videoEnabled: videoEnabled,
       maxVideoForwarding: maxVideoForwarding,
-      lowBandwidthMode: lowBandwidthMode
+      lowBandwidthMode: lowBandwidthMode,
+      virtualBackgroundMode: virtualBackgroundMode
     };
-    this.setAudioDevice = this.setAudioDevice.bind(this);
+    this.onAudioDeviceSelected = this.onAudioDeviceSelected.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
-    this.setOutputDevice = this.setOutputDevice.bind(this);
+    this.onOutputDeviceSelected = this.onOutputDeviceSelected.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
     this.handleChangeLowBandwidthMode = this.handleChangeLowBandwidthMode.bind(this);
     this.onAudioTransparentModeChange = this.onAudioTransparentModeChange.bind(this);
     this.handleMaxVideoForwardingChange = this.handleMaxVideoForwardingChange.bind(this);
+    this.onVirtualBackgroundModeChange = this.onVirtualBackgroundModeChange.bind(this);
     this.maxVFTimer = null;
 
     this.isIOS = isIOS();
@@ -124,7 +130,23 @@ class AttendeesSettings extends Component {
       this.props.controlsStore &&
         prevProps.controlsStore.videoEnabled !== this.props.controlsStore.videoEnabled
     ) {
+      this.setState({
+        videoEnabled: this.props.controlsStore.videoEnabled,
+      });
+    }
+    if (
+      this.props.controlsStore &&
+        prevProps.controlsStore.videoEnabled !== this.props.controlsStore.videoEnabled
+    ) {
       this.setState({ lowBandwidthMode: !this.props.controlsStore.videoEnabled && !this.props.controlsStore.maxVideoForwarding });
+    }
+
+    if (
+      this.props.controlsStore &&
+        prevProps.controlsStore.virtualBackgroundMode !== this.props.controlsStore.virtualBackgroundMode
+    ) {
+      console.log('virtualBackgroundMode changed %s -> %s', prevProps.controlsStore.virtualBackgroundMode, this.props.controlsStore.virtualBackgroundMode)
+      this.setState({ virtualBackgroundMode: this.props.controlsStore.virtualBackgroundMode });
     }
 
     if (
@@ -146,53 +168,52 @@ class AttendeesSettings extends Component {
   }
 
   initDevices() {
-    VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
-      if (this.props.inputManager.currentAudioDevice != "") {
-        let exist = false;
-        devices.map((device, i) => {
-          if (device.deviceId == this.props.inputManager.currentAudioDevice && device.deviceId != "") {
-            exist = true;
-          }
-        });
-        if (!exist && devices.length) {
-          let selected_device = devices.find(device => device.deviceId == 'default');
-          if (!selected_device)
-            selected_device = devices[0];
-          Cookies.set("input", selected_device.deviceId, default_cookies_param);
-          this.props.dispatch(
-            InputManagerActions.inputAudioChange(selected_device.deviceId)
+    VoxeetSDK.mediaDevice.enumerateAudioDevices("input").then(devices => {
+        this.setState({ audioDevices: devices });
+
+        // Pick out an audio input device:
+        // 1. use a current selected device
+        // 2. OR use a default device
+        // 3. OR use the first device from the device list
+        const deviceInfo =
+          devices.length && (
+            devices.find(e => e.deviceId === this.props.inputManager.currentAudioDevice)
+            || devices.find(e => e.deviceId === "default")
+            || devices[0]
           );
+
+        // If the selected device is default, select it by using its proper deviceId
+        // (other than "default") but keep UI informed that the "default" is still selected.
+        if (deviceInfo.deviceId === "default") {
+          return this.setAudioDevice(
+            devices.find(e => e.groupId === deviceInfo.groupId
+                           && e.deviceId !== "default")
+              .deviceId,
+            "default");
         }
-      }
-      this.setState({
-        audioDevices: devices
-      });
-    });
+
+        return this.setAudioDevice(deviceInfo.deviceId);
+      })
+      .catch(e => console.error("Initializing an audio input device failed.", e));
 
     VoxeetSDK.mediaDevice.enumerateAudioDevices("output").then(devices => {
-      if (this.props.inputManager.currentOutputDevice != "") {
-        let exist = false;
-        devices.map((device, i) => {
-          if (
-            device.deviceId == this.props.inputManager.currentOutputDevice && device.deviceId != ""
-          ) {
-            exist = true;
-          }
-        });
-        if (!exist && devices.length) {
-          let selected_device = devices.find(device => device.deviceId == 'default');
-          if (!selected_device)
-            selected_device = devices[0];
-          Cookies.set("output", selected_device.deviceId, default_cookies_param);
-          this.props.dispatch(
-            InputManagerActions.outputAudioChange(selected_device.deviceId)
+        this.setState({ outputDevices: devices });
+
+        // Pick out an audio output device:
+        // 1. use a current selected device
+        // 2. OR use a default device
+        // 3. OR use the first device from the device list
+        const deviceInfo =
+          devices.length && (
+            devices.find(e => e.deviceId === this.props.inputManager.currentOutputDevice)
+            || devices.find(e => e.deviceId === "default")
+            || devices[0]
           );
-        }
-      }
-      this.setState({
-        outputDevices: devices
-      });
-    });
+
+        return this.setOutputDevice(deviceInfo.deviceId);
+      })
+      .catch(e => console.error("Initializing an audio output device failed.", e));
+
 
     VoxeetSDK.mediaDevice.enumerateVideoDevices().then(devices => {
       if (this.props.inputManager.currentVideoDevice != "") {
@@ -216,26 +237,40 @@ class AttendeesSettings extends Component {
       this.setState({
         videoDevices: devices
       });
+    })
+    .catch((e) => console.error(e));
+  }
+
+  onOutputDeviceSelected(e) {
+    this.setOutputDevice(e.target.value).catch(e =>
+      console.error("Selecting audio output device failed.", e)
+    );
+  }
+
+  setOutputDevice(deviceId) {
+    return VoxeetSDK.mediaDevice.selectAudioOutput(deviceId).then(() => {
+      Cookies.set("output", deviceId, default_cookies_param);
+      this.props.dispatch(InputManagerActions.outputAudioChange(deviceId));
     });
   }
 
-  setOutputDevice(e) {
-    const deviceId = e.target.value;
-    VoxeetSDK.mediaDevice.selectAudioOutput(deviceId);
-    Cookies.set("output", deviceId, default_cookies_param);
-    this.props.dispatch(InputManagerActions.outputAudioChange(deviceId));
+  onAudioDeviceSelected(e) {
+    this.setAudioDevice(e.target.value).catch(e =>
+      console.error("Selecting audio input device failed.", e)
+    );
   }
 
-  setAudioDevice(e) {
-    const deviceId = e.target.value;
-    VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
-      Cookies.set("input", deviceId, default_cookies_param);
+  setAudioDevice(deviceId, guiDeviceId = deviceId) {
+    return VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
       if (this.props.microphoneMuted) {
-        VoxeetSDK.conference.mute(VoxeetSDK.session.participant, true);
+        VoxeetSDK.conference
+          .mute(VoxeetSDK.session.participant, true)
+          .catch((e) => console.warn("Muting a new selected input device failed.", e));
       }
-      this.props.dispatch(InputManagerActions.inputAudioChange(deviceId));
-    });
 
+      Cookies.set("input", guiDeviceId, default_cookies_param);
+      this.props.dispatch(InputManagerActions.inputAudioChange(guiDeviceId));
+    });
   }
 
   setVideoDevice(e) {
@@ -259,6 +294,16 @@ class AttendeesSettings extends Component {
       Cookies.set('audioTransparentMode', this.state.audioTransparentMode, default_cookies_param);
       this.props.dispatch(ConferenceActions.setAudioTransparentMode(this.state.audioTransparentMode));
     })
+  }
+
+  onVirtualBackgroundModeChange(mode) {
+    console.log('onVirtualBackgroundModeChange', mode);
+    this.setState({
+      virtualBackgroundMode: mode!==this.state.virtualBackgroundMode?mode:null
+    }, () => {
+      console.log('about to call ConferenceActions.setVirtualBackgroundMode', this.state.virtualBackgroundMode);
+      this.props.dispatch(ConferenceActions.setVirtualBackgroundMode(this.state.virtualBackgroundMode));
+    });
   }
 
   handleChangeLowBandwidthMode(event) {
@@ -319,8 +364,9 @@ class AttendeesSettings extends Component {
   }
 
   render() {
-    const { lowBandwidthMode, maxVideoForwarding, audioTransparentMode } = this.state;
+    const { lowBandwidthMode, maxVideoForwarding, audioTransparentMode, virtualBackgroundMode, videoEnabled } = this.state;
     //const { audioTransparentMode } = this.props.controlsStore;
+
     const { attendeesSettingsOpened, isListener, dolbyVoiceEnabled } = this.props;
     const MAX_MAXVF = isMobile()?4:16;
     const {
@@ -352,7 +398,7 @@ class AttendeesSettings extends Component {
                     name="output"
                     value={currentOutputDevice}
                     className="form-control select-audio-output"
-                    onChange={this.setOutputDevice}
+                    onChange={this.onOutputDeviceSelected}
                     disabled={false}
                   >
                     {this.state.outputDevices.map((device, i) => (
@@ -387,7 +433,7 @@ class AttendeesSettings extends Component {
                       name="audio"
                       value={currentAudioDevice}
                       className="form-control select-audio-input"
-                      onChange={this.setAudioDevice}
+                      onChange={this.onAudioDeviceSelected}
                     >
                       {this.state.audioDevices.map((device, i) => (
                         <option key={i} value={device.deviceId}>
@@ -397,9 +443,9 @@ class AttendeesSettings extends Component {
                     </select>
                   </div>
                   <div className="form-group">
-                    {(this.isIOS) ?
-                      <AttendeesSettingsVuMeter maxLevel={21} /> :
-                      <PreConfigVuMeter maxLevel={21} />}
+                    {(this.isIOS || bowser.safari) ?
+                      <AttendeesSettingsVuMeterFromAudioLevel maxLevel={21} /> :
+                      <AttendeesSettingsVuMeterFromMediaStream maxLevel={21} />}
                   </div>
                   {dolbyVoiceEnabled && <div className="form-group switch-enable">
                     <div className='switch-mode'>
@@ -428,6 +474,20 @@ class AttendeesSettings extends Component {
                     />
                     <label htmlFor="lowBandwidthMode">
                       {strings.lowBandwidthMode}
+                    </label>
+                  </div>
+                </div>
+                <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
+                  <div className='switch-mode'>
+                    <input
+                        id="vbModeBokeh"
+                        name="vbModeBokeh"
+                        type="checkbox"
+                        onChange={() => this.onVirtualBackgroundModeChange('bokeh')}
+                        checked={virtualBackgroundMode=='bokeh'}
+                    />
+                    <label htmlFor="vbModeBokeh">
+                      {strings.bokehMode}
                     </label>
                   </div>
                 </div>
@@ -468,7 +528,7 @@ AttendeesSettings.propTypes = {
   isListener: PropTypes.bool.isRequired,
   attendeesSettingsOpened: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
-  maxVideoForwarding: PropTypes.number
+  maxVideoForwarding: PropTypes.number,
 };
 
 export default AttendeesSettings;
