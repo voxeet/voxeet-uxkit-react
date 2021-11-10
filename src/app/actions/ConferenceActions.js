@@ -365,7 +365,7 @@ export class Actions {
         Cookies.get('virtualBackgroundMode'));
     if(virtualBackgroundMode=='null')
       virtualBackgroundMode = null;
-    return (dispatch, getState) => {
+    return async (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
       dispatch(this._conferenceConnecting());
@@ -673,9 +673,9 @@ export class Actions {
                     preConfigPayload.audioTransparentMode !== undefined
                 ) {
                   dispatch(
-                      ConferenceActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode)
-                    );
-                  }
+                    ConferenceActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode)
+                  );
+                }
                 if (maxVideoForwarding!==undefined) {
                   dispatch(
                     ControlsActions.setMaxVideoForwarding(maxVideoForwarding)
