@@ -12,7 +12,7 @@ import AttendeesSettingsVuMeterFromAudioLevel from "./AttendeesSettingsVuMeterFr
 import AttendeesSettingsVuMeterFromMediaStream from "./AttendeesSettingsVuMeterFromMediaStream";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
-import {isIOS, isMobile} from "./../../libs/browserDetection";
+import {isIOS, isMobile, isElectron} from "./../../libs/browserDetection";
 import {Actions as ControlsActions} from "../../actions/ControlsActions";
 
 var today = new Date();
@@ -477,20 +477,20 @@ class AttendeesSettings extends Component {
                     </label>
                   </div>
                 </div>
-                <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
+                {isElectron() && <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
                   <div className='switch-mode'>
                     <input
                         id="vbModeBokeh"
                         name="vbModeBokeh"
                         type="checkbox"
                         onChange={() => this.onVirtualBackgroundModeChange('bokeh')}
-                        checked={virtualBackgroundMode=='bokeh'}
+                        checked={virtualBackgroundMode == 'bokeh'}
                     />
                     <label htmlFor="vbModeBokeh">
                       {strings.bokehMode}
                     </label>
                   </div>
-                </div>
+                </div>}
                 <div className={`form-group switch-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
                   <div className='input-wrapper'>
                     <div className='input-value'>0</div>
