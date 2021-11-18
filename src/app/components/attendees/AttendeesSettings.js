@@ -68,7 +68,6 @@ class AttendeesSettings extends Component {
     this.handleMaxVideoForwardingChange = this.handleMaxVideoForwardingChange.bind(this);
     this.onVirtualBackgroundModeChange = this.onVirtualBackgroundModeChange.bind(this);
     this.onVideoDenoiseChange = this.onVideoDenoiseChange.bind(this);
-    this.onCreateStateDump = this.onCreateStateDump.bind(this);
     this.maxVFTimer = null;
 
     this.isIOS = isIOS();
@@ -309,10 +308,6 @@ class AttendeesSettings extends Component {
     })
   }
 
-  onCreateStateDump() {
-    this.props.dispatch(ConferenceActions.createStateDump());
-  }
-
   onVirtualBackgroundModeChange(mode) {
     console.log('onVirtualBackgroundModeChange', mode);
     this.setState({
@@ -551,18 +546,6 @@ class AttendeesSettings extends Component {
                     <div className='maxVideoForwardingValue'>{`${strings.showVideoParticipants1} ${!lowBandwidthMode ? maxVideoForwarding : 0} ${strings.showVideoParticipants2}`}</div>
                   </label>
                 </div>
-                {dolbyVoiceEnabled && <div className='form-group'>
-                  <div className='blockButton'>
-                    <button
-                      id="createStateDump"
-                      type="button"
-                      className="create-state-dump"
-                      onClick={this.onCreateStateDump}
-                    >
-                      <span>{strings.createStateDump}</span>
-                    </button>
-                  </div>
-                </div>}
               <div className="hint-text">
                 <p>{strings.problemSettings}</p>
                 <p>{strings.saveSettings}</p>

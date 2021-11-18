@@ -151,9 +151,6 @@ export const strings = new LocalizedStrings({
     pinnedCameraOn: "Click icon to only view video from this participant if he/she talked",
     bokehMode: "Bokeh mode",
     videoDenoise: "Video noise reduction",
-    createStateDump: "Create state dump",
-    createdStateDump: "State dump has been created",
-    stateDumpFailed: "Failed to create state dump"
   },
   fr: {
     noPstnNumbers: "Pas de numéro PSTN ...",
