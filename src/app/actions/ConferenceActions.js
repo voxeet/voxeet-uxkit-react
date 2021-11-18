@@ -851,35 +851,6 @@ export class Actions {
     };
   }
 
-  static createStateDump() {
-    return (dispatch) => {
-      VoxeetSDK.conference.createStateDump().then(dump => {
-        var link = document.createElement("a");
-        if (link.download !== undefined && dump) {
-          let filename = "DVC_State_dump_" + new Date().toISOString() + ".zip";
-          const url = window.URL.createObjectURL(new Blob([dump]));
-          link.setAttribute("href", url);
-          link.setAttribute("download", filename);
-          link.style.visibility = "hidden";
-
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-
-          dispatch(OnBoardingMessageActions.onBoardingDisplay(
-            strings.createdStateDump,
-            1000
-          ));
-        } else {
-          dispatch(OnBoardingMessageActions.onBoardingDisplay(
-            strings.stateDumpFailed,
-            1000
-          ));
-        }
-      });
-    };
-  }
-
   static setMaxVideoForwarding(value) {
     return (dispatch, getState) => {
       const {
