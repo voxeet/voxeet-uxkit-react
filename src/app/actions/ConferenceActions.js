@@ -736,6 +736,15 @@ export class Actions {
         dispatch(TimerActions.stopTime());
         dispatch(ConferenceActions._conferenceLeave());
         dispatch(ConferenceActions._conferenceLeave(controls.disableSounds));
+        if (controls.closeSessionAtHangUp) {
+          this._removeListeners().then(() => {
+            VoxeetSDK.session.close().catch((err)=>{
+              console.error(err);
+            });
+          });
+        }
+      }).catch((err)=>{
+        console.error(err);
       });
     };
   }
