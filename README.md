@@ -9,6 +9,13 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 3.2.3
+
+#### Bug fixes
+
+- Fixed an issue where listeners and participants without streams are not visible in the conference
+- Fixed an issue where the switch for bokeh mode is visible in web browsers
+
 ### 3.2.2
 
 #### Bug fixes
