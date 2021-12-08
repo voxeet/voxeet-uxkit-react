@@ -12,7 +12,7 @@ import AttendeesSettingsVuMeterFromAudioLevel from "./AttendeesSettingsVuMeterFr
 import AttendeesSettingsVuMeterFromMediaStream from "./AttendeesSettingsVuMeterFromMediaStream";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "./../../libs/getVideoDeviceName";
-import {isIOS, isMobile} from "./../../libs/browserDetection";
+import {isIOS, isMobile, isElectron} from "./../../libs/browserDetection";
 import {Actions as ControlsActions} from "../../actions/ControlsActions";
 
 var today = new Date();
@@ -59,6 +59,7 @@ class AttendeesSettings extends Component {
     this.onAudioDeviceSelected = this.onAudioDeviceSelected.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
     this.onOutputDeviceSelected = this.onOutputDeviceSelected.bind(this);
+    this.onDvcDumpClicked = this.onDvcDumpClicked.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
     this.handleChangeLowBandwidthMode = this.handleChangeLowBandwidthMode.bind(this);
     this.onAudioTransparentModeChange = this.onAudioTransparentModeChange.bind(this);
@@ -165,6 +166,29 @@ class AttendeesSettings extends Component {
 
   onDeviceChange() {
     this.initDevices();
+  }
+
+  onAudioTransparentModeChange() {
+    const { audioTransparentMode } = this.props.controlsStore;
+    this.props.dispatch(ConferenceActions.toggleAudioTransparentMode(!audioTransparentMode));
+  }
+
+  async onDvcDumpClicked(e) {
+    e.preventDefault();
+    let dump = await VoxeetSDK.conference.createStateDump();
+    var link = document.createElement("a");
+    if (link.download !== undefined && dump) {
+      let filename = "DVWC_State_dump_" + new Date().toISOString() + ".zip";
+      let url = URL.createObjectURL(dump.content);
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      console.log("Failed to create DVWC state dump");
+    }
   }
 
   initDevices() {
@@ -461,7 +485,10 @@ class AttendeesSettings extends Component {
                       </label>
                     </div>
                   </div>}
-                </Fragment>)
+
+                  <button className="button-dvc-dump" onClick={this.onDvcDumpClicked}>DVC DUMP</button>
+                  </Fragment>
+                )
               }
                 <div className="form-group switch-enable">
                   <div className='switch-mode'>
@@ -477,20 +504,20 @@ class AttendeesSettings extends Component {
                     </label>
                   </div>
                 </div>
-                <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
+                {isElectron() && <div className={`form-group switch-enable ${!videoEnabled ? 'disabled-form' : ''}`}>
                   <div className='switch-mode'>
                     <input
                         id="vbModeBokeh"
                         name="vbModeBokeh"
                         type="checkbox"
                         onChange={() => this.onVirtualBackgroundModeChange('bokeh')}
-                        checked={virtualBackgroundMode=='bokeh'}
+                        checked={virtualBackgroundMode == 'bokeh'}
                     />
                     <label htmlFor="vbModeBokeh">
                       {strings.bokehMode}
                     </label>
                   </div>
-                </div>
+                </div>}
                 <div className={`form-group switch-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
                   <div className='input-wrapper'>
                     <div className='input-value'>0</div>
