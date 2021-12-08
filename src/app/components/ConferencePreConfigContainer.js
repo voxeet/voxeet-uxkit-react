@@ -9,7 +9,7 @@ import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
-import {isMobile} from "../libs/browserDetection";
+import {isMobile, isElectron} from "../libs/browserDetection";
 
 var today = new Date();
 today.setDate(today.getDate() + 365);
@@ -764,20 +764,22 @@ class ConferencePreConfigContainer extends Component {
                                   </label>
                                 </div>
                               </div>
-                              <div className={`group-enable ${!this.state.videoEnabled ? 'disabled-form' : ''}`}>
+                              {isElectron() &&  <div className={`group-enable ${!this.state.videoEnabled ? 'disabled-form' : ''}`}>
                                 <div className='enable-item'>
                                   <input
                                       id="virtualBackgroundMode"
                                       name="virtualBackgroundMode"
                                       type="checkbox"
-                                      onChange={() => {this.handleVirtualBackgroundModeChange('bokeh')}}
-                                      checked={virtualBackgroundMode=='bokeh' ? true : false}
+                                      onChange={() => {
+                                        this.handleVirtualBackgroundModeChange('bokeh')
+                                      }}
+                                      checked={virtualBackgroundMode == 'bokeh' ? true : false}
                                   />
                                   <label htmlFor="virtualBackgroundMode">
                                     {strings.bokehMode}
                                   </label>
                                 </div>
-                              </div>
+                              </div>}
                               <div className={`group-enable maxVideoForwarding ${lowBandwidthMode ? 'disabled-form' : ''}`}>
                                 <div className='input-wrapper'>
                                   <div className='input-value'>0</div>
