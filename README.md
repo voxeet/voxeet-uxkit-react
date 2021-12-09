@@ -9,6 +9,16 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components
 
 ## Changelog
 
+### 3.2.2
+
+#### Bug fixes
+
+- Fixed device selection on Safari 15
+- Fixed the participantAdded event handling behavior to display all participants who are present at a conference
+- Fixed an output audio device issue that occurs for participants who join a conference using the Chrome browser
+- Fixed issues related to opening and closing sessions
+- Fixed an issue where YouTube videos shared during a conference start from a specific times
+
 ### 3.2.1
 
 #### Bug fixes
