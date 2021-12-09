@@ -7,9 +7,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 
 try {
-  require("os").networkInterfaces();
+  require('os').networkInterfaces();
 } catch (e) {
-  require("os").networkInterfaces = () => ({});
+  require('os').networkInterfaces = () => ({});
 }
 
 module.exports = {
@@ -25,9 +25,9 @@ module.exports = {
     libraryTarget: "umd",
   },
   externals: {
-    "@voxeet/voxeet-web-sdk": true,
+    '@voxeet/voxeet-web-sdk': true,
     react: true,
-    "react-dom": true,
+    'react-dom': true,
   },
   module: {
     rules: [
@@ -107,7 +107,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env": {
+      'process.env': {
         NODE_ENV: `"production"`,
       },
       __VERSION__: JSON.stringify(package.version),
