@@ -803,32 +803,6 @@ export class Actions {
     };
   }
 
-  static handleConferenceLeft() {
-    return (dipatch, getState) => {
-      const {
-        voxeet: { participants, controls },
-      } = getState();
-      if (controls.closeSessionAtHangUp) {
-        this._removeListeners().then(() => {
-          VoxeetSDK.session.close();
-        });
-      }
-    };
-  }
-
-  static handleConferenceLeft() {
-    return (dipatch, getState) => {
-      const {
-        voxeet: { participants, controls },
-      } = getState();
-      if (controls.closeSessionAtHangUp) {
-        this._removeListeners().then(() => {
-          VoxeetSDK.session.close();
-        });
-      }
-    };
-  }
-
   static toggleVideoPresentation(url) {
     return (dispatch, getState) => {
       const {
