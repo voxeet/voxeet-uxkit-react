@@ -3,8 +3,8 @@
 ## Installation
 
 ```
-npm i @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1.1@5.1.1 --save
-yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1.1@5.1.1
+npm i @voxeet/voxeet-web-sdk @voxeet/react-components --save
+yarn add @voxeet/voxeet-web-sdk @voxeet/react-components 
 ```
 
 ## Changelog

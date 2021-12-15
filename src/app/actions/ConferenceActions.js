@@ -317,8 +317,10 @@ export class Actions {
     let virtualBackgroundMode = (preConfigPayload && preConfigPayload.virtualBackgroundMode !== undefined?
         preConfigPayload.virtualBackgroundMode:
         Cookies.get('virtualBackgroundMode'));
-    if(virtualBackgroundMode=='null')
-      virtualBackgroundMode = null;
+    virtualBackgroundMode = ['none', 'bokeh'].indexOf(virtualBackgroundMode) >= 0 ? virtualBackgroundMode : 'none';
+    const videoDenoise = (preConfigPayload && preConfigPayload.videoDenoise !== undefined?
+        preConfigPayload.videoDenoise:
+        Cookies.get('videoDenoise'));
     return async (dispatch, getState) => {
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
@@ -416,6 +418,7 @@ export class Actions {
                     audio3D: false,
                     maxVideoForwarding: maxVideoForwarding,
                     videoFilter: virtualBackgroundMode,
+                    videoFilterOptions: {videoDenoise: videoDenoise},
                     dvwc: dvwc,
                   })
                   .then((res) => {
@@ -493,6 +496,7 @@ export class Actions {
                 audio3D: false,
                 maxVideoForwarding: maxVideoForwarding,
                 videoFilter: virtualBackgroundMode,
+                videoFilterOptions: {videoDenoise: videoDenoise},
                 dvwc: dvwc,
               })
               .then((res) => {
@@ -946,12 +950,12 @@ export class Actions {
       const {
         voxeet: { controls },
       } = getState();
-      let { virtualBackgroundMode } = controls;
+      let { virtualBackgroundMode, videoDenoise } = controls;
       if (!mode) {
         console.log('About to set vb to null');
         // Set to null
         if(VoxeetSDK.videoFilters) {
-          return VoxeetSDK.videoFilters.setFilter('none').then(() => {
+          return VoxeetSDK.videoFilters.setFilter('none', { videoDenoise:videoDenoise }).then(() => {
             Cookies.set("virtualBackgroundMode", null);
             dispatch(ControlsActions.setVirtualBackgroundMode(null));
           });
@@ -969,8 +973,8 @@ export class Actions {
           return Promise.resolve();
         }
         let setMode = (mode=='bokeh')?
-            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'bokeh'):
-            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'none'); // TODO: image mode
+            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'bokeh', { videoDenoise:videoDenoise }):
+            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'none', { videoDenoise:videoDenoise }); // TODO: image mode
 
         return setMode().then(() => {
           Cookies.set("virtualBackgroundMode", 'bokeh');
@@ -980,6 +984,21 @@ export class Actions {
     };
   }
 
+  static setVideoDenoise(enabled) {
+    return (dispatch, getState) => {
+      const {
+        voxeet: { controls },
+      } = getState();
+      let { virtualBackgroundMode } = controls;
+      const videoFilter = ['none', 'bokeh'].indexOf(virtualBackgroundMode) >= 0 ? virtualBackgroundMode : 'none';
+      return VoxeetSDK.videoFilters.setFilter(videoFilter, {videoDenoise: enabled})
+        .then(() => {
+          Cookies.set("videoDenoise", enabled);
+          dispatch(ControlsActions.setVideoDenoise(enabled));
+        })
+        .catch((e) => console.warn(e));
+    }
+  }
 
   static checkIfUpdateStatusUser(user) {
     return (dispatch, getState) => {
