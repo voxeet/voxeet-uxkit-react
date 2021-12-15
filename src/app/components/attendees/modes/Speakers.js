@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { strings } from "../../../languages/localizedStrings";
 import { Actions as ActiveSpeakerActions } from "../../../actions/ActiveSpeakerActions";
@@ -10,12 +10,13 @@ import AttendeesParticipantBar from "../AttendeesParticipantBar";
 import ScreenshareMode from "./presentationMode/ScreenshareMode";
 import FilePresentationMode from "./presentationMode/FilePresentationMode";
 import VideoPresentationMode from "./presentationMode/VideoPresentationMode";
+import {getUxKitContext} from "../../../context";
 
 @connect((store) => {
   return {
     activeSpeakerStore: store.voxeet.activeSpeaker,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class Speakers extends Component {
   constructor(props) {
     super(props);

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import AttendeesParticipantVideo from "../attendees/AttendeesParticipantVideo";

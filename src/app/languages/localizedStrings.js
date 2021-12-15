@@ -147,6 +147,7 @@ export const strings = new LocalizedStrings({
     pinnedCameraOff: "Click icon to always view video from this participant",
     pinnedCameraOn: "Click icon to only view video from this participant if he/she talked",
     bokehMode: "Bokeh mode",
+    videoDenoise: "Video noise reduction",
     dolbyVoiceNotSupported: 'Unable to use Dolby Voice',
   },
   fr: {
