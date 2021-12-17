@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
+import Measure from 'react-measure'
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
 import { Actions as ActiveSpeakerActions } from "../../actions/ActiveSpeakerActions";
+import { updateSpatialScene } from "../../libs/position";
 
 import {
   MODE_LIST,
@@ -58,7 +60,9 @@ class Attendees extends Component {
     this.renderWaiting = this.renderWaiting.bind(this);
   }
 
-  componentDidMount() {}
+onBoundsChange(size) {
+    updateSpatialScene(size.bounds);
+}
 
   toggleMicrophone(participant_id, isMuted) {
     this.props.dispatch(
@@ -165,7 +169,8 @@ class Attendees extends Component {
       conferenceId,
       isVideoPresentation,
       dolbyVoiceEnabled,
-      conferencePermissions
+      conferencePermissions,
+      spatialAudioEnabled
     } = this.props;
     const {
       participants,
@@ -183,9 +188,11 @@ class Attendees extends Component {
     } = this.props.participantStore;
     const participantsConnected = participants.filter((p) => p.isConnected);
     const kickPermission = conferencePermissions.has("KICK");
-    return (
+
+    const componentBody = (ref) => (
       <div
         id="conference-attendees"
+        ref={ref} 
         className={
           isWidgetFullScreenOn
             ? "vxt-conference-attendees sidebar-less"
@@ -302,6 +309,7 @@ class Attendees extends Component {
                 isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
                 kickPermission={kickPermission}
+                spatialAudioEnabled={spatialAudioEnabled}
               />
             )}
           {mode === MODE_SPEAKER &&
@@ -340,6 +348,7 @@ class Attendees extends Component {
                 screenShareStream={userStreamScreenShare}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
                 kickPermission={kickPermission}
+                spatialAudioEnabled={spatialAudioEnabled}
               />
             )}
           {participantsConnected.length === 0 &&
@@ -347,8 +356,20 @@ class Attendees extends Component {
             mode === MODE_TILES &&
             this.renderWaiting()}
         </section>
-      </div>
-    );
+      </div>)
+
+    //Wrap this component if spatial is enabled to track layout changes
+    if (spatialAudioEnabled) {
+      return (
+        <Measure
+        bounds
+        onResize={this.onBoundsChange}
+        >{({ measureRef }) => ( componentBody(measureRef))}
+        </Measure>
+      );
+    } else {
+      return componentBody();
+    }
   }
 }
 

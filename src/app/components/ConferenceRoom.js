@@ -241,7 +241,7 @@ class ConferenceRoom extends Component {
 
       if (isDemo) {
         initialized.then(() =>
-          this.props.dispatch(ConferenceActions.joinDemo())
+          this.props.dispatch(ConferenceActions.joinDemo(userInfo, spatialAudio))
         );
       } /*else if (autoJoin && conferenceId != null) {
         const constraintsUpdated = {
@@ -591,7 +591,6 @@ class ConferenceRoom extends Component {
       conferencePincode,
       hasLeft,
       dolbyVoiceEnabled,
-      spatialAudioEnabled,
     } = this.props.conferenceStore;
 
     const { errorMessage, isError } = this.props.errorStore;
@@ -708,8 +707,8 @@ class ConferenceRoom extends Component {
           conferenceId={conferenceId}
           attendeesWaiting={attendeesWaiting}
           dolbyVoiceEnabled={dolbyVoiceEnabled}
-          spatialAudioEnabled={spatialAudioEnabled}
           chatOptions={chatOptions}
+          spatialAudioEnabled={spatialAudio}
         />
       );
     }

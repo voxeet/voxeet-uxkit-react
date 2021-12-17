@@ -282,14 +282,23 @@ export class Actions {
     });
   }
 
-  static joinDemo() {
-    return (dispatch, getState) => {
+  static joinDemo(userInfoRaw, enableSpatialAudio) {
+    return async (dispatch, getState) => {
+      dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
       dispatch(this._conferenceConnecting());
       const {
         voxeet: { participants },
       } = getState();
-      return VoxeetSDK.createDemoConference().then(function (res) {
+      let userInfo = {
+        name: userInfoRaw.name,
+        externalId: userInfoRaw.externalId,
+        avatarUrl: userInfoRaw.avatarUrl,
+      };
+      if (!VoxeetSDK.session.participant) {
+        await VoxeetSDK.session.open(userInfo);
+      }
+      return VoxeetSDK.conference.demo({spatialAudio: enableSpatialAudio}).then(function (res) {
         dispatch(
             ParticipantActions.saveCurrentUser(
                 "Me",
@@ -299,7 +308,21 @@ export class Actions {
                 "123456"
             )
         );
-        dispatch(ConferenceActions._conferenceJoined());
+        dispatch(
+          ParticipantActions.saveCurrentUser(
+            userInfo.name,
+            userInfo.avatarUrl,
+            userInfo.externalId,
+            true
+          )
+        );
+        dispatch(
+          ConferenceActions._conferenceJoined(
+            res.id,
+            "",
+            res.params.dolbyVoice
+          )
+        );
         dispatch(ControlsActions.toggleWidget());
         dispatch(ControlsActions.setConferencePermissions(res.permissions));
         dispatch(ParticipantActions.triggerHandleOnConnect());
