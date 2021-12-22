@@ -21,7 +21,7 @@ class List extends Component {
       <div className="SidebarList">
         <ul className="list-items">
           {participants.map((participant, i) => {
-            if (participant.isConnected && participant.type == "user")
+            if (participant.isConnected)
               return (
                 <ListItem
                   isAdminActived={isAdminActived}
