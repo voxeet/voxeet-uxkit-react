@@ -35,7 +35,7 @@ class ListWidget extends Component {
             />
           )}
           {participants.map((participant, i) => {
-            if (participant.isConnected && participant.type == "user")
+            if (participant.isConnected)
               return (
                 <ListWidgetItem
                   isAdminActived={isAdminActived}

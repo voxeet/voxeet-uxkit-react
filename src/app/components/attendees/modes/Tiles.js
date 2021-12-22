@@ -21,13 +21,14 @@ class Tiles extends Component {
       currentUser,
       isWebinar,
       dolbyVoiceEnabled,
-      kickPermission
+      kickPermission,
+      spatialAudioEnabled
     } = this.props;
     let tilesParticipants = participants.filter(
-        (p) => p.isConnected && p.type == "user"
+        (p) => p.isConnected
     );
     let videoParticipants = tilesParticipants.filter(
-        (p) => p.isConnected && p.type == "user" &&
+        (p) => p.isConnected &&
             ((p.stream !== null) &&
                 (p.stream.active) &&
                 (p.stream.getVideoTracks().length > 0)
@@ -85,6 +86,7 @@ class Tiles extends Component {
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
                 kickPermission={kickPermission}
                 currentUser={currentUser}
+                spatialAudioEnabled={spatialAudioEnabled}
               />
             );
           })}

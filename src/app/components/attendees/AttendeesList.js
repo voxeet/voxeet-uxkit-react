@@ -119,7 +119,7 @@ class AttendeesList extends Component {
     const { isWebinar, isAdmin, attendeesListOpened, toggleMicrophone, toggleForwardedVideo, dolbyVoiceEnabled, invitePermission } = this.props;
     const { filteredUsers } = this.state;
     const participantsConnected = participants.filter(
-      (p) => p.isConnected && p.type == "user"
+      (p) => p.isConnected
     );
     let userNotYetInvitedWithoutFilter = null;
     let userNotYetInvitedWithFilter = null;
