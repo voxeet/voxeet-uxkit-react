@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
-import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
@@ -34,14 +33,19 @@ import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
 import OnBoardingMessageWithConfirmation from "./onBoardingMessage/onBoardingMessageWithConfirmation";
-import {getUxKitContext} from "../../context";
+import { getUxKitContext } from "../../context";
 
-@connect((store) => {
-  return {
-    participantStore: store.voxeet.participants,
-    errorStore: store.voxeet.error,
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      participantStore: store.voxeet.participants,
+      errorStore: store.voxeet.error,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class Attendees extends Component {
   constructor(props) {
     super(props);
@@ -58,8 +62,6 @@ class Attendees extends Component {
     this.renderWaiting = this.renderWaiting.bind(this);
   }
 
-  componentDidMount() {}
-
   toggleMicrophone(participant_id, isMuted) {
     this.props.dispatch(
       ConferenceActions.toggleMicrophone(participant_id, isMuted)
@@ -67,9 +69,7 @@ class Attendees extends Component {
   }
 
   toggleForwardedVideo(participant_id) {
-    this.props.dispatch(
-      ConferenceActions.toggleForwardedVideo(participant_id)
-    );
+    this.props.dispatch(ConferenceActions.toggleForwardedVideo(participant_id));
   }
 
   toggleErrorModal() {
@@ -120,7 +120,10 @@ class Attendees extends Component {
   }
 
   renderWaiting() {
-    return React.createElement(this.props.attendeesWaiting, { ...this.props, key: 'waiting' });
+    return React.createElement(this.props.attendeesWaiting, {
+      ...this.props,
+      key: "waiting",
+    });
   }
 
   renderParticipantList() {
@@ -132,7 +135,7 @@ class Attendees extends Component {
       toggleMicrophone: this.toggleMicrophone,
       toggleForwardedVideo: this.toggleForwardedVideo,
       invitePermission: this.props.conferencePermissions.has("INVITE"),
-      key: 'participant_list',
+      key: "participant_list",
     });
   }
 
@@ -142,12 +145,13 @@ class Attendees extends Component {
       attendeesChatOpened: this.props.attendeesChatOpened,
       participants: this.props.participantStore.participants,
       currentUser: this.props.participantStore.currentUser,
-      key: 'chat',
+      key: "chat",
     });
   }
 
   render() {
     const {
+      forwardedRef,
       mode,
       forceFullscreen,
       toggleMode,
@@ -165,7 +169,8 @@ class Attendees extends Component {
       conferenceId,
       isVideoPresentation,
       dolbyVoiceEnabled,
-      conferencePermissions
+      conferencePermissions,
+      spatialAudioEnabled,
     } = this.props;
     const {
       participants,
@@ -183,9 +188,11 @@ class Attendees extends Component {
     } = this.props.participantStore;
     const participantsConnected = participants.filter((p) => p.isConnected);
     const kickPermission = conferencePermissions.has("KICK");
+
     return (
       <div
         id="conference-attendees"
+        ref={forwardedRef}
         className={
           isWidgetFullScreenOn
             ? "vxt-conference-attendees sidebar-less"
@@ -216,10 +223,12 @@ class Attendees extends Component {
         <OnBoardingMessage />
         <OnBoardingMessageOverlay />
 
-        { mode === MODE_TILES &&
-          (<ActiveSpeakerOverlay
+        {mode === MODE_TILES && (
+          <ActiveSpeakerOverlay
             participants={participantsConnected}
-            currentUser={currentUser}/>)}
+            currentUser={currentUser}
+          />
+        )}
 
         {!bowser.msie && (
           <AttendeesSettings
@@ -230,9 +239,9 @@ class Attendees extends Component {
           />
         )}
 
-          {this.renderParticipantList()}
+        {this.renderParticipantList()}
 
-          {this.renderChat()}
+        {this.renderChat()}
 
         <section
           className={`sidebar-container ${
@@ -302,6 +311,7 @@ class Attendees extends Component {
                 isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
                 kickPermission={kickPermission}
+                spatialAudioEnabled={spatialAudioEnabled}
               />
             )}
           {mode === MODE_SPEAKER &&
@@ -340,6 +350,7 @@ class Attendees extends Component {
                 screenShareStream={userStreamScreenShare}
                 dolbyVoiceEnabled={dolbyVoiceEnabled}
                 kickPermission={kickPermission}
+                spatialAudioEnabled={spatialAudioEnabled}
               />
             )}
           {participantsConnected.length === 0 &&
