@@ -2,13 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
-import Measure from 'react-measure'
-import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
 import { Actions as ActiveSpeakerActions } from "../../actions/ActiveSpeakerActions";
-import { updateSpatialScene } from "../../libs/position";
 
 import {
   MODE_LIST,
@@ -36,14 +33,19 @@ import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
 import OnBoardingMessageWithConfirmation from "./onBoardingMessage/onBoardingMessageWithConfirmation";
-import {getUxKitContext} from "../../context";
+import { getUxKitContext } from "../../context";
 
-@connect((store) => {
-  return {
-    participantStore: store.voxeet.participants,
-    errorStore: store.voxeet.error,
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      participantStore: store.voxeet.participants,
+      errorStore: store.voxeet.error,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class Attendees extends Component {
   constructor(props) {
     super(props);
@@ -60,10 +62,6 @@ class Attendees extends Component {
     this.renderWaiting = this.renderWaiting.bind(this);
   }
 
-onBoundsChange(size) {
-    updateSpatialScene(size.bounds);
-}
-
   toggleMicrophone(participant_id, isMuted) {
     this.props.dispatch(
       ConferenceActions.toggleMicrophone(participant_id, isMuted)
@@ -71,9 +69,7 @@ onBoundsChange(size) {
   }
 
   toggleForwardedVideo(participant_id) {
-    this.props.dispatch(
-      ConferenceActions.toggleForwardedVideo(participant_id)
-    );
+    this.props.dispatch(ConferenceActions.toggleForwardedVideo(participant_id));
   }
 
   toggleErrorModal() {
@@ -124,7 +120,10 @@ onBoundsChange(size) {
   }
 
   renderWaiting() {
-    return React.createElement(this.props.attendeesWaiting, { ...this.props, key: 'waiting' });
+    return React.createElement(this.props.attendeesWaiting, {
+      ...this.props,
+      key: "waiting",
+    });
   }
 
   renderParticipantList() {
@@ -136,7 +135,7 @@ onBoundsChange(size) {
       toggleMicrophone: this.toggleMicrophone,
       toggleForwardedVideo: this.toggleForwardedVideo,
       invitePermission: this.props.conferencePermissions.has("INVITE"),
-      key: 'participant_list',
+      key: "participant_list",
     });
   }
 
@@ -146,12 +145,13 @@ onBoundsChange(size) {
       attendeesChatOpened: this.props.attendeesChatOpened,
       participants: this.props.participantStore.participants,
       currentUser: this.props.participantStore.currentUser,
-      key: 'chat',
+      key: "chat",
     });
   }
 
   render() {
     const {
+      forwardedRef,
       mode,
       forceFullscreen,
       toggleMode,
@@ -170,7 +170,7 @@ onBoundsChange(size) {
       isVideoPresentation,
       dolbyVoiceEnabled,
       conferencePermissions,
-      spatialAudioEnabled
+      spatialAudioEnabled,
     } = this.props;
     const {
       participants,
@@ -189,10 +189,10 @@ onBoundsChange(size) {
     const participantsConnected = participants.filter((p) => p.isConnected);
     const kickPermission = conferencePermissions.has("KICK");
 
-    const componentBody = (ref) => (
+    return (
       <div
         id="conference-attendees"
-        ref={ref} 
+        ref={forwardedRef}
         className={
           isWidgetFullScreenOn
             ? "vxt-conference-attendees sidebar-less"
@@ -223,10 +223,12 @@ onBoundsChange(size) {
         <OnBoardingMessage />
         <OnBoardingMessageOverlay />
 
-        { mode === MODE_TILES &&
-          (<ActiveSpeakerOverlay
+        {mode === MODE_TILES && (
+          <ActiveSpeakerOverlay
             participants={participantsConnected}
-            currentUser={currentUser}/>)}
+            currentUser={currentUser}
+          />
+        )}
 
         {!bowser.msie && (
           <AttendeesSettings
@@ -237,9 +239,9 @@ onBoundsChange(size) {
           />
         )}
 
-          {this.renderParticipantList()}
+        {this.renderParticipantList()}
 
-          {this.renderChat()}
+        {this.renderChat()}
 
         <section
           className={`sidebar-container ${
@@ -356,20 +358,8 @@ onBoundsChange(size) {
             mode === MODE_TILES &&
             this.renderWaiting()}
         </section>
-      </div>)
-
-    //Wrap this component if spatial is enabled to track layout changes
-    if (spatialAudioEnabled) {
-      return (
-        <Measure
-        bounds
-        onResize={this.onBoundsChange}
-        >{({ measureRef }) => ( componentBody(measureRef))}
-        </Measure>
-      );
-    } else {
-      return componentBody();
-    }
+      </div>
+    );
   }
 }
 
