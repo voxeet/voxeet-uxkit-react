@@ -57,7 +57,8 @@ const defaultState = {
   audioTransparentMode: false,
   maxVideoForwarding: undefined,
   requestedVideos: [],
-  virtualBackgroundMode: null
+  virtualBackgroundMode: null,
+  videoDenoise: false,
 };
 
 const ControlsReducer = (state = defaultState, action) => {
@@ -351,6 +352,11 @@ const ControlsReducer = (state = defaultState, action) => {
       return {
         ...state,
         virtualBackgroundMode: action.payload.mode
+      };
+    case Types.SET_VIDEO_DENOISE:
+      return {
+        ...state,
+        videoDenoise: action.payload.videoDenoise
       };
     default:
       return state;

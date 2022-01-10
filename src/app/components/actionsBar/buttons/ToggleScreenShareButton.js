@@ -2,7 +2,7 @@ import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import browser from "bowser";
 import ReactTooltip from "react-tooltip";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import { Actions as OnBoardingMessageActions } from "../../../actions/OnBoardingMessageActions";
 import { strings } from "../../../languages/localizedStrings";
 import ShareScreenOn from "../../../../static/images/icons/btn-share-screen-on.svg";
@@ -17,12 +17,13 @@ import WindowShareOn from "../../../../static/images/icons/icon-window.svg";
 import WindowShareOff from "../../../../static/images/icons/icon-window-hover.svg";
 import dolbyLogo from "../../../../static/images/DDLoader.gif";
 import { isMobile } from "../../../libs/browserDetection";
+import {getUxKitContext} from "../../../context";
 
 @connect(store => {
   return {
     filePresentationStore: store.voxeet.filePresentation
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ToggleScreenShareButton extends Component {
   constructor(props) {
     super(props);

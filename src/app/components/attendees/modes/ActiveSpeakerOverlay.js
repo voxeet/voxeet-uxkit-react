@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { strings } from "../../../languages/localizedStrings";
 import { Actions as ActiveSpeakerActions } from "../../../actions/ActiveSpeakerActions";
@@ -8,13 +8,14 @@ import cameraOn from "../../../../static/images/icons/btn-camera-dark.svg";
 import microphoneOn from "../../../../static/images/icons/btn-mute-dark.svg";
 import microphoneOff from "../../../../static/images/icons/btn-mute-on.svg";
 import {Actions as OnBoardingMessageWithActionActions} from "../../../actions/OnBoardingMessageWithActionActions";
+import {getUxKitContext} from "../../../context";
 
 
 @connect(store => {
     return {
         activeSpeakerStore: store.voxeet.activeSpeaker
     };
-})
+}, null, null, { context: getUxKitContext() })
 class ActiveSpeakerOverlay extends Component {
     constructor(props) {
         super(props);

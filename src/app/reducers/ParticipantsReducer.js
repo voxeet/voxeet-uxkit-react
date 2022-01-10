@@ -196,41 +196,8 @@ const ParticipantReducer = (state = defaultState, action) => {
             console.error("Could not play the sound", e.message);
           });
         }
-        let currentUser = { ...state.currentUser };
-        if (
-          action.payload.stream &&
-          action.payload.stream.getTracks().length > 0
-        ) {
-          currentUser = {
-            ...currentUser,
-            stream: action.payload.stream,
-          };
-          return {
-            ...state,
-            currentUser: currentUser,
-            userStream: action.payload.stream,
-          };
-        }
-        if (action.payload.stream && !action.payload.stream.active) {
-          currentUser = {
-            ...currentUser,
-            stream: null,
-          };
-          return {
-            ...state,
-            currentUser: currentUser,
-            userStream: null,
-          };
-        }
-
-        if (currentUser != null) {
-          currentUser.stream = null;
-          return {
-            ...state,
-          };
-        }
-        return state;
       }
+
       const participants = [...state.participants];
       const index = participants.findIndex(
         (p) => p.participant_id === action.payload.user.id
@@ -240,13 +207,6 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       participants[index].isConnected =
         action.payload.user.status == "Connected" ? true : false;
-      participants[index].stream = null;
-      if (
-        action.payload.stream &&
-        action.payload.stream.getVideoTracks().length > 0
-      ) {
-        participants[index].stream = action.payload.stream;
-      }
       const size = participants.filter(
         (participant) => participant.isConnected === true
       ).length;

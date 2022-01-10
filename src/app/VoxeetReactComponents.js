@@ -1,7 +1,8 @@
 import reducer from "./reducers";
 import ConferenceRoom from "./components/ConferenceRoom";
-import { Provider } from "@voxeet/react-redux-5.1.1";
+import Provider from "./components/VoxeetProvider";
 import ConferenceSounds from "./libs/sounds";
+import {getUxKitContext, setUxKitContext} from "./context";
 
 import {
   ToggleMicrophoneButton,
@@ -23,6 +24,8 @@ module.exports = {
   reducer,
   ConferenceRoom,
   VoxeetProvider: Provider,
+  getUxKitContext,
+  setUxKitContext,
   Buttons: {
     ToggleMicrophoneButton,
     ToggleModeButton,
