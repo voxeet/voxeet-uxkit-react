@@ -120,12 +120,14 @@ class ConferencePreConfigContainer extends Component {
   }
 
   attachMediaStream(stream){
-    if(stream){
+    if(VoxeetSDK.videoFilters && isElectron() && stream) {
+      // Skip setFilter if not supported in SDK or not in NDS
       let tracks = stream.getVideoTracks();
-      if(VoxeetSDK.videoFilters && tracks && tracks[0]) {
+      if(tracks && tracks[0]) {
         switch (this.state.virtualBackgroundMode) {
           case 'bokeh':
-            VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0], videoDenoise: this.state.videoDenoise});
+          case 'staticimage':
+            VoxeetSDK.videoFilters.setFilter(this.state.virtualBackgroundMode, {stream: tracks[0], videoDenoise: this.state.videoDenoise});
             break;
           default:
             VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0], videoDenoise: this.state.videoDenoise});
@@ -556,19 +558,25 @@ class ConferencePreConfigContainer extends Component {
     this.setState({
       virtualBackgroundMode: mode!==this.state.virtualBackgroundMode?mode:null
     }, () => {
-      if(this.state.userStream && VoxeetSDK.videoFilters) {
+      if(!VoxeetSDK.videoFilters || !isElectron()) {
+        // Skip if not supported in SDK or not in NDS
+        return;
+      }
+      if(this.state.userStream) {
         let tracks = this.state.userStream.getVideoTracks();
         if(tracks && tracks[0]) {
           switch (this.state.virtualBackgroundMode) {
             case 'bokeh':
-              VoxeetSDK.videoFilters.setFilter('bokeh', {stream: tracks[0], videoDenoise: this.state.videoDenoise});
+            case 'staticimage':
+              VoxeetSDK.videoFilters.setFilter(this.state.virtualBackgroundMode, {stream: tracks[0], videoDenoise: this.state.videoDenoise});
+              Cookies.set("virtualBackgroundMode", this.state.virtualBackgroundMode, default_cookies_param);
               break;
             default:
               VoxeetSDK.videoFilters.setFilter('none', {stream: tracks[0], videoDenoise: this.state.videoDenoise});
+              Cookies.set("virtualBackgroundMode", 'none', default_cookies_param);
           }
         }
       }
-      Cookies.set("virtualBackgroundMode", this.state.virtualBackgroundMode, default_cookies_param);
     });
   }
 
@@ -576,6 +584,10 @@ class ConferencePreConfigContainer extends Component {
     this.setState({
       videoDenoise: !this.state.videoDenoise
     }, () => {
+      if(!VoxeetSDK.videoFilters || !isElectron()) {
+        // Skip if not supported in SDK or not in NDS
+        return;
+      }
       if(this.state.userStream) {
         const videoFilter = ['none', 'bokeh'].indexOf(this.state.virtualBackgroundMode) >= 0 ? this.state.virtualBackgroundMode : 'none';
         VoxeetSDK.videoFilters.setFilter(videoFilter, {stream: this.state.userStream, videoDenoise: this.state.videoDenoise}).then(() => {

@@ -17,7 +17,7 @@ import { Actions as OnBoardingMessageWithConfirmationActions } from "./OnBoardin
 import { Actions as TimerActions } from "./TimerActions";
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "./../libs/getVideoDeviceName";
-import { isIOS } from "./../libs/browserDetection";
+import { isIOS, isElectron } from "./../libs/browserDetection";
 import Autolinker from "autolinker";
 import { getOrganizedPosition, getRelativePosition } from "./../libs/position";
 import {
@@ -945,39 +945,39 @@ export class Actions {
   }
 
   static setVirtualBackgroundMode(mode) {
-    console.log('About to set vb mode to', mode)
+    console.log('About to set vb mode to', mode);
     return (dispatch, getState) => {
+      if (!VoxeetSDK.videoFilters || !isElectron()) {
+        // Skip if not supported in SDK or not in NDS
+        Cookies.set("virtualBackgroundMode", null);
+        dispatch(ControlsActions.setVirtualBackgroundMode(null));
+        return Promise.resolve();
+      }
       const {
         voxeet: { controls },
       } = getState();
       let { virtualBackgroundMode, videoDenoise } = controls;
-      if (!mode) {
+      if (!mode ) {
         console.log('About to set vb to null');
-        // Set to null
-        if(VoxeetSDK.videoFilters) {
-          return VoxeetSDK.videoFilters.setFilter('none', { videoDenoise:videoDenoise }).then(() => {
-            Cookies.set("virtualBackgroundMode", null);
-            dispatch(ControlsActions.setVirtualBackgroundMode(null));
-          });
-        } else {
+        return VoxeetSDK.videoFilters.setFilter('none', { videoDenoise:videoDenoise }).then(() => {
           Cookies.set("virtualBackgroundMode", null);
           dispatch(ControlsActions.setVirtualBackgroundMode(null));
-          return Promise.resolve();
-        }
+        });
       } else {
-        console.log('About to set vb to bokeh', mode, VoxeetSDK.videoFilters);
-        // Set to bokeh
-        if(!VoxeetSDK.videoFilters){
-          Cookies.set("virtualBackgroundMode", 'bokeh');
-          dispatch(ControlsActions.setVirtualBackgroundMode(mode));
-          return Promise.resolve();
+        console.log('About to set vb to selected', mode, VoxeetSDK.videoFilters);
+        // Set to selected
+        let setMode;
+        switch(mode) {
+          case 'bokeh':
+          case 'staticimage':
+            setMode = VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, mode, { videoDenoise:videoDenoise });
+            break;
+          default:
+            setMode = VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'none', { videoDenoise:videoDenoise });
         }
-        let setMode = (mode=='bokeh')?
-            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'bokeh', { videoDenoise:videoDenoise }):
-            VoxeetSDK.videoFilters.setFilter.bind(VoxeetSDK.videoFilters, 'none', { videoDenoise:videoDenoise }); // TODO: image mode
 
         return setMode().then(() => {
-          Cookies.set("virtualBackgroundMode", 'bokeh');
+          Cookies.set("virtualBackgroundMode", mode);
           dispatch(ControlsActions.setVirtualBackgroundMode(mode));
         });
       }
@@ -986,6 +986,12 @@ export class Actions {
 
   static setVideoDenoise(enabled) {
     return (dispatch, getState) => {
+      if (!VoxeetSDK.videoFilters || !isElectron()) {
+        // Skip if not supported in SDK or not in NDS
+        Cookies.set("videoDenoise", false);
+        dispatch(ControlsActions.setVideoDenoise(false));
+        return Promise.resolve();
+      }
       const {
         voxeet: { controls },
       } = getState();
