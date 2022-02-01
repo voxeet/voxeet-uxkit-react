@@ -2,10 +2,11 @@ import LocalizedStrings from 'react-localization';
 
 export const strings = new LocalizedStrings({
   en: {
-    noPstnNumbers: 'There is no PSTN numbers...',
-    electronloading: 'Voxeet is loading, please wait',
-    error: 'Error',
-    errorPermissionDeniedMicrophone: 'An error occured when joining the conference. Please make sure to allow access to your microphone.',
+    noPstnNumbers: "There are no PSTN numbers...",
+    electronloading: "Voxeet is loading, please wait",
+    error: "Error",
+    errorPermissionDeniedMicrophone:
+      "An error occured when joining the conference. Please make sure to allow access to your microphone.",
     errorPermissionDeniedMicrophoneCamera:
       'An error occured when joining the conference. Please make sure to allow access to your microphone and camera. Check if there’s another application using your camera and microphone',
     errorIE11: 'A plugin is mandatory for IE11, please download and install the plugin. When the installation is complete, please refresh this page.',
