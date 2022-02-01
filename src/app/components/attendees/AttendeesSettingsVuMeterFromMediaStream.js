@@ -42,6 +42,14 @@ class AttendeesSettingsVuMeterFromMediaStream extends Component {
         .then((stream) => this.setState({ userStream: stream }));
   }
 
+  componentWillUnmount() {
+    if(this.state.userStream){
+      this.state.userStream.getTracks().forEach(track => {
+        track.stop();
+      });
+    }
+  }
+
   render() {
     return <PreConfigVuMeter stream={this.state.userStream} maxLevel={this.props.maxLevel} />;
   }
