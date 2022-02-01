@@ -564,7 +564,7 @@ For english language (Be sure to use this keys to override default strings)
 
 ```
 [en: {
-    noPstnNumbers: "There is no PSTN numbers...",
+    noPstnNumbers: "There are no PSTN numbers...",
     electronloading: "Voxeet is loading, please wait",
     error: "Error",
     errorPermissionDeniedMicrophone:
