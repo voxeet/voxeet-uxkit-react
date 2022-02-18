@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
 
     steps:
       - uses: actions/checkout@v2
@@ -55,6 +55,14 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ env.CODEARTIFACT_TOKEN }}
 
+      - name: create local .npmrc
+        shell: bash
+        run: |
+          printf "_auth=${{ secrets.JFA_AUTH_TOKEN }}\nalways-auth=true\nemail=buildteam@dolby.com\nregistry=${{ env.JFA_NPM_REGISTRY_URL }}" > $(pwd)/.npmrc
+          npm publish --tag ${{ env.GITHUB_REF_SLUG }} --registry ${{ env.JFA_NPM_REGISTRY_URL }}
+        env:
+          JFA_NPM_REGISTRY_URL: ${{ secrets.JFA_NPM_SNAPSHOTS_REGISTRY_URL }}
+  
       - name: Generate github app token
         id: generate_token
         uses: tibdex/github-app-token@v1
