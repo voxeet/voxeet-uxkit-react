@@ -587,15 +587,17 @@ export class Actions {
       const {
         voxeet: { controls },
       } = getState();
-      return VoxeetSDK.conference.leave({leaveRoom: controls.closeSessionAtHangUp}).then(() => {
+      return VoxeetSDK.conference.leave().then(() => {
         dispatch(TimerActions.stopTime());
         dispatch(ConferenceActions._conferenceLeave());
         dispatch(ConferenceActions._conferenceLeave(controls.disableSounds));
         if (controls.closeSessionAtHangUp) {
           this._removeListeners().then(() => {
-            // VoxeetSDK.session.close().catch((err)=>{
-              // console.error(err);
-            // });
+            if(VoxeetSdk.session && VoxeetSdk.session.participant) {
+              VoxeetSDK.session.close().catch((err) => {
+                // console.error(err);
+              });
+            }
           });
         }
       }).catch((err)=>{
