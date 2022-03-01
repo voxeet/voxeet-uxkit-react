@@ -1,10 +1,6 @@
 name: Snapshot build and publish
 
-on:
-  push:
-    branches-ignore:
-      - 'master'
-      - 'release-**'
+on: [push, pull_request]
 
 jobs:
   build:
