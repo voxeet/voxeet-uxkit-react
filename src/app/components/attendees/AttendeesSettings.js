@@ -185,7 +185,7 @@ class AttendeesSettings extends Component {
   }
 
   initDevices() {
-    VoxeetSDK.mediaDevice.enumerateAudioInputDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateAudioDevices("input").then(devices => {
         this.setState({ audioDevices: devices });
 
         // Pick out an audio input device:
@@ -213,7 +213,7 @@ class AttendeesSettings extends Component {
       })
       .catch(e => console.error("Initializing an audio input device failed.", e));
 
-    VoxeetSDK.mediaDevice.enumerateAudioOutputDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateAudioDevices("output").then(devices => {
         this.setState({ outputDevices: devices });
 
         // Pick out an audio output device:
@@ -232,7 +232,7 @@ class AttendeesSettings extends Component {
       .catch(e => console.error("Initializing an audio output device failed.", e));
 
 
-    VoxeetSDK.mediaDevice.enumerateVideoInputDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateVideoDevices().then(devices => {
       if (this.props.inputManager.currentVideoDevice != "") {
         let exist = false;
         devices.map((device, i) => {
