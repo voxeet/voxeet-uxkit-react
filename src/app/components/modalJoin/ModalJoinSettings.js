@@ -36,13 +36,13 @@ class ModalJoinSettings extends Component {
   }
 
   loadDevices() {
-    VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateAudioInputDevices().then(devices => {
       this.setState({
         audioDevices: devices
       });
     });
 
-    VoxeetSDK.mediaDevice.enumerateVideoDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateVideoInputDevices().then(devices => {
       this.setState({
         videoDevices: devices
       });
