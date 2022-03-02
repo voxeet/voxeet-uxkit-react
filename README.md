@@ -9,6 +9,12 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components @voxeet/react-redux-5.1
 
 ## Changelog
 
+### 3.2.4
+
+#### Bug fixes
+
+- Fixed an issue where media track remains open after the end of the call
+
 ### 3.2.3
 
 #### Bug fixes
