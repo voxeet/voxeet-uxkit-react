@@ -137,7 +137,7 @@ export class Actions {
 
   static setInputAudio(constraints, dispatch) {
     let inputCookieExist = false;
-    VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
+    VoxeetSDK.mediaDevice.enumerateAudioInputDevices().then((devices) => {
       devices.forEach((source) => {
         if (Cookies.get('input') == source.deviceId) inputCookieExist = true;
       });
@@ -162,7 +162,7 @@ export class Actions {
 
   static setVideoConstraints(constraints, videoRatio, dispatch) {
     let videoCookieExist = false;
-    VoxeetSDK.mediaDevice.enumerateVideoDevices().then((devices) => {
+    VoxeetSDK.mediaDevice.enumerateVideoInputDevices().then((devices) => {
       devices.forEach((source) => {
         if (Cookies.get('camera') == source.deviceId) videoCookieExist = true;
       });
@@ -221,7 +221,7 @@ export class Actions {
 
   static setOutputAudio(dispatch) {
     let outputCookieExist = false;
-    VoxeetSDK.mediaDevice.enumerateAudioDevices('output').then((devices) => {
+    VoxeetSDK.mediaDevice.enumerateAudioOutputDevices().then((devices) => {
       devices.map((source, i) => {
         if (Cookies.get('output') == source.deviceId) outputCookieExist = true;
       });
@@ -637,7 +637,7 @@ export class Actions {
       if (!controls.audioEnabled) {
         let inputCookieExist = false;
         if (!bowser.msie) {
-          VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
+          VoxeetSDK.mediaDevice.enumerateAudioInputDevices().then((devices) => {
             devices.forEach((source) => {
               if (Cookies.get('input') == source.deviceId) inputCookieExist = true;
             });
