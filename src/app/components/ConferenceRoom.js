@@ -496,12 +496,12 @@ class ConferenceRoom extends Component {
           // Check if exists device with Id set in cookies
           let foundAudio = !constraints.audio?
               true :
-              await VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
+              await VoxeetSDK.mediaDevice.enumerateAudioInputDevices().then((devices) => {
                 return devices.find( (source) => (selectedAudio == source.deviceId) );
               });
           let foundVideo = !constraints.video?
               true :
-              await VoxeetSDK.mediaDevice.enumerateVideoDevices().then((devices) => {
+              await VoxeetSDK.mediaDevice.enumerateVideoInputDevices().then((devices) => {
                 return devices.find( (source) => (selectedVideo == source.deviceId) );
               });
           // TODO: prevent read errors
