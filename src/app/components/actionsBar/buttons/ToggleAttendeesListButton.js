@@ -37,7 +37,7 @@ class ToggleAttendeesListButton extends Component {
 
     let nbParticipants = 0;
     const participantsConnected = this.props.participantStore.participants.filter(
-      (p) => p.isConnected && p.type == "user"
+      (p) => p.isConnected
     ).length;
     const participantsListener = this.props.participantWaiting.participants.filter(
       (p) => p.stream == null && p.isConnected && p.type == "listener"
