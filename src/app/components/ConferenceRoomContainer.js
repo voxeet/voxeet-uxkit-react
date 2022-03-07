@@ -17,6 +17,7 @@ import {
 
 import { Sidebar } from "./actionsBar";
 import Attendees from "./attendees/Attendees";
+import MeasuredAttendees from "./attendees/MeasuredAttendees";
 import ModalClose from "./attendees/modal/ModalClose";
 import Modal from "./attendees/modal/Modal";
 
@@ -317,7 +318,7 @@ class ConferenceRoomContainer extends Component {
             />
           )}
 
-          {isJoined && (
+          {isJoined && !spatialAudioEnabled &&(
             <Attendees
               mode={mode}
               conferenceId={conferenceId}
@@ -343,6 +344,35 @@ class ConferenceRoomContainer extends Component {
               dolbyVoiceEnabled={dolbyVoiceEnabled}
               conferencePermissions={conferencePermissions}
               chatOptions={chatOptions}
+            />
+          )}
+            {isJoined && spatialAudioEnabled &&(
+            <MeasuredAttendees
+              mode={mode}
+              conferenceId={conferenceId}
+              toggleMode={this.toggleMode}
+              forceFullscreen={forceFullscreen}
+              toggleWidget={this.toggleWidget}
+              isWidgetOpened={isWidgetOpened}
+              isModalExternalLive={true}
+              videoEnabled={videoEnabled}
+              isWidgetFullScreenOn={isWidgetFullScreenOn}
+              displayModal={displayModal}
+              isAdminActived={isAdminActived}
+              displayModes={displayModes}
+              isScreenshare={isScreenshare}
+              isVideoPresentation={isVideoPresentation}
+              isFilePresentation={isFilePresentation}
+              attendeesWaiting={attendeesWaiting}
+              attendeesListOpened={displayAttendeesList}
+              attendeesChatOpened={displayAttendeesChat}
+              attendeesSettingsOpened={displayAttendeesSettings}
+              attendeesChat={attendeesChat}
+              attendeesList={attendeesList}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
+              conferencePermissions={conferencePermissions}
+              chatOptions={chatOptions}
+              spatialAudioEnabled={spatialAudioEnabled}
             />
           )}
           {isJoined && (isWidgetFullScreenOn || forceFullscreen) && (

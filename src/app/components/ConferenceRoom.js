@@ -237,7 +237,7 @@ class ConferenceRoom extends Component {
 
       if (isDemo) {
         initialized.then(() =>
-          this.props.dispatch(ConferenceActions.joinDemo())
+          this.props.dispatch(ConferenceActions.joinDemo(userInfo, spatialAudio))
         );
       } /*else if (autoJoin && conferenceId != null) {
         const constraintsUpdated = {
@@ -702,6 +702,7 @@ class ConferenceRoom extends Component {
           attendeesWaiting={attendeesWaiting}
           dolbyVoiceEnabled={dolbyVoiceEnabled}
           chatOptions={chatOptions}
+          spatialAudioEnabled={spatialAudio}
         />
       );
     }

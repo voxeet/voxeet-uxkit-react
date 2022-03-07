@@ -54,7 +54,8 @@ class Speakers extends Component {
       videoPresentationEnabled,
       isVideoPresentation,
       dolbyVoiceEnabled,
-      kickPermission
+      kickPermission,
+      spatialAudioEnabled,
     } = this.props;
     const {
       activeSpeaker,
@@ -139,7 +140,7 @@ class Speakers extends Component {
               </li>
             )}
             {participants.map((participant, i) => {
-              if (participant.isConnected && participant.type == "user")
+              if (participant.isConnected)
                 return (
                   <Speaker
                     key={participant.participant_id}
@@ -161,6 +162,7 @@ class Speakers extends Component {
                     dolbyVoiceEnabled={dolbyVoiceEnabled}
                     kickPermission={kickPermission}
                     currentUser={currentUser}
+                    spatialAudioEnabled={spatialAudioEnabled}
                   />
                 );
             })}
