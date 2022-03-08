@@ -568,7 +568,8 @@ class ConferenceRoom extends Component {
       isAdmin,
       logo,
       dolbyVoice,
-      chatOptions
+      chatOptions,
+      spatialAudio
     } = this.props;
     const {
       screenShareEnabled,
@@ -587,6 +588,7 @@ class ConferenceRoom extends Component {
       hasLeft,
       dolbyVoiceEnabled,
     } = this.props.conferenceStore;
+    console.log(this.props)
 
     const { errorMessage, isError } = this.props.errorStore;
     if (bowser.ios && bowser.chrome) {
@@ -759,6 +761,7 @@ ConferenceRoom.propTypes = {
   customLocalizedStrings: PropTypes.object,
   handleOnConnect: PropTypes.func,
   attendeesWaiting: PropTypes.func,
+  spatialAudio: PropTypes.bool
 };
 
 ConferenceRoom.defaultProps = {
@@ -813,6 +816,7 @@ ConferenceRoom.defaultProps = {
   attendeesChat: AttendeesChat,
   loadingScreen: LoadingScreen,
   attendeesWaiting: AttendeesWaiting,
+  spatialAudio: false
 };
 
 export default ConferenceRoom;
