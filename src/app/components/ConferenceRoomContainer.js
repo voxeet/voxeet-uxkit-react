@@ -226,6 +226,7 @@ class ConferenceRoomContainer extends Component {
       dolbyVoiceEnabled,
       maxVideoForwarding,
       chatOptions,
+      spatialAudioEnabled
     } = this.props;
     const { errorMessage, isError } = this.props.errorStore;
     const { isModalExternalLiveOpen } = this.state;
@@ -460,6 +461,7 @@ ConferenceRoomContainer.propTypes = {
   dolbyVoiceEnabled: PropTypes.bool,
   conferencePermissions: PropTypes.object,
   chatOptions: PropTypes.object,
+  spatialAudioEnabled: PropTypes.bool
 };
 
 export default ConferenceRoomContainer;

@@ -568,7 +568,8 @@ class ConferenceRoom extends Component {
       isAdmin,
       logo,
       dolbyVoice,
-      chatOptions
+      chatOptions,
+      spatialAudio
     } = this.props;
     const {
       screenShareEnabled,
@@ -759,6 +760,7 @@ ConferenceRoom.propTypes = {
   customLocalizedStrings: PropTypes.object,
   handleOnConnect: PropTypes.func,
   attendeesWaiting: PropTypes.func,
+  spatialAudio: PropTypes.bool
 };
 
 ConferenceRoom.defaultProps = {
@@ -813,6 +815,7 @@ ConferenceRoom.defaultProps = {
   attendeesChat: AttendeesChat,
   loadingScreen: LoadingScreen,
   attendeesWaiting: AttendeesWaiting,
+  spatialAudio: false
 };
 
 export default ConferenceRoom;
