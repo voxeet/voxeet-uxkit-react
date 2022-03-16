@@ -12,12 +12,6 @@ const videoRatio = {
   height: 720,
 };
 
-const settings = {
-  consumerKey: "CONSUMER_KEY",
-  consumerSecret: "CONSUMER_SECRET",
-  conferenceAlias: "conference_name",
-};
-
 const Main = ({ settings }) => {
   const [token, setToken] = useState();
   const [error, setError] = useState();
