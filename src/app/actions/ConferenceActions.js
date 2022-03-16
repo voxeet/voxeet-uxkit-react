@@ -164,7 +164,8 @@ export class Actions {
     let videoCookieExist = false;
     VoxeetSDK.mediaDevice.enumerateVideoInputDevices().then((devices) => {
       devices.forEach((source) => {
-        if (Cookies.get("camera") === source.deviceId) videoCookieExist = true;
+        const device = JSON.parse(Cookies.get("camera"));
+        if (device === source.deviceId) videoCookieExist = true;
       });
       if (
         devices.length === 0 ||
@@ -179,7 +180,7 @@ export class Actions {
           if (!selected_device) selected_device = devices[0];
           const date = new Date();
           date.setDate(date.getDate() + 365);
-          Cookies.set("camera", selected_device.deviceId, {
+          Cookies.set("camera", JSON.stringify(selected_device), {
             path: "/",
             expires: date,
             secure: true,
@@ -209,14 +210,16 @@ export class Actions {
         } else {
           if (constraints.video) {
             if (videoRatio != null) {
+              const device = JSON.parse(Cookies.get("camera"));
               constraints.video = {
                 height: videoRatio.height,
                 width: videoRatio.width,
-                deviceId: { exact: Cookies.get("camera") },
+                deviceId: { exact: device.deviceId },
               };
             } else {
+              const device = JSON.parse(Cookies.get("camera"));
               constraints.video = {
-                deviceId: { exact: Cookies.get("camera") },
+                deviceId: { exact: device.deviceId },
               };
             }
           }
@@ -238,7 +241,8 @@ export class Actions {
     let outputCookieExist = false;
     VoxeetSDK.mediaDevice.enumerateAudioOutputDevices().then((devices) => {
       devices.map((source, i) => {
-        if (Cookies.get("output") === source.deviceId) outputCookieExist = true;
+        const device = JSON.parse(Cookies.get("output"));
+        if (device.deviceId === source.deviceId) outputCookieExist = true;
       });
       if (!outputCookieExist) {
         let selected_device = devices.find(
@@ -247,14 +251,14 @@ export class Actions {
         if (!selected_device) selected_device = devices[0];
         const date = new Date();
         date.setDate(date.getDate() + 365);
-        Cookies.set("output", selected_device.deviceId, {
+        Cookies.set("output", JSON.stringify(selected_device), {
           path: "/",
           expires: date,
           secure: true,
           sameSite: "none",
         });
         VoxeetSDK.mediaDevice
-          .selectAudioOutput(selected_device.deviceId)
+          .selectAudioOutput(selected_device)
           .catch((err) => {
             console.log(err);
           });
@@ -262,11 +266,11 @@ export class Actions {
           InputManagerActions.outputAudioChange(selected_device.deviceId)
         );
       } else {
-        VoxeetSDK.mediaDevice
-          .selectAudioOutput(Cookies.get("output"))
-          .catch((err) => {
-            console.log(err);
-          });
+        const device = JSON.parse(Cookies.get("output"));
+        VoxeetSDK.mediaDevice.selectAudioOutput(device).catch((err) => {
+          console.log(err);
+        });
+        //FIXME:
         dispatch(InputManagerActions.outputAudioChange(Cookies.get("output")));
       }
     });

@@ -306,7 +306,7 @@ class AttendeesSettings extends Component {
             if (!selected_device) selected_device = devices[0];
             Cookies.set(
               "camera",
-              selected_device.deviceId,
+              JSON.stringify(selected_device),
               default_cookies_param
             );
             getVideoDeviceName(selected_device.deviceId).then(
@@ -339,7 +339,7 @@ class AttendeesSettings extends Component {
   setOutputDevice(device) {
     debugger;
     return VoxeetSDK.mediaDevice.selectAudioOutput(device).then(() => {
-      Cookies.set("output", device.deviceId, default_cookies_param);
+      Cookies.set("output", JSON.stringify(device), default_cookies_param);
       this.props.dispatch(
         InputManagerActions.outputAudioChange(device.deviceId)
       );
@@ -364,7 +364,7 @@ class AttendeesSettings extends Component {
           );
       }
 
-      Cookies.set("input", device.deviceId, default_cookies_param);
+      Cookies.set("input", JSON.stringify(device), default_cookies_param);
       this.props.dispatch(
         InputManagerActions.inputAudioChange(device.deviceId)
       );
@@ -378,7 +378,7 @@ class AttendeesSettings extends Component {
     if (videoEnabled) {
       VoxeetSDK.mediaDevice.selectVideoInput(device);
     }
-    Cookies.set("camera", device.deviceId, default_cookies_param);
+    Cookies.set("camera", JSON.stringify(device), default_cookies_param);
     getVideoDeviceName(device.deviceId).then(
       (isBackCamera, currentVideoDevice) => {
         this.props.dispatch(
