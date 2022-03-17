@@ -5,6 +5,9 @@
   "main": "./dist/bundle.js",
   "scripts": {
     "start": "webpack serve --hot --inline --history-api-fallback --content-base ./src/static --config webpack.config.js",
+    "check": "prettier -w --check  src",
+    "test": "jest",
+    "test:watch": "yarn test -- --watch",
     "build": "webpack --config webpack.config.prod.js --progress",
     "prepublishOnly": "npm run build",
     "get-version": "echo $npm_package_version"
@@ -32,6 +35,7 @@
   "dependencies": {
     "@babel/runtime": "^7.15.3",
     "@babel/runtime-corejs3": "^7.15.3",
+    "@voxeet/voxeet-web-sdk": "^3.4.0",
     "autolinker": "^3.14.2",
     "bowser": "1.9.4",
     "browserslist": "^4.5.2",
@@ -51,7 +55,6 @@
     "react-player": "^2.9.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
     "react-tooltip": "4.2.21",
     "react-virtualized-auto-sizer": "^1.0.5",
     "react-window": "^1.8.6",
@@ -77,6 +80,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
     "husky": "^7.0.4",
+    "jest": "^27.5.1",
     "less": "^4.1.1",
     "less-loader": "^10.0.1",
     "lint-staged": "^12.3.6",
