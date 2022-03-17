@@ -103,7 +103,8 @@ class ConferenceRoom extends Component {
       invitedUsers,
       refreshTokenCallback,
       isListener,
-      chatOptions
+      chatOptions,
+      spatialAudio
     } = this.props;
     let { constraints } = this.props;
     if(preConfigPayload && preConfigPayload.maxVideoForwarding!==undefined) {
@@ -288,7 +289,8 @@ class ConferenceRoom extends Component {
               dolbyVoice,
               maxVideoForwarding,
               chatOptions,
-              dvwc
+              dvwc ,
+              spatialAudio
             )
           );
         });
