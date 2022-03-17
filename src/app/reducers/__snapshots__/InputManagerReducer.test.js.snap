@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`input manager reducer test suite reducer should return default state 1`] = `
+Object {
+  "currentAudioDevice": "",
+  "currentOutputDevice": "",
+  "currentVideoDevice": "",
+  "isBackCamera": false,
+}
+`;
+
+exports[`input manager reducer test suite state should match snapshot when handling audio input update 1`] = `
+Object {
+  "currentAudioDevice": Object {
+    "deviceId": "123",
+    "groupId": "123",
+    "kind": "audioinput",
+    "label": "audio input",
+  },
+}
+`;
+
+exports[`input manager reducer test suite state should match snapshot when handling audio output update 1`] = `
+Object {
+  "currentOutputDevice": Object {
+    "deviceId": "123",
+    "groupId": "123",
+    "kind": "audiooutput",
+    "label": "audio output",
+  },
+}
+`;
+
+exports[`input manager reducer test suite state should match snapshot when handling video input update 1`] = `
+Object {
+  "currentVideoDevice": Object {
+    "deviceId": "123",
+    "groupId": "123",
+    "kind": "videoinput",
+    "label": "video input",
+  },
+  "isBackCamera": undefined,
+}
+`;

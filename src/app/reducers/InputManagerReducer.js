@@ -26,7 +26,7 @@ const InputManagerReducer = (state = defaultState, action) => {
         currentVideoDevice: action.payload.device,
       };
     default:
-      return state;
+      return defaultState;
   }
 };
 
