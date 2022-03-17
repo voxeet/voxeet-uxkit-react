@@ -313,7 +313,7 @@ class AttendeesSettings extends Component {
               (isBackCamera) => {
                 this.props.dispatch(
                   InputManagerActions.inputVideoChange(
-                    selected_device.deviceId,
+                    selected_device,
                     isBackCamera
                   )
                 );
@@ -329,7 +329,6 @@ class AttendeesSettings extends Component {
   }
 
   onOutputDeviceSelected(e) {
-    debugger;
     const device = JSON.parse(e.target.value);
     this.setOutputDevice(device).catch((e) =>
       console.error("Selecting audio output device failed.", e)
@@ -337,12 +336,9 @@ class AttendeesSettings extends Component {
   }
 
   setOutputDevice(device) {
-    debugger;
     return VoxeetSDK.mediaDevice.selectAudioOutput(device).then(() => {
       Cookies.set("output", JSON.stringify(device), default_cookies_param);
-      this.props.dispatch(
-        InputManagerActions.outputAudioChange(device.deviceId)
-      );
+      this.props.dispatch(InputManagerActions.outputAudioChange(device));
     });
   }
 
@@ -365,14 +361,11 @@ class AttendeesSettings extends Component {
       }
 
       Cookies.set("input", JSON.stringify(device), default_cookies_param);
-      this.props.dispatch(
-        InputManagerActions.inputAudioChange(device.deviceId)
-      );
+      this.props.dispatch(InputManagerActions.inputAudioChange(device));
     });
   }
 
   setVideoDevice(e) {
-    debugger;
     const { videoEnabled } = this.props;
     const device = JSON.parse(e.target.value);
     if (videoEnabled) {
@@ -382,7 +375,7 @@ class AttendeesSettings extends Component {
     getVideoDeviceName(device.deviceId).then(
       (isBackCamera, currentVideoDevice) => {
         this.props.dispatch(
-          InputManagerActions.inputVideoChange(device.deviceId, isBackCamera)
+          InputManagerActions.inputVideoChange(device, isBackCamera)
         );
       }
     );
@@ -559,7 +552,7 @@ class AttendeesSettings extends Component {
                   {/* <label htmlFor="output">Sound Output</label> */}
                   <select
                     name="output"
-                    value={currentOutputDevice}
+                    value={JSON.stringify(currentOutputDevice)}
                     className="form-control select-audio-output"
                     onChange={this.onOutputDeviceSelected}
                     disabled={false}
@@ -578,7 +571,7 @@ class AttendeesSettings extends Component {
                     {/* <label htmlFor="video">Camera</label> */}
                     <select
                       name="video"
-                      value={currentVideoDevice}
+                      value={JSON.stringify(currentVideoDevice)}
                       className="form-control select-video-device"
                       onChange={this.setVideoDevice}
                       disabled={false}
@@ -594,7 +587,7 @@ class AttendeesSettings extends Component {
                     {/* <label htmlFor="video">Microphone</label> */}
                     <select
                       name="audio"
-                      value={currentAudioDevice}
+                      value={JSON.stringify(currentAudioDevice)}
                       className="form-control select-audio-input"
                       onChange={this.onAudioDeviceSelected}
                     >
