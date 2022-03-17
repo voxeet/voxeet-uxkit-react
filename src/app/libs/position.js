@@ -1,3 +1,5 @@
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
+
 /*
  * those values MUST stay in sync with the ones in bundle.styl
  * they're used by trigo to place users on the circle without causing overflow.
