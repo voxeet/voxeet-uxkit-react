@@ -371,7 +371,8 @@ export class Actions {
     enableDolbyVoice,
     maxVideoForwardingParam,
     chatOptions,
-    dvwc
+    dvwc,
+    spatialAudio
   ) {
     let maxVideoForwarding =
       preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined
