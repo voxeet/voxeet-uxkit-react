@@ -5,6 +5,9 @@
   "main": "./dist/bundle.js",
   "scripts": {
     "start": "webpack serve --hot --inline --history-api-fallback --content-base ./src/static --config webpack.config.js",
+    "check": "prettier -w --check  src",
+    "test": "jest",
+    "test:watch": "yarn test -- --watch",
     "build": "webpack --config webpack.config.prod.js --progress",
     "prepublishOnly": "npm run build",
     "get-version": "echo $npm_package_version"
@@ -25,6 +28,9 @@
       ".jsx",
       ".json"
     ]
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.3",
@@ -48,7 +54,6 @@
     "react-player": "^2.9.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
     "react-tooltip": "4.2.21",
     "react-virtualized-auto-sizer": "^1.0.5",
     "react-window": "^1.8.6",
@@ -73,10 +78,14 @@
     "eslint": "^7.31.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
+    "husky": "^7.0.4",
+    "jest": "^27.5.1",
     "less": "^4.1.1",
     "less-loader": "^10.0.1",
+    "lint-staged": "^12.3.6",
     "mini-css-extract-plugin": "^2.1.0",
     "node-pre-gyp": "^0.17.0",
+    "prettier": "2.6.0",
     "react-hot-loader": "^4.13.0",
     "style-loader": "^3.1.0",
     "terser-webpack-plugin": "^5.1.4",
