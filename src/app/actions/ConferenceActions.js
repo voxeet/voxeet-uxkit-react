@@ -620,7 +620,7 @@ export class Actions {
         dispatch(ConferenceActions._conferenceLeave(controls.disableSounds));
         if (controls.closeSessionAtHangUp) {
           this._removeListeners().then(() => {
-            if(VoxeetSdk.session && VoxeetSdk.session.participant) {
+            if (VoxeetSDK.session && VoxeetSDK.session.participant) {
               VoxeetSDK.session.close().catch((err) => {
                 // console.error(err);
               });
@@ -815,7 +815,7 @@ export class Actions {
   }
 
   static handleLeave() {
-    return (dipatch, getState) => {
+    return (dispatch, getState) => {
       const {
         voxeet: { participants, controls },
       } = getState();
@@ -830,7 +830,7 @@ export class Actions {
       } = getState();
       if (controls.closeSessionAtHangUp) {
         this._removeListeners().then(() => {
-          if(VoxeetSdk.session && VoxeetSdk.session.participant) {
+          if (VoxeetSDK.session && VoxeetSDK.session.participant) {
             VoxeetSDK.session.close().catch((err) => {
               // console.error(err);
             });
