@@ -1,15 +1,13 @@
-import React, { Fragment, Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import { strings } from "../languages/localizedStrings";
 import Cookies from "./../libs/Storage";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
-import canAutoPlay from 'can-autoplay';
 import { Actions as ConferenceActions } from "../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../actions/ParticipantActions";
-import { Actions as ErrorActions } from "../actions/ErrorActions";
 import ActionsButtons from "./actionsBar/ActionsButtons";
 import "../../styles/main.less";
 import ConferenceRoomContainer from "./ConferenceRoomContainer";
@@ -19,22 +17,27 @@ import AttendeesList from "./attendees/AttendeesList";
 import AttendeesChat from "./attendees/chat/AttendeesChat";
 import LoadingScreen from "./attendees/LoadingScreen";
 import { setPstnNumbers } from "../constants/PinCode";
-import {isMobile} from "../libs/browserDetection";
-import {getUxKitContext} from "../context";
+import { isMobile } from "../libs/browserDetection";
+import { getUxKitContext } from "../context";
 
-@connect((state) => {
-  return {
-    conferenceStore: state.voxeet.conference,
-    errorStore: state.voxeet.error,
-    participantsStore: state.voxeet.participants,
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (state) => {
+    return {
+      conferenceStore: state.voxeet.conference,
+      errorStore: state.voxeet.error,
+      participantsStore: state.voxeet.participants,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class ConferenceRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
       preConfig: false, // Will decide later
-      loading: true,    // Start with loader
+      loading: true, // Start with loader
     };
     this.handleJoin = this.handleJoin.bind(this);
     this.initializeControlsStore();
@@ -103,41 +106,69 @@ class ConferenceRoom extends Component {
       invitedUsers,
       refreshTokenCallback,
       isListener,
-      chatOptions
+      chatOptions,
     } = this.props;
     let { constraints } = this.props;
-    if(preConfigPayload && preConfigPayload.maxVideoForwarding!==undefined) {
-      this.props.dispatch(ControlsActions.setMaxVideoForwarding(preConfigPayload.maxVideoForwarding));
+    if (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined) {
+      this.props.dispatch(
+        ControlsActions.setMaxVideoForwarding(
+          preConfigPayload.maxVideoForwarding
+        )
+      );
       this.maxVideoForwarding = preConfigPayload.maxVideoForwarding;
     }
     let maxVideoForwarding = this.maxVideoForwarding;
-    if(preConfigPayload && preConfigPayload.videoEnabled!==undefined) {
-      this.props.dispatch(ControlsActions.toggleVideo(preConfigPayload.videoEnabled));
+    if (preConfigPayload && preConfigPayload.videoEnabled !== undefined) {
+      this.props.dispatch(
+        ControlsActions.toggleVideo(preConfigPayload.videoEnabled)
+      );
       this.videoEnabled = preConfigPayload.videoEnabled;
     }
     constraints.video = this.videoEnabled;
-    if(preConfigPayload && preConfigPayload.audioTransparentMode!==undefined) {
-      this.props.dispatch(ControlsActions.setAudioTransparentMode(preConfigPayload.audioTransparentMode));
+    if (
+      preConfigPayload &&
+      preConfigPayload.audioTransparentMode !== undefined
+    ) {
+      this.props.dispatch(
+        ControlsActions.setAudioTransparentMode(
+          preConfigPayload.audioTransparentMode
+        )
+      );
       this.audioTransparentMode = preConfigPayload.audioTransparentMode;
     }
     let audioTransparentMode = this.audioTransparentMode;
-    if(preConfigPayload && preConfigPayload.virtualBackgroundMode!==undefined) {
-      this.props.dispatch(ControlsActions.setVirtualBackgroundMode(preConfigPayload.virtualBackgroundMode));
+    if (
+      preConfigPayload &&
+      preConfigPayload.virtualBackgroundMode !== undefined
+    ) {
+      this.props.dispatch(
+        ControlsActions.setVirtualBackgroundMode(
+          preConfigPayload.virtualBackgroundMode
+        )
+      );
       this.virtualBackgroundMode = preConfigPayload.virtualBackgroundMode;
     }
-    if(preConfigPayload && preConfigPayload.videoDenoise!==undefined) {
-      this.props.dispatch(ControlsActions.setVideoDenoise(preConfigPayload.videoDenoise));
+    if (preConfigPayload && preConfigPayload.videoDenoise !== undefined) {
+      this.props.dispatch(
+        ControlsActions.setVideoDenoise(preConfigPayload.videoDenoise)
+      );
       this.videoDenoise = preConfigPayload.videoDenoise;
     }
     let initialized;
     let pinCodeTmp = pinCode;
     if (oauthToken != null) {
       initialized = this.props.dispatch(
-        ConferenceActions.initializeWithToken(oauthToken, refreshTokenCallback, {chatOptions})
+        ConferenceActions.initializeWithToken(
+          oauthToken,
+          refreshTokenCallback,
+          { chatOptions }
+        )
       );
     } else {
       initialized = this.props.dispatch(
-        ConferenceActions.initialize(consumerKey, consumerSecret, {chatOptions})
+        ConferenceActions.initialize(consumerKey, consumerSecret, {
+          chatOptions,
+        })
       );
     }
 
@@ -237,7 +268,9 @@ class ConferenceRoom extends Component {
 
       if (isDemo) {
         initialized.then(() =>
-          this.props.dispatch(ConferenceActions.joinDemo(userInfo, spatialAudio))
+          this.props.dispatch(
+            ConferenceActions.joinDemo(userInfo, spatialAudio)
+          )
         );
       } /*else if (autoJoin && conferenceId != null) {
         const constraintsUpdated = {
@@ -262,13 +295,9 @@ class ConferenceRoom extends Component {
             )
           )
         );
-      } */ else if (
-        autoJoin &&
-        conferenceReplayId == null
-      ) {
+      } */ else if (autoJoin && conferenceReplayId == null) {
         // Autojoin when entering in fullscreen mode
         initialized.then(() => {
-
           this.props.dispatch(
             ConferenceActions.join(
               conferenceAlias,
@@ -311,39 +340,45 @@ class ConferenceRoom extends Component {
       path: "/",
       expires: date,
       secure: true,
-      sameSite: 'none'
+      sameSite: "none",
     };
     // maxVideoForwarding
     let maxVideoForwarding = Cookies.get("maxVideoForwarding");
     maxVideoForwarding = parseInt(maxVideoForwarding);
-    if( maxVideoForwarding===undefined || isNaN(maxVideoForwarding) ){
+    if (maxVideoForwarding === undefined || isNaN(maxVideoForwarding)) {
       maxVideoForwarding = this.props.maxVideoForwarding;
       //console.log('Setting default value for maxVideoForwarding to app default', maxVideoForwarding);
     }
-    if( maxVideoForwarding===undefined || isNaN(maxVideoForwarding) ){
-      maxVideoForwarding = isMobile()?4:9;
+    if (maxVideoForwarding === undefined || isNaN(maxVideoForwarding)) {
+      maxVideoForwarding = isMobile() ? 4 : 9;
       //console.log('Setting default value for maxVideoForwarding to system default', maxVideoForwarding);
     }
-    this.props.dispatch(ControlsActions.setMaxVideoForwarding(maxVideoForwarding));
-    Cookies.set("maxVideoForwarding", maxVideoForwarding, default_cookie_params);
+    this.props.dispatch(
+      ControlsActions.setMaxVideoForwarding(maxVideoForwarding)
+    );
+    Cookies.set(
+      "maxVideoForwarding",
+      maxVideoForwarding,
+      default_cookie_params
+    );
     this.maxVideoForwarding = maxVideoForwarding;
     // videoEnabled
     let videoEnabled = Cookies.get("videoEnabled");
-    if( videoEnabled!==undefined ) {
-      if (typeof videoEnabled === 'string' || videoEnabled instanceof String)
-        videoEnabled = videoEnabled.toLowerCase() !== 'false';
-      else
-        videoEnabled = Boolean(videoEnabled);
+    if (videoEnabled !== undefined) {
+      if (typeof videoEnabled === "string" || videoEnabled instanceof String)
+        videoEnabled = videoEnabled.toLowerCase() !== "false";
+      else videoEnabled = Boolean(videoEnabled);
       //console.log('Setting default value for videoEnabled to user default', videoEnabled);
     } else {
-      videoEnabled = this.props.constraints?this.props.constraints.video:false;
+      videoEnabled = this.props.constraints
+        ? this.props.constraints.video
+        : false;
       //console.log('Setting default value for videoEnabled to app default', videoEnabled);
     }
-    if( videoEnabled!==undefined ) {
-      if (typeof videoEnabled === 'string' || videoEnabled instanceof String)
-        videoEnabled = videoEnabled.toLowerCase() !== 'false';
-      else
-        videoEnabled = Boolean(videoEnabled);
+    if (videoEnabled !== undefined) {
+      if (typeof videoEnabled === "string" || videoEnabled instanceof String)
+        videoEnabled = videoEnabled.toLowerCase() !== "false";
+      else videoEnabled = Boolean(videoEnabled);
     } else {
       videoEnabled = false;
       //console.log('Setting default value for videoEnabled to system default', videoEnabled);
@@ -353,52 +388,64 @@ class ConferenceRoom extends Component {
     this.videoEnabled = videoEnabled;
     // audioTransparentMode
     let audioTransparentMode = Cookies.get("audioTransparentMode");
-    if( audioTransparentMode!==undefined ) {
-      if (typeof audioTransparentMode === 'string' || audioTransparentMode instanceof String)
-        audioTransparentMode = audioTransparentMode.toLowerCase() !== 'false';
-      else
-        audioTransparentMode = Boolean(audioTransparentMode);
+    if (audioTransparentMode !== undefined) {
+      if (
+        typeof audioTransparentMode === "string" ||
+        audioTransparentMode instanceof String
+      )
+        audioTransparentMode = audioTransparentMode.toLowerCase() !== "false";
+      else audioTransparentMode = Boolean(audioTransparentMode);
       //console.log('Setting default value for audioTransparentMode to user default', audioTransparentMode);
     } else {
       audioTransparentMode = this.props.audioTransparentMode;
       //console.log('Setting default value for audioTransparentMode to app default', audioTransparentMode);
     }
-    if( audioTransparentMode!==undefined ) {
-      if (typeof audioTransparentMode === 'string' || audioTransparentMode instanceof String)
-        audioTransparentMode = audioTransparentMode.toLowerCase() !== 'false';
-      else
-        audioTransparentMode = Boolean(audioTransparentMode);
+    if (audioTransparentMode !== undefined) {
+      if (
+        typeof audioTransparentMode === "string" ||
+        audioTransparentMode instanceof String
+      )
+        audioTransparentMode = audioTransparentMode.toLowerCase() !== "false";
+      else audioTransparentMode = Boolean(audioTransparentMode);
     } else {
       audioTransparentMode = false;
       //console.log('Setting default value for audioTransparentMode to system default', audioTransparentMode);
     }
-    this.props.dispatch(ControlsActions.setAudioTransparentMode(audioTransparentMode));
-    Cookies.set("audioTransparentMode", audioTransparentMode, default_cookie_params);
+    this.props.dispatch(
+      ControlsActions.setAudioTransparentMode(audioTransparentMode)
+    );
+    Cookies.set(
+      "audioTransparentMode",
+      audioTransparentMode,
+      default_cookie_params
+    );
     this.audioTransparentMode = audioTransparentMode;
 
     let virtualBackgroundMode = Cookies.get("virtualBackgroundMode");
-    if(virtualBackgroundMode=='null')
-      virtualBackgroundMode = null;
-    this.props.dispatch(ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode));
+    if (virtualBackgroundMode === "null") virtualBackgroundMode = null;
+    this.props.dispatch(
+      ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode)
+    );
     this.virtualBackgroundMode = virtualBackgroundMode;
-    console.log('initializeControlsStore virtualBackgroundMode', this.virtualBackgroundMode);
+    console.log(
+      "initializeControlsStore virtualBackgroundMode",
+      this.virtualBackgroundMode
+    );
 
     let videoDenoise = Cookies.get("videoDenoise");
-    if( videoDenoise!==undefined ) {
-      if (typeof videoDenoise === 'string' || videoDenoise instanceof String)
-        videoDenoise = videoDenoise.toLowerCase() !== 'false';
-      else
-        videoDenoise = Boolean(videoDenoise);
+    if (videoDenoise !== undefined) {
+      if (typeof videoDenoise === "string" || videoDenoise instanceof String)
+        videoDenoise = videoDenoise.toLowerCase() !== "false";
+      else videoDenoise = Boolean(videoDenoise);
       //console.log('Setting default value for videoDenoise to user default', videoDenoise);
     } else {
-      videoDenoise = this.props.videoDenoise?this.props.videoDenoise:false;
+      videoDenoise = this.props.videoDenoise ? this.props.videoDenoise : false;
       //console.log('Setting default value for videoDenoise to app default', videoDenoise);
     }
-    if( videoDenoise!==undefined ) {
-      if (typeof videoDenoise === 'string' || videoDenoise instanceof String)
-        videoDenoise = videoDenoise.toLowerCase() !== 'false';
-      else
-        videoDenoise = Boolean(videoDenoise);
+    if (videoDenoise !== undefined) {
+      if (typeof videoDenoise === "string" || videoDenoise instanceof String)
+        videoDenoise = videoDenoise.toLowerCase() !== "false";
+      else videoDenoise = Boolean(videoDenoise);
     } else {
       videoDenoise = false;
       //console.log('Setting default value for videoDenoise to system default', videoDenoise);
@@ -411,27 +458,29 @@ class ConferenceRoom extends Component {
   async componentDidMount() {
     // Print UXKit Version
     console.log("UXKit Version: " + __VERSION__);
-    let props = this.props;
+
     const { isWebinar, isAdmin, isListener, preConfig } = this.props;
     let doPreConfigCheck =
-        (!isListener &&
-        // !isMobile() &&
-        (!isWebinar || (isWebinar && isAdmin)));
+      !isListener &&
+      // !isMobile() &&
+      (!isWebinar || (isWebinar && isAdmin));
     let doPreConfig =
-        !isListener &&
-        !bowser.msie &&
-        !isMobile() &&
-        (!isWebinar || (isWebinar && isAdmin))
-            ? (preConfig)
-            : false;
+      !isListener &&
+      !bowser.msie &&
+      !isMobile() &&
+      (!isWebinar || (isWebinar && isAdmin))
+        ? preConfig
+        : false;
 
-    const shouldStartPreConfig = doPreConfigCheck? await this.preConfigCheck(doPreConfig): doPreConfig;
+    const shouldStartPreConfig = doPreConfigCheck
+      ? await this.preConfigCheck(doPreConfig)
+      : doPreConfig;
 
-    this.setState({loading:false, preConfig: shouldStartPreConfig}, () => {
+    this.setState({ loading: false, preConfig: shouldStartPreConfig }, () => {
       if (!this.state.preConfig) {
         this.startConferenceWithParams();
       }
-    })
+    });
   }
 
   /**
@@ -444,23 +493,24 @@ class ConferenceRoom extends Component {
 
     const checkPermissions = async () => {
       //console.log('About to check access to audio/video devices', { audio: constraints.audio, video: constraints.video})
-      return await navigator.mediaDevices.getUserMedia({ audio: constraints.audio, video: constraints.video})
-          .then((stream) => {
-            //console.log('Got stream, about to close it');
-            stream.getTracks().forEach(track => {
-              track.stop();
-            });
-            return false;
-          })
-          .catch((err) => {
-            console.error('Could not get access to required media', err)
-            //this.props.dispatch(ErrorActions.onError(err));
-            return true;
+      return await navigator.mediaDevices
+        .getUserMedia({ audio: constraints.audio, video: constraints.video })
+        .then((stream) => {
+          //console.log('Got stream, about to close it');
+          stream.getTracks().forEach((track) => {
+            track.stop();
           });
-    }
+          return false;
+        })
+        .catch((err) => {
+          console.error("Could not get access to required media", err);
+          //this.props.dispatch(ErrorActions.onError(err));
+          return true;
+        });
+    };
 
-    if(preConfig) {
-      console.log('Preconfig required, just asking for device permissions');
+    if (preConfig) {
+      console.log("Preconfig required, just asking for device permissions");
       await checkPermissions();
       return true;
     } else {
@@ -475,69 +525,94 @@ class ConferenceRoom extends Component {
           return this.setState({preConfig: true}, () => {
             resolve(true)
           });
-        } else*/ if(constraints && (constraints.audio || constraints.video)) {
+        } else*/ if (constraints && (constraints.audio || constraints.video)) {
           //console.log('About to check preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
           // Check selected devices stored in cookies
-          if(constraints.audio && !Cookies.get("input") && !isMobile()) {
-            console.log('Audio input not configured... will force preconfig');
-            return this.setState({preConfig: true}, () => {
-              resolve(true)
+          if (constraints.audio && !Cookies.get("input") && !isMobile()) {
+            console.log("Audio input not configured... will force preconfig");
+            return this.setState({ preConfig: true }, () => {
+              resolve(true);
             });
           }
-          if(constraints.video && !Cookies.get("camera") && !isMobile()) {
-            console.log('Camera input not configured... will force preconfig');
-            return this.setState({preConfig: true}, () => {
-              resolve(true)
+          if (constraints.video && !Cookies.get("camera") && !isMobile()) {
+            console.log("Camera input not configured... will force preconfig");
+            return this.setState({ preConfig: true }, () => {
+              resolve(true);
             });
           }
           let selectedAudio = Cookies.get("input") || "default",
-              selectedVideo = Cookies.get("camera") || "default";
+            selectedVideo = Cookies.get("camera") || "default";
           // console.log('About to check availability of preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
           // Check if exists device with Id set in cookies
-          let foundAudio = !constraints.audio?
-              true :
-              await VoxeetSDK.mediaDevice.enumerateAudioInputDevices().then((devices) => {
-                return devices.find( (source) => (selectedAudio == source.deviceId) );
-              });
-          let foundVideo = !constraints.video?
-              true :
-              await VoxeetSDK.mediaDevice.enumerateVideoInputDevices().then((devices) => {
-                return devices.find( (source) => (selectedVideo == source.deviceId) );
-              });
-          // TODO: prevent read errors
-          console.log('About to check availability of preconfigured audio input / camera streams', selectedAudio, selectedVideo);
-          let gotAudioStream = true;
-          if(constraints.audio) {
-            gotAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: selectedAudio } } })
-                .then((stream) => {
-                  stream.getTracks().forEach(track => {
-                    track.stop();
-                  });
-                  return true;
-                })
-                .catch((err) => {
-                  console.error('error getting audio stream', err)
-                  return false;
+          let foundAudio = !constraints.audio
+            ? true
+            : await VoxeetSDK.mediaDevice
+                .enumerateAudioInputDevices()
+                .then((devices) => {
+                  return devices.find(
+                    (source) => selectedAudio === source.deviceId
+                  );
                 });
+          let foundVideo = !constraints.video
+            ? true
+            : await VoxeetSDK.mediaDevice
+                .enumerateVideoInputDevices()
+                .then((devices) => {
+                  return devices.find(
+                    (source) => selectedVideo === source.deviceId
+                  );
+                });
+          // TODO: prevent read errors
+          console.log(
+            "About to check availability of preconfigured audio input / camera streams",
+            selectedAudio,
+            selectedVideo
+          );
+          let gotAudioStream = true;
+          if (constraints.audio) {
+            gotAudioStream = await navigator.mediaDevices
+              .getUserMedia({ audio: { deviceId: { exact: selectedAudio } } })
+              .then((stream) => {
+                stream.getTracks().forEach((track) => {
+                  track.stop();
+                });
+                return true;
+              })
+              .catch((err) => {
+                console.error("error getting audio stream", err);
+                return false;
+              });
           }
           let gotVideoStream = true;
-          if(constraints.video) {
-            gotVideoStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: selectedVideo } } })
-                .then((stream) => {
-                  stream.getTracks().forEach(track => {
-                    track.stop();
-                  });
-                  return true;
-                })
-                .catch((err) => {
-                  console.error('error getting video stream', err)
-                  return false;
+          if (constraints.video) {
+            gotVideoStream = await navigator.mediaDevices
+              .getUserMedia({ video: { deviceId: { exact: selectedVideo } } })
+              .then((stream) => {
+                stream.getTracks().forEach((track) => {
+                  track.stop();
                 });
+                return true;
+              })
+              .catch((err) => {
+                console.error("error getting video stream", err);
+                return false;
+              });
           }
-          if(!foundAudio || !foundVideo || !gotAudioStream || !gotVideoStream) {
-            console.log('Failed to find preconfigured audio input / camera', foundAudio, foundVideo, gotAudioStream, gotVideoStream);
-            return this.setState({preConfig: true}, () => {
-              resolve(true)
+          if (
+            !foundAudio ||
+            !foundVideo ||
+            !gotAudioStream ||
+            !gotVideoStream
+          ) {
+            console.log(
+              "Failed to find preconfigured audio input / camera",
+              foundAudio,
+              foundVideo,
+              gotAudioStream,
+              gotVideoStream
+            );
+            return this.setState({ preConfig: true }, () => {
+              resolve(true);
             });
           }
           // console.log('No need for preconfig');
@@ -569,7 +644,7 @@ class ConferenceRoom extends Component {
       logo,
       dolbyVoice,
       chatOptions,
-      spatialAudio
+      spatialAudio,
     } = this.props;
     const {
       screenShareEnabled,
@@ -655,12 +730,11 @@ class ConferenceRoom extends Component {
               {logo != null ? <img src={logo} /> : <div className="ddloader" />}
             </div>
             <div className="voxeet-loading-info-container">
-              {errorMessage === "MaxCapacityError: Conference is at maximum capacity." && (
+              {errorMessage ===
+                "MaxCapacityError: Conference is at maximum capacity." && (
                 <Fragment>
                   {strings.titleConferenceCapacityError}
-                    <div>
-                      {strings.descConferenceCapacityError}
-                    </div>
+                  <div>{strings.descConferenceCapacityError}</div>
                 </Fragment>
               )}
             </div>
@@ -760,13 +834,13 @@ ConferenceRoom.propTypes = {
   customLocalizedStrings: PropTypes.object,
   handleOnConnect: PropTypes.func,
   attendeesWaiting: PropTypes.func,
-  spatialAudio: PropTypes.bool
+  spatialAudio: PropTypes.bool,
 };
 
 ConferenceRoom.defaultProps = {
   isWidget: true,
   dolbyVoice: true,
-  maxVideoForwarding: isMobile()?4:9,
+  maxVideoForwarding: isMobile() ? 4 : 9,
   kickOnHangUp: false,
   autoRecording: false,
   disableSounds: false,
@@ -808,14 +882,14 @@ ConferenceRoom.defaultProps = {
     video: false,
   },
   chatOptions: {
-    autoLinker: true
+    autoLinker: true,
   },
   actionsButtons: ActionsButtons,
   attendeesList: AttendeesList,
   attendeesChat: AttendeesChat,
   loadingScreen: LoadingScreen,
   attendeesWaiting: AttendeesWaiting,
-  spatialAudio: false
+  spatialAudio: false,
 };
 
 export default ConferenceRoom;
