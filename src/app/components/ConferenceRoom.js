@@ -107,7 +107,7 @@ class ConferenceRoom extends Component {
       refreshTokenCallback,
       isListener,
       chatOptions,
-
+      spatialAudio
 
     } = this.props;
     let { constraints } = this.props;
@@ -319,7 +319,7 @@ class ConferenceRoom extends Component {
               dolbyVoice,
               maxVideoForwarding,
               chatOptions,
-              dvwc ,
+              dvwc,
               spatialAudio
             )
           );
