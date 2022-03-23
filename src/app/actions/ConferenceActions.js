@@ -462,6 +462,7 @@ export class Actions {
                   simulcast: simulcast,
                   maxVideoForwarding: maxVideoForwarding,
                   dvwc: dvwc,
+                  spatialAudio
                 })
                 .then(function (res) {
                   if (isIOS() && navigator.userAgent.match(/AppleWebKit/)) {
@@ -531,6 +532,7 @@ export class Actions {
                   videoFilter: virtualBackgroundMode,
                   videoFilterOptions: { videoDenoise: videoDenoise },
                   dvwc: dvwc,
+                  spatialAudio
                 })
                 .then((res) => {
                   dispatch(
@@ -641,6 +643,7 @@ export class Actions {
               videoFilter: virtualBackgroundMode,
               videoFilterOptions: { videoDenoise: videoDenoise },
               dvwc: dvwc,
+              spatialAudio
             })
             .then((res) => {
               dispatch(
