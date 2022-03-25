@@ -316,6 +316,7 @@ class ConferenceRoomContainer extends Component {
               toggleMode={this.toggleMode}
               actionsButtons={actionsButtons}
               conferencePermissions={conferencePermissions}
+              spatialAudioEnabled={spatialAudioEnabled}
             />
           )}
 

@@ -1,6 +1,6 @@
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import { Types } from "../actions/ParticipantActions";
-import { getOrganizedPosition, getRelativePosition } from "../libs/position";
+import { updateParticipantPositions } from "../libs/position";
 import sounds from "../libs/sounds";
 import { STATUS_CONNECTING, STATUS_LEFT } from "../constants/ParticipantStatus";
 
@@ -26,6 +26,7 @@ const defaultState = {
   handleOnConnect: null,
   handleOnLeave: null,
   quality: {},
+  spatialAudioEnabled: false
 };
 
 const ParticipantReducer = (state = defaultState, action) => {
@@ -52,6 +53,12 @@ const ParticipantReducer = (state = defaultState, action) => {
       return {
         ...state,
         isWebinar: true,
+      };
+    }
+    case Types.SPATIAL_AUDIO_ACTIVATED: {
+      return {
+        ...state,
+        spatialAudioEnabled: true,
       };
     }
     case Types.INVITED_USERS: {
@@ -99,6 +106,9 @@ const ParticipantReducer = (state = defaultState, action) => {
         isMyself: true,
         ...currentUser,
       };
+      if (state.spatialAudioEnabled) {
+        updateParticipantPositions(state.participants);
+      }
       return {
         ...state,
         currentUser: currentUser,
@@ -207,37 +217,8 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       participants[index].isConnected =
         action.payload.user.status == "Connected" ? true : false;
-      const size = participants.filter(
-        (participant) => participant.isConnected === true
-      ).length;
-      const participantsConnect = participants.filter(
-        (participant) => participant.isConnected === true
-      );
-      for (var i = 0; i < participantsConnect.length; i++) {
-        if (!participantsConnect[i].isMoved) {
-          const height = window.innerHeight - 85;
-          const width = window.innerWidth;
-          const index = i;
-          const position = getOrganizedPosition({
-            width: width,
-            height: height,
-            size: size,
-            index: index,
-          });
-          const relativePosition = getRelativePosition(
-            width,
-            height,
-            position.posX,
-            position.posY
-          );
-          /*VoxeetSDK.setUserPosition(
-            participantsConnect[i].participant_id,
-            relativePosition.x,
-            relativePosition.y
-          );*/
-          participantsConnect[i].x = position.posX;
-          participantsConnect[i].y = position.posY;
-        }
+        if (state.spatialAudioEnabled && state.currentUser) {
+          updateParticipantPositions(participants);
       }
       return {
         ...state,
@@ -336,6 +317,9 @@ const ParticipantReducer = (state = defaultState, action) => {
           participants[index].metadata = userInfo.metadata;
           participants[index].status = status;
         }
+        if (state.spatialAudioEnabled && state.currentUser) {
+          updateParticipantPositions(participants);
+        }
         return {
           ...state,
           participants: [...participants],
@@ -361,40 +345,9 @@ const ParticipantReducer = (state = defaultState, action) => {
       participants[index].y = -1;
       participants[index].stream = null;
 
-      /*const size = participants.filter(
-        participant => participant.isConnected === true
-      ).length;
-      const participantsConnect = participants.filter(
-        participant => participant.isConnected === true
-      );*/
-
-      /*for (var i = 0; i < participantsConnect.length; i++) {
-        if (!participantsConnect[i].isMoved) {
-          const height = window.innerHeight - 85;
-          const width = window.innerWidth;
-          const index = i;
-          const position = getOrganizedPosition({
-            width: width,
-            height: height,
-            size: size,
-            index: index
-          });
-          const relativePosition = getRelativePosition(
-            width,
-            height,
-            position.posX,
-            position.posY
-          );
-          VoxeetSDK.setUserPosition(
-            participantsConnect[i].participant_id,
-            relativePosition.x,
-            relativePosition.y
-          );
-          participantsConnect[i].x = position.posX;
-          participantsConnect[i].y = position.posY;
-        }
-      }*/
-
+      if (state.spatialAudioEnabled && state.currentUser) {
+        updateParticipantPositions(participants);
+      }
       return {
         ...state,
         participants: [...participants],
