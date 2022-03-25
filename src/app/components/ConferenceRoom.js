@@ -210,6 +210,10 @@ class ConferenceRoom extends Component {
       );
     }
 
+    if (spatialAudio) {
+      this.props.dispatch(ParticipantActions.spatialAudioActivated());
+    }
+
     if (conferenceReplayId != null) {
       initialized.then(() => {
         this.props.dispatch(
@@ -754,6 +758,7 @@ class ConferenceRoom extends Component {
           logo={this.props.logo}
           handleJoin={this.handleJoin}
           dolbyVoiceEnabled={dolbyVoice}
+          spatialAudioEnabled={spatialAudio}
         />
       );
     } else if (isJoined || !isWidget || conferenceReplayId != null) {

@@ -28,6 +28,7 @@ export const Types = {
   USER_INVITED: "USER_INVITED",
   PARTICIPANT_QUALITY_UPDATED: "PARTICIPANT_QUALITY_UPDATED",
   STREAM_ADDED_FOR_PARTICIPANT: "STREAM_ADDED_FOR_PARTICIPANT",
+  SPATIAL_AUDIO_ACTIVATED: "SPATIAL_AUDIO_ACTIVATED",
 };
 
 export class Actions {
@@ -275,6 +276,12 @@ export class Actions {
       payload: {
         user,
         stream},
+    };
+  }
+
+  static spatialAudioActivated() {
+    return {
+      type: Types.SPATIAL_AUDIO_ACTIVATED,
     };
   }
 }
