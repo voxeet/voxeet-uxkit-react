@@ -1,0 +1,60 @@
+image: "836782323787.dkr.ecr.us-west-2.amazonaws.com/docker-maven-git:3.6.8-jdk-11-9"
+#trigger build of voxeet-io-web project
+variables:
+  WEB_SDK_SHA: ${CI_COMMIT_SHA}
+  WEB_SDK_REF_SLUG: ${CI_COMMIT_REF_SLUG}
+
+stages:
+  - build
+  - deploy
+
+.iapi_ec2_runner_tags:
+  tags:
+    - dolby-iapi
+
+check_pipeline_status:
+  stage: build
+  variables:
+    API_ENDPOINT: "https://api.github.com/repos/voxeet/voxeet-uxkit-react/commits"
+  only:
+    - develop
+  extends:
+    - .iapi_ec2_runner_tags
+  script:
+    - |
+      retry_limit=20   # 30s x 20= 10 min
+      retry=0
+      echo "checks for ${CI_COMMIT_SHA} commit"
+      while [ ${retry} -le ${retry_limit} ]
+       do
+          response=$(curl -s -H "Accept: application/vnd.github.v3+json"   ${API_ENDPOINT}/${CI_COMMIT_SHA}/check-runs)
+          build_status=$(echo "${response}" |jq '.check_runs[2]| select(.name=="build").status')
+          if echo ${build_status} |grep -q completed; then
+              echo ${build_status}
+              build_conclusion=$(echo "${response}" |jq '.check_runs[]| select(.name=="build").conclusion')
+              if echo ${build_conclusion} |grep -q success; then
+                  echo ${build_conclusion}
+                  exit 0
+                  break
+                  
+              else
+                  echo "build not pass: exit 1"                
+                  echo ${build_conclusion}
+                  exit 1
+              fi
+          else
+              (( retry = retry + 1 ))
+              echo ${build_status}
+              sleep 30
+          fi
+        done
+        exit 1
+
+trigger_job:
+  stage: deploy
+  only:
+    - develop
+  trigger: 
+    project: 'voxeet/desktop/voxeet-io-web'
+    branch: develop
+
