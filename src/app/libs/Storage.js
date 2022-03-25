@@ -19,7 +19,7 @@ if(isElectron()) {
     api = hasDefaults?Cookies.withAttributes(default_cookies_param):Cookies;
 }
 
-exports.get = (key) => {
+const getCookie = (key) => {
     if(isElectron()){
         return api.getItem(key);
     }
@@ -27,7 +27,7 @@ exports.get = (key) => {
         return api.get(key);
 }
 
-exports.set = (key, value, ignore) => {
+const setCookie = (key, value, ignore) => {
     if(isElectron()){
         return api.setItem(key, value);
     }
@@ -35,4 +35,25 @@ exports.set = (key, value, ignore) => {
         return api.set(key, value);
     else
         return api.set(key, value, default_cookies_param);
+}
+
+
+exports.get = getCookie;
+
+exports.set = setCookie;
+
+exports.getDevice = (key) => {
+    const str = getCookie(key);
+    if (str) {
+        try {
+            return JSON.parse(str);
+        } catch (e) {
+            return null;
+        }
+    }
+    return null;
+}
+
+exports.setDevice = (key, value, ignore) => {
+    setCookie(key, JSON.stringify(value, ignore));
 }

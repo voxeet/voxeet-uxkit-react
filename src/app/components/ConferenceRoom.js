@@ -465,7 +465,6 @@ class ConferenceRoom extends Component {
   async componentDidMount() {
     // Print UXKit Version
     console.log("UXKit Version: " + __VERSION__);
-
     const { isWebinar, isAdmin, isListener, preConfig } = this.props;
     let doPreConfigCheck =
       !isListener &&
@@ -535,38 +534,38 @@ class ConferenceRoom extends Component {
         } else*/ if (constraints && (constraints.audio || constraints.video)) {
           //console.log('About to check preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
           // Check selected devices stored in cookies
-          if (constraints.audio && !Cookies.get("input") && !isMobile()) {
+          let selectedAudio = Cookies.getDevice("input"),
+          selectedVideo = Cookies.getDevice("camera");
+          if (constraints.audio && !selectedAudio && !isMobile()) {
             console.log("Audio input not configured... will force preconfig");
             return this.setState({ preConfig: true }, () => {
               resolve(true);
             });
           }
-          if (constraints.video && !Cookies.get("camera") && !isMobile()) {
+          if (constraints.video && !selectedVideo && !isMobile()) {
             console.log("Camera input not configured... will force preconfig");
             return this.setState({ preConfig: true }, () => {
               resolve(true);
             });
           }
-          let selectedAudio = Cookies.get("input") || "default",
-            selectedVideo = Cookies.get("camera") || "default";
           // console.log('About to check availability of preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
           // Check if exists device with Id set in cookies
           let foundAudio = !constraints.audio
             ? true
-            : await VoxeetSDK.mediaDevice
+            : selectedAudio && await VoxeetSDK.mediaDevice
                 .enumerateAudioInputDevices()
                 .then((devices) => {
                   return devices.find(
-                    (source) => selectedAudio === source.deviceId
+                    (source) => selectedAudio.deviceId === source.deviceId
                   );
                 });
-          let foundVideo = !constraints.video
+          let foundVideo = !constraints.video 
             ? true
-            : await VoxeetSDK.mediaDevice
+            : selectedVideo && await VoxeetSDK.mediaDevice
                 .enumerateVideoInputDevices()
                 .then((devices) => {
                   return devices.find(
-                    (source) => selectedVideo === source.deviceId
+                    (source) => selectedVideo.deviceId === source.deviceId
                   );
                 });
           // TODO: prevent read errors
@@ -576,9 +575,9 @@ class ConferenceRoom extends Component {
             selectedVideo
           );
           let gotAudioStream = true;
-          if (constraints.audio) {
+          if (constraints.audio && selectedAudio) {
             gotAudioStream = await navigator.mediaDevices
-              .getUserMedia({ audio: { deviceId: { exact: selectedAudio } } })
+              .getUserMedia({ audio: { deviceId: { exact: selectedAudio.deviceId } } })
               .then((stream) => {
                 stream.getTracks().forEach((track) => {
                   track.stop();
@@ -591,9 +590,9 @@ class ConferenceRoom extends Component {
               });
           }
           let gotVideoStream = true;
-          if (constraints.video) {
+          if (constraints.video && selectedVideo) {
             gotVideoStream = await navigator.mediaDevices
-              .getUserMedia({ video: { deviceId: { exact: selectedVideo } } })
+              .getUserMedia({ video: { deviceId: { exact: selectedVideo.deviceId } } })
               .then((stream) => {
                 stream.getTracks().forEach((track) => {
                   track.stop();
