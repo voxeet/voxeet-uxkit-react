@@ -131,29 +131,23 @@ export class Actions {
     };
   }
 
-  static setInputAudio(constraints, dispatch) {
+  static setAudioConstraints(constraints, dispatch) {
     let inputCookieExist = false;
     VoxeetSDK.mediaDevice.enumerateAudioInputDevices().then((devices) => {
-      devices.forEach((source) => {
-        if (Cookies.get("input") == source.deviceId) inputCookieExist = true;
-      });
+      const device = Cookies.getDevice("input");
+      if (device) {
+        devices.forEach((source) => {
+          if (device.deviceId == source.deviceId) inputCookieExist = true;
+        });
+      }
       if (devices.length == 0) {
         constraints.audio = false;
       } else {
-        if (!inputCookieExist) {
-          constraints.audio = true;
-          let selected_device = devices.find(
-            (device) => device.deviceId == "default"
-          );
-          if (!selected_device) selected_device = devices[0];
-          dispatch(
-            InputManagerActions.inputAudioChange(selected_device.deviceId)
-          );
-        } else {
+        if (inputCookieExist) {
           constraints.audio = {
-            deviceId: { exact: Cookies.get("input") },
+            deviceId: { exact: device.deviceId },
           };
-          dispatch(InputManagerActions.inputAudioChange(Cookies.get("input")));
+          dispatch(InputManagerActions.inputAudioChange(device));
         }
       }
     });
@@ -163,67 +157,37 @@ export class Actions {
   static setVideoConstraints(constraints, videoRatio, dispatch) {
     let videoCookieExist = false;
     VoxeetSDK.mediaDevice.enumerateVideoInputDevices().then((devices) => {
-      devices.forEach((source) => {
-        if (Cookies.get("camera") === source.deviceId) videoCookieExist = true;
-      });
+      const device = Cookies.getDevice("camera");
+      if (device) {
+        devices.forEach((source) => {
+          if (device && device.deviceId === source.deviceId) videoCookieExist = true;
+        });
+      }
+
       if (
         devices.length === 0 ||
-        (devices.length === 1 && devices[0].deviceId == "")
+        (devices.length === 1 && devices[0]?.deviceId == "")
       ) {
         constraints.video = false;
       } else {
-        if (!videoCookieExist) {
-          let selected_device = devices.find(
-            (device) => device.deviceId === "default"
-          );
-          if (!selected_device) selected_device = devices[0];
-          var date = new Date();
-          date.setDate(date.getDate() + 365);
-          Cookies.set("camera", selected_device.deviceId, {
-            path: "/",
-            expires: date,
-            secure: true,
-            sameSite: "none",
-          });
-          getVideoDeviceName(selected_device.deviceId).then((isBackCamera) => {
-            dispatch(
-              InputManagerActions.inputVideoChange(
-                selected_device.deviceId,
-                isBackCamera
-              )
-            );
-          });
+        if (videoCookieExist) {
           if (constraints.video) {
             if (videoRatio != null) {
               constraints.video = {
                 height: videoRatio.height,
                 width: videoRatio.width,
-                deviceId: { exact: selected_device.deviceId },
+                deviceId: { exact: device.deviceId },
               };
             } else {
               constraints.video = {
-                deviceId: { exact: selected_device.deviceId },
+                deviceId: { exact: device.deviceId },
               };
             }
           }
-        } else {
-          if (constraints.video) {
-            if (videoRatio != null) {
-              constraints.video = {
-                height: videoRatio.height,
-                width: videoRatio.width,
-                deviceId: { exact: Cookies.get("camera") },
-              };
-            } else {
-              constraints.video = {
-                deviceId: { exact: Cookies.get("camera") },
-              };
-            }
-          }
-          getVideoDeviceName(Cookies.get("camera")).then((isBackCamera) => {
+          getVideoDeviceName(device.deviceId).then((isBackCamera) => {
             dispatch(
               InputManagerActions.inputVideoChange(
-                Cookies.get("camera"),
+                device,
                 isBackCamera
               )
             );
@@ -237,37 +201,19 @@ export class Actions {
   static setOutputAudio(dispatch) {
     let outputCookieExist = false;
     VoxeetSDK.mediaDevice.enumerateAudioOutputDevices().then((devices) => {
-      devices.map((source, i) => {
-        if (Cookies.get("output") === source.deviceId) outputCookieExist = true;
-      });
-      if (!outputCookieExist) {
-        let selected_device = devices.find(
-          (device) => device.deviceId === "default"
-        );
-        if (!selected_device) selected_device = devices[0];
-        var date = new Date();
-        date.setDate(date.getDate() + 365);
-        Cookies.set("output", selected_device.deviceId, {
-          path: "/",
-          expires: date,
-          secure: true,
-          sameSite: "none",
+      const device = Cookies.getDevice("output");
+      if (device){
+        devices.map((source, i) => {
+          if (device.deviceId === source.deviceId) outputCookieExist = true;
         });
+      }
+      if (outputCookieExist){
         VoxeetSDK.mediaDevice
-          .selectAudioOutput(selected_device.deviceId)
+          .selectAudioOutput(device.deviceId)
+          .then(() => dispatch(InputManagerActions.outputAudioChange(VoxeetSDK.mediaDevice.selectedAudioOutputDevice)))
           .catch((err) => {
             console.log(err);
           });
-        dispatch(
-          InputManagerActions.outputAudioChange(selected_device.deviceId)
-        );
-      } else {
-        VoxeetSDK.mediaDevice
-          .selectAudioOutput(Cookies.get("output"))
-          .catch((err) => {
-            console.log(err);
-          });
-        dispatch(InputManagerActions.outputAudioChange(Cookies.get("output")));
       }
     });
   }
@@ -327,16 +273,16 @@ export class Actions {
     constraints,
     videoRatio
   ) {
-    if (preConfigPayload && preConfigPayload.videoEnabled && !bowser.msie) {
+    if (preConfigPayload && preConfigPayload.videoEnabled && preConfigPayload.videoDeviceSelected && !bowser.msie) {
       if (videoRatio != null) {
         constraints.video = {
           height: videoRatio.height,
           width: videoRatio.width,
-          deviceId: { exact: preConfigPayload.videoDeviceSelected },
+          deviceId: { exact: preConfigPayload.videoDeviceSelected.deviceId },
         };
       } else {
         constraints.video = {
-          deviceId: { exact: preConfigPayload.videoDeviceSelected },
+          deviceId: { exact: preConfigPayload.videoDeviceSelected.deviceId },
         };
       }
     } else if (preConfigPayload) {
@@ -348,7 +294,7 @@ export class Actions {
       constraints.audio
     )
       constraints.audio = {
-        deviceId: { exact: preConfigPayload.audioDeviceSelected },
+        deviceId: { exact: preConfigPayload.audioDeviceSelected.deviceId },
       };
     return constraints;
   }
@@ -508,7 +454,7 @@ export class Actions {
       if (preConfigPayload == null && !bowser.msie && !participants.isWebinar) {
         this.setVideoConstraints(constraints, videoRatio, dispatch);
         if (constraints.audio) {
-          constraints = this.setInputAudio(constraints, dispatch);
+          constraints = this.setAudioConstraints(constraints, dispatch);
           return VoxeetSDK.conference
             .create({
               alias: conferenceAlias,
@@ -584,11 +530,12 @@ export class Actions {
                     dispatch(ControlsActions.toggleAudio(false));
                   if (bowser.chrome) {
                     if (preConfigPayload != null) {
-                      if (preConfigPayload.outputDeviceSelected)
+                      if (preConfigPayload.outputDeviceSelected && preConfigPayload.outputDeviceSelected.deviceId !== "default")
                         VoxeetSDK.mediaDevice
                           .selectAudioOutput(
                             preConfigPayload.outputDeviceSelected
                           )
+                          .then(() => dispatch(InputManagerActions.outputAudioChange(VoxeetSDK.mediaDevice.selectedAudioOutputDevice)))
                           .catch((err) => {
                             console.log(err);
                           });
@@ -695,9 +642,10 @@ export class Actions {
                 dispatch(ControlsActions.toggleAudio(false));
               if (bowser.chrome) {
                 if (preConfigPayload != null) {
-                  if (preConfigPayload.outputDeviceSelected)
+                  if (preConfigPayload.outputDeviceSelected && preConfigPayload.outputDeviceSelected.deviceId !== "default")
                     VoxeetSDK.mediaDevice
                       .selectAudioOutput(preConfigPayload.outputDeviceSelected)
+                      .then(() => dispatch(InputManagerActions.outputAudioChange(VoxeetSDK.mediaDevice.selectedAudioOutputDevice)))
                       .catch((err) => {
                         console.log(err);
                       });
@@ -822,7 +770,8 @@ export class Actions {
         if (!bowser.msie) {
           VoxeetSDK.mediaDevice.enumerateAudioInputDevices().then((devices) => {
             devices.forEach((source) => {
-              if (Cookies.get("input") === source.deviceId)
+              const inputDevice = Cookies.getDevice("input")
+              if (inputDevice && inputDevice.deviceId === source.deviceId)
                 inputCookieExist = true;
             });
             if (!inputCookieExist) {
@@ -831,11 +780,11 @@ export class Actions {
               );
               if (!selected_device) selected_device = devices[0];
               dispatch(
-                InputManagerActions.inputAudioChange(selected_device.deviceId)
+                InputManagerActions.inputAudioChange(selected_device)
               );
             } else {
               dispatch(
-                InputManagerActions.inputAudioChange(Cookies.get("input"))
+                InputManagerActions.inputAudioChange(Cookies.getDevice("input"))
               );
             }
             VoxeetSDK.conference
@@ -955,7 +904,7 @@ export class Actions {
           const payloadConstraints = {
             width: controls.videoRatio.width,
             height: controls.videoRatio.height,
-            deviceId: inputManager.currentVideoDevice,
+            deviceId: inputManager.currentVideoDevice?.deviceId,
           };
           return VoxeetSDK.conference
             .startVideo(VoxeetSDK.session.participant, payloadConstraints)
@@ -973,7 +922,7 @@ export class Actions {
             });
         } else {
           const payloadConstraints = {
-            deviceId: inputManager.currentVideoDevice,
+            deviceId: inputManager.currentVideoDevice?.deviceId,
           };
           return VoxeetSDK.conference
             .startVideo(VoxeetSDK.session.participant, payloadConstraints)

@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import thunkMiddleware from "redux-thunk";
-import { applyMiddleware, combineReducers, compose, createStore } from "redux";
+import { combineReducers, createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 
 import {
-  getUxKitContext,
   reducer as voxeetReducer,
+  getUxKitContext,
 } from "./VoxeetReactComponents";
+
 import Main from "./components/main/Main";
 
 const configureStore = () => {

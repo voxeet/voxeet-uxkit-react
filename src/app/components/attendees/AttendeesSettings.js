@@ -7,7 +7,6 @@ import Cookies from "./../../libs/Storage";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import AttendeesSettingsVuMeterFromAudioLevel from "./AttendeesSettingsVuMeterFromAudioLevel";
-import AttendeesSettingsVuMeterFromMediaStream from "./AttendeesSettingsVuMeterFromMediaStream";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "../../libs/getVideoDeviceName";
 import { isElectron, isIOS, isMobile } from "../../libs/browserDetection";
@@ -117,7 +116,7 @@ class AttendeesSettings extends Component {
     return stateUpdate;
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     if (
       prevProps.attendeesListOpened === true &&
       this.props.attendeesListOpened === false
@@ -232,32 +231,8 @@ class AttendeesSettings extends Component {
       .enumerateAudioInputDevices()
       .then((devices) => {
         this.setState({ audioDevices: devices });
-
-        // Pick out an audio input device:
-        // 1. use a current selected device
-        // 2. OR use a default device
-        // 3. OR use the first device from the device list
-        const deviceInfo =
-          devices.length &&
-          (devices.find(
-            (e) => e.deviceId === this.props.inputManager.currentAudioDevice
-          ) ||
-            devices.find((e) => e.deviceId === "default") ||
-            devices[0]);
-
-        // If the selected device is default, select it by using its proper deviceId
-        // (other than "default") but keep UI informed that the "default" is still selected.
-        if (deviceInfo.deviceId === "default") {
-          return this.setAudioDevice(
-            devices.find(
-              (e) =>
-                e.groupId === deviceInfo.groupId && e.deviceId !== "default"
-            ).deviceId,
-            "default"
-          );
-        }
-
-        return this.setAudioDevice(deviceInfo.deviceId);
+        const currentInputDevice = VoxeetSDK.mediaDevice.selectedAudioInputDevice;
+        return this.props.dispatch(InputManagerActions.inputAudioChange(currentInputDevice));
       })
       .catch((e) =>
         console.error("Initializing an audio input device failed.", e)
@@ -267,20 +242,8 @@ class AttendeesSettings extends Component {
       .enumerateAudioOutputDevices()
       .then((devices) => {
         this.setState({ outputDevices: devices });
-
-        // Pick out an audio output device:
-        // 1. use a current selected device
-        // 2. OR use a default device
-        // 3. OR use the first device from the device list
-        const deviceInfo =
-          devices.length &&
-          (devices.find(
-            (e) => e.deviceId === this.props.inputManager.currentOutputDevice
-          ) ||
-            devices.find((e) => e.deviceId === "default") ||
-            devices[0]);
-
-        return this.setOutputDevice(deviceInfo.deviceId);
+        const currentOutputDevice = VoxeetSDK.mediaDevice.selectedAudioOutputDevice;
+        return this.props.dispatch(InputManagerActions.outputAudioChange(currentOutputDevice));
       })
       .catch((e) =>
         console.error("Initializing an audio output device failed.", e)
@@ -289,38 +252,17 @@ class AttendeesSettings extends Component {
     VoxeetSDK.mediaDevice
       .enumerateVideoInputDevices()
       .then((devices) => {
-        if (this.props.inputManager.currentVideoDevice !== "") {
-          let exist = false;
-          devices.map((device, i) => {
-            if (
-              device.deviceId === this.props.inputManager.currentVideoDevice &&
-              device.deviceId !== ""
-            ) {
-              exist = true;
-            }
-          });
-          if (!exist && devices.length) {
-            let selected_device = devices.find(
-              (device) => device.deviceId === "default"
-            );
-            if (!selected_device) selected_device = devices[0];
-            Cookies.set(
-              "camera",
-              selected_device.deviceId,
-              default_cookies_param
-            );
-            getVideoDeviceName(selected_device.deviceId).then(
-              (isBackCamera) => {
-                this.props.dispatch(
-                  InputManagerActions.inputVideoChange(
-                    selected_device.deviceId,
-                    isBackCamera
-                  )
-                );
-              }
+        const currentVideoDevice = VoxeetSDK.mediaDevice.selectedVideoInputDevice;
+        getVideoDeviceName(currentVideoDevice.deviceId).then(
+          (isBackCamera) => {
+            this.props.dispatch(
+              InputManagerActions.inputVideoChange(
+                currentVideoDevice,
+                isBackCamera
+              )
             );
           }
-        }
+        );
         this.setState({
           videoDevices: devices,
         });
@@ -329,26 +271,28 @@ class AttendeesSettings extends Component {
   }
 
   onOutputDeviceSelected(e) {
-    this.setOutputDevice(e.target.value).catch((e) =>
+    const device =  e.target.value ? JSON.parse(e.target.value) : {};
+    this.setOutputDevice(device).catch((e) =>
       console.error("Selecting audio output device failed.", e)
     );
   }
 
-  setOutputDevice(deviceId) {
-    return VoxeetSDK.mediaDevice.selectAudioOutput(deviceId).then(() => {
-      Cookies.set("output", deviceId, default_cookies_param);
-      this.props.dispatch(InputManagerActions.outputAudioChange(deviceId));
+  setOutputDevice(device) {
+    return VoxeetSDK.mediaDevice.selectAudioOutput(device).then(() => {
+      Cookies.setDevice("output", device, default_cookies_param);
+      this.props.dispatch(InputManagerActions.outputAudioChange(device));
     });
   }
 
   onAudioDeviceSelected(e) {
-    this.setAudioDevice(e.target.value).catch((e) =>
+    const device =  e.target.value ? JSON.parse(e.target.value) : {};
+    this.setAudioDevice(device).catch((e) =>
       console.error("Selecting audio input device failed.", e)
     );
   }
 
-  setAudioDevice(deviceId, guiDeviceId = deviceId) {
-    return VoxeetSDK.mediaDevice.selectAudioInput(deviceId).then(() => {
+  setAudioDevice(device) {
+    return VoxeetSDK.mediaDevice.selectAudioInput(device).then(() => {
       if (this.props.microphoneMuted) {
         VoxeetSDK.conference
           .mute(VoxeetSDK.session.participant, true)
@@ -357,32 +301,29 @@ class AttendeesSettings extends Component {
           );
       }
 
-      Cookies.set("input", guiDeviceId, default_cookies_param);
-      this.props.dispatch(InputManagerActions.inputAudioChange(guiDeviceId));
+      Cookies.setDevice("input", device, default_cookies_param);
+      this.props.dispatch(InputManagerActions.inputAudioChange(device));
     });
   }
 
   setVideoDevice(e) {
     const { videoEnabled } = this.props;
-    const deviceId = e.target.value;
+    const device =  e.target.value ? JSON.parse(e.target.value) : {};
     if (videoEnabled) {
-      VoxeetSDK.mediaDevice.selectVideoInput(deviceId);
+      VoxeetSDK.mediaDevice.selectVideoInput(device);
     }
-    Cookies.set("camera", deviceId, default_cookies_param);
-    getVideoDeviceName(deviceId).then((isBackCamera, currentVideoDevice) => {
-      this.props.dispatch(
-        InputManagerActions.inputVideoChange(deviceId, isBackCamera)
-      );
-    });
+    Cookies.setDevice("camera", device, default_cookies_param);
+    getVideoDeviceName(device.deviceId).then(
+      (isBackCamera, currentVideoDevice) => {
+        this.props.dispatch(
+          InputManagerActions.inputVideoChange(device, isBackCamera)
+        );
+      }
+    );
   }
 
   onAudioTransparentModeChange() {
     const { audioTransparentMode } = this.props.controlsStore;
-
-    this.props.dispatch(
-      ConferenceActions.toggleAudioTransparentMode(!audioTransparentMode)
-    );
-
     this.setState(
       {
         audioTransparentMode: !audioTransparentMode,
@@ -392,6 +333,9 @@ class AttendeesSettings extends Component {
           "audioTransparentMode",
           this.state.audioTransparentMode,
           default_cookies_param
+        );
+        this.props.dispatch(
+          ConferenceActions.toggleAudioTransparentMode(!audioTransparentMode)
         );
         this.props.dispatch(
           ConferenceActions.setAudioTransparentMode(
@@ -549,13 +493,13 @@ class AttendeesSettings extends Component {
                   {/* <label htmlFor="output">Sound Output</label> */}
                   <select
                     name="output"
-                    value={currentOutputDevice}
+                    value={JSON.stringify(currentOutputDevice)}
                     className="form-control select-audio-output"
                     onChange={this.onOutputDeviceSelected}
                     disabled={false}
                   >
                     {this.state.outputDevices.map((device, i) => (
-                      <option key={i} value={device.deviceId}>
+                      <option key={i} value={JSON.stringify(device)}>
                         {device.label}
                       </option>
                     ))}
@@ -568,13 +512,13 @@ class AttendeesSettings extends Component {
                     {/* <label htmlFor="video">Camera</label> */}
                     <select
                       name="video"
-                      value={currentVideoDevice}
+                      value={JSON.stringify(currentVideoDevice)}
                       className="form-control select-video-device"
                       onChange={this.setVideoDevice}
                       disabled={false}
                     >
                       {this.state.videoDevices.map((device, i) => (
-                        <option key={i} value={device.deviceId}>
+                        <option key={i} value={JSON.stringify(device)}>
                           {device.label}
                         </option>
                       ))}
@@ -584,23 +528,19 @@ class AttendeesSettings extends Component {
                     {/* <label htmlFor="video">Microphone</label> */}
                     <select
                       name="audio"
-                      value={currentAudioDevice}
+                      value={JSON.stringify(currentAudioDevice)}
                       className="form-control select-audio-input"
                       onChange={this.onAudioDeviceSelected}
                     >
                       {this.state.audioDevices.map((device, i) => (
-                        <option key={i} value={device.deviceId}>
+                        <option key={i} value={JSON.stringify(device)}>
                           {device.label}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div className="form-group">
-                    {this.isIOS || bowser.safari ? (
-                      <AttendeesSettingsVuMeterFromAudioLevel maxLevel={21} />
-                    ) : (
-                      <AttendeesSettingsVuMeterFromMediaStream maxLevel={21} />
-                    )}
+                    {<AttendeesSettingsVuMeterFromAudioLevel maxLevel={21} />}
                   </div>
                   {dolbyVoiceEnabled && (
                     <div className="form-group switch-enable">
