@@ -232,7 +232,10 @@ class AttendeesSettings extends Component {
       .then((devices) => {
         this.setState({ audioDevices: devices });
         const currentInputDevice = VoxeetSDK.mediaDevice.selectedAudioInputDevice;
-        return this.props.dispatch(InputManagerActions.inputAudioChange(currentInputDevice));
+        if (currentInputDevice) {
+          return this.props.dispatch(InputManagerActions.inputAudioChange(currentInputDevice));
+        }
+
       })
       .catch((e) =>
         console.error("Initializing an audio input device failed.", e)
@@ -243,7 +246,9 @@ class AttendeesSettings extends Component {
       .then((devices) => {
         this.setState({ outputDevices: devices });
         const currentOutputDevice = VoxeetSDK.mediaDevice.selectedAudioOutputDevice;
-        return this.props.dispatch(InputManagerActions.outputAudioChange(currentOutputDevice));
+        if (currentOutputDevice) {
+          return this.props.dispatch(InputManagerActions.outputAudioChange(currentOutputDevice));
+        }
       })
       .catch((e) =>
         console.error("Initializing an audio output device failed.", e)
@@ -253,16 +258,18 @@ class AttendeesSettings extends Component {
       .enumerateVideoInputDevices()
       .then((devices) => {
         const currentVideoDevice = VoxeetSDK.mediaDevice.selectedVideoInputDevice;
-        getVideoDeviceName(currentVideoDevice.deviceId).then(
-          (isBackCamera) => {
-            this.props.dispatch(
-              InputManagerActions.inputVideoChange(
-                currentVideoDevice,
-                isBackCamera
-              )
-            );
-          }
-        );
+        if (currentVideoDevice) {
+          getVideoDeviceName(currentVideoDevice.deviceId).then(
+            (isBackCamera) => {
+              this.props.dispatch(
+                InputManagerActions.inputVideoChange(
+                  currentVideoDevice,
+                  isBackCamera
+                )
+              );
+            }
+          );
+        }
         this.setState({
           videoDevices: devices,
         });
