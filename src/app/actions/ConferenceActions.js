@@ -210,7 +210,7 @@ export class Actions {
       if (outputCookieExist){
         VoxeetSDK.mediaDevice
           .selectAudioOutput(device.deviceId)
-          .then(() => dispatch(InputManagerActions.outputAudioChange(VoxeetSDK.mediaDevice.selectedAudioOutputDevice)))
+          .then(() => dispatch(InputManagerActions.outputAudioChange(device)))
           .catch((err) => {
             console.log(err);
           });
@@ -535,7 +535,7 @@ export class Actions {
                           .selectAudioOutput(
                             preConfigPayload.outputDeviceSelected
                           )
-                          .then(() => dispatch(InputManagerActions.outputAudioChange(VoxeetSDK.mediaDevice.selectedAudioOutputDevice)))
+                          .then(() => dispatch(InputManagerActions.outputAudioChange(preConfigPayload.outputDeviceSelected)))
                           .catch((err) => {
                             console.log(err);
                           });
@@ -645,7 +645,7 @@ export class Actions {
                   if (preConfigPayload.outputDeviceSelected && preConfigPayload.outputDeviceSelected.deviceId !== "default")
                     VoxeetSDK.mediaDevice
                       .selectAudioOutput(preConfigPayload.outputDeviceSelected)
-                      .then(() => dispatch(InputManagerActions.outputAudioChange(VoxeetSDK.mediaDevice.selectedAudioOutputDevice)))
+                      .then(() => dispatch(InputManagerActions.outputAudioChange(preConfigPayload.outputDeviceSelected)))
                       .catch((err) => {
                         console.log(err);
                       });
