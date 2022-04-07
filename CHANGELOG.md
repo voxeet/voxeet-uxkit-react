@@ -1,4 +1,22 @@
 ## Changelog
+### 3.3.0
+
+#### Bug fixes
+
+## Changelog
+
+### 3.2.4
+
+#### Bug fixes
+
+- Fixed an issue where media track remains open after the end of the call
+
+### 3.2.3
+
+#### Bug fixes
+
+- Fixed an issue where listeners and participants without streams are not visible in the conference
+- Fixed an issue where the switch for bokeh mode is visible in web browsers
 
 ### 3.2.2
 

@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 import TileVideo from "./TileVideo";
 import TileLegend from "./TileLegend";
 
-import AttendeesSpatialTracker from "../AttendeesSpatialTracker";
-
 class Tile extends Component {
   constructor(props) {
     super(props);
@@ -45,10 +43,11 @@ class Tile extends Component {
       dolbyVoiceEnabled,
       kickPermission,
       currentUser,
-      spatialAudioEnabled
+      forwardedRef
     } = this.props;
     return (
       <div
+      ref={forwardedRef}
         className={
           "tile-item " +
           (participant.isConnected
@@ -86,9 +85,6 @@ class Tile extends Component {
           dolbyVoiceEnabled={dolbyVoiceEnabled}
           currentUser={currentUser}
         />
-        {spatialAudioEnabled && (<AttendeesSpatialTracker
-          participant={participant}
-        />)}
       </div>
     );
   }

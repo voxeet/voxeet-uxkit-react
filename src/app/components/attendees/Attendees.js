@@ -28,6 +28,7 @@ import {
   Tiles,
   View3D,
   ToggleModeButton,
+  MeasuredTiles
 } from "./modes";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
@@ -151,7 +152,6 @@ class Attendees extends Component {
 
   render() {
     const {
-      forwardedRef,
       mode,
       forceFullscreen,
       toggleMode,
@@ -192,7 +192,6 @@ class Attendees extends Component {
     return (
       <div
         id="conference-attendees"
-        ref={forwardedRef}
         className={
           isWidgetFullScreenOn
             ? "vxt-conference-attendees sidebar-less"
@@ -300,7 +299,20 @@ class Attendees extends Component {
                 participantsConnected.length > 0) ||
               (isWebinar && isAdmin) ||
               (isWebinar && !isAdmin && participantsConnected.length > 0)) && (
-              <Tiles
+              (spatialAudioEnabled && <MeasuredTiles
+                  participants={participants}
+                  isAdmin={isAdmin}
+                  isWebinar={isWebinar}
+                  isAdminActived={isAdminActived}
+                  currentUser={currentUser}
+                  kickParticipant={this.kickParticipant}
+                  toggleMicrophone={this.toggleMicrophone}
+                  isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
+                  dolbyVoiceEnabled={dolbyVoiceEnabled}
+                  kickPermission={kickPermission}
+                  spatialAudioEnabled={spatialAudioEnabled}
+                />) ||
+              (!spatialAudioEnabled && <Tiles
                 participants={participants}
                 isAdmin={isAdmin}
                 isWebinar={isWebinar}
@@ -313,7 +325,7 @@ class Attendees extends Component {
                 kickPermission={kickPermission}
                 spatialAudioEnabled={spatialAudioEnabled}
               />
-            )}
+            ))  }
           {mode === MODE_SPEAKER &&
             (displayModes.indexOf("speaker") > -1 ||
               screenShareEnabled ||
@@ -388,6 +400,7 @@ Attendees.propTypes = {
   dolbyVoiceEnabled: PropTypes.bool,
   conferencePermissions: PropTypes.object,
   chatOptions: PropTypes.object,
+  spatialAudioEnabled: PropTypes.bool,
 };
 
 export default Attendees;

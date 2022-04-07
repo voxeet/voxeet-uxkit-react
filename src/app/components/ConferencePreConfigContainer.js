@@ -795,7 +795,6 @@ class ConferencePreConfigContainer extends Component {
       videoDenoise,
     } = this.state;
     const MAX_MAXVF = isMobile() ? 4 : 16;
-    console.log("rendering pre config")
 
     return (
       <Fragment>
