@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import AttendeesParticipantBar from "../AttendeesParticipantBar";
 import AttendeesParticipantMute from "../AttendeesParticipantMute";
 import AttendeesKickParticipant from "../AttendeesKickParticipant";
-import AttendeesSpatialTracker from "../AttendeesSpatialTracker";
 
 import SpeakerVideo from "./SpeakerVideo";
 
@@ -108,9 +107,6 @@ class Speaker extends Component {
           />
         )}
         <SpeakerVideo nbParticipant={nbParticipant} participant={participant} />
-        {spatialAudioEnabled && (<AttendeesSpatialTracker
-          participant={participant}
-        />)}
       </li>
     );
   }

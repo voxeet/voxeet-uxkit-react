@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 
 import Tile from "./Tile";
 import OwnTile from "./OwnTile";
+import MeasuredTile from "./MeasuredTile";
 
 class Tiles extends Component {
   constructor(props) {
     super(props);
-    this.draggableAreaRef = React.createRef();
   }
 
   render() {
@@ -22,7 +22,8 @@ class Tiles extends Component {
       isWebinar,
       dolbyVoiceEnabled,
       kickPermission,
-      spatialAudioEnabled
+      spatialAudioEnabled,
+      forwardedRef,
     } = this.props;
     let tilesParticipants = participants.filter(
         (p) => p.isConnected
@@ -53,7 +54,7 @@ class Tiles extends Component {
         data-number-user={nbParticipants <= 16 ? nbParticipants : 16}
       >
         <div className={"tiles-list list" + nbParticipants}
-             ref={this.draggableAreaRef}
+             ref={forwardedRef}
         >
           { showOwnTile && (
             <OwnTile
@@ -65,7 +66,7 @@ class Tiles extends Component {
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={isWidgetFullScreenOn}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
-              bounds={this.draggableAreaRef.current}
+              bounds={forwardedRef.current}
               key={currentUser.participant_id}
               currentUser={currentUser}
             />
@@ -73,7 +74,7 @@ class Tiles extends Component {
           {tilesParticipants.map((participant, i) => {
             count = count + 1;
             return (
-              <Tile
+              (!spatialAudioEnabled && <Tile
                 participant={participant}
                 nbParticipant={count}
                 mySelf={false}
@@ -87,8 +88,23 @@ class Tiles extends Component {
                 kickPermission={kickPermission}
                 currentUser={currentUser}
                 spatialAudioEnabled={spatialAudioEnabled}
-              />
-            );
+              />) ||
+              (spatialAudioEnabled && <MeasuredTile
+                participant={participant}
+                nbParticipant={count}
+                mySelf={false}
+                isAdminActived={isAdminActived}
+                key={participant.participant_id}
+                kickParticipant={kickParticipant}
+                isAdmin={isAdmin}
+                toggleMicrophone={toggleMicrophone}
+                isWidgetFullScreenOn={isWidgetFullScreenOn}
+                dolbyVoiceEnabled={dolbyVoiceEnabled}
+                kickPermission={kickPermission}
+                currentUser={currentUser}
+                spatialAudioEnabled={spatialAudioEnabled}
+              />)
+            )
           })}
         </div>
       </div>
