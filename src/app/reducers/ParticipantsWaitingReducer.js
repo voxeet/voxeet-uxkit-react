@@ -29,7 +29,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
             stream: null,
             type: userInfo.type,
             metadata: userInfo.metadata,
-            isAdmin: userInfo.metadata.admin === "true",
+            isAdmin: userInfo.metadata?.admin === "true",
             isConnected: false,
             status: "Connecting",
             isMuted: false,

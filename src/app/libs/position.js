@@ -331,8 +331,7 @@ const refreshPositionLayout = () => {
   const layout = generatePositionLayout(participantsConnected.length);
 
   for (var i = 0; i < participantsConnected.length; i++) {
-    if (!participantsConnected[i].isMoved 
-      && !excludedParticipants.includes(participantsConnected[i].participant_id)) {
+    if (!excludedParticipants.includes(participantsConnected[i].participant_id)) {
       participantsConnected[i].id = participantsConnected[i].participant_id;
       VoxeetSDK.conference.setSpatialPosition(
         participantsConnected[i],
@@ -344,6 +343,11 @@ const refreshPositionLayout = () => {
   }
 }
 
+export const setDefaultPositionLayout = () => {
+  excludedParticipants = [];
+  refreshPositionLayout();
+}
+
 export const updateParticipantPositions = (participants) => {
   participantsConnected = participants.filter(
     (participant) => participant.isConnected === true
@@ -353,7 +357,6 @@ export const updateParticipantPositions = (participants) => {
 };
 
 export const updateSpatialScene = (currentBounds) => {
-  console.log("Updating spatial scene with bounds", currentBounds)
   if (currentBounds) {
     // Set the scale so the pixel size of the component maps to the audio scene size
     const right   = {x: 1, y: 0,  z: 0}
@@ -388,5 +391,4 @@ export const excludeParticipant = (participantId) => {
 //Re-include participant in automated layout generation
 export const includeParticipant = (participantId) => {
   excludedParticipants = excludedParticipants.filter((item => item !== participantId))
-  refreshPositionLayout();
 }
