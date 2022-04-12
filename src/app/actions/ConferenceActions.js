@@ -1662,7 +1662,6 @@ export class Actions {
       });
 
       VoxeetSDK.recording.on("statusUpdated", (recording, status) => {
-        console.log("statusUpdated")
         const { userId, startTimestamp } = recording || {};
         if (!userId && !startTimestamp) return;
         let message = status === "recording" ? strings.recordConferenceStart : strings.recordConferenceStop;
