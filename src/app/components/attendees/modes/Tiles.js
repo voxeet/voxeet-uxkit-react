@@ -66,7 +66,6 @@ class Tiles extends Component {
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={isWidgetFullScreenOn}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
-              bounds={forwardedRef.current}
               key={currentUser.participant_id}
               currentUser={currentUser}
             />
