@@ -25,6 +25,7 @@ import {
   CHAT_MESSAGE,
   RECORDING_STATE,
 } from "../constants/BroadcastMessageType";
+import { STATUS_CONNECTING } from "../constants/ParticipantStatus";
 
 export const Types = {
   INITIALIZED_SUCCESS: "INITIALIZED_SUCCESS",
@@ -1292,7 +1293,7 @@ export class Actions {
           ParticipantActions.onParticipantStatusUpdated(
             user.id,
             participantsWaiting.participants[index],
-            "Connecting"
+            STATUS_CONNECTING
           )
         );
       }
