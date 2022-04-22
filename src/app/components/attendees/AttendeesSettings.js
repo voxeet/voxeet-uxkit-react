@@ -6,6 +6,7 @@ import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import Cookies from "./../../libs/Storage";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
+import { Actions as ControlsActions } from "../../actions/ControlsActions"
 import AttendeesSettingsVuMeterFromAudioLevel from "./AttendeesSettingsVuMeterFromAudioLevel";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "../../libs/getVideoDeviceName";
@@ -342,7 +343,7 @@ class AttendeesSettings extends Component {
           default_cookies_param
         );
         this.props.dispatch(
-          ConferenceActions.toggleAudioTransparentMode(!audioTransparentMode)
+          ControlsActions.toggleAudioTransparentMode()
         );
         this.props.dispatch(
           ConferenceActions.setAudioTransparentMode(
