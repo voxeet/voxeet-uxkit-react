@@ -3,7 +3,6 @@ import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import {
   STATUS_CONNECTING,
   STATUS_LEFT,
-  STATUS_INACTIVE,
   STATUS_CONNECTED,
 } from "../constants/ParticipantStatus";
 
@@ -31,7 +30,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
             metadata: userInfo.metadata,
             isAdmin: userInfo.metadata?.admin === "true",
             isConnected: false,
-            status: "Connecting",
+            status: STATUS_CONNECTING,
             isMuted: false,
             x: -1,
             y: -1,
@@ -57,7 +56,7 @@ const ParticipantsWaitingReducer = (state = defaultState, action) => {
       participants[index].status = action.payload.status;
       participants[index].type = action.payload.type;
       participants[index].isConnected =
-        action.payload.status == "Connected" ? true : false;
+        action.payload.status === STATUS_CONNECTED;
       return {
         ...state,
         participants: [...participants],

@@ -10,6 +10,7 @@ import { Actions as ParticipantActions } from "../../actions/ParticipantActions"
 import AttendeesParticipantMute from "./AttendeesParticipantMute";
 import AttendeesParticipantCamera from "./AttendeesParticipantCamera";
 import {getUxKitContext} from "../../context";
+import { STATUS_LEFT, STATUS_RESERVED, STATUS_INACTIVE } from "../../constants/ParticipantStatus";
 
 @connect((store) => {
   return {
@@ -127,13 +128,13 @@ class AttendeesList extends Component {
       (p) => p.stream == null && p.isConnected && p.type == "listener"
     );
     const participantsInvited = this.props.participantWaiting.participants.filter(
-      (p) => p.status == "Reserved"
+      (p) => p.status === STATUS_RESERVED
     );
     const participantsInactive = this.props.participantWaiting.participants.filter(
-      (p) => p.status == "Inactive"
+      (p) => p.status === STATUS_INACTIVE
     );
     const participantsLeft = this.props.participantWaiting.participants.filter(
-      (p) => p.status == "Left"
+      (p) => p.status === STATUS_LEFT
     );
     if (invitedUsers != null) {
       userNotYetInvitedWithoutFilter = invitedUsers.filter(
