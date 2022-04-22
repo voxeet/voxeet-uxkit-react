@@ -178,7 +178,7 @@ const ParticipantReducer = (state = defaultState, action) => {
             type: userInfo.type,
             metadata: userInfo.metadata,
             isAdmin: userInfo.metadata?.admin === "true",
-            isConnected: userInfo.status == STATUS_CONNECTED ? true : false,
+            isConnected: userInfo.status === STATUS_CONNECTED,
             status: userInfo.status,
             isMuted: false,
             x: -1,
@@ -216,7 +216,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         return state;
       }
       participants[index].isConnected =
-        action.payload.user.status == STATUS_CONNECTED ? true : false;
+        action.payload.user.status === STATUS_CONNECTED;
         if (state.spatialAudioEnabled && state.currentUser) {
           updateParticipantPositions(participants);
       }
@@ -271,7 +271,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         return state;
       }
       participants[index].isConnected =
-        user.status == STATUS_CONNECTED ? true : false;
+        user.status === STATUS_CONNECTED;
       participants[index].stream = null;
       if (
         action.payload.stream &&
@@ -301,7 +301,7 @@ const ParticipantReducer = (state = defaultState, action) => {
             externalId: userInfo.externalId,
             metadata: userInfo.metadata,
             isAdmin: userInfo.metadata?.admin === "true",
-            isConnected: status == STATUS_CONNECTED ? true : false,
+            isConnected: status === STATUS_CONNECTED,
             status: status,
             stream: null,
             isMuted: false,
@@ -312,7 +312,7 @@ const ParticipantReducer = (state = defaultState, action) => {
           participants[index].name = userInfo.name;
           participants[index].type = userInfo.type;
           participants[index].isConnected =
-            status == STATUS_CONNECTED ? true : false;
+            status === STATUS_CONNECTED;
           participants[index].avatarUrl = userInfo.avatarUrl;
           participants[index].metadata = userInfo.metadata;
           participants[index].status = status;
