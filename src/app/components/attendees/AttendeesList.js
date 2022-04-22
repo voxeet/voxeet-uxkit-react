@@ -128,13 +128,13 @@ class AttendeesList extends Component {
       (p) => p.stream == null && p.isConnected && p.type == "listener"
     );
     const participantsInvited = this.props.participantWaiting.participants.filter(
-      (p) => p.status == STATUS_RESERVED
+      (p) => p.status === STATUS_RESERVED
     );
     const participantsInactive = this.props.participantWaiting.participants.filter(
-      (p) => p.status == STATUS_INACTIVE
+      (p) => p.status === STATUS_INACTIVE
     );
     const participantsLeft = this.props.participantWaiting.participants.filter(
-      (p) => p.status == STATUS_LEFT
+      (p) => p.status === STATUS_LEFT
     );
     if (invitedUsers != null) {
       userNotYetInvitedWithoutFilter = invitedUsers.filter(
