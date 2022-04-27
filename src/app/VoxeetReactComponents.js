@@ -20,6 +20,8 @@ import {
   ToggleAttendeesListButton
 } from "./components/actionsBar/buttons";
 
+const UxKitVersion = __VERSION__;
+
 module.exports = {
   reducer,
   ConferenceRoom,
@@ -42,4 +44,5 @@ module.exports = {
     ToggleAttendeesListButton
   },
   ConferenceSounds,
+  UxKitVersion
 };
