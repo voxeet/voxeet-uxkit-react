@@ -334,8 +334,7 @@ class Attendees extends Component {
             currentUser != null &&
             ((!isWebinar && !currentUser.isListener) ||
               (!isWebinar &&
-                currentUser.isListener &&
-                participantsConnected.length > 0) ||
+                currentUser.isListener) ||
               (isWebinar && isAdmin) ||
               (isWebinar && !isAdmin && participantsConnected.length > 0)) && (
               <Speakers
