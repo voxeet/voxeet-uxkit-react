@@ -8,9 +8,14 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: [self-hosted, Linux]
+    container:
+      image: 836782323787.dkr.ecr.us-east-1.amazonaws.com/node-git:16.9.1-2
+    env:
+      codeartifact_run: ${{secrets.CODEARTIFACT_RUN}}
+      codeartifact_snapshots_registry_url: ${{ secrets.CODEARTIFACT_NPM_SNAPSHOTS_REPOSITORY_URL }}
+      jfrog_production_registry_url: ${{ secrets.JFA_NPM_PRODUCTION_REGISTRY_URL }}
+      NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
     steps:
       - uses: actions/checkout@v2
       - uses: rlespinasse/github-slug-action@v3.x
@@ -21,39 +26,41 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - id: codeartifact_login
-        name: Login to CodeArtifact
+      - name: install from aws
         run: |
-          CODEARTIFACT_TOKEN=$(/usr/local/bin/aws codeartifact get-authorization-token --duration-seconds 900 --domain ${{ secrets.CODEARTIFACT_DOMAIN }} --domain-owner ${{ secrets.CODEARTIFACT_DOMAIN_OWNER }} --region ${{ secrets.AWS_REGION }} --output text --query authorizationToken)
-          echo "::add-mask::$CODEARTIFACT_TOKEN"
-          echo "CODEARTIFACT_TOKEN=$CODEARTIFACT_TOKEN" >> $GITHUB_ENV
-
-      - name: setting nodejs
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: ${{ secrets.CODEARTIFACT_NPM_RELEASES_REPOSITORY_URL }}
-          always-auth: true
-
-      - name: install dependencies
-        run: |
+          echo "Install dependencies from AWS Codeartifact"
+          aws codeartifact login --duration-seconds 900 --tool npm --domain ${{ secrets.CODEARTIFACT_DOMAIN }} --domain-owner ${{ secrets.CODEARTIFACT_DOMAIN_OWNER }} --repository 'npm-releases' --region ${{ secrets.AWS_REGION }}
+          echo "always-auth=true" >> ${NPM_CONFIG_USERCONFIG}
+          npm --version
           yarn install
-        env:
-          NODE_AUTH_TOKEN: ${{ env.CODEARTIFACT_TOKEN }}
+        if: ${{ env.codeartifact_run == 'true' }}
 
-      - name: setting nodejs
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: ${{ secrets.CODEARTIFACT_NPM_SNAPSHOTS_REPOSITORY_URL }}
-          always-auth: true
+      - name: install from jfrog
+        run: |
+          echo "Install dependencies from JFrog Artifactory."
+          printf "_auth=${{ secrets.JFA_AUTH_TOKEN }}\nalways-auth=true\nemail=buildteam@dolby.com\nregistry=${{ env.jfrog_production_registry_url }}\n" > ${NPM_CONFIG_USERCONFIG}
+          yarn install
+        if: ${{ env.codeartifact_run == 'false' }}
 
       - name: build publish and create NPM dist tag
         run: |
           npm --no-git-tag-version version $(npm run --silent get-version)-$GITHUB_SHA
           yarn publish --tag ${{ env.GITHUB_REF_SLUG }}
+
+      - name: publish on AWS
+        run: |
+          aws codeartifact login --duration-seconds 900 --tool npm --domain ${{ secrets.CODEARTIFACT_DOMAIN }} --domain-owner ${{ secrets.CODEARTIFACT_DOMAIN_OWNER }} --repository 'npm-snapshots' --region ${{ secrets.AWS_REGION }}
+          npm publish --tag ${{ env.GITHUB_REF_SLUG }} --registry ${{ env.codeartifact_snapshots_registry_url }}
+        if: ${{ env.codeartifact_run == 'false' }}
+
+      - name: publish on JFrog
+        run: |
+          printf "_auth=${{ secrets.JFA_AUTH_TOKEN }}\nalways-auth=true\nemail=buildteam@dolby.com\nregistry=${{ env.JFA_NPM_REGISTRY_URL }}\n" > ${NPM_CONFIG_USERCONFIG}
+          npm publish --tag ${{ env.GITHUB_REF_SLUG }} --registry ${{ env.jfrog_snapshots_registry_url }}
+        if: ${{ env.codeartifact_run == 'true' }}
         env:
-          NODE_AUTH_TOKEN: ${{ env.CODEARTIFACT_TOKEN }}
+          JFA_NPM_REGISTRY_URL: ${{ secrets.JFA_NPM_SNAPSHOTS_REGISTRY_URL }}
+
 
       - name: Generate github app token
         id: generate_token
