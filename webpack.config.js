@@ -13,7 +13,6 @@ try {
 module.exports = {
   entry: [
     "react-hot-loader/patch",
-    "webpack/hot/only-dev-server", // "only" prevents reload on syntax errors
     "./src/app/index.js",
   ],
   devtool: "inline-source-map",
@@ -26,14 +25,16 @@ module.exports = {
   devServer: {
     port: 8080,
     https: true,
-    disableHostCheck: true,
+    allowedHosts: "all",
     host: "0.0.0.0",
-    contentBase: path.join(__dirname, 'dist'),
-    publicPath: '/',
-    hot: true,
-    watchOptions: {
-      poll: true,
+    static: {
+        directory: path.join(__dirname, "src"),
+        publicPath: "/static",
+      },
+    devMiddleware: {
+      publicPath: '/',
     },
+    hot: true,
     historyApiFallback: true
   },
   module: {
@@ -129,7 +130,6 @@ module.exports = {
       __VERSION__: JSON.stringify(package.version),
     }),
     // new webpack.NoEmitOnErrorsPlugin/(),
-    new webpack.HotModuleReplacementPlugin(),
     // new CopyPlugin({
     //   patterns: [
     //     {
