@@ -10,7 +10,8 @@
     "get-version": "echo $npm_package_version"
   },
   "keywords": [],
-  "author": "Dolby",
+  "author": "Dolby.io",
+  "license": "MIT",
   "contributors": [
     "BEHUET Jérôme <jbehuet@gmail.com>",
     "GOURGUES Thomas <tgourgues@voxeet.com>",
