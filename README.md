@@ -9,6 +9,13 @@ yarn add @voxeet/voxeet-web-sdk @voxeet/react-components
 
 ## Changelog
 
+### 3.3.0
+
+#### Features
+
+- Support for Spatial Audio with A/V congruence
+- Update to React v17
+
 ### 3.2.4
 
 #### Bug fixes
