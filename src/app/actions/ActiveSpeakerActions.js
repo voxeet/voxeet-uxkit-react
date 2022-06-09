@@ -48,7 +48,7 @@ export class Actions {
                 : participantsConnected.find((p) => p.isSpeaking) ||
                   null;
             if(participant) {
-              // Set new active speaker if there is none
+              // Set new active speaker if there are none
               if(!activeParticipantConnected || !activeSpeaker.activeSpeaker || !activeSpeaker.activeSpeakerSince
                   || activeSpeaker.activeSpeaker.participant_id == participant.participant_id) {
                 if(activeSpeaker.activeSpeaker && activeSpeaker.activeSpeaker.participant_id === participant.participant_id) {

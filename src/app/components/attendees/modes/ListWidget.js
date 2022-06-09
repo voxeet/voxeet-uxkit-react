@@ -31,10 +31,11 @@ class ListWidget extends Component {
               mySelf={true}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
               currentUser={currentUser}
+              key={'admin'}
             />
           )}
           {participants.map((participant, i) => {
-            if (participant.isConnected && participant.type == "user")
+            if (participant.isConnected)
               return (
                 <ListWidgetItem
                   isAdminActived={isAdminActived}

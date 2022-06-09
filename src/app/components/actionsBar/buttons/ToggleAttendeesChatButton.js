@@ -2,16 +2,17 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import ChatOn from "../../../../static/images/icons/btn-chat-on.svg";
 import ChatOff from "../../../../static/images/icons/btn-chat-off.svg";
 import { isMobile } from "../../../libs/browserDetection";
+import {getUxKitContext} from "../../../context";
 
 @connect(store => {
   return {
     chatStore: store.voxeet.chat
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ToggleAttendeesChatButton extends Component {
   constructor(props) {
     super(props);

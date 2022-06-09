@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import PreConfigVuMeter from "../preConfig/PreConfigVuMeter.js";
 
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
+import {getUxKitContext} from "../../context";
 
-@connect((store) => {
+@connect(store => {
   return {
     inputManager: store.voxeet.inputManager,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesSettingsVuMeterFromMediaStream extends Component {
   constructor(props) {
     super(props);

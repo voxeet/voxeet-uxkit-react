@@ -1,3 +1,5 @@
+import VoxeetSDK from "@voxeet/voxeet-web-sdk";
+
 /*
  * those values MUST stay in sync with the ones in bundle.styl
  * they're used by trigo to place users on the circle without causing overflow.
@@ -6,6 +8,15 @@
  */
 const USER_WIDTH = 130;
 const USER_HEIGHT = 207;
+
+//List of participants that are excluded from automated positional layout generation
+let excludedParticipants = [];
+
+let localUserPosition = {x: 0, y: 0, z: 0}
+
+const audioSceneWidthMeters = 4
+const audioSceneHeightMeters = 4
+
 
 // CSS origin (0,0) is top-left corner, center of circle is in bottom-middle
 const getCircleCenterCoords = boxDimensions => {
@@ -24,6 +35,8 @@ const getCircleRadius = boxDimensions => {
 const bound = (min, value, max) => {
   return Math.max(min, Math.min(value, max));
 };
+
+
 
 // x = [-1, 1], y = [0, -1]
 export const getRelativePosition = (width, height, posX, posY) => {
@@ -260,3 +273,110 @@ export const getPosition = ({
       return { tX: posX, tY: posY, tW: 100, tH: 100 };
   }
 };
+
+//Function generates angle of a starting point required for automatic layout generation
+const getAngleOffset = (participantCount) => {
+  switch (participantCount) {
+    case 0:
+    case 1:
+      return 0;
+    case 2:
+      return 90;
+    default:
+      const halfIncrement = 360 / (participantCount * 2);
+      const angleOffset =
+        -1 * halfIncrement * (Math.ceil(90 / halfIncrement) - 1);
+      return angleOffset;
+  }
+};
+
+const round = (number, precision = 4) => {
+  const multiply = Math.pow(10, precision);
+  return Math.round(number * multiply) / multiply;
+};
+
+//Function generates participant position layout
+//First half of the participants is located in front of the local participant positioned left to right.
+//Second half of the participant sits behing local participant positioned left to right.
+const generatePositionLayout = (participantCount, radius = audioSceneWidthMeters) => {
+  const angleIncrement = 360 / participantCount;
+  const angleOffset = getAngleOffset(participantCount);
+
+  let coordinates = [];
+
+  for (let i = 0; i < participantCount; i++) {
+    let angle;
+    if (i < participantCount / 2) {
+      //First half
+      angle = angleOffset + i * angleIncrement;
+    } else {
+      //Seconf half
+      angle =
+        angleOffset -
+        angleIncrement * (1 + i - Math.ceil(participantCount / 2));
+    }
+    const radian = angle * (Math.PI / 180);
+    coordinates.push({
+      x: localUserPosition.x + round(radius * Math.sin(radian)),
+      y: localUserPosition.y + round(radius * Math.cos(radian)),
+      z: localUserPosition.z + 0,
+    });
+  }
+  return coordinates;
+};
+
+export const updateParticipantPositions = (participants) => {
+  const participantsConnected = participants.filter(
+    (participant) => participant.isConnected === true
+  );
+
+  const layout = generatePositionLayout(participantsConnected.length);
+
+  for (var i = 0; i < participantsConnected.length; i++) {
+    if (!participantsConnected[i].isMoved 
+      && !excludedParticipants.includes(participantsConnected[i].participant_id)) {
+      participantsConnected[i].id = participantsConnected[i].participant_id;
+      VoxeetSDK.conference.setSpatialPosition(
+        participantsConnected[i],
+        layout[i]
+      );
+      participantsConnected[i].x = layout[i].x;
+      participantsConnected[i].y = layout[i].y;
+    }
+  }
+};
+
+export const updateSpatialScene = (currentBounds) => {
+  if (currentBounds) {
+    // Set the scale so the pixel size of the component maps to the audio scene size
+    const right   = {x: 1, y: 0,  z: 0}
+    const forward = {x: 0, y:-1, z: 0}
+    const up      = {x: 0, y: 0,  z: 1}
+    const scale   = {x: currentBounds.width / audioSceneWidthMeters, y:currentBounds.height / audioSceneHeightMeters, z:1}
+    VoxeetSDK.conference.setSpatialEnvironment(scale, forward, up, right);
+
+    // Place the listener in the middle of the component
+    setLocalUserPosition(
+      {
+        x: currentBounds.left + currentBounds.width / 2,
+        y: currentBounds.top + currentBounds.height / 2,
+        z: 0
+      }
+    )
+  }
+}
+
+export const setLocalUserPosition = (position) => {
+  VoxeetSDK.conference.setSpatialPosition(VoxeetSDK.session.participant, position);
+  localUserPosition = position;
+}
+
+//Exclude participant from automated layout generation
+export const excludeParticipant = (participantId) => {
+excludedParticipants.push(participantId);
+}
+
+//Re-include participant in automated layout generation
+export const includeParticipant = (participantId) => {
+  excludedParticipants = excludedParticipants.filter((item => item !== participantId))
+}

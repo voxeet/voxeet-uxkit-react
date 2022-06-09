@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import { strings } from "../../languages/localizedStrings";
 import CameraOff from "../../../static/images/icons/btn-camera-off.svg";
 import CameraOn from "../../../static/images/icons/btn-camera-dark.svg";
 import CameraPinned from "../../../static/images/icons/btn-camera-green.svg";
+import {getUxKitContext} from "../../context";
 
 @connect(store => {
   return {
@@ -12,7 +13,7 @@ import CameraPinned from "../../../static/images/icons/btn-camera-green.svg";
     forwardedVideoStore: store.voxeet.forwardedVideo,
     controlsStore: store.voxeet.controls,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesParticipantCamera extends Component {
   constructor(props) {
     super(props);

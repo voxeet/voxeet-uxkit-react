@@ -2,7 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const package = require("./package.json");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 try {
   require("os").networkInterfaces();
@@ -13,10 +13,10 @@ try {
 module.exports = {
   entry: [
     "react-hot-loader/patch",
-    "webpack/hot/only-dev-server", // "only" prevents reload on syntax errors
     "./src/app/index.js",
   ],
-  devtool: "source-map",
+  devtool: "inline-source-map",
+  mode: "development",
   output: {
     path: path.join(__dirname, "dist"),
     filename: "bundle.js",
@@ -25,61 +25,100 @@ module.exports = {
   devServer: {
     port: 8080,
     https: true,
-    disableHostCheck: true,
+    allowedHosts: "all",
     host: "0.0.0.0",
+    static: {
+        directory: path.join(__dirname, "src"),
+        publicPath: "/static",
+      },
+    devMiddleware: {
+      publicPath: '/',
+    },
+    hot: true,
+    historyApiFallback: true
   },
   module: {
     rules: [
       {
         test: /.jsx?$/,
-        loaders: ["babel-loader"],
-        exclude: /node_modules/,
+        loader: "babel-loader",
+        exclude: [
+          path.resolve(__dirname, '/node_modules/')
+        ],
         include: path.resolve(__dirname),
       },
       {
         test: /.less$/,
-        loader: "style-loader!css-loader!less-loader",
+        use: [
+          'style-loader',
+          'css-loader',
+          'less-loader'
+        ],
       },
       {
         test: /\.mp3$/,
-        loader: "file-loader",
-        options: {
-          name: "sounds/[name].[ext]",
-        },
+        exclude: /node_modules/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'sounds/[name][ext][query]'
+        }
       },
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=application/font-woff",
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
       },
       {
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=application/font-woff",
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=application/octet-stream",
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "file-loader",
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
       },
       {
         test: /\.otf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "file-loader",
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]'
+        }
       },
       {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=image/svg+xml",
+        test: /\.svg$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name][ext][query]'
+        },
       },
       {
         test: /\.(jpg|jpeg|gif|png)$/,
         exclude: /node_modules/,
-        loader: "url-loader?limit=65000&name=images/[name].[ext]",
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name][ext][query]'
+        }
       },
     ],
   },
+  resolve: {
+    extensions: ['.js', '.jsx', '.json']
+  },
   plugins: [
-    new CopyWebpackPlugin([{ from: "./src/static", ignore: ["*.html"] }]),
     new HtmlWebpackPlugin({
       inject: true,
       template: "src/static/index.html",
@@ -90,6 +129,16 @@ module.exports = {
       },
       __VERSION__: JSON.stringify(package.version),
     }),
-    new webpack.NoEmitOnErrorsPlugin(),
+    // new webpack.NoEmitOnErrorsPlugin/(),
+    // new CopyPlugin({
+    //   patterns: [
+    //     {
+    //       from: "./src/static",
+    //       globOptions: {
+    //         ignore: ["**/index.html"]
+    //       }
+    //     },
+    //   ]
+    //   }),
   ],
 };

@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import { strings } from "../../languages/localizedStrings";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import userPlaceholder from "../../../static/images/user-placeholder.png";
 import iconPlus from "../../../static/images/icons/icon-plus.svg";
@@ -9,6 +9,7 @@ import iconSlideLeft from "../../../static/images/icons/icon-slide-left.svg";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
 import AttendeesParticipantMute from "./AttendeesParticipantMute";
 import AttendeesParticipantCamera from "./AttendeesParticipantCamera";
+import {getUxKitContext} from "../../context";
 
 @connect((store) => {
   return {
@@ -16,7 +17,7 @@ import AttendeesParticipantCamera from "./AttendeesParticipantCamera";
     participantWaiting: store.voxeet.participantsWaiting,
     activeSpeakerStore: store.voxeet.activeSpeaker,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class AttendeesList extends Component {
   constructor(props) {
     super(props);
@@ -118,7 +119,7 @@ class AttendeesList extends Component {
     const { isWebinar, isAdmin, attendeesListOpened, toggleMicrophone, toggleForwardedVideo, dolbyVoiceEnabled, invitePermission } = this.props;
     const { filteredUsers } = this.state;
     const participantsConnected = participants.filter(
-      (p) => p.isConnected && p.type == "user"
+      (p) => p.isConnected
     );
     let userNotYetInvitedWithoutFilter = null;
     let userNotYetInvitedWithFilter = null;

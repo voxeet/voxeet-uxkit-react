@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
 import { strings } from "../languages/localizedStrings";
@@ -20,6 +20,7 @@ import AttendeesChat from "./attendees/chat/AttendeesChat";
 import LoadingScreen from "./attendees/LoadingScreen";
 import { setPstnNumbers } from "../constants/PinCode";
 import {isMobile} from "../libs/browserDetection";
+import {getUxKitContext} from "../context";
 
 @connect((state) => {
   return {
@@ -27,7 +28,7 @@ import {isMobile} from "../libs/browserDetection";
     errorStore: state.voxeet.error,
     participantsStore: state.voxeet.participants,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ConferenceRoom extends Component {
   constructor(props) {
     super(props);
@@ -97,11 +98,13 @@ class ConferenceRoom extends Component {
       isAdmin,
       oauthToken,
       disableSounds,
+      dvwc,
       simulcast,
       invitedUsers,
       refreshTokenCallback,
       isListener,
-      chatOptions
+      chatOptions,
+      spatialAudio
     } = this.props;
     let { constraints } = this.props;
     if(preConfigPayload && preConfigPayload.maxVideoForwarding!==undefined) {
@@ -122,6 +125,10 @@ class ConferenceRoom extends Component {
     if(preConfigPayload && preConfigPayload.virtualBackgroundMode!==undefined) {
       this.props.dispatch(ControlsActions.setVirtualBackgroundMode(preConfigPayload.virtualBackgroundMode));
       this.virtualBackgroundMode = preConfigPayload.virtualBackgroundMode;
+    }
+    if(preConfigPayload && preConfigPayload.videoDenoise!==undefined) {
+      this.props.dispatch(ControlsActions.setVideoDenoise(preConfigPayload.videoDenoise));
+      this.videoDenoise = preConfigPayload.videoDenoise;
     }
     let initialized;
     let pinCodeTmp = pinCode;
@@ -231,7 +238,7 @@ class ConferenceRoom extends Component {
 
       if (isDemo) {
         initialized.then(() =>
-          this.props.dispatch(ConferenceActions.joinDemo())
+          this.props.dispatch(ConferenceActions.joinDemo(userInfo, spatialAudio))
         );
       } /*else if (autoJoin && conferenceId != null) {
         const constraintsUpdated = {
@@ -281,7 +288,9 @@ class ConferenceRoom extends Component {
               simulcast,
               dolbyVoice,
               maxVideoForwarding,
-              chatOptions
+              chatOptions,
+              dvwc ,
+              spatialAudio
             )
           );
         });
@@ -375,6 +384,30 @@ class ConferenceRoom extends Component {
     this.props.dispatch(ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode));
     this.virtualBackgroundMode = virtualBackgroundMode;
     console.log('initializeControlsStore virtualBackgroundMode', this.virtualBackgroundMode);
+
+    let videoDenoise = Cookies.get("videoDenoise");
+    if( videoDenoise!==undefined ) {
+      if (typeof videoDenoise === 'string' || videoDenoise instanceof String)
+        videoDenoise = videoDenoise.toLowerCase() !== 'false';
+      else
+        videoDenoise = Boolean(videoDenoise);
+      //console.log('Setting default value for videoDenoise to user default', videoDenoise);
+    } else {
+      videoDenoise = this.props.videoDenoise?this.props.videoDenoise:false;
+      //console.log('Setting default value for videoDenoise to app default', videoDenoise);
+    }
+    if( videoDenoise!==undefined ) {
+      if (typeof videoDenoise === 'string' || videoDenoise instanceof String)
+        videoDenoise = videoDenoise.toLowerCase() !== 'false';
+      else
+        videoDenoise = Boolean(videoDenoise);
+    } else {
+      videoDenoise = false;
+      //console.log('Setting default value for videoDenoise to system default', videoDenoise);
+    }
+    this.props.dispatch(ControlsActions.setVideoDenoise(videoDenoise));
+    Cookies.set("videoDenoise", videoDenoise, default_cookie_params);
+    this.videoDenoise = videoDenoise;
   }
 
   async componentDidMount() {
@@ -537,7 +570,8 @@ class ConferenceRoom extends Component {
       isAdmin,
       logo,
       dolbyVoice,
-      chatOptions
+      chatOptions,
+      spatialAudio
     } = this.props;
     const {
       screenShareEnabled,
@@ -671,6 +705,7 @@ class ConferenceRoom extends Component {
           attendeesWaiting={attendeesWaiting}
           dolbyVoiceEnabled={dolbyVoiceEnabled}
           chatOptions={chatOptions}
+          spatialAudioEnabled={spatialAudio}
         />
       );
     }
@@ -710,13 +745,14 @@ ConferenceRoom.propTypes = {
   userInfo: PropTypes.object,
   chatOptions: PropTypes.object,
   invitedUsers: PropTypes.array,
+  dvwc: PropTypes.bool,
   constraints: PropTypes.object,
   videoRatio: PropTypes.object,
   autoJoin: PropTypes.bool,
   pinCode: PropTypes.string,
   actionsButtons: PropTypes.func,
-  attendeesList: PropTypes.func,
-  attendeesChat: PropTypes.func,
+  attendeesList: PropTypes.object,
+  attendeesChat: PropTypes.object,
   loadingScreen: PropTypes.func,
   handleOnLeave: PropTypes.func,
   refreshTokenCallback: PropTypes.func,
@@ -726,6 +762,7 @@ ConferenceRoom.propTypes = {
   customLocalizedStrings: PropTypes.object,
   handleOnConnect: PropTypes.func,
   attendeesWaiting: PropTypes.func,
+  spatialAudio: PropTypes.bool
 };
 
 ConferenceRoom.defaultProps = {
@@ -751,6 +788,7 @@ ConferenceRoom.defaultProps = {
   mode: "standard",
   videoCodec: "H264",
   preConfig: false,
+  dvwc: false,
   conferenceId: null,
   isListener: false,
   isAdmin: false,
@@ -779,6 +817,7 @@ ConferenceRoom.defaultProps = {
   attendeesChat: AttendeesChat,
   loadingScreen: LoadingScreen,
   attendeesWaiting: AttendeesWaiting,
+  spatialAudio: false
 };
 
 export default ConferenceRoom;

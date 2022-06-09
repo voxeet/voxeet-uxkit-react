@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { strings } from "../languages/localizedStrings";
 
@@ -17,10 +17,12 @@ import {
 
 import { Sidebar } from "./actionsBar";
 import Attendees from "./attendees/Attendees";
+import MeasuredAttendees from "./attendees/MeasuredAttendees";
 import ModalClose from "./attendees/modal/ModalClose";
 import Modal from "./attendees/modal/Modal";
 
 import BottomBar from "./actionsBar/bottomBar/BottomBar";
+import {getUxKitContext} from "../context";
 
 @connect(store => {
   return {
@@ -28,7 +30,7 @@ import BottomBar from "./actionsBar/bottomBar/BottomBar";
     participantsStore: store.voxeet.participants,
     errorStore: store.voxeet.error
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ConferenceRoomContainer extends Component {
   constructor(props) {
     super(props);
@@ -224,6 +226,7 @@ class ConferenceRoomContainer extends Component {
       dolbyVoiceEnabled,
       maxVideoForwarding,
       chatOptions,
+      spatialAudioEnabled
     } = this.props;
     const { errorMessage, isError } = this.props.errorStore;
     const { isModalExternalLiveOpen } = this.state;
@@ -316,7 +319,7 @@ class ConferenceRoomContainer extends Component {
             />
           )}
 
-          {isJoined && (
+          {isJoined && !spatialAudioEnabled &&(
             <Attendees
               mode={mode}
               conferenceId={conferenceId}
@@ -342,6 +345,35 @@ class ConferenceRoomContainer extends Component {
               dolbyVoiceEnabled={dolbyVoiceEnabled}
               conferencePermissions={conferencePermissions}
               chatOptions={chatOptions}
+            />
+          )}
+            {isJoined && spatialAudioEnabled &&(
+            <MeasuredAttendees
+              mode={mode}
+              conferenceId={conferenceId}
+              toggleMode={this.toggleMode}
+              forceFullscreen={forceFullscreen}
+              toggleWidget={this.toggleWidget}
+              isWidgetOpened={isWidgetOpened}
+              isModalExternalLive={true}
+              videoEnabled={videoEnabled}
+              isWidgetFullScreenOn={isWidgetFullScreenOn}
+              displayModal={displayModal}
+              isAdminActived={isAdminActived}
+              displayModes={displayModes}
+              isScreenshare={isScreenshare}
+              isVideoPresentation={isVideoPresentation}
+              isFilePresentation={isFilePresentation}
+              attendeesWaiting={attendeesWaiting}
+              attendeesListOpened={displayAttendeesList}
+              attendeesChatOpened={displayAttendeesChat}
+              attendeesSettingsOpened={displayAttendeesSettings}
+              attendeesChat={attendeesChat}
+              attendeesList={attendeesList}
+              dolbyVoiceEnabled={dolbyVoiceEnabled}
+              conferencePermissions={conferencePermissions}
+              chatOptions={chatOptions}
+              spatialAudioEnabled={spatialAudioEnabled}
             />
           )}
           {isJoined && (isWidgetFullScreenOn || forceFullscreen) && (
@@ -423,12 +455,13 @@ ConferenceRoomContainer.propTypes = {
   handleOnLeave: PropTypes.func,
   conferenceId: PropTypes.string,
   conferencePincode: PropTypes.string,
-  attendeesList: PropTypes.func,
-  attendeesChat: PropTypes.func,
+  attendeesList: PropTypes.object,
+  attendeesChat: PropTypes.object,
   attendeesWaiting: PropTypes.func,
   dolbyVoiceEnabled: PropTypes.bool,
   conferencePermissions: PropTypes.object,
   chatOptions: PropTypes.object,
+  spatialAudioEnabled: PropTypes.bool
 };
 
 export default ConferenceRoomContainer;

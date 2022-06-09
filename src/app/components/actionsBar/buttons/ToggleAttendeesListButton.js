@@ -1,18 +1,19 @@
 import React, { Component } from "react";
-import { connect } from "@voxeet/react-redux-5.1.1";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import { strings } from "../../../languages/localizedStrings";
 import ListOn from "../../../../static/images/icons/btn-participant-on.svg";
 import ListOff from "../../../../static/images/icons/btn-participant-off.svg";
 import { isMobile } from "../../../libs/browserDetection";
+import {getUxKitContext} from "../../../context";
 
 @connect((store) => {
   return {
     participantStore: store.voxeet.participants,
     participantWaiting: store.voxeet.participantsWaiting,
   };
-})
+}, null, null, { context: getUxKitContext() })
 class ToggleAttendeesListButton extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +37,7 @@ class ToggleAttendeesListButton extends Component {
 
     let nbParticipants = 0;
     const participantsConnected = this.props.participantStore.participants.filter(
-      (p) => p.isConnected && p.type == "user"
+      (p) => p.isConnected
     ).length;
     const participantsListener = this.props.participantWaiting.participants.filter(
       (p) => p.stream == null && p.isConnected && p.type == "listener"
