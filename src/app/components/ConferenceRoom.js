@@ -465,6 +465,7 @@ class ConferenceRoom extends Component {
   async componentDidMount() {
     // Print UXKit Version
     console.log("UXKit Version: " + __VERSION__);
+    VoxeetSDK.uxkitVersion = __VERSION__;
     const { isWebinar, isAdmin, isListener, preConfig } = this.props;
     let doPreConfigCheck =
       !isListener &&
