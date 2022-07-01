@@ -15,6 +15,7 @@ jobs:
       codeartifact_run: ${{secrets.CODEARTIFACT_RUN}}
       codeartifact_snapshots_registry_url: ${{ secrets.CODEARTIFACT_NPM_SNAPSHOTS_REPOSITORY_URL }}
       jfrog_production_registry_url: ${{ secrets.JFA_NPM_PRODUCTION_REGISTRY_URL }}
+      jfrog_snapshots_registry_url: ${{ secrets.JFA_NPM_SNAPSHOTS_REGISTRY_URL }}
       NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
     steps:
       - uses: actions/checkout@v2
@@ -44,7 +45,7 @@ jobs:
 
       - name: build publish and create NPM dist tag
         run: |
-          cat ${NPM_CONFIG_USERCONFIG}
+          printf "_auth=${{ secrets.JFA_AUTH_TOKEN }}\nalways-auth=true\nemail=buildteam@dolby.com\nregistry=${{ env.jfrog_snapshots_registry_url }}\n" > ${NPM_CONFIG_USERCONFIG}
           npm --no-git-tag-version version $(npm run --silent get-version)-$GITHUB_SHA
           yarn publish --tag ${{ env.GITHUB_REF_SLUG }}
 
