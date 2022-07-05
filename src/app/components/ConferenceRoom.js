@@ -84,7 +84,6 @@ class ConferenceRoom extends Component {
       closeSessionAtHangUp,
       // constraints,
       displayModes,
-      customLocalizedStrings,
       displayActions,
       consumerKey,
       consumerSecret,
@@ -228,10 +227,6 @@ class ConferenceRoom extends Component {
 
       if (isDemo) {
         this.props.dispatch(ConferenceActions.demo());
-      }
-
-      if (customLocalizedStrings) {
-        strings.setContent(customLocalizedStrings);
       }
 
       if (videoRatio != null) {
@@ -652,6 +647,7 @@ class ConferenceRoom extends Component {
       dolbyVoice,
       chatOptions,
       spatialAudio,
+      customLocalizedStrings,
     } = this.props;
     const {
       screenShareEnabled,
@@ -670,6 +666,10 @@ class ConferenceRoom extends Component {
       hasLeft,
       dolbyVoiceEnabled,
     } = this.props.conferenceStore;
+
+    if (customLocalizedStrings) {
+      strings.setContent(customLocalizedStrings);
+    }
 
     const { errorMessage, isError } = this.props.errorStore;
     if (bowser.ios && bowser.chrome) {
