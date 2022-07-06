@@ -769,7 +769,7 @@ export class Actions {
       if (!controls.audioEnabled) {
         let inputCookieExist = false;
         if (!bowser.msie) {
-          VoxeetSDK.mediaDevice.enumerateAudioInputDevices().then((devices) => {
+          VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
             devices.forEach((source) => {
               const inputDevice = Cookies.getDevice("input")
               if (inputDevice && inputDevice.deviceId === source.deviceId)

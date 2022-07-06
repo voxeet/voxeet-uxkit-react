@@ -63,6 +63,7 @@ jobs:
         env:
           JFA_NPM_REGISTRY_URL: ${{ secrets.JFA_NPM_SNAPSHOTS_REGISTRY_URL }}
 
+
       - name: Generate github app token
         id: generate_token
         uses: tibdex/github-app-token@v1
