@@ -4,12 +4,12 @@
 
 #### Features
 
-- Support for SDK 3.5 that introduces the Dolby Voice Codec (DVC) in Dolby Voice conferences (please check [SDK 3.5 releases notes](https://github.com/voxeet/voxeet-sdk-web/releases/tag/3.5.0) for more info)
+- Support for [SDK 3.5.0](https://github.com/voxeet/voxeet-sdk-web/releases/tag/3.5.0) that supports the Dolby Voice Codec in Dolby Voice conferences to improve audio processing and offer higher audio quality.
 
 #### Bugs
 
-- Fixed an issue where a user who joined without audio nor video could start a file presentation but this presentation was not visible to other users ([#214](https://github.com/voxeet/voxeet-uxkit-react/issues/214))
-- Fixed an issue where customLocalizedStrings was not used ([#229](https://github.com/voxeet/voxeet-uxkit-react/issues/229))
+- Fixed an issue where a file presentation started by a participant without audio and video was not visible to the rest of conference participants ([#214](https://github.com/voxeet/voxeet-uxkit-react/issues/214))
+- Fixed an issue where UXKit did not use the customLocalizedStrings property ([#229](https://github.com/voxeet/voxeet-uxkit-react/issues/229))
 
 ### 3.3.0
 
