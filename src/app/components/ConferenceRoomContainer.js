@@ -9,33 +9,36 @@ import { Actions as TimerActions } from "../actions/TimerActions";
 import { Actions as ErrorActions } from "../actions/ErrorActions";
 import { Actions as ChatActions } from "../actions/ChatActions";
 import { Actions as OnBoardingMessageActions } from "../actions/OnBoardingMessageActions";
-import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import {
   BROADCAST_KICK_ADMIN_HANG_UP,
-  RECORDING_STATE
+  RECORDING_STATE,
 } from "../constants/BroadcastMessageType";
 
 import { Sidebar } from "./actionsBar";
 import Attendees from "./attendees/Attendees";
-import MeasuredAttendees from "./attendees/MeasuredAttendees";
 import ModalClose from "./attendees/modal/ModalClose";
 import Modal from "./attendees/modal/Modal";
 
 import BottomBar from "./actionsBar/bottomBar/BottomBar";
-import {getUxKitContext} from "../context";
+import { getUxKitContext } from "../context";
 
-@connect(store => {
-  return {
-    controlsStore: store.voxeet.controls,
-    participantsStore: store.voxeet.participants,
-    errorStore: store.voxeet.error
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      controlsStore: store.voxeet.controls,
+      participantsStore: store.voxeet.participants,
+      errorStore: store.voxeet.error,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class ConferenceRoomContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalExternalLiveOpen: false
+      isModalExternalLiveOpen: false,
     };
     this.leaveConference = this.leaveConference.bind(this);
     this.toggleWidget = this.toggleWidget.bind(this);
@@ -67,11 +70,8 @@ class ConferenceRoomContainer extends Component {
   }
 
   leaveConference() {
-    const {
-      isWidgetOpened,
-      videoEnabled,
-      isKickOnHangUpActived
-    } = this.props.controlsStore;
+    const { isWidgetOpened, videoEnabled, isKickOnHangUpActived } =
+      this.props.controlsStore;
     const { isAdmin, isWebinar } = this.props.participantsStore;
     const { handleOnLeave } = this.props;
     if (isAdmin && isKickOnHangUpActived) {
@@ -110,7 +110,7 @@ class ConferenceRoomContainer extends Component {
         ConferenceActions.sendBroadcastMessage(RECORDING_STATE, null, {
           name: currentUser.name,
           userId: currentUser.participant_id,
-          recordingRunning: !isRecording
+          recordingRunning: !isRecording,
         })
       );
     } else {
@@ -129,12 +129,9 @@ class ConferenceRoomContainer extends Component {
   }
 
   toggleScreenShare(type) {
-    const {
-      isFilePresentation,
-      isScreenshare,
-      isVideoPresentation
-    } = this.props.controlsStore;
-    if (isScreenshare || type == "screenshare") {
+    const { isFilePresentation, isScreenshare, isVideoPresentation } =
+      this.props.controlsStore;
+    if (isScreenshare || type === "screenshare") {
       this.props.dispatch(ConferenceActions.toggleScreenShare());
     } else if (isFilePresentation) {
       this.props.dispatch(ConferenceActions.stopFilePresentation());
@@ -188,11 +185,8 @@ class ConferenceRoomContainer extends Component {
 
   getSidebarClasses() {
     const { forceFullscreen, isModal, isWebinar } = this.props;
-    const {
-      isWidgetOpened,
-      isWidgetFullScreenOn,
-      modalOpened
-    } = this.props.controlsStore;
+    const { isWidgetOpened, isWidgetFullScreenOn, modalOpened } =
+      this.props.controlsStore;
     if (isModal) {
       return modalOpened
         ? " modal-content vxt-widget-opened vxt-widget-fullscreen-on"
@@ -226,11 +220,12 @@ class ConferenceRoomContainer extends Component {
       dolbyVoiceEnabled,
       maxVideoForwarding,
       chatOptions,
-      spatialAudioEnabled
+      spatialAudioEnabled,
     } = this.props;
     const { errorMessage, isError } = this.props.errorStore;
     const { isModalExternalLiveOpen } = this.state;
-    const { userStream, currentUser, participants } = this.props.participantsStore;
+    const { userStream, currentUser, participants } =
+      this.props.participantsStore;
     const {
       mode,
       videoEnabled,
@@ -316,39 +311,12 @@ class ConferenceRoomContainer extends Component {
               toggleMode={this.toggleMode}
               actionsButtons={actionsButtons}
               conferencePermissions={conferencePermissions}
+              spatialAudioEnabled={spatialAudioEnabled}
             />
           )}
 
-          {isJoined && !spatialAudioEnabled &&(
+          {isJoined && (
             <Attendees
-              mode={mode}
-              conferenceId={conferenceId}
-              toggleMode={this.toggleMode}
-              forceFullscreen={forceFullscreen}
-              toggleWidget={this.toggleWidget}
-              isWidgetOpened={isWidgetOpened}
-              isModalExternalLive={true}
-              videoEnabled={videoEnabled}
-              isWidgetFullScreenOn={isWidgetFullScreenOn}
-              displayModal={displayModal}
-              isAdminActived={isAdminActived}
-              displayModes={displayModes}
-              isScreenshare={isScreenshare}
-              isVideoPresentation={isVideoPresentation}
-              isFilePresentation={isFilePresentation}
-              attendeesWaiting={attendeesWaiting}
-              attendeesListOpened={displayAttendeesList}
-              attendeesChatOpened={displayAttendeesChat}
-              attendeesSettingsOpened={displayAttendeesSettings}
-              attendeesChat={attendeesChat}
-              attendeesList={attendeesList}
-              dolbyVoiceEnabled={dolbyVoiceEnabled}
-              conferencePermissions={conferencePermissions}
-              chatOptions={chatOptions}
-            />
-          )}
-            {isJoined && spatialAudioEnabled &&(
-            <MeasuredAttendees
               mode={mode}
               conferenceId={conferenceId}
               toggleMode={this.toggleMode}
@@ -461,7 +429,7 @@ ConferenceRoomContainer.propTypes = {
   dolbyVoiceEnabled: PropTypes.bool,
   conferencePermissions: PropTypes.object,
   chatOptions: PropTypes.object,
-  spatialAudioEnabled: PropTypes.bool
+  spatialAudioEnabled: PropTypes.bool,
 };
 
 export default ConferenceRoomContainer;

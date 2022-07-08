@@ -11,6 +11,7 @@ import ScreenshareMode from "./presentationMode/ScreenshareMode";
 import FilePresentationMode from "./presentationMode/FilePresentationMode";
 import VideoPresentationMode from "./presentationMode/VideoPresentationMode";
 import {getUxKitContext} from "../../../context";
+import { setDefaultPositionLayout } from "../../../libs/position";
 
 @connect((store) => {
   return {
@@ -24,6 +25,9 @@ class Speakers extends Component {
 
   componentDidMount() {
     this.props.dispatch(ActiveSpeakerActions.startActiveSpeaker());
+    if (this.props.spatialAudioEnabled) {
+      setDefaultPositionLayout();
+    }
   }
 
   componentWillUnmount() {

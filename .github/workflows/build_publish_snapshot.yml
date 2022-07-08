@@ -15,6 +15,7 @@ jobs:
       codeartifact_run: ${{secrets.CODEARTIFACT_RUN}}
       codeartifact_snapshots_registry_url: ${{ secrets.CODEARTIFACT_NPM_SNAPSHOTS_REPOSITORY_URL }}
       jfrog_production_registry_url: ${{ secrets.JFA_NPM_PRODUCTION_REGISTRY_URL }}
+      jfrog_snapshots_registry_url: ${{ secrets.JFA_NPM_SNAPSHOTS_REGISTRY_URL }}
       NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +29,7 @@ jobs:
 
       - name: install from aws
         run: |
-          echo "Install dependencies from AWS Codeartifact!"
+          echo "Install dependencies from AWS Codeartifact"
           aws codeartifact login --duration-seconds 900 --tool npm --domain ${{ secrets.CODEARTIFACT_DOMAIN }} --domain-owner ${{ secrets.CODEARTIFACT_DOMAIN_OWNER }} --repository 'npm-releases' --region ${{ secrets.AWS_REGION }}
           echo "always-auth=true" >> ${NPM_CONFIG_USERCONFIG}
           npm --version
@@ -37,13 +38,14 @@ jobs:
 
       - name: install from jfrog
         run: |
-          echo "Install dependencies from JFrog Artifactory!"
+          echo "Install dependencies from JFrog Artifactory."
           printf "_auth=${{ secrets.JFA_AUTH_TOKEN }}\nalways-auth=true\nemail=buildteam@dolby.com\nregistry=${{ env.jfrog_production_registry_url }}\n" > ${NPM_CONFIG_USERCONFIG}
           yarn install
         if: ${{ env.codeartifact_run == 'false' }}
 
       - name: build publish and create NPM dist tag
         run: |
+          printf "_auth=${{ secrets.JFA_AUTH_TOKEN }}\nalways-auth=true\nemail=buildteam@dolby.com\nregistry=${{ env.jfrog_snapshots_registry_url }}\n" > ${NPM_CONFIG_USERCONFIG}
           npm --no-git-tag-version version $(npm run --silent get-version)-$GITHUB_SHA
           yarn publish --tag ${{ env.GITHUB_REF_SLUG }}
 

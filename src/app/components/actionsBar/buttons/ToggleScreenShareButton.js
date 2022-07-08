@@ -271,7 +271,10 @@ class ToggleScreenShareButton extends Component {
                 <input
                   type="window"
                   id="windowPresentationUpload"
-                  accept="application/pdf"
+                  accept="application/pdf,
+                  application/vnd.ms-powerpoint,
+                  application/vnd.openxmlformats-officedocument.presentationml.slideshow,
+                  application/vnd.openxmlformats-officedocument.presentationml.presentation"
                   onChange={this.handleChange}
                   style={{ display: "none" }}
                 />
@@ -294,7 +297,10 @@ class ToggleScreenShareButton extends Component {
                 <input
                   type="file"
                   id="filePresentationUpload"
-                  accept="application/pdf"
+                  accept="application/pdf,
+                  application/vnd.ms-powerpoint,
+                  application/vnd.openxmlformats-officedocument.presentationml.slideshow,
+                  application/vnd.openxmlformats-officedocument.presentationml.presentation"
                   onChange={this.handleChange}
                   style={{ display: "none" }}
                 />

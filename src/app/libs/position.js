@@ -14,8 +14,10 @@ let excludedParticipants = [];
 
 let localUserPosition = {x: 0, y: 0, z: 0}
 
-const audioSceneWidthMeters = 4
-const audioSceneHeightMeters = 4
+let audioSceneWidth = 4;
+let audioSceneHeight = 4;
+
+let participantsConnected = [];
 
 
 // CSS origin (0,0) is top-left corner, center of circle is in bottom-middle
@@ -298,7 +300,7 @@ const round = (number, precision = 4) => {
 //Function generates participant position layout
 //First half of the participants is located in front of the local participant positioned left to right.
 //Second half of the participant sits behing local participant positioned left to right.
-const generatePositionLayout = (participantCount, radius = audioSceneWidthMeters) => {
+const generatePositionLayout = (participantCount, radius = audioSceneWidth / 2) => {
   const angleIncrement = 360 / participantCount;
   const angleOffset = getAngleOffset(participantCount);
 
@@ -325,16 +327,11 @@ const generatePositionLayout = (participantCount, radius = audioSceneWidthMeters
   return coordinates;
 };
 
-export const updateParticipantPositions = (participants) => {
-  const participantsConnected = participants.filter(
-    (participant) => participant.isConnected === true
-  );
-
+const refreshPositionLayout = () => {
   const layout = generatePositionLayout(participantsConnected.length);
 
   for (var i = 0; i < participantsConnected.length; i++) {
-    if (!participantsConnected[i].isMoved 
-      && !excludedParticipants.includes(participantsConnected[i].participant_id)) {
+    if (!excludedParticipants.includes(participantsConnected[i].participant_id)) {
       participantsConnected[i].id = participantsConnected[i].participant_id;
       VoxeetSDK.conference.setSpatialPosition(
         participantsConnected[i],
@@ -344,6 +341,19 @@ export const updateParticipantPositions = (participants) => {
       participantsConnected[i].y = layout[i].y;
     }
   }
+}
+
+export const setDefaultPositionLayout = () => {
+  excludedParticipants = [];
+  refreshPositionLayout();
+}
+
+export const updateParticipantPositions = (participants) => {
+  participantsConnected = participants.filter(
+    (participant) => participant.isConnected === true
+  );
+
+  refreshPositionLayout();
 };
 
 export const updateSpatialScene = (currentBounds) => {
@@ -352,8 +362,10 @@ export const updateSpatialScene = (currentBounds) => {
     const right   = {x: 1, y: 0,  z: 0}
     const forward = {x: 0, y:-1, z: 0}
     const up      = {x: 0, y: 0,  z: 1}
-    const scale   = {x: currentBounds.width / audioSceneWidthMeters, y:currentBounds.height / audioSceneHeightMeters, z:1}
+    const scale   = {x: currentBounds.width, y:currentBounds.height, z:1}
     VoxeetSDK.conference.setSpatialEnvironment(scale, forward, up, right);
+    audioSceneHeight = currentBounds.height;
+    audioSceneWidth = currentBounds.width;
 
     // Place the listener in the middle of the component
     setLocalUserPosition(
@@ -373,7 +385,7 @@ export const setLocalUserPosition = (position) => {
 
 //Exclude participant from automated layout generation
 export const excludeParticipant = (participantId) => {
-excludedParticipants.push(participantId);
+  excludedParticipants.push(participantId);
 }
 
 //Re-include participant in automated layout generation
