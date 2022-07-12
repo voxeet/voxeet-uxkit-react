@@ -1,12 +1,18 @@
 ## Changelog
 
+### 3.5.1
+
+#### Bug fixes
+
+- Fix an issue when using redux devtools.
+
 ### 3.5.0
 
 #### Features
 
 - Support for [SDK 3.5.0](https://github.com/voxeet/voxeet-sdk-web/releases/tag/3.5.0) that supports the Dolby Voice Codec in Dolby Voice conferences to improve audio processing and offer higher audio quality.
 
-#### Bugs
+#### Bug fixes
 
 - Fixed an issue where a file presentation started by a participant without audio and video was not visible to the rest of conference participants ([#214](https://github.com/voxeet/voxeet-uxkit-react/issues/214))
 - Fixed an issue where UXKit did not use the customLocalizedStrings property ([#229](https://github.com/voxeet/voxeet-uxkit-react/issues/229))
