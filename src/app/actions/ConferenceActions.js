@@ -300,6 +300,16 @@ export class Actions {
     return constraints;
   }
 
+  static async setVirtualBackground(virtualBackgroundMode) {
+    if (!isElectron()) {
+      if (virtualBackgroundMode === "none") {
+        await VoxeetSDK.video.setVideoProcessor({});
+      } else {
+        await VoxeetSDK.video.setVideoProcessor({ type: "bokeh" });
+      }
+    }
+  }
+
   static join(
     conferenceAlias,
     isAdmin,
@@ -332,7 +342,7 @@ export class Actions {
     virtualBackgroundMode =
       ["none", "bokeh"].indexOf(virtualBackgroundMode) >= 0
         ? virtualBackgroundMode
-        : "none";
+        : "none";        
     const videoDenoise =
       preConfigPayload && preConfigPayload.videoDenoise !== undefined
         ? preConfigPayload.videoDenoise
@@ -370,7 +380,7 @@ export class Actions {
           .then((conference) => {
             if ((participants.isWebinar && !isAdmin) || isListener) {
               return VoxeetSDK.conference
-                .listen(conference, dvwc)
+                .listen(conference)
                 .then(function (res) {
                   dispatch(
                     ParticipantActions.saveCurrentUser(
@@ -447,7 +457,8 @@ export class Actions {
                       )
                     );
                   }
-                });
+                })
+                .then(() => this.setVirtualBackground(virtualBackgroundMode));
             }
           });
       }
@@ -474,7 +485,6 @@ export class Actions {
                 .join(conference, {
                   constraints,
                   simulcast: simulcast,
-                  audio3D: false,
                   maxVideoForwarding: maxVideoForwarding,
                   videoFilter: virtualBackgroundMode,
                   videoFilterOptions: { videoDenoise: videoDenoise },
@@ -545,10 +555,7 @@ export class Actions {
                     }
                   }
                 })
-                .catch((err) => {
-                  console.error(err);
-                  dispatch(ErrorActions.onError(err));
-                });
+                .then(() => this.setVirtualBackground(virtualBackgroundMode));
             })
             .catch((err) => {
               console.error(err);
@@ -586,7 +593,6 @@ export class Actions {
             .join(conference, {
               constraints,
               simulcast: simulcast,
-              audio3D: false,
               maxVideoForwarding: maxVideoForwarding,
               videoFilter: virtualBackgroundMode,
               videoFilterOptions: { videoDenoise: videoDenoise },
@@ -670,10 +676,7 @@ export class Actions {
                 );
               }
             })
-            .catch((err) => {
-              console.log(err);
-              dispatch(ErrorActions.onError(err));
-            });
+            .then(() => this.setVirtualBackground(virtualBackgroundMode));
         })
         .catch((err) => {
           console.log(err);
@@ -901,14 +904,19 @@ export class Actions {
         voxeet: { controls, inputManager },
       } = getState();
       if (!videoStarted) {
+        const virtualBackgroundMode = controls.virtualBackgroundMode !== undefined
+          ? controls.virtualBackgroundMode
+          : Cookies.get("virtualBackgroundMode");
+        const processor = virtualBackgroundMode ? { type: virtualBackgroundMode } : {};
+
         if (controls.videoRatio) {
           const payloadConstraints = {
             width: controls.videoRatio.width,
             height: controls.videoRatio.height,
             deviceId: inputManager.currentVideoDevice?.deviceId,
           };
-          return VoxeetSDK.conference
-            .startVideo(VoxeetSDK.session.participant, payloadConstraints)
+          return VoxeetSDK.video
+            .startVideo(payloadConstraints, processor)
             .then(() => {
               dispatch(
                 OnBoardingMessageActions.onBoardingDisplay(
@@ -925,8 +933,8 @@ export class Actions {
           const payloadConstraints = {
             deviceId: inputManager.currentVideoDevice?.deviceId,
           };
-          return VoxeetSDK.conference
-            .startVideo(VoxeetSDK.session.participant, payloadConstraints)
+          return VoxeetSDK.video
+            .startVideo(payloadConstraints, processor)
             .then(() => {
               dispatch(
                 OnBoardingMessageActions.onBoardingDisplay(
@@ -941,8 +949,8 @@ export class Actions {
             });
         }
       } else {
-        return VoxeetSDK.conference
-          .stopVideo(VoxeetSDK.session.participant)
+        return VoxeetSDK.video
+          .stopVideo()
           .then(() => {
             dispatch(ControlsActions.toggleVideo(false));
             dispatch(
@@ -960,7 +968,7 @@ export class Actions {
   }
 
   static handleLeave() {
-    return (dipatch, getState) => {
+    return (dispatch, getState) => {
       const {
         voxeet: { participants, controls },
       } = getState();
@@ -969,7 +977,7 @@ export class Actions {
   }
 
   static handleConferenceLeft() {
-    return (dipatch, getState) => {
+    return (dispatch, getState) => {
       const {
         voxeet: { participants, controls },
       } = getState();
@@ -1151,32 +1159,25 @@ export class Actions {
   static setVirtualBackgroundMode(mode) {
     console.log("About to set vb mode to", mode);
     return (dispatch, getState) => {
-      if (!VoxeetSDK.videoFilters || !isElectron()) {
-        // Skip if not supported in SDK or not in NDS
-        Cookies.set("virtualBackgroundMode", null);
-        dispatch(ControlsActions.setVirtualBackgroundMode(null));
-        return Promise.resolve();
-      }
       const {
         voxeet: { controls },
       } = getState();
-      let { virtualBackgroundMode, videoDenoise } = controls;
-      if (!mode) {
-        console.log("About to set vb to null");
-        return VoxeetSDK.videoFilters
-          .setFilter("none", { videoDenoise: videoDenoise })
-          .then(() => {
-            Cookies.set("virtualBackgroundMode", null);
-            dispatch(ControlsActions.setVirtualBackgroundMode(null));
-          });
-      } else {
-        console.log(
-          "About to set vb to selected",
-          mode,
-          VoxeetSDK.videoFilters
-        );
-        // Set to selected
-        let setMode;
+      let setMode;
+
+      if (isElectron()) {
+        let { virtualBackgroundMode, videoDenoise } = controls;
+
+        if (!mode) {
+          console.log("About to set vb to null");
+          return VoxeetSDK.videoFilters
+            .setFilter("none", { videoDenoise: videoDenoise })
+            .then(() => {
+              Cookies.set("virtualBackgroundMode", null);
+              dispatch(ControlsActions.setVirtualBackgroundMode(null));
+            });
+        }
+
+        console.log("About to set vb to selected", mode, VoxeetSDK.videoFilters);
         switch (mode) {
           case "bokeh":
           case "staticimage":
@@ -1193,12 +1194,37 @@ export class Actions {
               { videoDenoise: videoDenoise }
             );
         }
+      } else {
+        if (!mode) {
+          console.log("About to set vb to null");
+          return VoxeetSDK.video
+            .setVideoProcessor({})
+            .then(() => {
+              Cookies.set("virtualBackgroundMode", null);
+              dispatch(ControlsActions.setVirtualBackgroundMode(null));
+            });
+        }
 
-        return setMode().then(() => {
-          Cookies.set("virtualBackgroundMode", mode);
-          dispatch(ControlsActions.setVirtualBackgroundMode(mode));
-        });
+        console.log("About to set vb to selected", mode);
+        switch (mode) {
+          case "bokeh":
+            setMode = VoxeetSDK.video.setVideoProcessor.bind(
+              VoxeetSDK.video,
+              { type: 'bokeh'}
+            );
+            break;
+          default:
+            setMode = VoxeetSDK.video.setVideoProcessor.bind(
+              VoxeetSDK.video,
+              {}
+            );
+        }
       }
+  
+      return setMode().then(() => {
+        Cookies.set("virtualBackgroundMode", mode);
+        dispatch(ControlsActions.setVirtualBackgroundMode(mode));
+      });
     };
   }
 

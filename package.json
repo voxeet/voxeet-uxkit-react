@@ -20,9 +20,6 @@
     "GOURGUES Thomas <tgourgues@voxeet.com>",
     "MARTIN Valentin <vmartin@voxeet.com>"
   ],
-  "browserslist": [
-    "IE 11"
-  ],
   "resolve": {
     "extensions": [
       ".js",
@@ -96,7 +93,7 @@
     "webpack-dev-server": "^4.9.0"
   },
   "peerDependencies": {
-    "@voxeet/voxeet-web-sdk": "^3.5.3"
+    "@voxeet/voxeet-web-sdk": "^3.7.0-beta.1"
   },
   "files": [
     "README.md",
