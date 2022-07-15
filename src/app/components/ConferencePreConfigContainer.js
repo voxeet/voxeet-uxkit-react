@@ -267,9 +267,9 @@ class ConferencePreConfigContainer extends Component {
   }
 
   async setVideoDevice(e) {
+    const device = e.target.value ? JSON.parse(e.target.value) : {};
     await this.releaseStream();
     this.setState({ lockJoin: true });
-    const device = e.target.value ? JSON.parse(e.target.value) : {};
     
     const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
     const videoStream = await VoxeetSDK.video.startVideo({ deviceId: { exact: device.deviceId } }, processor);
