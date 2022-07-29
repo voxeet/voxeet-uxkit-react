@@ -242,9 +242,9 @@ class ConferencePreConfigContainer extends Component {
   }
 
   async setAudioDevice(e) {
+    const device = e.target.value ? JSON.parse(e.target.value) : {};
     await this.releaseStream();
     this.setState({ lockJoin: true });
-    const device = e.target.value ? JSON.parse(e.target.value) : {};
 
     const audioStream = await navigator.getUserMedia({audio: { deviceId: { exact: device.deviceId } }, video: false});
 
@@ -971,7 +971,7 @@ class ConferencePreConfigContainer extends Component {
                                 </label>
                               </div>
                             </div>
-                            {true && (
+                            {(bowser.chrome || isElectron()) && (
                               <div
                                 className={`group-enable ${
                                   !this.state.videoEnabled

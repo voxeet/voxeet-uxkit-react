@@ -583,24 +583,26 @@ class AttendeesSettings extends Component {
                 </div>
               </div>
 
-              <div
-                className={`form-group switch-enable ${
-                  !videoEnabled ? "disabled-form" : ""
-                }`}
-              >
-                <div className="switch-mode">
-                  <input
-                    id="vbModeBokeh"
-                    name="vbModeBokeh"
-                    type="checkbox"
-                    onChange={() =>
-                      this.onVirtualBackgroundModeChange("bokeh")
-                    }
-                    checked={virtualBackgroundMode === "bokeh"}
-                  />
-                  <label htmlFor="vbModeBokeh">{strings.bokehMode}</label>
+              {(bowser.chrome || isElectron()) && (
+                <div
+                  className={`form-group switch-enable ${
+                    !videoEnabled ? "disabled-form" : ""
+                  }`}
+                >
+                  <div className="switch-mode">
+                    <input
+                      id="vbModeBokeh"
+                      name="vbModeBokeh"
+                      type="checkbox"
+                      onChange={() =>
+                        this.onVirtualBackgroundModeChange("bokeh")
+                      }
+                      checked={virtualBackgroundMode === "bokeh"}
+                    />
+                    <label htmlFor="vbModeBokeh">{strings.bokehMode}</label>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {isElectron() && (
                 <div
