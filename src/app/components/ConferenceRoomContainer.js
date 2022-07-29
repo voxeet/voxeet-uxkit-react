@@ -221,6 +221,7 @@ class ConferenceRoomContainer extends Component {
       maxVideoForwarding,
       chatOptions,
       spatialAudioEnabled,
+      dvwc
     } = this.props;
     const { errorMessage, isError } = this.props.errorStore;
     const { isModalExternalLiveOpen } = this.state;
@@ -342,6 +343,7 @@ class ConferenceRoomContainer extends Component {
               conferencePermissions={conferencePermissions}
               chatOptions={chatOptions}
               spatialAudioEnabled={spatialAudioEnabled}
+              dvwc={dvwc}
             />
           )}
           {isJoined && (isWidgetFullScreenOn || forceFullscreen) && (
@@ -430,6 +432,7 @@ ConferenceRoomContainer.propTypes = {
   conferencePermissions: PropTypes.object,
   chatOptions: PropTypes.object,
   spatialAudioEnabled: PropTypes.bool,
+  dvwc: PropTypes.bool
 };
 
 export default ConferenceRoomContainer;

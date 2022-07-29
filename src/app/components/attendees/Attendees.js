@@ -171,6 +171,7 @@ class Attendees extends Component {
       dolbyVoiceEnabled,
       conferencePermissions,
       spatialAudioEnabled,
+      dvwc
     } = this.props;
     const {
       participants,
@@ -235,6 +236,7 @@ class Attendees extends Component {
             isListener={currentUser.isListener}
             attendeesSettingsOpened={this.props.attendeesSettingsOpened}
             dolbyVoiceEnabled={dolbyVoiceEnabled}
+            dvwc={dvwc}
           />
         )}
 
@@ -400,6 +402,7 @@ Attendees.propTypes = {
   conferencePermissions: PropTypes.object,
   chatOptions: PropTypes.object,
   spatialAudioEnabled: PropTypes.bool,
+  dvwc: PropTypes.bool
 };
 
 export default Attendees;

@@ -648,6 +648,7 @@ class ConferenceRoom extends Component {
       chatOptions,
       spatialAudio,
       customLocalizedStrings,
+      dvwc
     } = this.props;
     const {
       screenShareEnabled,
@@ -786,6 +787,7 @@ class ConferenceRoom extends Component {
           dolbyVoiceEnabled={dolbyVoiceEnabled}
           chatOptions={chatOptions}
           spatialAudioEnabled={spatialAudio}
+          dvwc={dvwc}
         />
       );
     }

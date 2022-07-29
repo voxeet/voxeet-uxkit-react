@@ -7,6 +7,7 @@ import Cookies from "./../../libs/Storage";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../../actions/ControlsActions"
+import { Actions as AudioActions } from "../../actions/AudioActions";
 import AttendeesSettingsVuMeterFromAudioLevel from "./AttendeesSettingsVuMeterFromAudioLevel";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "../../libs/getVideoDeviceName";
@@ -47,6 +48,8 @@ class AttendeesSettings extends Component {
       this.props.controlsStore.audioTransparentMode !== undefined
         ? this.props.controlsStore.audioTransparentMode
         : false;
+    let captureMode = this.props.controlsStore.captureMode !== undefined ? this.props.controlsStore.captureMode : "standard";
+    let noiseReductionLevel = this.props.controlsStore.noiseReductionLevel !== undefined ? this.props.controlsStore.noiseReductionLevel : "high";
     let videoEnabled =
       this.props.controlsStore.videoEnabled !== undefined
         ? this.props.controlsStore.videoEnabled
@@ -71,12 +74,15 @@ class AttendeesSettings extends Component {
       testAudio: null,
       testAudioPlaying: false,
       audioTransparentMode: audioTransparentMode,
+      captureMode: captureMode,
+      noiseReductionLevel: noiseReductionLevel,
       videoEnabled: videoEnabled,
       maxVideoForwarding: maxVideoForwarding,
       lowBandwidthMode: lowBandwidthMode,
       virtualBackgroundMode: virtualBackgroundMode,
       videoDenoise: videoDenoise,
     };
+    console.log(this.state);
     this.onAudioDeviceSelected = this.onAudioDeviceSelected.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
     this.onOutputDeviceSelected = this.onOutputDeviceSelected.bind(this);
@@ -85,6 +91,8 @@ class AttendeesSettings extends Component {
       this.handleChangeLowBandwidthMode.bind(this);
     this.onAudioTransparentModeChange =
       this.onAudioTransparentModeChange.bind(this);
+    this.onNoiseReductionLevelChange = this.onNoiseReductionLevelChange.bind(this);
+    this.onCaptureModeChange = this.onCaptureModeChange.bind(this);
     this.handleMaxVideoForwardingChange =
       this.handleMaxVideoForwardingChange.bind(this);
     this.onVirtualBackgroundModeChange =
@@ -354,6 +362,27 @@ class AttendeesSettings extends Component {
     );
   }
 
+  onCaptureModeChange(e) {
+    this.setState({
+      captureMode: e.target.value
+    }, 
+    () => {
+      Cookies.set("captureMode", this.state.captureMode);
+      this.props.dispatch(AudioActions.setCaptureMode(this.state.captureMode, this.state.noiseReductionLevel))
+    })
+  }
+
+  onNoiseReductionLevelChange(e) {
+    this.setState({
+      noiseReductionLevel: e.target.value
+    }, 
+    () => {
+      Cookies.set("noiseReductionLevel", this.state.noiseReductionLevel);
+      this.props.dispatch(AudioActions.setCaptureMode(this.state.captureMode, this.state.noiseReductionLevel))
+    })
+  }
+
+
   onVirtualBackgroundModeChange(mode) {
     console.log("onVirtualBackgroundModeChange", mode);
     this.setState(
@@ -469,12 +498,14 @@ class AttendeesSettings extends Component {
       maxVideoForwarding,
       audioTransparentMode,
       virtualBackgroundMode,
+      captureMode,
+      noiseReductionLevel,
       videoEnabled,
       videoDenoise,
     } = this.state;
     //const { audioTransparentMode } = this.props.controlsStore;
 
-    const { attendeesSettingsOpened, isListener, dolbyVoiceEnabled } =
+    const { attendeesSettingsOpened, isListener, dolbyVoiceEnabled, dvwc } =
       this.props;
     const MAX_MAXVF = isMobile() ? 4 : 16;
     const { currentAudioDevice, currentVideoDevice, currentOutputDevice } =
@@ -550,21 +581,49 @@ class AttendeesSettings extends Component {
                   <div className="form-group">
                     {<AttendeesSettingsVuMeterFromAudioLevel maxLevel={21} />}
                   </div>
-                  {dolbyVoiceEnabled && (
-                    <div className="form-group switch-enable">
-                      <div className="switch-mode">
-                        <input
-                          id="audioTransparentMode"
-                          name="audioTransparentMode"
-                          type="checkbox"
-                          onChange={this.onAudioTransparentModeChange}
-                          checked={audioTransparentMode}
-                        />
-                        <label htmlFor="audioTransparentMode">
-                          {strings.audioTransparentMode}
-                        </label>
-                      </div>
-                    </div>
+                  {dvwc && (
+                    // <div className="form-group switch-enable">
+                    //   <div className="switch-mode">
+                    //     <input
+                    //       id="audioTransparentMode"
+                    //       name="audioTransparentMode"
+                    //       type="checkbox"
+                    //       onChange={this.onAudioTransparentModeChange}
+                    //       checked={audioTransparentMode}
+                    //     />
+                    //     <label htmlFor="audioTransparentMode">
+                    //       {strings.audioTransparentMode}
+                    //     </label>
+                    //   </div>
+                    // </div>
+                    <div className="form-group">
+                    <select
+                      name="capture-mode"
+                      value={captureMode}
+                      className="form-control"
+                      onChange={this.onCaptureModeChange}
+                    >
+                        <option value="standard">
+                          Capture Mode : Standard
+                        </option>
+                        <option value="passthrough">
+                          Capture Mode : Passthrough
+                        </option>
+                    </select>
+                    <select
+                      name="noise-reduction-level"
+                      value={noiseReductionLevel}
+                      className="form-control"
+                      onChange={this.onNoiseReductionLevelChange}
+                    >
+                        <option value="high">
+                          Noise Reduction Level : High
+                        </option>
+                        <option value="low">
+                          Noise Reduction Level : low
+                        </option>
+                    </select>
+                  </div>
                   )}
                 </Fragment>
               )}
@@ -674,6 +733,7 @@ AttendeesSettings.propTypes = {
   attendeesSettingsOpened: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
   maxVideoForwarding: PropTypes.number,
+  dvwc: PropTypes.bool
 };
 
 export default AttendeesSettings;
