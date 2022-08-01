@@ -354,196 +354,199 @@ class ConferencePreConfigContainer extends Component {
                   });
               })
               .then((stream) => {
-                stream.getTracks().forEach((track) => {
-                  track.stop();
-                });
                 resultAudio = [];
                 resultVideo = [];
                 resultAudioOutput = [];
-                navigator.mediaDevices.enumerateDevices().then((sources) => {
-                  let videoCookieExist = false;
-                  let outputCookieExist = false;
-                  let inputCookieExist = false;
+                navigator.mediaDevices.enumerateDevices()
+                  .then((sources) => {
+                    let videoCookieExist = false;
+                    let outputCookieExist = false;
+                    let inputCookieExist = false;
 
-                  /* GET SOURCES */
-                  sources.forEach((source) => {
-                    if (
-                      source.kind === "videoinput" &&
-                      source.deviceId !== ""
-                    ) {
-                      const device = Cookies.getDevice("camera");
-                      if (device && device.deviceId === source.deviceId)
-                        videoCookieExist = true;
-                      resultVideo.push(source);
-                    }
-                    if (
-                      source.kind === `audioinput` &&
-                      source.deviceId !== ""
-                    ) {
-                      const device = Cookies.getDevice("input");
-                      if (device && device.deviceId === source.deviceId)
-                        inputCookieExist = true;
-                      resultAudio.push(source);
-                    }
-                    if (
-                      source.kind === "audiooutput" &&
-                      source.deviceId !== ""
-                    ) {
-                      const device = Cookies.getDevice("output");
-                      if (device && device.deviceId === source.deviceId)
-                        outputCookieExist = true;
-                      resultAudioOutput.push(source);
-                    }
-                  });
-
-                  /* OUTPUT AUDIO MANAGEMENT */
-                  if (
-                    bowser.chrome &&
-                    resultAudioOutput &&
-                    resultAudioOutput.length > 0
-                  ) {
-                    let selected_device = resultAudioOutput.find(
-                      (device) => device.deviceId === "default"
-                    );
-                    if (!selected_device)
-                      selected_device = resultAudioOutput[0];
-                    if (!outputCookieExist) {
-                      Cookies.setDevice(
-                        "output",
-                        selected_device,
-                        default_cookies_param
-                      );
-                      this.props.dispatch(
-                        InputManagerActions.outputAudioChange(selected_device)
-                      );
-                      this.setState({
-                        outputDevices: resultAudioOutput,
-                        outputDeviceSelected: selected_device.deviceId,
-                      });
-                    } else {
-                      const device = Cookies.getDevice("output");
-                      this.props.dispatch(
-                        InputManagerActions.outputAudioChange(
-                          device
-                        )
-                      );
-                      this.setState({
-                        outputDevices: resultAudioOutput,
-                        outputDeviceSelected: device,
-                      });
-                    }
-                  }
-
-                  /* INPUT VIDEO MANAGEMENT */
-                  if (resultVideo.length > 0) {
-                    if (!videoCookieExist) {
-                      let selected_device = resultVideo.find(
-                        (device) => device.deviceId === "default"
-                      );
-                      if (!selected_device) selected_device = resultVideo[0];
-                      Cookies.setDevice(
-                        "camera",
-                        selected_device,
-                        default_cookies_param
-                      );
-                      getVideoDeviceName(selected_device.deviceId).then(
-                        (isBackCamera) => {
-                          this.props.dispatch(
-                            InputManagerActions.inputVideoChange(
-                              selected_device,
-                              isBackCamera
-                            )
-                          );
-                        }
-                      );
-                      this.setState({
-                        videoDevices: resultVideo,
-                        videoDeviceSelected: selected_device.deviceId,
-                      });
-                    } else {
-                      const device = Cookies.getDevice("camera");
-                      getVideoDeviceName(device.deviceId).then(
-                        (isBackCamera) => {
-                          this.props.dispatch(
-                            InputManagerActions.inputVideoChange(
-                              device,
-                              isBackCamera
-                            )
-                          );
-                        }
-                      );
-                      this.setState({
-                        videoDevices: resultVideo,
-                        videoDeviceSelected: device,
-                      });
-                    }
-                  } else {
-                    this.setState({ videoEnabled: false });
-                  }
-
-                  /* INPUT AUDIO MANAGEMENT */
-                  if (resultAudio.length > 0) {
-                    if (!inputCookieExist) {
-                      let selected_device = resultAudio.find(
-                        (device) => device.deviceId === "default"
-                      );
-                      if (!selected_device) selected_device = resultAudio[0];
-                      Cookies.setDevice(
-                        "input",
-                        selected_device,
-                        default_cookies_param
-                      );
-                      this.props.dispatch(
-                        InputManagerActions.inputAudioChange(selected_device)
-                      );
-                      this.setState({
-                        audioDevices: resultAudio,
-                        audioDeviceSelected: selected_device,
-                      });
-                    } else {
-                      const device = Cookies.getDevice("input");
-                      this.props.dispatch(
-                        InputManagerActions.inputAudioChange(
-                          device
-                        )
-                      );
-                      this.setState({
-                        audioDevices: resultAudio,
-                        audioDeviceSelected: device,
-                      });
-                    }
-                  } else {
-                    this.reportError(strings.noAudioDevice);
-                    this.setState({
-                      error: strings.noAudioDevice,
-                      loading: false,
+                    /* GET SOURCES */
+                    sources.forEach((source) => {
+                      if (
+                        source.kind === "videoinput" &&
+                        source.deviceId !== ""
+                      ) {
+                        const device = Cookies.getDevice("camera");
+                        if (device && device.deviceId === source.deviceId)
+                          videoCookieExist = true;
+                        resultVideo.push(source);
+                      }
+                      if (
+                        source.kind === `audioinput` &&
+                        source.deviceId !== ""
+                      ) {
+                        const device = Cookies.getDevice("input");
+                        if (device && device.deviceId === source.deviceId)
+                          inputCookieExist = true;
+                        resultAudio.push(source);
+                      }
+                      if (
+                        source.kind === "audiooutput" &&
+                        source.deviceId !== ""
+                      ) {
+                        const device = Cookies.getDevice("output");
+                        if (device && device.deviceId === source.deviceId)
+                          outputCookieExist = true;
+                        resultAudioOutput.push(source);
+                      }
                     });
-                  }
 
-                  /* GETUSERMEDIA FROM PREVIOUS MANAGEMENT */
-                  if (resultAudio.length > 0 && this.state.error == null) {
-                    this.setState({ loading: false });
-                    navigator.getUserMedia({audio: { deviceId: { exact: this.state.audioDeviceSelected.deviceId } }, video: false})
-                      .then((audioStream) => {
-                        if (resultVideo.length > 0 && this.state.videoEnabled) {
-                          const videoConstraints = { deviceId: { exact: this.state.videoDeviceSelected.deviceId } };
-                          const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
-                          VoxeetSDK.video.startVideo(videoConstraints, processor)
-                            .then((videoStream) => {
-                              this.attachMediaStream(videoStream);
-                              this.setState({ userAudioStream: audioStream, userVideoStream: videoStream });
-                              this.forceUpdate();
-                            });
-                        } else {
-                          this.setState({ userAudioStream: audioStream });
-                          this.forceUpdate();
-                        }
+                    /* OUTPUT AUDIO MANAGEMENT */
+                    if (
+                      bowser.chrome &&
+                      resultAudioOutput &&
+                      resultAudioOutput.length > 0
+                    ) {
+                      let selected_device = resultAudioOutput.find(
+                        (device) => device.deviceId === "default"
+                      );
+                      if (!selected_device)
+                        selected_device = resultAudioOutput[0];
+                      if (!outputCookieExist) {
+                        Cookies.setDevice(
+                          "output",
+                          selected_device,
+                          default_cookies_param
+                        );
+                        this.props.dispatch(
+                          InputManagerActions.outputAudioChange(selected_device)
+                        );
+                        this.setState({
+                          outputDevices: resultAudioOutput,
+                          outputDeviceSelected: selected_device.deviceId,
+                        });
+                      } else {
+                        const device = Cookies.getDevice("output");
+                        this.props.dispatch(
+                          InputManagerActions.outputAudioChange(
+                            device
+                          )
+                        );
+                        this.setState({
+                          outputDevices: resultAudioOutput,
+                          outputDeviceSelected: device,
+                        });
+                      }
+                    }
+
+                    /* INPUT VIDEO MANAGEMENT */
+                    if (resultVideo.length > 0) {
+                      if (!videoCookieExist) {
+                        let selected_device = resultVideo.find(
+                          (device) => device.deviceId === "default"
+                        );
+                        if (!selected_device) selected_device = resultVideo[0];
+                        Cookies.setDevice(
+                          "camera",
+                          selected_device,
+                          default_cookies_param
+                        );
+                        getVideoDeviceName(selected_device.deviceId).then(
+                          (isBackCamera) => {
+                            this.props.dispatch(
+                              InputManagerActions.inputVideoChange(
+                                selected_device,
+                                isBackCamera
+                              )
+                            );
+                          }
+                        );
+                        this.setState({
+                          videoDevices: resultVideo,
+                          videoDeviceSelected: selected_device.deviceId,
+                        });
+                      } else {
+                        const device = Cookies.getDevice("camera");
+                        getVideoDeviceName(device.deviceId).then(
+                          (isBackCamera) => {
+                            this.props.dispatch(
+                              InputManagerActions.inputVideoChange(
+                                device,
+                                isBackCamera
+                              )
+                            );
+                          }
+                        );
+                        this.setState({
+                          videoDevices: resultVideo,
+                          videoDeviceSelected: device,
+                        });
+                      }
+                    } else {
+                      this.setState({ videoEnabled: false });
+                    }
+
+                    /* INPUT AUDIO MANAGEMENT */
+                    if (resultAudio.length > 0) {
+                      if (!inputCookieExist) {
+                        let selected_device = resultAudio.find(
+                          (device) => device.deviceId === "default"
+                        );
+                        if (!selected_device) selected_device = resultAudio[0];
+                        Cookies.setDevice(
+                          "input",
+                          selected_device,
+                          default_cookies_param
+                        );
+                        this.props.dispatch(
+                          InputManagerActions.inputAudioChange(selected_device)
+                        );
+                        this.setState({
+                          audioDevices: resultAudio,
+                          audioDeviceSelected: selected_device,
+                        });
+                      } else {
+                        const device = Cookies.getDevice("input");
+                        this.props.dispatch(
+                          InputManagerActions.inputAudioChange(
+                            device
+                          )
+                        );
+                        this.setState({
+                          audioDevices: resultAudio,
+                          audioDeviceSelected: device,
+                        });
+                      }
+                    } else {
+                      this.reportError(strings.noAudioDevice);
+                      this.setState({
+                        error: strings.noAudioDevice,
+                        loading: false,
                       });
-                  } else {
-                    this.reportError("No input device detected");
-                    console.error("No input device detected");
-                  }
-                });
+                    }
+
+                    /* GETUSERMEDIA FROM PREVIOUS MANAGEMENT */
+                    if (resultAudio.length > 0 && this.state.error == null) {
+                      this.setState({ loading: false });
+                      navigator.getUserMedia({audio: { deviceId: { exact: this.state.audioDeviceSelected.deviceId } }, video: false})
+                        .then((audioStream) => {
+                          if (resultVideo.length > 0 && this.state.videoEnabled) {
+                            const videoConstraints = { deviceId: { exact: this.state.videoDeviceSelected.deviceId } };
+                            const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
+                            VoxeetSDK.video.startVideo(videoConstraints, processor)
+                              .then((videoStream) => {
+                                this.attachMediaStream(videoStream);
+                                this.setState({ userAudioStream: audioStream, userVideoStream: videoStream });
+                                this.forceUpdate();
+                              });
+                          } else {
+                            this.setState({ userAudioStream: audioStream });
+                            this.forceUpdate();
+                          }
+                        });
+                    } else {
+                      this.reportError("No input device detected");
+                      console.error("No input device detected");
+                    }
+                  })
+                  .then(() => {
+                    stream.getTracks().forEach((track) => {
+                      track.stop();
+                    });
+                  });
               })
               .catch((error) => {
                 if (this.state.videoEnabled) {
