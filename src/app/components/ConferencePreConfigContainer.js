@@ -7,7 +7,7 @@ import Cookies from "./../libs/Storage";
 import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
-import { getVideoDeviceName } from "../libs/getVideoDeviceName";
+import { getVideoDeviceName, getDevice } from "../libs/getVideoDeviceName";
 import { isElectron, isMobile } from "../libs/browserDetection";
 import { getUxKitContext } from "../context";
 
@@ -91,7 +91,8 @@ class ConferencePreConfigContainer extends Component {
     this.handleMaxVideoForwardingChange =
       this.handleMaxVideoForwardingChange.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
-    this.releaseStream = this.releaseStream.bind(this);
+    this.releaseAudioStream = this.releaseAudioStream.bind(this);
+    this.releaseVideoStream = this.releaseVideoStream.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
     this.handleAudioTransparentModeChange =
       this.handleAudioTransparentModeChange.bind(this);
@@ -117,7 +118,7 @@ class ConferencePreConfigContainer extends Component {
       "devicechange",
       this.onDeviceChange
     );
-    this.releaseStream().then(() => {});
+    this.releaseAudioStream().then(() => this.releaseVideoStream());
   }
 
   reportError(error) {
@@ -125,7 +126,8 @@ class ConferencePreConfigContainer extends Component {
   }
 
   onDeviceChange() {
-    this.releaseStream()
+    this.releaseAudioStream()
+      .then(() => this.releaseVideoStream())
       .then(() => {
         this.setState(
           {
@@ -182,21 +184,26 @@ class ConferencePreConfigContainer extends Component {
     navigator.attachMediaStream(this.video, stream);
   }
 
-  async releaseStream() {
+  async releaseVideoStream() {
+    if (this.state.userVideoStream) {
+      await VoxeetSDK.video.stopVideo();
+
+      this.setState({
+        userVideoStream: null,
+      });
+    }
+  }
+
+  async releaseAudioStream() {
     if (this.state.userAudioStream) {
       this.state.userAudioStream.getTracks().forEach((track) => {
         track.stop();
       });
-    }
 
-    if (this.state.userVideoStream) {
-      await VoxeetSDK.video.stopVideo();
+      this.setState({
+        userAudioStream: null,
+      });
     }
-
-    this.setState({
-      userVideoStream: null,
-      userAudioStream: null
-    });
   }
 
   restartCamera() {
@@ -214,7 +221,7 @@ class ConferencePreConfigContainer extends Component {
       };
     }
 
-    return navigator.getUserMedia({audio: audioConstraints, video: false})
+    return navigator.mediaDevices.getUserMedia({audio: audioConstraints, video: false})
       .then((audioStream) => {
         const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
         return VoxeetSDK.video.startVideo(videoConstraints, processor)
@@ -230,7 +237,7 @@ class ConferencePreConfigContainer extends Component {
                   }
                 });
     
-                this.setState({ userVideoStream: videoStream, userAudioStream: audioStream, videoDevices: resultVideo });
+                this.setState({ userVideoStream: videoStream, userAudioStream: audioStream, videoDevices: resultVideo, });
               });
             }
           });
@@ -242,11 +249,11 @@ class ConferencePreConfigContainer extends Component {
   }
 
   async setAudioDevice(e) {
-    const device = e.target.value ? JSON.parse(e.target.value) : {};
-    await this.releaseStream();
+    const device = e.target.value ? await getDevice(e.target.value) : {};
+    await this.releaseAudioStream();
     this.setState({ lockJoin: true });
 
-    const audioStream = await navigator.getUserMedia({audio: { deviceId: { exact: device.deviceId } }, video: false});
+    const audioStream = await navigator.mediaDevices.getUserMedia({audio: { deviceId: { exact: device.deviceId } }, video: false});
 
     this.props.dispatch(InputManagerActions.inputAudioChange(device));
 
@@ -259,16 +266,22 @@ class ConferencePreConfigContainer extends Component {
     Cookies.setDevice("input", device, default_cookies_param);
   }
 
-  setOutputDevice(e) {
-    const device = e.target.value ? JSON.parse(e.target.value) : {};
+  async setOutputDevice(e) {
+    const device = e.target.value ? await getDevice(e.target.value) : {};
+
     this.props.dispatch(InputManagerActions.outputAudioChange(device));
+    
+    this.setState({
+      outputDeviceSelected: device,
+    });
+
     Cookies.setDevice("output", device, default_cookies_param);
-    this.setState({ outputDeviceSelected: device });
   }
 
   async setVideoDevice(e) {
-    const device = e.target.value ? JSON.parse(e.target.value) : {};
-    await this.releaseStream();
+    const device = e.target.value ? await getDevice(e.target.value) : {};
+    console.log('setVideoDevice', device);
+    await this.releaseVideoStream();
     this.setState({ lockJoin: true });
     
     const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
@@ -298,7 +311,8 @@ class ConferencePreConfigContainer extends Component {
     let videoCookieExist = false;
     let outputCookieExist = false;
     let inputCookieExist = false;
-    if (this.state.userVideoStream || this.state.userAudioStream) await this.releaseStream();
+    if (this.state.userVideoStream) await this.releaseVideoStream();
+    if (this.state.userAudioStream) await this.releaseAudioStream();
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
       navigator.mediaDevices
         .enumerateDevices()
@@ -421,9 +435,7 @@ class ConferencePreConfigContainer extends Component {
                       } else {
                         const device = Cookies.getDevice("output");
                         this.props.dispatch(
-                          InputManagerActions.outputAudioChange(
-                            device
-                          )
+                          InputManagerActions.outputAudioChange(device)
                         );
                         this.setState({
                           outputDevices: resultAudioOutput,
@@ -433,48 +445,33 @@ class ConferencePreConfigContainer extends Component {
                     }
 
                     /* INPUT VIDEO MANAGEMENT */
+                    let videoDevice;
                     if (resultVideo.length > 0) {
                       if (!videoCookieExist) {
-                        let selected_device = resultVideo.find(
+                        videoDevice = resultVideo.find(
                           (device) => device.deviceId === "default"
                         );
-                        if (!selected_device) selected_device = resultVideo[0];
+                        if (!videoDevice) videoDevice = resultVideo[0];
                         Cookies.setDevice(
                           "camera",
-                          selected_device,
+                          videoDevice,
                           default_cookies_param
                         );
-                        getVideoDeviceName(selected_device.deviceId).then(
-                          (isBackCamera) => {
-                            this.props.dispatch(
-                              InputManagerActions.inputVideoChange(
-                                selected_device,
-                                isBackCamera
-                              )
-                            );
-                          }
-                        );
-                        this.setState({
-                          videoDevices: resultVideo,
-                          videoDeviceSelected: selected_device.deviceId,
-                        });
                       } else {
-                        const device = Cookies.getDevice("camera");
-                        getVideoDeviceName(device.deviceId).then(
-                          (isBackCamera) => {
-                            this.props.dispatch(
-                              InputManagerActions.inputVideoChange(
-                                device,
-                                isBackCamera
-                              )
-                            );
-                          }
-                        );
-                        this.setState({
-                          videoDevices: resultVideo,
-                          videoDeviceSelected: device,
-                        });
+                        videoDevice = Cookies.getDevice("camera");
                       }
+
+                      getVideoDeviceName(videoDevice.deviceId).then(
+                        (isBackCamera) => {
+                          this.props.dispatch(
+                            InputManagerActions.inputVideoChange(videoDevice, isBackCamera)
+                          );
+                        }
+                      );
+                      this.setState({
+                        videoDevices: resultVideo,
+                        videoDeviceSelected: videoDevice,
+                      });
                     } else {
                       this.setState({ videoEnabled: false });
                     }
@@ -501,9 +498,7 @@ class ConferencePreConfigContainer extends Component {
                       } else {
                         const device = Cookies.getDevice("input");
                         this.props.dispatch(
-                          InputManagerActions.inputAudioChange(
-                            device
-                          )
+                          InputManagerActions.inputAudioChange(device)
                         );
                         this.setState({
                           audioDevices: resultAudio,
@@ -521,15 +516,15 @@ class ConferencePreConfigContainer extends Component {
                     /* GETUSERMEDIA FROM PREVIOUS MANAGEMENT */
                     if (resultAudio.length > 0 && this.state.error == null) {
                       this.setState({ loading: false });
-                      navigator.getUserMedia({audio: { deviceId: { exact: this.state.audioDeviceSelected.deviceId } }, video: false})
+                      return navigator.mediaDevices.getUserMedia({audio: { deviceId: { exact: this.state.audioDeviceSelected.deviceId } }, video: false})
                         .then((audioStream) => {
-                          if (resultVideo.length > 0 && this.state.videoEnabled) {
-                            const videoConstraints = { deviceId: { exact: this.state.videoDeviceSelected.deviceId } };
+                          if (this.state.videoEnabled) {
+                            const videoConstraints = { deviceId: { exact: videoDevice.deviceId } };
                             const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
-                            VoxeetSDK.video.startVideo(videoConstraints, processor)
+                            return VoxeetSDK.video.startVideo(videoConstraints, processor)
                               .then((videoStream) => {
                                 this.attachMediaStream(videoStream);
-                                this.setState({ userAudioStream: audioStream, userVideoStream: videoStream });
+                                this.setState({ userAudioStream: audioStream, userVideoStream: videoStream, });
                                 this.forceUpdate();
                               });
                           } else {
@@ -789,18 +784,12 @@ class ConferencePreConfigContainer extends Component {
   render() {
     const { handleJoin, logo, dolbyVoiceEnabled } = this.props;
     const {
-      level,
-      videoEnabled,
       audioEnabled,
-      videoDeviceSelected,
-      audioDeviceSelected,
-      outputDeviceSelected,
       error,
       loading,
       maxVideoForwarding,
       lowBandwidthMode,
       virtualBackgroundMode,
-      videoDenoise,
     } = this.state;
     const MAX_MAXVF = isMobile() ? 4 : 16;
 
@@ -842,8 +831,8 @@ class ConferencePreConfigContainer extends Component {
                             <select
                               name="video"
                               value={
-                                videoDeviceSelected != null
-                                  ? JSON.stringify(videoDeviceSelected)
+                                this.state.videoDeviceSelected != null
+                                  ? this.state.videoDeviceSelected.deviceId
                                   : ""
                               }
                               className="form-control select-video-device"
@@ -851,7 +840,7 @@ class ConferencePreConfigContainer extends Component {
                               onChange={this.setVideoDevice}
                             >
                               {this.state.videoDevices.map((device, i) => (
-                                <option key={i} value={JSON.stringify(device)}>
+                                <option key={i} value={device.deviceId}>
                                   {device.label}
                                 </option>
                               ))}
@@ -865,18 +854,15 @@ class ConferencePreConfigContainer extends Component {
                                   name="output"
                                   className="form-control select-audio-output"
                                   value={
-                                    outputDeviceSelected != null
-                                      ? JSON.stringify(outputDeviceSelected)
+                                    this.state.outputDeviceSelected != null
+                                      ? this.state.outputDeviceSelected.deviceId
                                       : ""
                                   }
                                   disabled={false}
                                   onChange={this.setOutputDevice}
                                 >
                                   {this.state.outputDevices.map((device, i) => (
-                                    <option
-                                      key={i}
-                                      value={JSON.stringify(device)}
-                                    >
+                                    <option key={i} value={device.deviceId}>
                                       {device.label}
                                     </option>
                                   ))}
@@ -891,8 +877,8 @@ class ConferencePreConfigContainer extends Component {
                                     name="audio"
                                     className="form-control select-audio-input"
                                     value={
-                                      audioDeviceSelected != null
-                                        ? JSON.stringify(audioDeviceSelected)
+                                      this.state.audioDeviceSelected != null
+                                        ? this.state.audioDeviceSelected.deviceId
                                         : ""
                                     }
                                     disabled={false}
@@ -900,10 +886,7 @@ class ConferencePreConfigContainer extends Component {
                                   >
                                     {this.state.audioDevices.map(
                                       (device, i) => (
-                                        <option
-                                          key={i}
-                                          value={JSON.stringify(device)}
-                                        >
+                                        <option key={i} value={device.deviceId}>
                                           {device.label}
                                         </option>
                                       )
