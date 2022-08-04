@@ -470,6 +470,7 @@ export class Actions {
                     );
                   }
                 })
+                .then(() => VoxeetSDK.conference.enableVideo(VoxeetSDK.session.participant))
                 .then(() => this.setVirtualBackground(virtualBackgroundMode, controls.videoEnabled, controls.videoDenoise));
             }
           });
@@ -567,6 +568,7 @@ export class Actions {
                     }
                   }
                 })
+                .then(() => VoxeetSDK.conference.enableVideo(VoxeetSDK.session.participant))
                 .then(() => this.setVirtualBackground(virtualBackgroundMode, controls.videoEnabled, controls.videoDenoise));
             })
             .catch((err) => {
@@ -688,6 +690,7 @@ export class Actions {
                 );
               }
             })
+            .then(() => VoxeetSDK.conference.enableVideo(VoxeetSDK.session.participant))
             .then(() => this.setVirtualBackground(virtualBackgroundMode, controls.videoEnabled, controls.videoDenoise));
         })
         .catch((err) => {
