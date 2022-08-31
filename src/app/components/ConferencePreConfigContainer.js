@@ -186,7 +186,7 @@ class ConferencePreConfigContainer extends Component {
 
   async releaseVideoStream() {
     if (this.state.userVideoStream) {
-      await VoxeetSDK.video.stopVideo();
+      await VoxeetSDK.video.local.stop();
 
       this.setState({
         userVideoStream: null,
@@ -224,7 +224,8 @@ class ConferencePreConfigContainer extends Component {
     return navigator.mediaDevices.getUserMedia({audio: audioConstraints, video: false})
       .then((audioStream) => {
         const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
-        return VoxeetSDK.video.startVideo(videoConstraints, processor)
+        return VoxeetSDK.video.local.start(videoConstraints, processor)
+          .then((videoTrack) => new MediaStream([videoTrack]))
           .then((videoStream) => {
             this.attachMediaStream(videoStream);
             if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
@@ -285,7 +286,7 @@ class ConferencePreConfigContainer extends Component {
     this.setState({ lockJoin: true });
     
     const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
-    const videoStream = await VoxeetSDK.video.startVideo({ deviceId: { exact: device.deviceId } }, processor);
+    const videoStream = await VoxeetSDK.video.local.start({ deviceId: { exact: device.deviceId } }, processor).then((videoTrack) => new MediaStream([videoTrack]));
 
     getVideoDeviceName(device.deviceId).then((isBackCamera) => {
       this.props.dispatch(
@@ -521,7 +522,8 @@ class ConferencePreConfigContainer extends Component {
                           if (this.state.videoEnabled) {
                             const videoConstraints = { deviceId: { exact: videoDevice.deviceId } };
                             const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
-                            return VoxeetSDK.video.startVideo(videoConstraints, processor)
+                            return VoxeetSDK.video.local.start(videoConstraints, processor)
+                              .then((videoTrack) => new MediaStream([videoTrack]))
                               .then((videoStream) => {
                                 this.attachMediaStream(videoStream);
                                 this.setState({ userAudioStream: audioStream, userVideoStream: videoStream, });
@@ -615,7 +617,7 @@ class ConferencePreConfigContainer extends Component {
 
   async switchVideoEnabled(video_on) {
     if (!video_on && this.state.userVideoStream != null) {
-      await VoxeetSDK.video.stopVideo();
+      await VoxeetSDK.video.local.stop();
 
       this.video.srcObject = null;
       this.video.height = "0";
@@ -688,8 +690,8 @@ class ConferencePreConfigContainer extends Component {
           switch (this.state.virtualBackgroundMode) {
             case "bokeh":
               VoxeetSDK
-                .video
-                .setVideoProcessor({type: 'bokeh'})
+                .video.local
+                .setProcessor({type: 'bokeh'})
                 .catch((e) => {
                   console.error(e);
                 });
@@ -705,8 +707,8 @@ class ConferencePreConfigContainer extends Component {
               break;
             default:
               VoxeetSDK
-                .video
-                .setVideoProcessor({})
+                .video.local
+                .setProcessor({})
                 .catch((e) => {
                   console.error(e);
                 });

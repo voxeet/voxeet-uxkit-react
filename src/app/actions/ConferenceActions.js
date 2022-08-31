@@ -314,9 +314,9 @@ export class Actions {
         }
       } else {
         if (virtualBackgroundMode === "bokeh") {
-          await VoxeetSDK.video.setVideoProcessor({ type: "bokeh" });
+          await VoxeetSDK.video.local.setProcessor({ type: "bokeh" });
         } else {
-          await VoxeetSDK.video.setVideoProcessor({});
+          await VoxeetSDK.video.local.setProcessor({});
         }
       }
     }
@@ -469,9 +469,7 @@ export class Actions {
                       )
                     );
                   }
-                })
-                .then(() => VoxeetSDK.conference.enableVideo(VoxeetSDK.session.participant))
-                .then(() => this.setVirtualBackground(virtualBackgroundMode, controls.videoEnabled, controls.videoDenoise));
+                });
             }
           });
       }
@@ -568,7 +566,6 @@ export class Actions {
                     }
                   }
                 })
-                .then(() => VoxeetSDK.conference.enableVideo(VoxeetSDK.session.participant))
                 .then(() => this.setVirtualBackground(virtualBackgroundMode, controls.videoEnabled, controls.videoDenoise));
             })
             .catch((err) => {
@@ -690,7 +687,6 @@ export class Actions {
                 );
               }
             })
-            .then(() => VoxeetSDK.conference.enableVideo(VoxeetSDK.session.participant))
             .then(() => this.setVirtualBackground(virtualBackgroundMode, controls.videoEnabled, controls.videoDenoise));
         })
         .catch((err) => {
@@ -932,8 +928,8 @@ export class Actions {
           payloadConstraints.height = controls.videoRatio.height;
         }
 
-        return VoxeetSDK.video
-          .startVideo(payloadConstraints, processor)
+        return VoxeetSDK.video.local
+          .start(payloadConstraints, processor)
           .then(() => {
             dispatch(
               OnBoardingMessageActions.onBoardingDisplay(
@@ -947,8 +943,8 @@ export class Actions {
             this._throwErrorModal(err);
           });
       } else {
-        return VoxeetSDK.video
-          .stopVideo()
+        return VoxeetSDK.video.local
+          .stop()
           .then(() => {
             dispatch(ControlsActions.toggleVideo(false));
             dispatch(
