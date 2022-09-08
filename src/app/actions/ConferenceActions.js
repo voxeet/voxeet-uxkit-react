@@ -316,7 +316,7 @@ export class Actions {
         if (virtualBackgroundMode === "bokeh") {
           await VoxeetSDK.video.local.setProcessor({ type: "bokeh" });
         } else {
-          await VoxeetSDK.video.local.setProcessor({});
+          await VoxeetSDK.video.local.disableProcessing();
         }
       }
     }

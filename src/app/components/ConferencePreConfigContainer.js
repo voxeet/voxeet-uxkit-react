@@ -101,6 +101,7 @@ class ConferencePreConfigContainer extends Component {
     this.handleVideoDenoiseChange = this.handleVideoDenoiseChange.bind(this);
     this.attachMediaStream = this.attachMediaStream.bind(this);
     this.maxVFTimer = null;
+    this.onVideoStarted = this.onVideoStarted.bind(this);
   }
 
   componentDidMount() {
@@ -111,6 +112,8 @@ class ConferencePreConfigContainer extends Component {
           this.onDeviceChange
         );
       });
+
+      VoxeetSDK.video.local.on('videoStarted', this.onVideoStarted);
   }
 
   componentWillUnmount() {
@@ -118,11 +121,25 @@ class ConferencePreConfigContainer extends Component {
       "devicechange",
       this.onDeviceChange
     );
+
+    VoxeetSDK.video.local.removeListener('videoStarted', this.onVideoStarted);
+
     this.releaseAudioStream().then(() => this.releaseVideoStream());
   }
 
   reportError(error) {
     console.error(error);
+  }
+
+  onVideoStarted(videoTrack) {
+    const stream = this.state.userVideoStream;
+    if (stream) {
+      const videoTracks = stream.getVideoTracks();
+      if (videoTracks && videoTracks[0]) {
+        stream.removeTrack(videoTracks[0]);
+      }
+      stream.addTrack(videoTrack);
+    }
   }
 
   onDeviceChange() {
@@ -223,7 +240,7 @@ class ConferencePreConfigContainer extends Component {
 
     return navigator.mediaDevices.getUserMedia({audio: audioConstraints, video: false})
       .then((audioStream) => {
-        const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
+        const processor = this.state.virtualBackgroundMode === 'bokeh' ? { type: this.state.virtualBackgroundMode } : null;
         return VoxeetSDK.video.local.start(videoConstraints, processor)
           .then((videoTrack) => new MediaStream([videoTrack]))
           .then((videoStream) => {
@@ -285,7 +302,7 @@ class ConferencePreConfigContainer extends Component {
     await this.releaseVideoStream();
     this.setState({ lockJoin: true });
     
-    const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
+    const processor = this.state.virtualBackgroundMode == 'bokeh' ? { type: this.state.virtualBackgroundMode } : null;
     const videoStream = await VoxeetSDK.video.local.start({ deviceId: { exact: device.deviceId } }, processor).then((videoTrack) => new MediaStream([videoTrack]));
 
     getVideoDeviceName(device.deviceId).then((isBackCamera) => {
@@ -521,7 +538,7 @@ class ConferencePreConfigContainer extends Component {
                         .then((audioStream) => {
                           if (this.state.videoEnabled) {
                             const videoConstraints = { deviceId: { exact: videoDevice.deviceId } };
-                            const processor = this.state.virtualBackgroundMode != null && this.state.virtualBackgroundMode !== 'none' ? {type: this.state.virtualBackgroundMode} : {};
+                            const processor = this.state.virtualBackgroundMode === 'bokeh' ? { type: this.state.virtualBackgroundMode } : null;
                             return VoxeetSDK.video.local.start(videoConstraints, processor)
                               .then((videoTrack) => new MediaStream([videoTrack]))
                               .then((videoStream) => {
@@ -708,7 +725,7 @@ class ConferencePreConfigContainer extends Component {
             default:
               VoxeetSDK
                 .video.local
-                .setProcessor({})
+                .disableProcessing()
                 .catch((e) => {
                   console.error(e);
                 });
