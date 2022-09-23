@@ -802,15 +802,13 @@ export class Actions {
                 InputManagerActions.inputAudioChange(Cookies.getDevice("input"))
               );
             }
-            VoxeetSDK.conference
-              .startAudio(VoxeetSDK.session.participant)
+            VoxeetSDK.audio.remote.start(VoxeetSDK.session.participant)
               .then(() => {
                 dispatch(ControlsActions.toggleAudio(true));
               });
           });
         } else {
-          VoxeetSDK.conference
-            .startAudio(VoxeetSDK.session.participant)
+          VoxeetSDK.audio.remote.start(VoxeetSDK.session.participant)
             .then(() => {
               dispatch(ControlsActions.toggleAudio(true));
             });
@@ -821,9 +819,9 @@ export class Actions {
         } else {
           let promise;
           if (isMuted) {
-            promise = VoxeetSDK.conference.startAudio(user);
+            promise = VoxeetSDK.audio.remote.start(user);
           } else {
-            promise = VoxeetSDK.conference.stopAudio(user);
+            promise = VoxeetSDK.audio.remote.stop(user);
           }
           return promise.then(() =>
             dispatch(ParticipantActions.onToogleMicrophone(userId))
@@ -856,10 +854,9 @@ export class Actions {
 
   static setAudioTransparentMode(enabled) {
     return (dispatch) => {
-      return VoxeetSDK.conference
-        .audioProcessing(VoxeetSDK.session.participant, {
-          send: { audioProcessing: !enabled },
-        })
+      const options = enabled ? { mode: "unprocessed" } : { mode: "standard", modeOptions: {noiseReductionLevel: "high"}};
+        return VoxeetSDK.audio.local
+        .setCaptureMode(options)
         .then(() => {
           dispatch(ControlsActions.setAudioTransparentMode(enabled));
         });
