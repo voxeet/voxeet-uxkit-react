@@ -18,4 +18,14 @@ export const getVideoDeviceName = ({ currentVideoDevice }) => {
         return Promise.resolve(false);
       });
     }
-  };
+};
+
+export const getDevice = async (deviceId) => {
+  if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+
+    return devices.find(
+      (device) => device.deviceId === deviceId
+    );
+  }
+};

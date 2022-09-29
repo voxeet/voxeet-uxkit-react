@@ -582,7 +582,8 @@ class AttendeesSettings extends Component {
                   </label>
                 </div>
               </div>
-              {isElectron() && (
+
+              {(bowser.chrome || isElectron()) && (
                 <div
                   className={`form-group switch-enable ${
                     !videoEnabled ? "disabled-form" : ""
@@ -602,6 +603,7 @@ class AttendeesSettings extends Component {
                   </div>
                 </div>
               )}
+
               {isElectron() && (
                 <div
                   className={`form-group switch-enable ${
