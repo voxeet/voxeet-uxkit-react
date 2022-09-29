@@ -1,8 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 const package = require("./package.json");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 
@@ -116,5 +115,14 @@ module.exports = {
       filename: 'voxeet-react-components.css'
     }),
     // new webpack.NoEmitOnErrorsPlugin(),
+    new CopyWebpackPlugin({
+      patterns:[
+       { from: "./node_modules/@voxeet/voxeet-web-sdk/dist/dvwc_impl.wasm", noErrorOnMissing: true },
+       { from: "./node_modules/@voxeet/voxeet-web-sdk/dist/voxeet-dvwc-worker.js", noErrorOnMissing: true },
+       { from: "./node_modules/@voxeet/voxeet-web-sdk/dist/voxeet-worklet.js", noErrorOnMissing: true },
+       { from: "./node_modules/@voxeet/voxeet-web-sdk/dist/vsl_impl.pkgwvsl", noErrorOnMissing: true },
+       { from: "./node_modules/@voxeet/voxeet-web-sdk/dist/vsl_impl.wasm", noErrorOnMissing: true },
+     ]
+    }),
   ],
 };

@@ -1,6 +1,6 @@
 {
   "name": "@voxeet/react-components",
-  "version": "3.5.1",
+  "version": "3.7.0",
   "description": "",
   "main": "./dist/bundle.js",
   "scripts": {
@@ -19,9 +19,6 @@
     "BEHUET Jérôme <jbehuet@gmail.com>",
     "GOURGUES Thomas <tgourgues@voxeet.com>",
     "MARTIN Valentin <vmartin@voxeet.com>"
-  ],
-  "browserslist": [
-    "IE 11"
   ],
   "resolve": {
     "extensions": [
@@ -96,7 +93,7 @@
     "webpack-dev-server": "^4.9.0"
   },
   "peerDependencies": {
-    "@voxeet/voxeet-web-sdk": "^3.5.3"
+    "@voxeet/voxeet-web-sdk": "^3.7.0"
   },
   "files": [
     "README.md",

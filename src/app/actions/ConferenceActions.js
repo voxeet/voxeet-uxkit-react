@@ -300,6 +300,28 @@ export class Actions {
     return constraints;
   }
 
+  static async setVirtualBackground(virtualBackgroundMode, videoEnabled, videoDenoise) {
+    if (videoEnabled) {
+      if (isElectron()) {
+        console.log("About to set vb to selected", virtualBackgroundMode, VoxeetSDK.videoFilters);
+        switch (virtualBackgroundMode) {
+          case "bokeh":
+          case "staticimage":
+            await VoxeetSDK.videoFilters.setFilter(virtualBackgroundMode, { videoDenoise: videoDenoise });
+            break;
+          default:
+            await VoxeetSDK.videoFilters.setFilter("none", { videoDenoise: videoDenoise });
+        }
+      } else {
+        if (virtualBackgroundMode === "bokeh") {
+          await VoxeetSDK.video.local.setProcessor({ type: "bokeh" });
+        } else {
+          await VoxeetSDK.video.local.disableProcessing();
+        }
+      }
+    }
+  }
+
   static join(
     conferenceAlias,
     isAdmin,
@@ -332,7 +354,7 @@ export class Actions {
     virtualBackgroundMode =
       ["none", "bokeh"].indexOf(virtualBackgroundMode) >= 0
         ? virtualBackgroundMode
-        : "none";
+        : "none";        
     const videoDenoise =
       preConfigPayload && preConfigPayload.videoDenoise !== undefined
         ? preConfigPayload.videoDenoise
@@ -342,7 +364,7 @@ export class Actions {
       dispatch(ParticipantActions.clearParticipantsList());
       dispatch(this._conferenceConnecting());
       const {
-        voxeet: { participants },
+        voxeet: { participants, controls, },
       } = getState();
       let userInfo = {
         name: userInfoRaw.name,
@@ -370,7 +392,7 @@ export class Actions {
           .then((conference) => {
             if ((participants.isWebinar && !isAdmin) || isListener) {
               return VoxeetSDK.conference
-                .listen(conference, dvwc)
+                .listen(conference)
                 .then(function (res) {
                   dispatch(
                     ParticipantActions.saveCurrentUser(
@@ -474,7 +496,6 @@ export class Actions {
                 .join(conference, {
                   constraints,
                   simulcast: simulcast,
-                  audio3D: false,
                   maxVideoForwarding: maxVideoForwarding,
                   videoFilter: virtualBackgroundMode,
                   videoFilterOptions: { videoDenoise: videoDenoise },
@@ -545,10 +566,7 @@ export class Actions {
                     }
                   }
                 })
-                .catch((err) => {
-                  console.error(err);
-                  dispatch(ErrorActions.onError(err));
-                });
+                .then(() => this.setVirtualBackground(virtualBackgroundMode, controls.videoEnabled, controls.videoDenoise));
             })
             .catch((err) => {
               console.error(err);
@@ -586,7 +604,6 @@ export class Actions {
             .join(conference, {
               constraints,
               simulcast: simulcast,
-              audio3D: false,
               maxVideoForwarding: maxVideoForwarding,
               videoFilter: virtualBackgroundMode,
               videoFilterOptions: { videoDenoise: videoDenoise },
@@ -670,10 +687,7 @@ export class Actions {
                 );
               }
             })
-            .catch((err) => {
-              console.log(err);
-              dispatch(ErrorActions.onError(err));
-            });
+            .then(() => this.setVirtualBackground(virtualBackgroundMode, controls.videoEnabled, controls.videoDenoise));
         })
         .catch((err) => {
           console.log(err);
@@ -788,15 +802,13 @@ export class Actions {
                 InputManagerActions.inputAudioChange(Cookies.getDevice("input"))
               );
             }
-            VoxeetSDK.conference
-              .startAudio(VoxeetSDK.session.participant)
+            VoxeetSDK.audio.remote.start(VoxeetSDK.session.participant)
               .then(() => {
                 dispatch(ControlsActions.toggleAudio(true));
               });
           });
         } else {
-          VoxeetSDK.conference
-            .startAudio(VoxeetSDK.session.participant)
+          VoxeetSDK.audio.remote.start(VoxeetSDK.session.participant)
             .then(() => {
               dispatch(ControlsActions.toggleAudio(true));
             });
@@ -807,9 +819,9 @@ export class Actions {
         } else {
           let promise;
           if (isMuted) {
-            promise = VoxeetSDK.conference.startAudio(user);
+            promise = VoxeetSDK.audio.remote.start(user);
           } else {
-            promise = VoxeetSDK.conference.stopAudio(user);
+            promise = VoxeetSDK.audio.remote.stop(user);
           }
           return promise.then(() =>
             dispatch(ParticipantActions.onToogleMicrophone(userId))
@@ -842,10 +854,9 @@ export class Actions {
 
   static setAudioTransparentMode(enabled) {
     return (dispatch) => {
-      return VoxeetSDK.conference
-        .audioProcessing(VoxeetSDK.session.participant, {
-          send: { audioProcessing: !enabled },
-        })
+      const options = enabled ? { mode: "unprocessed" } : { mode: "standard", modeOptions: {noiseReductionLevel: "high"}};
+        return VoxeetSDK.audio.local
+        .setCaptureMode(options)
         .then(() => {
           dispatch(ControlsActions.setAudioTransparentMode(enabled));
         });
@@ -896,53 +907,41 @@ export class Actions {
   }
 
   static toggleVideo(videoStarted) {
-    return (dispatch, getState) => {
+    return async (dispatch, getState) => {
       const {
         voxeet: { controls, inputManager },
       } = getState();
       if (!videoStarted) {
+        const virtualBackgroundMode = controls.virtualBackgroundMode !== undefined
+          ? controls.virtualBackgroundMode
+          : Cookies.get("virtualBackgroundMode");
+        const processor = virtualBackgroundMode != null && virtualBackgroundMode !== 'none' ? {type: virtualBackgroundMode} : {};
+
+        const payloadConstraints = {
+          deviceId: inputManager.currentVideoDevice?.deviceId,
+        };
         if (controls.videoRatio) {
-          const payloadConstraints = {
-            width: controls.videoRatio.width,
-            height: controls.videoRatio.height,
-            deviceId: inputManager.currentVideoDevice?.deviceId,
-          };
-          return VoxeetSDK.conference
-            .startVideo(VoxeetSDK.session.participant, payloadConstraints)
-            .then(() => {
-              dispatch(
-                OnBoardingMessageActions.onBoardingDisplay(
-                  strings.cameraOn,
-                  1000
-                )
-              );
-              dispatch(ControlsActions.toggleVideo(true));
-            })
-            .catch((err) => {
-              this._throwErrorModal(err);
-            });
-        } else {
-          const payloadConstraints = {
-            deviceId: inputManager.currentVideoDevice?.deviceId,
-          };
-          return VoxeetSDK.conference
-            .startVideo(VoxeetSDK.session.participant, payloadConstraints)
-            .then(() => {
-              dispatch(
-                OnBoardingMessageActions.onBoardingDisplay(
-                  strings.cameraOn,
-                  1000
-                )
-              );
-              dispatch(ControlsActions.toggleVideo(true));
-            })
-            .catch((err) => {
-              this._throwErrorModal(err);
-            });
+          payloadConstraints.width = controls.videoRatio.width;
+          payloadConstraints.height = controls.videoRatio.height;
         }
+
+        return VoxeetSDK.video.local
+          .start(payloadConstraints, processor)
+          .then(() => {
+            dispatch(
+              OnBoardingMessageActions.onBoardingDisplay(
+                strings.cameraOn,
+                1000
+              )
+            );
+            dispatch(ControlsActions.toggleVideo(true));
+          })
+          .catch((err) => {
+            this._throwErrorModal(err);
+          });
       } else {
-        return VoxeetSDK.conference
-          .stopVideo(VoxeetSDK.session.participant)
+        return VoxeetSDK.video.local
+          .stop()
           .then(() => {
             dispatch(ControlsActions.toggleVideo(false));
             dispatch(
@@ -960,7 +959,7 @@ export class Actions {
   }
 
   static handleLeave() {
-    return (dipatch, getState) => {
+    return (dispatch, getState) => {
       const {
         voxeet: { participants, controls },
       } = getState();
@@ -969,7 +968,7 @@ export class Actions {
   }
 
   static handleConferenceLeft() {
-    return (dipatch, getState) => {
+    return (dispatch, getState) => {
       const {
         voxeet: { participants, controls },
       } = getState();
@@ -988,7 +987,7 @@ export class Actions {
   static toggleVideoPresentation(url) {
     return (dispatch, getState) => {
       const {
-        voxeet: { participants, controls },
+        voxeet: { participants },
       } = getState();
       const videoPresentationEnabled = !participants.videoPresentationEnabled;
       if (videoPresentationEnabled) {
@@ -1149,56 +1148,15 @@ export class Actions {
   }
 
   static setVirtualBackgroundMode(mode) {
-    console.log("About to set vb mode to", mode);
-    return (dispatch, getState) => {
-      if (!VoxeetSDK.videoFilters || !isElectron()) {
-        // Skip if not supported in SDK or not in NDS
-        Cookies.set("virtualBackgroundMode", null);
-        dispatch(ControlsActions.setVirtualBackgroundMode(null));
-        return Promise.resolve();
-      }
+    return async (dispatch, getState) => {
       const {
         voxeet: { controls },
       } = getState();
-      let { virtualBackgroundMode, videoDenoise } = controls;
-      if (!mode) {
-        console.log("About to set vb to null");
-        return VoxeetSDK.videoFilters
-          .setFilter("none", { videoDenoise: videoDenoise })
-          .then(() => {
-            Cookies.set("virtualBackgroundMode", null);
-            dispatch(ControlsActions.setVirtualBackgroundMode(null));
-          });
-      } else {
-        console.log(
-          "About to set vb to selected",
-          mode,
-          VoxeetSDK.videoFilters
-        );
-        // Set to selected
-        let setMode;
-        switch (mode) {
-          case "bokeh":
-          case "staticimage":
-            setMode = VoxeetSDK.videoFilters.setFilter.bind(
-              VoxeetSDK.videoFilters,
-              mode,
-              { videoDenoise: videoDenoise }
-            );
-            break;
-          default:
-            setMode = VoxeetSDK.videoFilters.setFilter.bind(
-              VoxeetSDK.videoFilters,
-              "none",
-              { videoDenoise: videoDenoise }
-            );
-        }
 
-        return setMode().then(() => {
-          Cookies.set("virtualBackgroundMode", mode);
-          dispatch(ControlsActions.setVirtualBackgroundMode(mode));
-        });
-      }
+      await ConferenceActions.setVirtualBackground(mode, controls.videoEnabled, controls.videoDenoise);
+
+      Cookies.set("virtualBackgroundMode", mode);
+      dispatch(ControlsActions.setVirtualBackgroundMode(mode));
     };
   }
 

@@ -7,7 +7,7 @@ import Cookies from "./../libs/Storage";
 import bowser from "bowser";
 import PreConfigVuMeter from "./preConfig/PreConfigVuMeter";
 import { strings } from "../languages/localizedStrings.js";
-import { getVideoDeviceName } from "../libs/getVideoDeviceName";
+import { getVideoDeviceName, getDevice } from "../libs/getVideoDeviceName";
 import { isElectron, isMobile } from "../libs/browserDetection";
 import { getUxKitContext } from "../context";
 
@@ -70,7 +70,8 @@ class ConferencePreConfigContainer extends Component {
       audioDevices: [],
       videoDevices: [],
       outputDevices: [],
-      userStream: null,
+      userVideoStream: null,
+      userAudioStream: null,
       error: null,
       level: 0,
       videoEnabled: videoEnabled,
@@ -90,7 +91,8 @@ class ConferencePreConfigContainer extends Component {
     this.handleMaxVideoForwardingChange =
       this.handleMaxVideoForwardingChange.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
-    this.releaseStream = this.releaseStream.bind(this);
+    this.releaseAudioStream = this.releaseAudioStream.bind(this);
+    this.releaseVideoStream = this.releaseVideoStream.bind(this);
     this.onDeviceChange = this.onDeviceChange.bind(this);
     this.handleAudioTransparentModeChange =
       this.handleAudioTransparentModeChange.bind(this);
@@ -99,14 +101,19 @@ class ConferencePreConfigContainer extends Component {
     this.handleVideoDenoiseChange = this.handleVideoDenoiseChange.bind(this);
     this.attachMediaStream = this.attachMediaStream.bind(this);
     this.maxVFTimer = null;
+    this.onVideoStarted = this.onVideoStarted.bind(this);
   }
 
   componentDidMount() {
-    this.init();
-    navigator.mediaDevices.addEventListener(
-      "devicechange",
-      this.onDeviceChange
-    );
+    this.init()
+      .then(() => {
+        navigator.mediaDevices.addEventListener(
+          "devicechange",
+          this.onDeviceChange
+        );
+      });
+
+      VoxeetSDK.video.local.on('videoStarted', this.onVideoStarted);
   }
 
   componentWillUnmount() {
@@ -114,25 +121,41 @@ class ConferencePreConfigContainer extends Component {
       "devicechange",
       this.onDeviceChange
     );
-    this.releaseStream();
+
+    VoxeetSDK.video.local.removeListener('videoStarted', this.onVideoStarted);
+
+    this.releaseAudioStream().then(() => this.releaseVideoStream());
   }
 
   reportError(error) {
     console.error(error);
   }
 
-  onDeviceChange() {
-    this.releaseStream();
-
-    this.setState(
-      {
-        error: null,
-        loading: true,
-      },
-      () => {
-        this.init();
+  onVideoStarted(videoTrack) {
+    const stream = this.state.userVideoStream;
+    if (stream) {
+      const videoTracks = stream.getVideoTracks();
+      if (videoTracks && videoTracks[0]) {
+        stream.removeTrack(videoTracks[0]);
       }
-    );
+      stream.addTrack(videoTrack);
+    }
+  }
+
+  onDeviceChange() {
+    this.releaseAudioStream()
+      .then(() => this.releaseVideoStream())
+      .then(() => {
+        this.setState(
+          {
+            error: null,
+            loading: true,
+          },
+          () => {
+            this.init();
+          }
+        );
+      });
   }
 
   handleJoin() {
@@ -174,43 +197,68 @@ class ConferencePreConfigContainer extends Component {
         }
       }
     }
+
     navigator.attachMediaStream(this.video, stream);
   }
 
-  releaseStream() {
-    if (this.state.userStream) {
-      this.state.userStream.getTracks().forEach((track) => {
+  async releaseVideoStream() {
+    if (this.state.userVideoStream) {
+      await VoxeetSDK.video.local.stop();
+
+      this.setState({
+        userVideoStream: null,
+      });
+    }
+  }
+
+  async releaseAudioStream() {
+    if (this.state.userAudioStream) {
+      this.state.userAudioStream.getTracks().forEach((track) => {
         track.stop();
+      });
+
+      this.setState({
+        userAudioStream: null,
       });
     }
   }
 
   restartCamera() {
+    let audioConstraints = false;
+    if (this.state.audioDeviceSelected != null) {
+      audioConstraints = {
+        deviceId: { exact: this.state.audioDeviceSelected.deviceId },
+      };
+    }
+
     let videoConstraints = false;
-    if (this.state.videoDeviceSelected != null)
+    if (this.state.videoDeviceSelected != null) {
       videoConstraints = {
         deviceId: { exact: this.state.videoDeviceSelected.deviceId },
       };
-    return navigator.mediaDevices
-      .getUserMedia({
-        audio: { deviceId: { exact: this.state.audioDeviceSelected.deviceId } },
-        video: videoConstraints,
-      })
-      .then((stream) => {
-        this.attachMediaStream(stream);
-        if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-          return navigator.mediaDevices.enumerateDevices().then((sources) => {
-            let resultVideo = [];
-            /* GET SOURCES */
-            sources.forEach((source) => {
-              if (source.kind === "videoinput" && source.deviceId !== "") {
-                resultVideo.push(source);
-              }
-            });
+    }
 
-            this.setState({ userStream: stream, videoDevices: resultVideo });
+    return navigator.mediaDevices.getUserMedia({audio: audioConstraints, video: false})
+      .then((audioStream) => {
+        const processor = this.state.virtualBackgroundMode === 'bokeh' ? { type: this.state.virtualBackgroundMode } : null;
+        return VoxeetSDK.video.local.start(videoConstraints, processor)
+          .then((videoTrack) => new MediaStream([videoTrack]))
+          .then((videoStream) => {
+            this.attachMediaStream(videoStream);
+            if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+              return navigator.mediaDevices.enumerateDevices().then((sources) => {
+                let resultVideo = [];
+                /* GET SOURCES */
+                sources.forEach((source) => {
+                  if (source.kind === "videoinput" && source.deviceId !== "") {
+                    resultVideo.push(source);
+                  }
+                });
+    
+                this.setState({ userVideoStream: videoStream, userAudioStream: audioStream, videoDevices: resultVideo, });
+              });
+            }
           });
-        }
       })
       .catch((error) => {
         this.reportError(error.message);
@@ -218,73 +266,71 @@ class ConferencePreConfigContainer extends Component {
       });
   }
 
-  setAudioDevice(e) {
-    this.releaseStream();
+  async setAudioDevice(e) {
+    const device = e.target.value ? await getDevice(e.target.value) : {};
+    await this.releaseAudioStream();
     this.setState({ lockJoin: true });
-    const device = e.target.value ? JSON.parse(e.target.value) : {};
-    let videoConstraints = false;
-    if (this.state.videoDeviceSelected != null && this.state.videoEnabled)
-      videoConstraints = {
-        deviceId: { exact: this.state.videoDeviceSelected.deviceId },
-      };
-    navigator.mediaDevices
-      .getUserMedia({
-        audio: { deviceId: { exact: device.deviceId } },
-        video: videoConstraints,
-      })
-      .then((stream) => {
-        this.props.dispatch(InputManagerActions.inputAudioChange(device));
-        this.setState({
-          audioDeviceSelected: device,
-          userStream: stream,
-          lockJoin: false,
-        });
-        Cookies.setDevice("input", device, default_cookies_param);
-        if (this.state.videoDeviceSelected != null)
-          this.attachMediaStream(stream);
-      });
+
+    const audioStream = await navigator.mediaDevices.getUserMedia({audio: { deviceId: { exact: device.deviceId } }, video: false});
+
+    this.props.dispatch(InputManagerActions.inputAudioChange(device));
+
+    this.setState({
+      audioDeviceSelected: device,
+      userAudioStream: audioStream,
+      lockJoin: false,
+    });
+
+    Cookies.setDevice("input", device, default_cookies_param);
   }
 
-  setOutputDevice(e) {
-    const device = e.target.value ? JSON.parse(e.target.value) : {};
+  async setOutputDevice(e) {
+    const device = e.target.value ? await getDevice(e.target.value) : {};
+
     this.props.dispatch(InputManagerActions.outputAudioChange(device));
+    
+    this.setState({
+      outputDeviceSelected: device,
+    });
+
     Cookies.setDevice("output", device, default_cookies_param);
-    this.setState({ outputDeviceSelected: device });
   }
 
-  setVideoDevice(e) {
-    this.releaseStream();
+  async setVideoDevice(e) {
+    const device = e.target.value ? await getDevice(e.target.value) : {};
+    console.log('setVideoDevice', device);
+    await this.releaseVideoStream();
     this.setState({ lockJoin: true });
-    const device = e.target.value ? JSON.parse(e.target.value) : {};
-    navigator.mediaDevices
-      .getUserMedia({
-        audio: { deviceId: { exact: this.state.audioDeviceSelected.deviceId } },
-        video: { deviceId: { exact: device.deviceId } },
-      })
-      .then((stream) => {
-        getVideoDeviceName(device.deviceId).then((isBackCamera) => {
-          this.props.dispatch(
-            InputManagerActions.inputVideoChange(device, isBackCamera)
-          );
-        });
-        this.setState({
-          videoDeviceSelected: device,
-          userStream: stream,
-          lockJoin: false,
-        });
-        Cookies.setDevice("camera", device, default_cookies_param);
-        this.attachMediaStream(stream);
-      });
+    
+    const processor = this.state.virtualBackgroundMode == 'bokeh' ? { type: this.state.virtualBackgroundMode } : null;
+    const videoStream = await VoxeetSDK.video.local.start({ deviceId: { exact: device.deviceId } }, processor).then((videoTrack) => new MediaStream([videoTrack]));
+
+    getVideoDeviceName(device.deviceId).then((isBackCamera) => {
+      this.props.dispatch(
+        InputManagerActions.inputVideoChange(device, isBackCamera)
+      );
+    });
+
+    this.setState({
+      videoDeviceSelected: device,
+      userVideoStream: videoStream,
+      lockJoin: false,
+    });
+
+    Cookies.setDevice("camera", device, default_cookies_param);
+
+    this.attachMediaStream(videoStream);
   }
 
-  init() {
+  async init() {
     let resultAudio = [];
     let resultVideo = [];
     let resultAudioOutput = [];
     let videoCookieExist = false;
     let outputCookieExist = false;
     let inputCookieExist = false;
-    if (this.state.userStream) this.releaseStream();
+    if (this.state.userVideoStream) await this.releaseVideoStream();
+    if (this.state.userAudioStream) await this.releaseAudioStream();
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
       navigator.mediaDevices
         .enumerateDevices()
@@ -340,202 +386,181 @@ class ConferencePreConfigContainer extends Component {
                   });
               })
               .then((stream) => {
-                stream.getTracks().forEach((track) => {
-                  track.stop();
-                });
                 resultAudio = [];
                 resultVideo = [];
                 resultAudioOutput = [];
-                navigator.mediaDevices.enumerateDevices().then((sources) => {
-                  let videoCookieExist = false;
-                  let outputCookieExist = false;
-                  let inputCookieExist = false;
+                navigator.mediaDevices.enumerateDevices()
+                  .then((sources) => {
+                    let videoCookieExist = false;
+                    let outputCookieExist = false;
+                    let inputCookieExist = false;
 
-                  /* GET SOURCES */
-                  sources.forEach((source) => {
-                    if (
-                      source.kind === "videoinput" &&
-                      source.deviceId !== ""
-                    ) {
-                      const device = Cookies.getDevice("camera");
-                      if (device && device.deviceId === source.deviceId)
-                        videoCookieExist = true;
-                      resultVideo.push(source);
-                    }
-                    if (
-                      source.kind === `audioinput` &&
-                      source.deviceId !== ""
-                    ) {
-                      const device = Cookies.getDevice("input");
-                      if (device && device.deviceId === source.deviceId)
-                        inputCookieExist = true;
-                      resultAudio.push(source);
-                    }
-                    if (
-                      source.kind === "audiooutput" &&
-                      source.deviceId !== ""
-                    ) {
-                      const device = Cookies.getDevice("output");
-                      if (device && device.deviceId === source.deviceId)
-                        outputCookieExist = true;
-                      resultAudioOutput.push(source);
-                    }
-                  });
-
-                  /* OUTPUT AUDIO MANAGMENT */
-                  if (
-                    bowser.chrome &&
-                    resultAudioOutput &&
-                    resultAudioOutput.length > 0
-                  ) {
-                    let selected_device = resultAudioOutput.find(
-                      (device) => device.deviceId === "default"
-                    );
-                    if (!selected_device)
-                      selected_device = resultAudioOutput[0];
-                    if (!outputCookieExist) {
-                      Cookies.setDevice(
-                        "output",
-                        selected_device,
-                        default_cookies_param
-                      );
-                      this.props.dispatch(
-                        InputManagerActions.outputAudioChange(selected_device)
-                      );
-                      this.setState({
-                        outputDevices: resultAudioOutput,
-                        outputDeviceSelected: selected_device.deviceId,
-                      });
-                    } else {
-                      const device = Cookies.getDevice("output");
-                      this.props.dispatch(
-                        InputManagerActions.outputAudioChange(
-                          device
-                        )
-                      );
-                      this.setState({
-                        outputDevices: resultAudioOutput,
-                        outputDeviceSelected: device,
-                      });
-                    }
-                  }
-
-                  /* INPUT VIDEO MANAGMENT */
-                  if (resultVideo.length > 0) {
-                    if (!videoCookieExist) {
-                      let selected_device = resultVideo.find(
-                        (device) => device.deviceId === "default"
-                      );
-                      if (!selected_device) selected_device = resultVideo[0];
-                      Cookies.setDevice(
-                        "camera",
-                        selected_device,
-                        default_cookies_param
-                      );
-                      getVideoDeviceName(selected_device.deviceId).then(
-                        (isBackCamera) => {
-                          this.props.dispatch(
-                            InputManagerActions.inputVideoChange(
-                              selected_device,
-                              isBackCamera
-                            )
-                          );
-                        }
-                      );
-                      this.setState({
-                        videoDevices: resultVideo,
-                        videoDeviceSelected: selected_device.deviceId,
-                      });
-                    } else {
-                      const device = Cookies.getDevice("camera");
-                      getVideoDeviceName(device.deviceId).then(
-                        (isBackCamera) => {
-                          this.props.dispatch(
-                            InputManagerActions.inputVideoChange(
-                              device,
-                              isBackCamera
-                            )
-                          );
-                        }
-                      );
-                      this.setState({
-                        videoDevices: resultVideo,
-                        videoDeviceSelected: device,
-                      });
-                    }
-                  } else {
-                    this.setState({ videoEnabled: false });
-                  }
-
-                  /* INPUT AUDIO MANAGMENT */
-                  if (resultAudio.length > 0) {
-                    if (!inputCookieExist) {
-                      let selected_device = resultAudio.find(
-                        (device) => device.deviceId === "default"
-                      );
-                      if (!selected_device) selected_device = resultAudio[0];
-                      Cookies.setDevice(
-                        "input",
-                        selected_device,
-                        default_cookies_param
-                      );
-                      this.props.dispatch(
-                        InputManagerActions.inputAudioChange(selected_device)
-                      );
-                      this.setState({
-                        audioDevices: resultAudio,
-                        audioDeviceSelected: selected_device,
-                      });
-                    } else {
-                      const device = Cookies.getDevice("input");
-                      this.props.dispatch(
-                        InputManagerActions.inputAudioChange(
-                          device
-                        )
-                      );
-                      this.setState({
-                        audioDevices: resultAudio,
-                        audioDeviceSelected: device,
-                      });
-                    }
-                  } else {
-                    this.reportError(strings.noAudioDevice);
-                    this.setState({
-                      error: strings.noAudioDevice,
-                      loading: false,
+                    /* GET SOURCES */
+                    sources.forEach((source) => {
+                      if (
+                        source.kind === "videoinput" &&
+                        source.deviceId !== ""
+                      ) {
+                        const device = Cookies.getDevice("camera");
+                        if (device && device.deviceId === source.deviceId)
+                          videoCookieExist = true;
+                        resultVideo.push(source);
+                      }
+                      if (
+                        source.kind === `audioinput` &&
+                        source.deviceId !== ""
+                      ) {
+                        const device = Cookies.getDevice("input");
+                        if (device && device.deviceId === source.deviceId)
+                          inputCookieExist = true;
+                        resultAudio.push(source);
+                      }
+                      if (
+                        source.kind === "audiooutput" &&
+                        source.deviceId !== ""
+                      ) {
+                        const device = Cookies.getDevice("output");
+                        if (device && device.deviceId === source.deviceId)
+                          outputCookieExist = true;
+                        resultAudioOutput.push(source);
+                      }
                     });
-                  }
 
-                  /* GETUSERMEDIA FROM PREVIOUS MANAGMENT */
-                  if (resultAudio.length > 0 && this.state.error == null) {
-                    this.setState({ loading: false });
-                    navigator.mediaDevices
-                      .getUserMedia({
-                        audio: {
-                          deviceId: {
-                            exact: this.state.audioDeviceSelected.deviceId,
-                          },
-                        },
-                        video:
-                          resultVideo.length > 0 && this.state.videoEnabled
-                            ? {
-                                deviceId: {
-                                  exact:
-                                    this.state.videoDeviceSelected.deviceId,
-                                },
-                              }
-                            : false,
-                      })
-                      .then((stream) => {
-                        this.attachMediaStream(stream);
-                        this.setState({ userStream: stream });
-                        this.forceUpdate();
+                    /* OUTPUT AUDIO MANAGEMENT */
+                    if (
+                      bowser.chrome &&
+                      resultAudioOutput &&
+                      resultAudioOutput.length > 0
+                    ) {
+                      let selected_device = resultAudioOutput.find(
+                        (device) => device.deviceId === "default"
+                      );
+                      if (!selected_device)
+                        selected_device = resultAudioOutput[0];
+                      if (!outputCookieExist) {
+                        Cookies.setDevice(
+                          "output",
+                          selected_device,
+                          default_cookies_param
+                        );
+                        this.props.dispatch(
+                          InputManagerActions.outputAudioChange(selected_device)
+                        );
+                        this.setState({
+                          outputDevices: resultAudioOutput,
+                          outputDeviceSelected: selected_device.deviceId,
+                        });
+                      } else {
+                        const device = Cookies.getDevice("output");
+                        this.props.dispatch(
+                          InputManagerActions.outputAudioChange(device)
+                        );
+                        this.setState({
+                          outputDevices: resultAudioOutput,
+                          outputDeviceSelected: device,
+                        });
+                      }
+                    }
+
+                    /* INPUT VIDEO MANAGEMENT */
+                    let videoDevice;
+                    if (resultVideo.length > 0) {
+                      if (!videoCookieExist) {
+                        videoDevice = resultVideo.find(
+                          (device) => device.deviceId === "default"
+                        );
+                        if (!videoDevice) videoDevice = resultVideo[0];
+                        Cookies.setDevice(
+                          "camera",
+                          videoDevice,
+                          default_cookies_param
+                        );
+                      } else {
+                        videoDevice = Cookies.getDevice("camera");
+                      }
+
+                      getVideoDeviceName(videoDevice.deviceId).then(
+                        (isBackCamera) => {
+                          this.props.dispatch(
+                            InputManagerActions.inputVideoChange(videoDevice, isBackCamera)
+                          );
+                        }
+                      );
+                      this.setState({
+                        videoDevices: resultVideo,
+                        videoDeviceSelected: videoDevice,
                       });
-                  } else {
-                    this.reportError("No input device detected");
-                    console.error("No input device detected");
-                  }
-                });
+                    } else {
+                      this.setState({ videoEnabled: false });
+                    }
+
+                    /* INPUT AUDIO MANAGEMENT */
+                    if (resultAudio.length > 0) {
+                      if (!inputCookieExist) {
+                        let selected_device = resultAudio.find(
+                          (device) => device.deviceId === "default"
+                        );
+                        if (!selected_device) selected_device = resultAudio[0];
+                        Cookies.setDevice(
+                          "input",
+                          selected_device,
+                          default_cookies_param
+                        );
+                        this.props.dispatch(
+                          InputManagerActions.inputAudioChange(selected_device)
+                        );
+                        this.setState({
+                          audioDevices: resultAudio,
+                          audioDeviceSelected: selected_device,
+                        });
+                      } else {
+                        const device = Cookies.getDevice("input");
+                        this.props.dispatch(
+                          InputManagerActions.inputAudioChange(device)
+                        );
+                        this.setState({
+                          audioDevices: resultAudio,
+                          audioDeviceSelected: device,
+                        });
+                      }
+                    } else {
+                      this.reportError(strings.noAudioDevice);
+                      this.setState({
+                        error: strings.noAudioDevice,
+                        loading: false,
+                      });
+                    }
+
+                    /* GETUSERMEDIA FROM PREVIOUS MANAGEMENT */
+                    if (resultAudio.length > 0 && this.state.error == null) {
+                      this.setState({ loading: false });
+                      return navigator.mediaDevices.getUserMedia({audio: { deviceId: { exact: this.state.audioDeviceSelected.deviceId } }, video: false})
+                        .then((audioStream) => {
+                          if (this.state.videoEnabled) {
+                            const videoConstraints = { deviceId: { exact: videoDevice.deviceId } };
+                            const processor = this.state.virtualBackgroundMode === 'bokeh' ? { type: this.state.virtualBackgroundMode } : null;
+                            return VoxeetSDK.video.local.start(videoConstraints, processor)
+                              .then((videoTrack) => new MediaStream([videoTrack]))
+                              .then((videoStream) => {
+                                this.attachMediaStream(videoStream);
+                                this.setState({ userAudioStream: audioStream, userVideoStream: videoStream, });
+                                this.forceUpdate();
+                              });
+                          } else {
+                            this.setState({ userAudioStream: audioStream });
+                            this.forceUpdate();
+                          }
+                        });
+                    } else {
+                      this.reportError("No input device detected");
+                      console.error("No input device detected");
+                    }
+                  })
+                  .then(() => {
+                    stream.getTracks().forEach((track) => {
+                      track.stop();
+                    });
+                  });
               })
               .catch((error) => {
                 if (this.state.videoEnabled) {
@@ -608,13 +633,13 @@ class ConferencePreConfigContainer extends Component {
   }
 
   async switchVideoEnabled(video_on) {
-    if (!video_on && this.state.userStream != null) {
-      this.state.userStream.getTracks().forEach((track) => {
-        if (track.kind === "video") track.stop();
-      });
+    if (!video_on && this.state.userVideoStream != null) {
+      await VoxeetSDK.video.local.stop();
+
       this.video.srcObject = null;
       this.video.height = "0";
     }
+    
     if (video_on) {
       let approved = this.state.videoDevices.length > 0;
       if (this.state.videoDevices.length === 0) {
@@ -676,44 +701,41 @@ class ConferencePreConfigContainer extends Component {
   handleVirtualBackgroundModeChange(mode) {
     this.setState(
       {
-        virtualBackgroundMode:
-          mode !== this.state.virtualBackgroundMode ? mode : null,
+        virtualBackgroundMode: mode !== this.state.virtualBackgroundMode ? mode : null,
       },
       () => {
-        if (!VoxeetSDK.videoFilters || !isElectron()) {
-          // Skip if not supported in SDK or not in NDS
-          return;
-        }
-        if (this.state.userStream) {
-          let tracks = this.state.userStream.getVideoTracks();
-          if (tracks && tracks[0]) {
-            switch (this.state.virtualBackgroundMode) {
-              case "bokeh":
-              case "staticimage":
-                VoxeetSDK.videoFilters.setFilter(
-                  this.state.virtualBackgroundMode,
-                  { stream: tracks[0], videoDenoise: this.state.videoDenoise }
-                );
-                Cookies.set(
-                  "virtualBackgroundMode",
-                  this.state.virtualBackgroundMode,
-                  default_cookies_param
-                );
-                break;
-              default:
-                VoxeetSDK.videoFilters.setFilter("none", {
-                  stream: tracks[0],
-                  videoDenoise: this.state.videoDenoise,
+          switch (this.state.virtualBackgroundMode) {
+            case "bokeh":
+              VoxeetSDK
+                .video.local
+                .setProcessor({type: 'bokeh'})
+                .catch((e) => {
+                  console.error(e);
                 });
-                Cookies.set(
-                  "virtualBackgroundMode",
-                  "none",
-                  default_cookies_param
-                );
-            }
+
+              Cookies.set(
+                "virtualBackgroundMode",
+                this.state.virtualBackgroundMode,
+                default_cookies_param
+              );
+
+              break;
+            case "staticimage":
+              break;
+            default:
+              VoxeetSDK
+                .video.local
+                .disableProcessing()
+                .catch((e) => {
+                  console.error(e);
+                });
+              Cookies.set(
+                "virtualBackgroundMode",
+                "none",
+                default_cookies_param
+              );
           }
         }
-      }
     );
   }
 
@@ -727,14 +749,14 @@ class ConferencePreConfigContainer extends Component {
           // Skip if not supported in SDK or not in NDS
           return;
         }
-        if (this.state.userStream) {
+        if (this.state.userVideoStream) {
           const videoFilter =
             ["none", "bokeh"].indexOf(this.state.virtualBackgroundMode) >= 0
               ? this.state.virtualBackgroundMode
               : "none";
           VoxeetSDK.videoFilters
             .setFilter(videoFilter, {
-              stream: this.state.userStream,
+              stream: this.state.userVideoStream,
               videoDenoise: this.state.videoDenoise,
             })
             .then(() => {
@@ -781,18 +803,12 @@ class ConferencePreConfigContainer extends Component {
   render() {
     const { handleJoin, logo, dolbyVoiceEnabled } = this.props;
     const {
-      level,
-      videoEnabled,
       audioEnabled,
-      videoDeviceSelected,
-      audioDeviceSelected,
-      outputDeviceSelected,
       error,
       loading,
       maxVideoForwarding,
       lowBandwidthMode,
       virtualBackgroundMode,
-      videoDenoise,
     } = this.state;
     const MAX_MAXVF = isMobile() ? 4 : 16;
 
@@ -834,8 +850,8 @@ class ConferencePreConfigContainer extends Component {
                             <select
                               name="video"
                               value={
-                                videoDeviceSelected != null
-                                  ? JSON.stringify(videoDeviceSelected)
+                                this.state.videoDeviceSelected != null
+                                  ? this.state.videoDeviceSelected.deviceId
                                   : ""
                               }
                               className="form-control select-video-device"
@@ -843,7 +859,7 @@ class ConferencePreConfigContainer extends Component {
                               onChange={this.setVideoDevice}
                             >
                               {this.state.videoDevices.map((device, i) => (
-                                <option key={i} value={JSON.stringify(device)}>
+                                <option key={i} value={device.deviceId}>
                                   {device.label}
                                 </option>
                               ))}
@@ -857,18 +873,15 @@ class ConferencePreConfigContainer extends Component {
                                   name="output"
                                   className="form-control select-audio-output"
                                   value={
-                                    outputDeviceSelected != null
-                                      ? JSON.stringify(outputDeviceSelected)
+                                    this.state.outputDeviceSelected != null
+                                      ? this.state.outputDeviceSelected.deviceId
                                       : ""
                                   }
                                   disabled={false}
                                   onChange={this.setOutputDevice}
                                 >
                                   {this.state.outputDevices.map((device, i) => (
-                                    <option
-                                      key={i}
-                                      value={JSON.stringify(device)}
-                                    >
+                                    <option key={i} value={device.deviceId}>
                                       {device.label}
                                     </option>
                                   ))}
@@ -883,8 +896,8 @@ class ConferencePreConfigContainer extends Component {
                                     name="audio"
                                     className="form-control select-audio-input"
                                     value={
-                                      audioDeviceSelected != null
-                                        ? JSON.stringify(audioDeviceSelected)
+                                      this.state.audioDeviceSelected != null
+                                        ? this.state.audioDeviceSelected.deviceId
                                         : ""
                                     }
                                     disabled={false}
@@ -892,10 +905,7 @@ class ConferencePreConfigContainer extends Component {
                                   >
                                     {this.state.audioDevices.map(
                                       (device, i) => (
-                                        <option
-                                          key={i}
-                                          value={JSON.stringify(device)}
-                                        >
+                                        <option key={i} value={device.deviceId}>
                                           {device.label}
                                         </option>
                                       )
@@ -904,7 +914,7 @@ class ConferencePreConfigContainer extends Component {
                                 </div>
                                 <div className="form-group">
                                   <PreConfigVuMeter
-                                    stream={this.state.userStream}
+                                    stream={this.state.userAudioStream}
                                     maxLevel={21}
                                   />
                                 </div>
@@ -966,7 +976,7 @@ class ConferencePreConfigContainer extends Component {
                                 </label>
                               </div>
                             </div>
-                            {isElectron() && (
+                            {(bowser.chrome || isElectron()) && (
                               <div
                                 className={`group-enable ${
                                   !this.state.videoEnabled
@@ -988,28 +998,6 @@ class ConferencePreConfigContainer extends Component {
                                   />
                                   <label htmlFor="virtualBackgroundMode">
                                     {strings.bokehMode}
-                                  </label>
-                                </div>
-                              </div>
-                            )}
-                            {isElectron() && (
-                              <div
-                                className={`group-enable ${
-                                  !this.state.videoEnabled
-                                    ? "disabled-form"
-                                    : ""
-                                }`}
-                              >
-                                <div className="enable-item">
-                                  <input
-                                    id="videoDenoise"
-                                    name="videoDenoise"
-                                    type="checkbox"
-                                    onChange={this.handleVideoDenoiseChange}
-                                    checked={videoDenoise}
-                                  />
-                                  <label htmlFor="videoDenoise">
-                                    {strings.videoDenoise}
                                   </label>
                                 </div>
                               </div>
