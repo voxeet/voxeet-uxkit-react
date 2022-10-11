@@ -6,10 +6,20 @@ import Hangup from "../../../../static/images/icons/btn-hang-up.svg";
 class HangUpButtonBottomBar extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      disabled: false,
+    }
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    if (this.state.disabled) return;
+    this.setState({disabled: true})
+    this.props.leave();
   }
 
   render() {
-    const { leave, tooltipPlace } = this.props;
+    const { disabled } = this.state;
 
     return (
       <li className="hangup-bottom-bar">
@@ -17,11 +27,11 @@ class HangUpButtonBottomBar extends Component {
           data-tip
           data-for="leave"
           title={strings.leave}
-          onClick={() => leave()}
+          onClick={this.handleClick}
         >
           <img src={Hangup} />
           <div>
-            <span>{strings.leave}</span>
+            <span>{disabled ? strings.leaving : strings.leave}</span>
           </div>
         </a>
       </li>
