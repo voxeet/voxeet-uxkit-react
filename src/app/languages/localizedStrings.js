@@ -63,6 +63,7 @@ export const strings = new LocalizedStrings({
     recordConferenceStopBy: 'Your conference is no longer recorded by ',
     conferenceAlreadyRecord: 'Your conference is already being recorded by an other attendee.',
     leave: 'End',
+    leaving: 'Call is ending...',
     audio: '3D Audio',
     audioTitle: 'Audio',
     chat: 'Chat',
@@ -174,6 +175,7 @@ export const strings = new LocalizedStrings({
     recordConferenceStopBy: "Votre conference n'est plus enregistrée par ",
     conferenceAlreadyRecord: 'Votre conference est déjà enregistrée par un autre participant.',
     leave: 'Quitter',
+    leaving: 'Vous quittez la conference...',
     audio: 'Son 3D',
     audioTitle: 'Audio', // !!!
     chat: 'Conversation',
