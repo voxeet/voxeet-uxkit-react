@@ -915,7 +915,7 @@ export class Actions {
         const virtualBackgroundMode = controls.virtualBackgroundMode !== undefined
           ? controls.virtualBackgroundMode
           : Cookies.get("virtualBackgroundMode");
-        const processor = virtualBackgroundMode != null && virtualBackgroundMode !== 'none' ? {type: virtualBackgroundMode} : {};
+        const processor = virtualBackgroundMode != null && virtualBackgroundMode !== 'none' ? {type: virtualBackgroundMode} : null;
 
         const payloadConstraints = {
           deviceId: inputManager.currentVideoDevice?.deviceId,
