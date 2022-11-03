@@ -12,17 +12,11 @@ const videoRatio = {
   height: 720,
 };
 
-const settings = {
-  consumerKey: "CONSUMER_KEY",
-  consumerSecret: "CONSUMER_SECRET",
-  conferenceAlias: "conference_name",
-};
-
 const Main = ({ settings }) => {
   const [token, setToken] = useState();
   const [error, setError] = useState();
 
-  function fetchData() {
+  function getToken() {
     if (settings.authentication.serverUrl === "") return;
 
     const headers = new Headers();
@@ -55,11 +49,11 @@ const Main = ({ settings }) => {
   }
 
   useEffect(() => {
-    fetchData();
+    getToken();
   }, []);
 
   return settings.authentication.serverUrl !== "" ? (
-    !!token && !error ? (
+    !!token && !error && (
       <ConferenceRoom
         isWidget={false}
         autoJoin
@@ -71,10 +65,8 @@ const Main = ({ settings }) => {
         conferenceAlias={settings.conferenceAlias}
         videoCodec={"H264"}
         oauthToken={token && token}
-        refreshTokenCallback={token && fetchData}
+        refreshTokenCallback={token && getToken}
       />
-    ) : (
-      <div>not connected</div>
     )
   ) : (
     <ConferenceRoom
