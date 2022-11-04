@@ -354,7 +354,7 @@ export class Actions {
     virtualBackgroundMode =
       ["none", "bokeh"].indexOf(virtualBackgroundMode) >= 0
         ? virtualBackgroundMode
-        : "none";        
+        : "none";
     const videoDenoise =
       preConfigPayload && preConfigPayload.videoDenoise !== undefined
         ? preConfigPayload.videoDenoise
@@ -1437,9 +1437,6 @@ export class Actions {
           dispatch(ParticipantActions.onScreenShareStopped());
           dispatch(ControlsActions.toggleScreenShareMode(false));
         } else {
-          dispatch(ParticipantWaitingActions.onParticipantWaitingLeft(user.id));
-          dispatch(ParticipantActions.onParticipantLeft(user.id));
-
           // VFS
           dispatch(ForwardedVideoActions.updateForwardedVideos());
         }

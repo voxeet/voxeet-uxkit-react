@@ -4,23 +4,25 @@ import thunkMiddleware from "redux-thunk";
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import { Provider } from "react-redux";
 
-import {
-  reducer as voxeetReducer,
-  getUxKitContext,
-} from "./VoxeetReactComponents";
+import { reducer, getUxKitContext } from "./VoxeetReactComponents";
 
 import Main from "./components/main/Main";
 
 const configureStore = () => {
   const reducers = combineReducers({
-    voxeet: voxeetReducer,
+    voxeet: reducer,
   });
 
   const composeEnhancers =
     typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
           // Specify extension’s options like name, actionsDenylist, actionsCreators, serialize...
-          actionsBlacklist: ["SILENCE", "INCREMENT_TIMER"],
+          actionsBlacklist: [
+            "SILENCE",
+            "INCREMENT_TIMER",
+            "PARTICIPANT_SPEAKING",
+            "PARTICIPANT_QUALITY_UPDATED",
+          ],
         })
       : compose;
 
@@ -30,10 +32,6 @@ const configureStore = () => {
   );
   return createStore(reducers, enhancer);
 };
-
-window.addEventListener("storage", function (e) {
-  console.log(sessionStorage.getItem("conferenceId"));
-});
 
 const settings = {
   authentication: {
@@ -46,11 +44,12 @@ const settings = {
   conferenceAlias: "CONFERENCE_NAME",
 };
 
+const store = configureStore();
+const context = getUxKitContext();
+
 ReactDOM.render(
-  <Provider store={configureStore()} context={getUxKitContext()}>
-    <div>
-      <Main settings={settings} />
-    </div>
+  <Provider store={store} context={context}>
+    <Main settings={settings} />
   </Provider>,
   document.getElementById("app")
 );
