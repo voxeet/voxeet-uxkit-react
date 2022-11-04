@@ -23,4 +23,32 @@ describe("ErrorReducer test suite", () => {
       })
     );
   });
+
+  test("it should return the default state when flushing errors", () => {
+    //1- arrange
+    const action = { type: Types.CLEAR_ERROR };
+    const initialState = {};
+
+    //2- act
+    const newState = reducer(initialState, action);
+
+    //3- assert
+    expect(newState).toEqual(
+      expect.objectContaining({
+        isError: false,
+        errorMessage: null,
+      })
+    );
+  });
+
+  test("it should return initial test when action type does not match", () => {
+    const action = { type: undefined };
+    const initialState = {};
+
+    //2- act
+    const newState = reducer(initialState, action);
+
+    //3- assert
+    expect(newState).toEqual(initialState);
+  });
 });
