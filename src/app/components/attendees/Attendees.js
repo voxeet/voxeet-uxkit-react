@@ -28,7 +28,7 @@ import {
   Tiles,
   View3D,
   ToggleModeButton,
-  MeasuredTiles
+  MeasuredTiles,
 } from "./modes";
 import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
@@ -186,7 +186,9 @@ class Attendees extends Component {
       userStream,
       currentUser,
     } = this.props.participantStore;
-    const participantsConnected = participants.filter((p) => p.isConnected);
+    const participantsConnected = participants.filter((p) => {
+      return p.isConnected;
+    });
     const kickPermission = conferencePermissions.has("KICK");
 
     return (
@@ -298,21 +300,9 @@ class Attendees extends Component {
                 currentUser.isListener &&
                 participantsConnected.length > 0) ||
               (isWebinar && isAdmin) ||
-              (isWebinar && !isAdmin && participantsConnected.length > 0)) && (
-              (spatialAudioEnabled && <MeasuredTiles
-                  participants={participants}
-                  isAdmin={isAdmin}
-                  isWebinar={isWebinar}
-                  isAdminActived={isAdminActived}
-                  currentUser={currentUser}
-                  kickParticipant={this.kickParticipant}
-                  toggleMicrophone={this.toggleMicrophone}
-                  isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
-                  dolbyVoiceEnabled={dolbyVoiceEnabled}
-                  kickPermission={kickPermission}
-                  spatialAudioEnabled={spatialAudioEnabled}
-                />) ||
-              (!spatialAudioEnabled && <Tiles
+              (isWebinar && !isAdmin && participantsConnected.length > 0)) &&
+            ((spatialAudioEnabled && (
+              <MeasuredTiles
                 participants={participants}
                 isAdmin={isAdmin}
                 isWebinar={isWebinar}
@@ -325,7 +315,22 @@ class Attendees extends Component {
                 kickPermission={kickPermission}
                 spatialAudioEnabled={spatialAudioEnabled}
               />
-            ))  }
+            )) ||
+              (!spatialAudioEnabled && (
+                <Tiles
+                  participants={participants}
+                  isAdmin={isAdmin}
+                  isWebinar={isWebinar}
+                  isAdminActived={isAdminActived}
+                  currentUser={currentUser}
+                  kickParticipant={this.kickParticipant}
+                  toggleMicrophone={this.toggleMicrophone}
+                  isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
+                  dolbyVoiceEnabled={dolbyVoiceEnabled}
+                  kickPermission={kickPermission}
+                  spatialAudioEnabled={spatialAudioEnabled}
+                />
+              )))}
           {mode === MODE_SPEAKER &&
             (displayModes.indexOf("speaker") > -1 ||
               screenShareEnabled ||
@@ -333,8 +338,7 @@ class Attendees extends Component {
               videoPresentationEnabled) &&
             currentUser != null &&
             ((!isWebinar && !currentUser.isListener) ||
-              (!isWebinar &&
-                currentUser.isListener) ||
+              (!isWebinar && currentUser.isListener) ||
               (isWebinar && isAdmin) ||
               (isWebinar && !isAdmin)) && (
               <Speakers

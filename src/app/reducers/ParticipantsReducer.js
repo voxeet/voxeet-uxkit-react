@@ -26,7 +26,7 @@ const defaultState = {
   handleOnConnect: null,
   handleOnLeave: null,
   quality: {},
-  spatialAudioEnabled: false
+  spatialAudioEnabled: false,
 };
 
 const ParticipantReducer = (state = defaultState, action) => {
@@ -217,8 +217,8 @@ const ParticipantReducer = (state = defaultState, action) => {
       }
       participants[index].isConnected =
         action.payload.user.status === STATUS_CONNECTED;
-        if (state.spatialAudioEnabled && state.currentUser) {
-          updateParticipantPositions(participants);
+      if (state.spatialAudioEnabled && state.currentUser) {
+        updateParticipantPositions(participants);
       }
       return {
         ...state,
@@ -270,14 +270,16 @@ const ParticipantReducer = (state = defaultState, action) => {
       if (index === -1) {
         return state;
       }
-      participants[index].isConnected =
-        user.status === STATUS_CONNECTED;
+      participants[index].isConnected = user.status === STATUS_CONNECTED;
       participants[index].stream = null;
       if (
         action.payload.stream &&
         action.payload.stream.getVideoTracks().length > 0
       ) {
-        participants[index] = {...participants[index], stream: action.payload.stream}
+        participants[index] = {
+          ...participants[index],
+          stream: action.payload.stream,
+        };
       }
       return {
         ...state,
@@ -286,7 +288,7 @@ const ParticipantReducer = (state = defaultState, action) => {
     case Types.PARTICIPANT_STATUS_UPDATED: {
       const userInfo = action.payload.userInfo;
       const status = action.payload.status;
-      if (VoxeetSDK.session.participant.id != action.payload.userId) {
+      if (VoxeetSDK.session.participant.id !== action.payload.userId) {
         let participants = [...state.participants];
         const index = participants.findIndex(
           (p) => p.participant_id === action.payload.userId
@@ -311,8 +313,7 @@ const ParticipantReducer = (state = defaultState, action) => {
         } else {
           participants[index].name = userInfo.name;
           participants[index].type = userInfo.type;
-          participants[index].isConnected =
-            status === STATUS_CONNECTED;
+          participants[index].isConnected = status === STATUS_CONNECTED;
           participants[index].avatarUrl = userInfo.avatarUrl;
           participants[index].metadata = userInfo.metadata;
           participants[index].status = status;
@@ -493,8 +494,11 @@ const ParticipantReducer = (state = defaultState, action) => {
         action.payload.stream &&
         action.payload.stream.getVideoTracks().length > 0
       ) {
-        participants[index] = {...participants[index], stream: action.payload.stream}
-        }
+        participants[index] = {
+          ...participants[index],
+          stream: action.payload.stream,
+        };
+      }
       return {
         ...state,
         participants: [...participants],

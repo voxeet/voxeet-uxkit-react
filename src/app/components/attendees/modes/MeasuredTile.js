@@ -8,7 +8,6 @@ import Tile from "./Tile";
 import { excludeParticipant, includeParticipant } from "../../../libs/position";
 
 export default function MeasuredTile(props) {
-
   const {
     participant,
     toggleMicrophone,
@@ -24,18 +23,23 @@ export default function MeasuredTile(props) {
   } = props;
 
   //Store position to monitor changes
-  const [positionState, setPositionState] = useState(0);
+  const [positionState, setPositionState] = useState();
 
   // Do not generate automatic layout for the participant when this component is mounted
-  useEffect(() => {excludeParticipant(props.participant.participant_id)}, []);
+  useEffect(() => {
+    excludeParticipant(props.participant.participant_id);
+  }, []);
 
   //Start generating automatic layout for the participant when this component is unmounted
   useEffect(
-    () => () => {includeParticipant(props.participant.participant_id)},
+    () => () => {
+      includeParticipant(props.participant.participant_id);
+    },
     []
   );
 
   const onBoundsUpdate = (size) => {
+    console.log(size.bounds);
     const currentBounds = size.bounds;
     if (currentBounds) {
       const participant = VoxeetSDK.conference.current.participants.get(
@@ -47,8 +51,10 @@ export default function MeasuredTile(props) {
         z: 0,
       };
       if (position !== positionState) {
+        // console.log(position, positionState);
         setPositionState(position);
         // Set the position for this participant to be the middle of the tile
+        // TODO: this should not be done here. dispatch action instead and handle side effect in thunk.
         VoxeetSDK.conference.setSpatialPosition(participant, position);
       }
     }
@@ -56,21 +62,22 @@ export default function MeasuredTile(props) {
 
   return (
     <Measure bounds onResize={onBoundsUpdate}>
-    {({ measureRef }) => (
-              <Tile
-              forwardedRef={measureRef}
-              participant={participant}
-              nbParticipant={nbParticipant}
-              mySelf={mySelf}
-              isAdminActived={isAdminActived}
-              kickParticipant={kickParticipant}
-              isAdmin={isAdmin}
-              toggleMicrophone={toggleMicrophone}
-              isWidgetFullScreenOn={isWidgetFullScreenOn}
-              dolbyVoiceEnabled={dolbyVoiceEnabled}
-              kickPermission={kickPermission}
-              currentUser={currentUser}
-            />
-    )}
-  </Measure>)
+      {({ measureRef }) => (
+        <Tile
+          forwardedRef={measureRef}
+          participant={participant}
+          nbParticipant={nbParticipant}
+          mySelf={mySelf}
+          isAdminActived={isAdminActived}
+          kickParticipant={kickParticipant}
+          isAdmin={isAdmin}
+          toggleMicrophone={toggleMicrophone}
+          isWidgetFullScreenOn={isWidgetFullScreenOn}
+          dolbyVoiceEnabled={dolbyVoiceEnabled}
+          kickPermission={kickPermission}
+          currentUser={currentUser}
+        />
+      )}
+    </Measure>
+  );
 }
