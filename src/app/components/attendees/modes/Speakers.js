@@ -73,8 +73,6 @@ const Speakers = ({
     setActiveSpeaker(participants[0]);
   }, [activeSpeakerStore.activeSpeaker]);
 
-  console.log(participants.length);
-
   return !activeSpeaker ? null : (
     <div className="SidebarSpeaker">
       {(activeSpeaker || screenShareEnabled) &&

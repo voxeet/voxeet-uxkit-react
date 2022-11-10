@@ -289,7 +289,9 @@ const ParticipantReducer = (state = defaultState, action) => {
       const userInfo = action.payload.userInfo;
       const status = action.payload.status;
       if (VoxeetSDK.session.participant.id !== action.payload.userId) {
+        //FIXME: use spread operators to update state properties.
         let participants = [...state.participants];
+
         const index = participants.findIndex(
           (p) => p.participant_id === action.payload.userId
         );
@@ -318,6 +320,7 @@ const ParticipantReducer = (state = defaultState, action) => {
           participants[index].metadata = userInfo.metadata;
           participants[index].status = status;
         }
+        //FIXME: positions should be saved in the store (single source of thruth + side effects).
         if (state.spatialAudioEnabled && state.currentUser) {
           updateParticipantPositions(participants);
         }

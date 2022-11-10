@@ -28,6 +28,11 @@ export default function MeasuredTile(props) {
   // Do not generate automatic layout for the participant when this component is mounted
   useEffect(() => {
     excludeParticipant(props.participant.participant_id);
+
+    //Start generating automatic layout for the participant when this component is unmounted
+    return () => {
+      includeParticipant(props.participant.participant_id);
+    };
   }, []);
 
   //Start generating automatic layout for the participant when this component is unmounted
@@ -39,7 +44,6 @@ export default function MeasuredTile(props) {
   );
 
   const onBoundsUpdate = (size) => {
-    console.log(size.bounds);
     const currentBounds = size.bounds;
     if (currentBounds) {
       const participant = VoxeetSDK.conference.current.participants.get(

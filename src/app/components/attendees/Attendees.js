@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import bowser from "bowser";
@@ -9,12 +9,10 @@ import { Actions as ActiveSpeakerActions } from "../../actions/ActiveSpeakerActi
 
 import {
   MODE_LIST,
-  MODE_TILES,
   MODE_SPEAKER,
+  MODE_TILES,
 } from "../../constants/DisplayModes";
 import { BROADCAST_KICK } from "../../constants/BroadcastMessageType";
-
-import Modal from "./modal/Modal";
 import AttendeesHeader from "./AttendeesHeader";
 import OnBoardingMessage from "./onBoardingMessage/onBoardingMessage";
 import OnBoardingMessageWithAction from "./onBoardingMessage/onBoardingMessageWithAction";
@@ -22,21 +20,336 @@ import OnBoardingMessageWithDescription from "./onBoardingMessage/onBoardingMess
 import OnBoardingMessageOverlay from "./onBoardingMessage/onBoardingMessageOverlay";
 import ActiveSpeakerOverlay from "./modes/ActiveSpeakerOverlay";
 import {
-  List,
   ListWidget,
+  MeasuredTiles,
   Speakers,
   Tiles,
-  View3D,
   ToggleModeButton,
-  MeasuredTiles,
+  View3D,
 } from "./modes";
-import AttendeesParticipantVideo from "./AttendeesParticipantVideo";
 import AttendeesSettings from "./AttendeesSettings";
 import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
 import OnBoardingMessageWithConfirmation from "./onBoardingMessage/onBoardingMessageWithConfirmation";
 import { getUxKitContext } from "../../context";
+import { Actions as ErrorActions } from "../../actions/ErrorActions";
 
-@connect(
+const Attendees = (props) => {
+  const [connectedParticipants, setConnectedParticipants] = useState([]);
+  const [kickPermission, setKickPermission] = useState(false);
+
+  useEffect(() => {
+    if (!props.participants || props.participants.length === 0) return;
+
+    const par = props.participants.filter((p) => p.status === "Connected");
+
+    setConnectedParticipants(par);
+  }, [props.participants]);
+
+  useEffect(() => {
+    const hasPermission = props.conferencePermissions.has("KICK");
+    setKickPermission(hasPermission);
+  }, [props.conferencePermissions]);
+
+  function toggleMicrophone(participant_id, isMuted) {
+    props.dispatch(ConferenceActions.toggleMicrophone(participant_id, isMuted));
+  }
+
+  function toggleForwardedVideo(participant_id) {
+    props.dispatch(ConferenceActions.toggleForwardedVideo(participant_id));
+  }
+
+  function toggleErrorModal() {
+    props.dispatch(ControlsActions.toggleModal());
+    props.dispatch(ErrorActions.onClearError());
+  }
+
+  function forceActiveSpeaker(participant) {
+    props.dispatch(ActiveSpeakerActions.forceActiveSpeaker(participant));
+  }
+
+  function disableForceActiveSpeaker() {
+    dispatch(ActiveSpeakerActions.disableForceActiveSpeaker());
+  }
+
+  function saveUserPosition(participant_id, relativePosition, position) {
+    props.dispatch(
+      ParticipantActions.saveUserPosition(
+        participant_id,
+        relativePosition,
+        position
+      )
+    );
+  }
+
+  function setUserPosition(participant_id, positionRelative, position, moved) {
+    props.dispatch(ParticipantActions.user3DMoved(participant_id, moved));
+    /*VoxeetSDK.setUserPosition(
+      participant_id,
+      positionRelative.x,
+      -positionRelative.y
+    );*/
+  }
+
+  function toggleModal() {
+    props.dispatch(ControlsActions.toggleModal());
+  }
+
+  function toggleVideo() {
+    props.dispatch(ConferenceActions.toggleVideo(props.videoEnabled));
+  }
+
+  function kickParticipant(participant_id) {
+    props.dispatch(
+      ConferenceActions.sendBroadcastMessage(BROADCAST_KICK, participant_id)
+    );
+  }
+
+  function renderWaiting() {
+    return React.createElement(props.attendeesWaiting, {
+      ...props,
+      key: "waiting",
+    });
+  }
+
+  function renderParticipantList() {
+    return React.createElement(props.attendeesList, {
+      ...props,
+      attendeesListOpened: props.attendeesListOpened,
+      isWebinar: props.participantStore.isWebinar,
+      isAdmin: props.participantStore.isAdmin,
+      toggleMicrophone: toggleMicrophone,
+      toggleForwardedVideo: toggleForwardedVideo,
+      invitePermission: props.conferencePermissions.has("INVITE"),
+      key: "participant_list",
+    });
+  }
+
+  function renderChat() {
+    return React.createElement(props.attendeesChat, {
+      ...props,
+      attendeesChatOpened: props.attendeesChatOpened,
+      participants: props.participantStore.participants,
+      currentUser: props.participantStore.currentUser,
+      key: "chat",
+    });
+  }
+
+  return (
+    <div
+      id="conference-attendees"
+      className={
+        props.isWidgetFullScreenOn
+          ? "vxt-conference-attendees sidebar-less"
+          : "vxt-conference-attendees"
+      }
+    >
+      {(props.isWidgetFullScreenOn || props.forceFullscreen) &&
+        !props.participantStore.screenShareEnabled &&
+        !props.participantStore.videoPresentationEnabled &&
+        !props.participantStore.filePresentationEnabled &&
+        props.displayModes.length > 1 &&
+        (connectedParticipants.length > 0 ||
+          props.participantStore.isWebinar) && (
+          <ToggleModeButton mode={props.mode} toggleMode={props.toggleMode} />
+        )}
+
+      {props.isWidgetFullScreenOn && !props.forceFullscreen && (
+        <AttendeesToggleFullscreen
+          toggleWidget={props.toggleWidget}
+          isWidgetOpened={props.isWidgetOpened}
+        />
+      )}
+
+      {!props.forceFullscreen && !props.isWidgetFullScreenOn && (
+        <AttendeesHeader />
+      )}
+
+      <OnBoardingMessageWithConfirmation />
+      <OnBoardingMessageWithAction />
+      <OnBoardingMessageWithDescription />
+      <OnBoardingMessage />
+      <OnBoardingMessageOverlay />
+
+      {props.mode === MODE_TILES && (
+        <ActiveSpeakerOverlay
+          participants={connectedParticipants}
+          currentUser={props.participantStore.currentUser}
+        />
+      )}
+
+      {!bowser.msie && (
+        <AttendeesSettings
+          videoEnabled={props.videoEnabled}
+          isListener={props.participantStore.currentUser.isListener}
+          attendeesSettingsOpened={props.attendeesSettingsOpened}
+          dolbyVoiceEnabled={props.dolbyVoiceEnabled}
+        />
+      )}
+
+      {renderParticipantList()}
+
+      {renderChat()}
+
+      <section
+        className={`sidebar-container ${
+          props.attendeesListOpened ||
+          props.attendeesChatOpened ||
+          props.attendeesSettingsOpened
+            ? "attendees-list-opened"
+            : "attendees-list-close"
+        }`}
+      >
+        {!props.isWidgetFullScreenOn &&
+          !props.forceFullscreen &&
+          !props.participantStore.screenShareEnabled &&
+          !props.participantStore.filePresentationEnabled &&
+          !props.participantStore.videoPresentationEnabled && (
+            <ListWidget
+              participants={props.participantStore.participants}
+              isAdmin={props.participantStore.isAdmin}
+              currentUser={props.participantStore.currentUser}
+              isAdminActived={props.isAdminActived}
+              kickParticipant={kickParticipant}
+              isWebinar={props.participantStore.isWebinar}
+              toggleMicrophone={toggleMicrophone}
+            />
+          )}
+
+        {props.mode === MODE_LIST &&
+          (props.forceFullscreen || props.isWidgetFullScreenOn) &&
+          connectedParticipants.length > 0 &&
+          props.displayModes.indexOf("list") > -1 &&
+          !props.participantStore.screenShareEnabled &&
+          !props.participantStore.filePresentationEnabled &&
+          !props.participantStore.videoPresentationEnabled && (
+            <View3D
+              participants={props.participantStore.participants}
+              isAdmin={props.participantStore.isAdmin}
+              isAdminActived={props.isAdminActived}
+              kickParticipant={kickParticipant}
+              setUserPosition={setUserPosition}
+              saveUserPosition={saveUserPosition}
+              toggleMicrophone={toggleMicrophone}
+              dolbyVoiceEnabled={props.dolbyVoiceEnabled}
+              kickPermission={kickPermission}
+            />
+          )}
+        {props.mode === MODE_TILES &&
+          (props.forceFullscreen || props.isWidgetFullScreenOn) &&
+          props.displayModes.indexOf("tiles") > -1 &&
+          !props.participantStore.screenShareEnabled &&
+          !props.participantStore.filePresentationEnabled &&
+          !props.participantStore.videoPresentationEnabled &&
+          props.participantStore.currentUser != null &&
+          ((!props.participantStore.isWebinar &&
+            !props.participantStore.currentUser.isListener) ||
+            (!props.participantStore.isWebinar &&
+              props.participantStore.currentUser.isListener &&
+              connectedParticipants.length > 0) ||
+            (props.participantStore.isWebinar &&
+              props.participantStore.isAdmin) ||
+            (props.participantStore.isWebinar &&
+              !props.participantStore.isAdmin &&
+              connectedParticipants.length > 0)) &&
+          ((props.spatialAudioEnabled && (
+            <MeasuredTiles
+              participants={props.participantStore.participants}
+              isAdmin={props.participantStore.isAdmin}
+              isWebinar={props.participantStore.isWebinar}
+              isAdminActived={props.isAdminActived}
+              currentUser={props.participantStore.currentUser}
+              kickParticipant={kickParticipant}
+              toggleMicrophone={toggleMicrophone}
+              isWidgetFullScreenOn={
+                props.forceFullscreen || props.isWidgetFullScreenOn
+              }
+              dolbyVoiceEnabled={props.dolbyVoiceEnabled}
+              kickPermission={kickPermission}
+              spatialAudioEnabled={props.spatialAudioEnabled}
+            />
+          )) ||
+            (!props.spatialAudioEnabled && (
+              <Tiles
+                participants={props.participantStore.participants}
+                isAdmin={props.participantStore.isAdmin}
+                isWebinar={props.participantStore.isWebinar}
+                isAdminActived={props.isAdminActived}
+                currentUser={props.participantStore.currentUser}
+                kickParticipant={kickParticipant}
+                toggleMicrophone={toggleMicrophone}
+                isWidgetFullScreenOn={
+                  props.forceFullscreen || props.isWidgetFullScreenOn
+                }
+                dolbyVoiceEnabled={props.dolbyVoiceEnabled}
+                kickPermission={kickPermission}
+                spatialAudioEnabled={props.spatialAudioEnabled}
+              />
+            )))}
+        {props.mode === MODE_SPEAKER &&
+          (props.displayModes.indexOf("speaker") > -1 ||
+            props.participantStore.screenShareEnabled ||
+            props.participantStore.filePresentationEnabled ||
+            props.participantStore.videoPresentationEnabled) &&
+          props.participantStore.currentUser != null &&
+          ((!props.participantStore.isWebinar &&
+            !props.participantStore.currentUser.isListener) ||
+            (!props.participantStore.isWebinar &&
+              props.participantStore.currentUser.isListener) ||
+            (props.participantStore.isWebinar &&
+              props.participantStore.isAdmin) ||
+            (props.participantStore.isWebinar &&
+              !props.participantStore.isAdmin)) && (
+            <Speakers
+              participants={connectedParticipants}
+              isAdmin={props.participantStore.isAdmin}
+              isAdminActived={props.isAdminActived}
+              isFilePresentation={props.isFilePresentation}
+              isWebinar={props.participantStore.isWebinar}
+              kickParticipant={kickParticipant}
+              userIdStreamScreenShare={
+                props.participantStore.userIdStreamScreenShare
+              }
+              forceActiveSpeaker={forceActiveSpeaker}
+              disableForceActiveSpeaker={disableForceActiveSpeaker}
+              toggleMicrophone={toggleMicrophone}
+              isWidgetFullScreenOn={
+                props.forceFullscreen || props.isWidgetFullScreenOn
+              }
+              screenShareEnabled={props.participantStore.screenShareEnabled}
+              filePresentationEnabled={
+                props.participantStore.filePresentationEnabled
+              }
+              videoPresentationEnabled={
+                props.participantStore.videoPresentationEnabled
+              }
+              userIdFilePresentation={
+                props.participantStore.userIdFilePresentation
+              }
+              userIdVideoPresentation={
+                props.participantStore.userIdVideoPresentation
+              }
+              userStream={props.participantStore.userStream}
+              currentUser={props.participantStore.currentUser}
+              isScreenshare={props.isScreenshare}
+              isVideoPresentation={props.isVideoPresentation}
+              screenShareStream={props.participantStore.userStreamScreenShare}
+              dolbyVoiceEnabled={props.dolbyVoiceEnabled}
+              kickPermission={kickPermission}
+              spatialAudioEnabled={props.spatialAudioEnabled}
+            />
+          )}
+        {connectedParticipants.length === 0 &&
+          (!props.participantStore.isWebinar ||
+            (props.participantStore.isWebinar &&
+              !props.participantStore.isAdmin)) &&
+          props.mode === MODE_TILES &&
+          renderWaiting()}
+      </section>
+    </div>
+  );
+};
+
+export default connect(
   (store) => {
     return {
       participantStore: store.voxeet.participants,
@@ -46,7 +359,10 @@ import { getUxKitContext } from "../../context";
   null,
   null,
   { context: getUxKitContext() }
-)
+)(Attendees);
+
+/*
+
 class Attendees extends Component {
   constructor(props) {
     super(props);
@@ -98,11 +414,11 @@ class Attendees extends Component {
 
   setUserPosition(participant_id, positionRelative, position, moved) {
     this.props.dispatch(ParticipantActions.user3DMoved(participant_id, moved));
-    /*VoxeetSDK.setUserPosition(
+    /!*VoxeetSDK.setUserPosition(
       participant_id,
       positionRelative.x,
       -positionRelative.y
-    );*/
+    );*!/
   }
 
   toggleModal() {
@@ -187,7 +503,14 @@ class Attendees extends Component {
       currentUser,
     } = this.props.participantStore;
     const participantsConnected = participants.filter((p) => {
-      return p.isConnected;
+      const connected = p.isConnected;
+      if (!connected) {
+        console.log(p.status);
+      } else {
+        console.log(p.status);
+      }
+
+      return connected;
     });
     const kickPermission = conferencePermissions.has("KICK");
 
@@ -377,6 +700,7 @@ class Attendees extends Component {
     );
   }
 }
+*/
 
 Attendees.propTypes = {
   mode: PropTypes.string.isRequired,
@@ -405,5 +729,3 @@ Attendees.propTypes = {
   chatOptions: PropTypes.object,
   spatialAudioEnabled: PropTypes.bool,
 };
-
-export default Attendees;
