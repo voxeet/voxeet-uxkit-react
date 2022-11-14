@@ -68,7 +68,7 @@ const Attendees = (props) => {
   }
 
   function disableForceActiveSpeaker() {
-    dispatch(ActiveSpeakerActions.disableForceActiveSpeaker());
+    props.dispatch(ActiveSpeakerActions.disableForceActiveSpeaker());
   }
 
   function saveUserPosition(participant_id, relativePosition, position) {
@@ -115,8 +115,8 @@ const Attendees = (props) => {
     return React.createElement(props.attendeesList, {
       ...props,
       attendeesListOpened: props.attendeesListOpened,
-      isWebinar: props.participantStore.isWebinar,
-      isAdmin: props.participantStore.isAdmin,
+      isWebinar: props.isWebinar,
+      isAdmin: props.isAdmin,
       toggleMicrophone: toggleMicrophone,
       toggleForwardedVideo: toggleForwardedVideo,
       invitePermission: props.conferencePermissions.has("INVITE"),
@@ -128,8 +128,8 @@ const Attendees = (props) => {
     return React.createElement(props.attendeesChat, {
       ...props,
       attendeesChatOpened: props.attendeesChatOpened,
-      participants: props.participantStore.participants,
-      currentUser: props.participantStore.currentUser,
+      participants: props.participants,
+      currentUser: props.currentUser,
       key: "chat",
     });
   }
@@ -144,12 +144,11 @@ const Attendees = (props) => {
       }
     >
       {(props.isWidgetFullScreenOn || props.forceFullscreen) &&
-        !props.participantStore.screenShareEnabled &&
-        !props.participantStore.videoPresentationEnabled &&
-        !props.participantStore.filePresentationEnabled &&
+        !props.screenShareEnabled &&
+        !props.videoPresentationEnabled &&
+        !props.filePresentationEnabled &&
         props.displayModes.length > 1 &&
-        (connectedParticipants.length > 0 ||
-          props.participantStore.isWebinar) && (
+        (connectedParticipants.length > 0 || props.isWebinar) && (
           <ToggleModeButton mode={props.mode} toggleMode={props.toggleMode} />
         )}
 
@@ -173,14 +172,14 @@ const Attendees = (props) => {
       {props.mode === MODE_TILES && (
         <ActiveSpeakerOverlay
           participants={connectedParticipants}
-          currentUser={props.participantStore.currentUser}
+          currentUser={props.currentUser}
         />
       )}
 
       {!bowser.msie && (
         <AttendeesSettings
           videoEnabled={props.videoEnabled}
-          isListener={props.participantStore.currentUser.isListener}
+          isListener={props.currentUser.isListener}
           attendeesSettingsOpened={props.attendeesSettingsOpened}
           dolbyVoiceEnabled={props.dolbyVoiceEnabled}
         />
@@ -201,16 +200,16 @@ const Attendees = (props) => {
       >
         {!props.isWidgetFullScreenOn &&
           !props.forceFullscreen &&
-          !props.participantStore.screenShareEnabled &&
-          !props.participantStore.filePresentationEnabled &&
-          !props.participantStore.videoPresentationEnabled && (
+          !props.screenShareEnabled &&
+          !props.filePresentationEnabled &&
+          !props.videoPresentationEnabled && (
             <ListWidget
-              participants={props.participantStore.participants}
-              isAdmin={props.participantStore.isAdmin}
-              currentUser={props.participantStore.currentUser}
+              participants={props.participants}
+              isAdmin={props.isAdmin}
+              currentUser={props.currentUser}
               isAdminActived={props.isAdminActived}
               kickParticipant={kickParticipant}
-              isWebinar={props.participantStore.isWebinar}
+              isWebinar={props.isWebinar}
               toggleMicrophone={toggleMicrophone}
             />
           )}
@@ -219,12 +218,12 @@ const Attendees = (props) => {
           (props.forceFullscreen || props.isWidgetFullScreenOn) &&
           connectedParticipants.length > 0 &&
           props.displayModes.indexOf("list") > -1 &&
-          !props.participantStore.screenShareEnabled &&
-          !props.participantStore.filePresentationEnabled &&
-          !props.participantStore.videoPresentationEnabled && (
+          !props.screenShareEnabled &&
+          !props.filePresentationEnabled &&
+          !props.videoPresentationEnabled && (
             <View3D
-              participants={props.participantStore.participants}
-              isAdmin={props.participantStore.isAdmin}
+              participants={props.participants}
+              isAdmin={props.isAdmin}
               isAdminActived={props.isAdminActived}
               kickParticipant={kickParticipant}
               setUserPosition={setUserPosition}
@@ -237,27 +236,25 @@ const Attendees = (props) => {
         {props.mode === MODE_TILES &&
           (props.forceFullscreen || props.isWidgetFullScreenOn) &&
           props.displayModes.indexOf("tiles") > -1 &&
-          !props.participantStore.screenShareEnabled &&
-          !props.participantStore.filePresentationEnabled &&
-          !props.participantStore.videoPresentationEnabled &&
-          props.participantStore.currentUser != null &&
-          ((!props.participantStore.isWebinar &&
-            !props.participantStore.currentUser.isListener) ||
-            (!props.participantStore.isWebinar &&
-              props.participantStore.currentUser.isListener &&
+          !props.screenShareEnabled &&
+          !props.filePresentationEnabled &&
+          !props.videoPresentationEnabled &&
+          props.currentUser != null &&
+          ((!props.isWebinar && !props.currentUser.isListener) ||
+            (!props.isWebinar &&
+              props.currentUser.isListener &&
               connectedParticipants.length > 0) ||
-            (props.participantStore.isWebinar &&
-              props.participantStore.isAdmin) ||
-            (props.participantStore.isWebinar &&
-              !props.participantStore.isAdmin &&
+            (props.isWebinar && props.isAdmin) ||
+            (props.isWebinar &&
+              !props.isAdmin &&
               connectedParticipants.length > 0)) &&
           ((props.spatialAudioEnabled && (
             <MeasuredTiles
-              participants={props.participantStore.participants}
-              isAdmin={props.participantStore.isAdmin}
-              isWebinar={props.participantStore.isWebinar}
+              participants={props.participants}
+              isAdmin={props.isAdmin}
+              isWebinar={props.isWebinar}
               isAdminActived={props.isAdminActived}
-              currentUser={props.participantStore.currentUser}
+              currentUser={props.currentUser}
               kickParticipant={kickParticipant}
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={
@@ -270,11 +267,11 @@ const Attendees = (props) => {
           )) ||
             (!props.spatialAudioEnabled && (
               <Tiles
-                participants={props.participantStore.participants}
-                isAdmin={props.participantStore.isAdmin}
-                isWebinar={props.participantStore.isWebinar}
+                participants={props.participants}
+                isAdmin={props.isAdmin}
+                isWebinar={props.isWebinar}
                 isAdminActived={props.isAdminActived}
-                currentUser={props.participantStore.currentUser}
+                currentUser={props.currentUser}
                 kickParticipant={kickParticipant}
                 toggleMicrophone={toggleMicrophone}
                 isWidgetFullScreenOn={
@@ -287,61 +284,45 @@ const Attendees = (props) => {
             )))}
         {props.mode === MODE_SPEAKER &&
           (props.displayModes.indexOf("speaker") > -1 ||
-            props.participantStore.screenShareEnabled ||
-            props.participantStore.filePresentationEnabled ||
-            props.participantStore.videoPresentationEnabled) &&
-          props.participantStore.currentUser != null &&
-          ((!props.participantStore.isWebinar &&
-            !props.participantStore.currentUser.isListener) ||
-            (!props.participantStore.isWebinar &&
-              props.participantStore.currentUser.isListener) ||
-            (props.participantStore.isWebinar &&
-              props.participantStore.isAdmin) ||
-            (props.participantStore.isWebinar &&
-              !props.participantStore.isAdmin)) && (
+            props.screenShareEnabled ||
+            props.filePresentationEnabled ||
+            props.videoPresentationEnabled) &&
+          props.currentUser != null &&
+          ((!props.isWebinar && !props.currentUser.isListener) ||
+            (!props.isWebinar && props.currentUser.isListener) ||
+            (props.isWebinar && props.isAdmin) ||
+            (props.isWebinar && !props.isAdmin)) && (
             <Speakers
               participants={connectedParticipants}
-              isAdmin={props.participantStore.isAdmin}
+              isAdmin={props.isAdmin}
               isAdminActived={props.isAdminActived}
               isFilePresentation={props.isFilePresentation}
-              isWebinar={props.participantStore.isWebinar}
+              isWebinar={props.isWebinar}
               kickParticipant={kickParticipant}
-              userIdStreamScreenShare={
-                props.participantStore.userIdStreamScreenShare
-              }
+              userIdStreamScreenShare={props.userIdStreamScreenShare}
               forceActiveSpeaker={forceActiveSpeaker}
               disableForceActiveSpeaker={disableForceActiveSpeaker}
               toggleMicrophone={toggleMicrophone}
               isWidgetFullScreenOn={
                 props.forceFullscreen || props.isWidgetFullScreenOn
               }
-              screenShareEnabled={props.participantStore.screenShareEnabled}
-              filePresentationEnabled={
-                props.participantStore.filePresentationEnabled
-              }
-              videoPresentationEnabled={
-                props.participantStore.videoPresentationEnabled
-              }
-              userIdFilePresentation={
-                props.participantStore.userIdFilePresentation
-              }
-              userIdVideoPresentation={
-                props.participantStore.userIdVideoPresentation
-              }
-              userStream={props.participantStore.userStream}
-              currentUser={props.participantStore.currentUser}
+              screenShareEnabled={props.screenShareEnabled}
+              filePresentationEnabled={props.filePresentationEnabled}
+              videoPresentationEnabled={props.videoPresentationEnabled}
+              userIdFilePresentation={props.userIdFilePresentation}
+              userIdVideoPresentation={props.userIdVideoPresentation}
+              userStream={props.userStream}
+              currentUser={props.currentUser}
               isScreenshare={props.isScreenshare}
               isVideoPresentation={props.isVideoPresentation}
-              screenShareStream={props.participantStore.userStreamScreenShare}
+              screenShareStream={props.userStreamScreenShare}
               dolbyVoiceEnabled={props.dolbyVoiceEnabled}
               kickPermission={kickPermission}
               spatialAudioEnabled={props.spatialAudioEnabled}
             />
           )}
         {connectedParticipants.length === 0 &&
-          (!props.participantStore.isWebinar ||
-            (props.participantStore.isWebinar &&
-              !props.participantStore.isAdmin)) &&
+          (!props.isWebinar || (props.isWebinar && !props.isAdmin)) &&
           props.mode === MODE_TILES &&
           renderWaiting()}
       </section>
@@ -349,17 +330,27 @@ const Attendees = (props) => {
   );
 };
 
-export default connect(
-  (store) => {
-    return {
-      participantStore: store.voxeet.participants,
-      errorStore: store.voxeet.error,
-    };
-  },
-  null,
-  null,
-  { context: getUxKitContext() }
-)(Attendees);
+function mapStateToProps(state) {
+  return {
+    participants: state.voxeet.participants.participants,
+    currentUser: state.voxeet.participants.currentUser,
+    userStream: state.voxeet.participants.userStream,
+    isWebinar: state.voxeet.participants.isWebinar,
+    isAdmin: state.voxeet.participants.isAdmin,
+    userStreamScreenShare: state.voxeet.participants.userStreamScreenShare,
+    userIdVideoPresentation: state.voxeet.participants.userIdVideoPresentation,
+    userIdFilePresentation: state.voxeet.participants.userIdFilePresentation,
+    videoPresentationEnabled:
+      state.voxeet.participants.videoPresentationEnabled,
+    filePresentationEnabled: state.voxeet.participants.filePresentationEnabled,
+    screenShareEnabled: state.voxeet.participants.screenShareEnabled,
+    errorStore: state.voxeet.error,
+  };
+}
+
+export default connect(mapStateToProps, null, null, {
+  context: getUxKitContext(),
+})(Attendees);
 
 /*
 
@@ -447,8 +438,8 @@ class Attendees extends Component {
     return React.createElement(this.props.attendeesList, {
       ...this.props,
       attendeesListOpened: this.props.attendeesListOpened,
-      isWebinar: this.props.participantStore.isWebinar,
-      isAdmin: this.props.participantStore.isAdmin,
+      isWebinar: this.props.isWebinar,
+      isAdmin: this.props.isAdmin,
       toggleMicrophone: this.toggleMicrophone,
       toggleForwardedVideo: this.toggleForwardedVideo,
       invitePermission: this.props.conferencePermissions.has("INVITE"),
@@ -460,8 +451,8 @@ class Attendees extends Component {
     return React.createElement(this.props.attendeesChat, {
       ...this.props,
       attendeesChatOpened: this.props.attendeesChatOpened,
-      participants: this.props.participantStore.participants,
-      currentUser: this.props.participantStore.currentUser,
+      participants: this.props.participants,
+      currentUser: this.props.currentUser,
       key: "chat",
     });
   }
@@ -501,7 +492,7 @@ class Attendees extends Component {
       userIdVideoPresentation,
       userStream,
       currentUser,
-    } = this.props.participantStore;
+    } = this.props;
     const participantsConnected = participants.filter((p) => {
       const connected = p.isConnected;
       if (!connected) {
