@@ -32,10 +32,15 @@ import AttendeesToggleFullscreen from "./AttendeesToggleFullscreen";
 import OnBoardingMessageWithConfirmation from "./onBoardingMessage/onBoardingMessageWithConfirmation";
 import { getUxKitContext } from "../../context";
 import { Actions as ErrorActions } from "../../actions/ErrorActions";
+import { updateSpatialScene } from "../../libs/position";
 
 const Attendees = (props) => {
   const [connectedParticipants, setConnectedParticipants] = useState([]);
   const [kickPermission, setKickPermission] = useState(false);
+
+  useEffect(() => {
+    updateSpatialScene({ width: 1, height: 1 });
+  }, []);
 
   useEffect(() => {
     if (!props.participants || props.participants.length === 0) return;
