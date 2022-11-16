@@ -39,7 +39,7 @@ const Attendees = (props) => {
   const [kickPermission, setKickPermission] = useState(false);
 
   useEffect(() => {
-    updateSpatialScene({ width: 1, height: 1 });
+    updateSpatialScene();
   }, []);
 
   useEffect(() => {

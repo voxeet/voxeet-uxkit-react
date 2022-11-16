@@ -358,7 +358,9 @@ export const updateParticipantPositions = (participants) => {
   refreshPositionLayout();
 };
 
-export const updateSpatialScene = (currentBounds) => {
+export const updateSpatialScene = (
+  currentBounds = { width: 1, height: 1, left: 0, top: 0 }
+) => {
   if (currentBounds) {
     // Set the scale so the pixel size of the component maps to the audio scene size
     const right = { x: 1, y: 0, z: 0 };
