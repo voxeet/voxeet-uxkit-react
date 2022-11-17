@@ -39,7 +39,9 @@ const Attendees = (props) => {
   const [kickPermission, setKickPermission] = useState(false);
 
   useEffect(() => {
-    updateSpatialScene();
+    if (props.spatialAudioEnabled) {
+      updateSpatialScene();
+    }
   }, []);
 
   useEffect(() => {
