@@ -38,7 +38,7 @@ class ScreenshareMode extends Component {
         kickParticipant={kickParticipant}
         isAdmin={isAdmin}
         isAdminActived={isAdminActived}
-        mySelf={participants.length >= 1 ? false : true}
+        mySelf={participants.length === 0}
         dolbyVoiceEnabled={dolbyVoiceEnabled}
       />
     ) : (
