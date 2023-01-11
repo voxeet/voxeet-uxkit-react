@@ -30,6 +30,7 @@ class SpeakerActive extends Component {
           (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
           (checker == null && nextProps.participant.stream))) ||
       (this.props.mySelf && this.props.participant.name == null) ||
+      (this.props.mySelf !== nextProps.mySelf) ||
       this.props.participant != nextProps.participant
     ) {
       return true;
@@ -111,7 +112,7 @@ class SpeakerActive extends Component {
                 participant.stream.active &&
                 participant.stream.getVideoTracks().length > 0) ? (
                 <div
-                  className={mySelf ? "stream-media myself" : "stream-media"}
+                  className={!screenShareEnabled && mySelf ? "stream-media myself" : "stream-media"}
                 >
                   <AttendeesParticipantVideo
                     stream={
