@@ -5,13 +5,10 @@ class AttendeesParticipantVideo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      videoRef: React.createRef()
-    }
-    this.toggleScreenShareFullScreen = this.toggleScreenShareFullScreen.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return false;
+      videoRef: React.createRef(),
+    };
+    this.toggleScreenShareFullScreen =
+      this.toggleScreenShareFullScreen.bind(this);
   }
 
   componentDidMount() {
@@ -20,14 +17,16 @@ class AttendeesParticipantVideo extends Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { stream } = nextProps;
-    if(prevState && prevState.videoRef && prevState.videoRef.current )
+    if (prevState && prevState.videoRef && prevState.videoRef.current) {
       navigator.attachMediaStream(prevState.videoRef.current, stream);
+    }
+
     return null;
   }
 
   updateStream(props) {
     const { stream } = props;
-    if(this.state.videoRef)
+    if (this.state.videoRef)
       navigator.attachMediaStream(this.state.videoRef.current, stream);
   }
 
@@ -42,7 +41,8 @@ class AttendeesParticipantVideo extends Component {
   }
 
   render() {
-    const { classes, width, height, enableDbClick } = this.props;
+    const { classes, width, height, enableDbClick, muted } = this.props;
+
     return window.voxeetNodeModule ? (
       <canvas
         className="video-participant"
@@ -60,7 +60,7 @@ class AttendeesParticipantVideo extends Component {
         ref={this.state.videoRef}
         onDoubleClick={this.toggleScreenShareFullScreen}
         autoPlay
-        muted
+        muted={muted}
       />
     );
   }
@@ -70,7 +70,12 @@ AttendeesParticipantVideo.propTypes = {
   stream: PropTypes.object,
   width: PropTypes.string,
   height: PropTypes.string,
-  enableDbClick: PropTypes.bool
+  enableDbClick: PropTypes.bool,
+  muted: PropTypes.bool,
+};
+
+AttendeesParticipantVideo.defaultProps = {
+  muted: true,
 };
 
 export default AttendeesParticipantVideo;
