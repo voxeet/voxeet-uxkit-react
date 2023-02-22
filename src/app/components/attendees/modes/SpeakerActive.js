@@ -23,19 +23,17 @@ class SpeakerActive extends Component {
       return true;
     }
     const checker = document.getElementById("video-active-video-on");
-    if (
-        (!this.props.screenShareEnabled &&
-          ((checker != null && nextProps.participant.stream == null) ||
+    return (
+      (!this.props.screenShareEnabled &&
+        ((checker != null && nextProps.participant.stream == null) ||
           (checker != null && !nextProps.participant.stream.active) ||
-          (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
+          (checker != null &&
+            nextProps.participant.stream.getVideoTracks().length === 0) ||
           (checker == null && nextProps.participant.stream))) ||
       (this.props.mySelf && this.props.participant.name == null) ||
-      (this.props.mySelf !== nextProps.mySelf) ||
-      this.props.participant != nextProps.participant
-    ) {
-      return true;
-    }
-    return false;
+      this.props.mySelf !== nextProps.mySelf ||
+      this.props.participant !== nextProps.participant
+    );
   }
 
   render() {
@@ -112,9 +110,14 @@ class SpeakerActive extends Component {
                 participant.stream.active &&
                 participant.stream.getVideoTracks().length > 0) ? (
                 <div
-                  className={!screenShareEnabled && mySelf ? "stream-media myself" : "stream-media"}
+                  className={
+                    !screenShareEnabled && mySelf
+                      ? "stream-media myself"
+                      : "stream-media"
+                  }
                 >
                   <AttendeesParticipantVideo
+                    muted={!screenShareEnabled}
                     stream={
                       screenShareEnabled
                         ? screenShareStream
