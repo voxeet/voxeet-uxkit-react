@@ -672,20 +672,7 @@ class ConferenceRoom extends Component {
     }
 
     const { errorMessage, isError } = this.props.errorStore;
-    if (bowser.ios && bowser.chrome) {
-      return (
-        <div className="voxeet-loading-message-container">
-          <div className="voxeet-loading-center-container">
-            <div className="voxeet-loading-logo-container">
-              {logo != null ? <img src={logo} /> : <div className="ddloader" />}
-            </div>
-            <div className="voxeet-loading-info-container">
-              {strings.browerNotSupported}
-            </div>
-          </div>
-        </div>
-      );
-    } else if (initialized && !isJoined && isError) {
+    if (initialized && !isJoined && isError) {
       return (
         <div className="voxeet-loading-message-container">
           <div className="voxeet-loading-center-container">
