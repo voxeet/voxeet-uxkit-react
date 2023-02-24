@@ -1571,7 +1571,7 @@ export class Actions {
             isError = true;
             break;
           case "BrowserNotSupportedError":
-            title = strings.browerNotSupported;
+            title = strings.browserNotSupported;
             description = null;
             isError = true;
             break;
