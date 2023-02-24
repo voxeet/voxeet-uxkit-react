@@ -275,8 +275,7 @@ export class Actions {
     if (
       preConfigPayload &&
       preConfigPayload.videoEnabled &&
-      preConfigPayload.videoDeviceSelected &&
-      !bowser.msie
+      preConfigPayload.videoDeviceSelected
     ) {
       if (videoRatio != null) {
         constraints.video = {
@@ -489,7 +488,7 @@ export class Actions {
           });
       }
 
-      if (preConfigPayload == null && !bowser.msie && !participants.isWebinar) {
+      if (preConfigPayload == null && !participants.isWebinar) {
         this.setVideoConstraints(constraints, videoRatio, dispatch);
         if (constraints.audio) {
           constraints = this.setAudioConstraints(constraints, dispatch);
@@ -615,7 +614,6 @@ export class Actions {
       if (constraints.video && videoRatio != null && preConfigPayload == null) {
         constraints.video = videoRatio;
       }
-      if (bowser.msie) constraints.video = false;
 
       return VoxeetSDK.conference
         .create({
@@ -828,37 +826,29 @@ export class Actions {
       }
       if (!controls.audioEnabled) {
         let inputCookieExist = false;
-        if (!bowser.msie) {
-          VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
-            devices.forEach((source) => {
-              const inputDevice = Cookies.getDevice("input");
-              if (inputDevice && inputDevice.deviceId === source.deviceId)
-                inputCookieExist = true;
-            });
-            if (!inputCookieExist) {
-              let selected_device = devices.find(
-                (device) => device.deviceId === "default"
-              );
-              if (!selected_device) selected_device = devices[0];
-              dispatch(InputManagerActions.inputAudioChange(selected_device));
-            } else {
-              dispatch(
-                InputManagerActions.inputAudioChange(Cookies.getDevice("input"))
-              );
-            }
-            VoxeetSDK.audio.remote
-              .start(VoxeetSDK.session.participant)
-              .then(() => {
-                dispatch(ControlsActions.toggleAudio(true));
-              });
+        VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
+          devices.forEach((source) => {
+            const inputDevice = Cookies.getDevice("input");
+            if (inputDevice && inputDevice.deviceId === source.deviceId)
+              inputCookieExist = true;
           });
-        } else {
+          if (!inputCookieExist) {
+            let selected_device = devices.find(
+              (device) => device.deviceId === "default"
+            );
+            if (!selected_device) selected_device = devices[0];
+            dispatch(InputManagerActions.inputAudioChange(selected_device));
+          } else {
+            dispatch(
+              InputManagerActions.inputAudioChange(Cookies.getDevice("input"))
+            );
+          }
           VoxeetSDK.audio.remote
             .start(VoxeetSDK.session.participant)
             .then(() => {
               dispatch(ControlsActions.toggleAudio(true));
             });
-        }
+        });
       } else {
         if (userId === VoxeetSDK.session.participant.id) {
           VoxeetSDK.conference.mute(user, !isMuted);

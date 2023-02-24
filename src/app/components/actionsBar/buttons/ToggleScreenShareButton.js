@@ -1,6 +1,5 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
-import browser from "bowser";
 import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 import { Actions as OnBoardingMessageActions } from "../../../actions/OnBoardingMessageActions";
@@ -233,8 +232,7 @@ class ToggleScreenShareButton extends Component {
               onClick={() => this.togglePopUp()}
             ></a>
             <span className="title">{strings.screenshareOption}</span>
-            {shareActions.indexOf("screenshare") > -1 &&
-              !browser.msie && (
+            {shareActions.indexOf("screenshare") > -1 && (
                 <div>
                   <Fragment>
                     <a
