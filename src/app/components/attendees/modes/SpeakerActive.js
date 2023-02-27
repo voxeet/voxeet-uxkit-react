@@ -32,7 +32,8 @@ class SpeakerActive extends Component {
           (checker == null && nextProps.participant.stream))) ||
       (this.props.mySelf && this.props.participant.name == null) ||
       this.props.mySelf !== nextProps.mySelf ||
-      this.props.participant !== nextProps.participant
+      this.props.participant !== nextProps.participant ||
+      this.props.muted !== nextProps.muted
     );
   }
 
@@ -55,6 +56,7 @@ class SpeakerActive extends Component {
       isScreenshare,
       dolbyVoiceEnabled,
       kickPermission,
+      muted,
     } = this.props;
     const photoUrl = participant.avatarUrl || userPlaceholder;
     return (
@@ -117,7 +119,7 @@ class SpeakerActive extends Component {
                   }
                 >
                   <AttendeesParticipantVideo
-                    muted={!screenShareEnabled}
+                    muted={muted}
                     stream={
                       screenShareEnabled
                         ? screenShareStream
@@ -161,6 +163,7 @@ SpeakerActive.propTypes = {
   mySelf: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
   kickPermission: PropTypes.bool,
+  muted: PropTypes.bool,
 };
 
 export default SpeakerActive;

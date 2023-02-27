@@ -13,12 +13,6 @@ import VideoPresentationMode from "./presentationMode/VideoPresentationMode";
 import { getUxKitContext } from "../../../context";
 import { setDefaultPositionLayout } from "../../../libs/position";
 
-/*@connect((store) => {
-  return {
-    activeSpeakerStore: store.voxeet.activeSpeaker,
-  };
-}, null, null, { context: getUxKitContext() })*/
-
 const Speakers = ({
   dispatch,
   participants,
@@ -92,6 +86,7 @@ const Speakers = ({
             isScreenshare={isScreenshare}
             screenShareStream={screenShareStream}
             dolbyVoiceEnabled={dolbyVoiceEnabled}
+            userIdStreamScreenShare={userIdStreamScreenShare}
           />
         )}
       {videoPresentationEnabled && (
@@ -180,167 +175,6 @@ const Speakers = ({
   );
 };
 
-/*
-class Speakers extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    this.props.dispatch(ActiveSpeakerActions.startActiveSpeaker());
-    if (this.props.spatialAudioEnabled) {
-      setDefaultPositionLayout();
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.dispatch(ActiveSpeakerActions.stopActiveSpeaker());
-  }
-
-  render() {
-    const {
-      participants,
-      forceActiveSpeaker,
-      disableForceActiveSpeaker,
-      forceFullscreen,
-      toggleMicrophone,
-      isWidgetFullScreenOn,
-      screenShareEnabled,
-      filePresentationEnabled,
-      isFilePresentation,
-      screenShareStream,
-      isAdmin,
-      kickParticipant,
-      isAdminActived,
-      userIdStreamScreenShare,
-      userIdFilePresentation,
-      userIdVideoPresentation,
-      currentUser,
-      isWebinar,
-      isScreenshare,
-      videoPresentationEnabled,
-      isVideoPresentation,
-      dolbyVoiceEnabled,
-      kickPermission,
-      spatialAudioEnabled,
-    } = this.props;
-    const {
-      activeSpeaker,
-      forceActiveUserEnabled,
-    } = this.props.activeSpeakerStore;
-    let activeSpeakerChecker = activeSpeaker;
-    if (activeSpeakerChecker == null) {
-      activeSpeakerChecker = participants[0];
-    }
-    if (participants.length == 0) {
-      activeSpeakerChecker = currentUser;
-    }
-    return (
-      <div className="SidebarSpeaker">
-        {(activeSpeakerChecker || screenShareEnabled) &&
-          !filePresentationEnabled &&
-          !videoPresentationEnabled && (
-            <ScreenshareMode
-              participants={participants}
-              participant={activeSpeakerChecker}
-              isAdmin={isAdmin}
-              isAdminActived={isAdminActived}
-              kickParticipant={kickParticipant}
-              toggleMicrophone={toggleMicrophone}
-              isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
-              screenShareEnabled={screenShareEnabled}
-              filePresentationEnabled={filePresentationEnabled}
-              currentUser={currentUser}
-              isScreenshare={isScreenshare}
-              screenShareStream={screenShareStream}
-              dolbyVoiceEnabled={dolbyVoiceEnabled}
-            />
-          )}
-        {videoPresentationEnabled && (
-          <VideoPresentationMode
-            participants={participants}
-            participant={activeSpeakerChecker}
-            isAdmin={isAdmin}
-            isAdminActived={isAdminActived}
-            kickParticipant={kickParticipant}
-            toggleMicrophone={toggleMicrophone}
-            isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
-            screenShareEnabled={screenShareEnabled}
-            videoPresentationEnabled={videoPresentationEnabled}
-            isVideoPresentation={isVideoPresentation}
-            currentUser={currentUser}
-            isScreenshare={isScreenshare}
-            screenShareStream={screenShareStream}
-          />
-        )}
-        {filePresentationEnabled && (
-          <FilePresentationMode
-            participants={participants}
-            participant={activeSpeakerChecker}
-            isAdmin={isAdmin}
-            isAdminActived={isAdminActived}
-            kickParticipant={kickParticipant}
-            toggleMicrophone={toggleMicrophone}
-            isWidgetFullScreenOn={forceFullscreen || isWidgetFullScreenOn}
-            screenShareEnabled={screenShareEnabled}
-            filePresentationEnabled={filePresentationEnabled}
-            isFilePresentation={isFilePresentation}
-            currentUser={currentUser}
-            isScreenshare={isScreenshare}
-            screenShareStream={screenShareStream}
-            dolbyVoiceEnabled={dolbyVoiceEnabled}
-          />
-        )}
-        <div className="SidebarList">
-          <ul className="list-items">
-            {((!isWebinar &&
-              !currentUser.isListener &&
-              currentUser.isConnected) ||
-              (isWebinar && isAdmin)) && (
-              <li
-                className={"item small-item participant-available myself-item"}
-              >
-                <SpeakerVideo mySelf={true} participant={currentUser} />
-                {isWidgetFullScreenOn && (
-                  <AttendeesParticipantBar participant={currentUser} dolbyVoiceEnabled={dolbyVoiceEnabled} />
-                )}
-              </li>
-            )}
-            {participants.map((participant, i) => {
-              if (participant.isConnected)
-                return (
-                  <Speaker
-                    key={participant.participant_id}
-                    participant={participant}
-                    toggleMicrophone={toggleMicrophone}
-                    kickParticipant={kickParticipant}
-                    isAdmin={isAdmin}
-                    nbParticipant={i}
-                    userIdStreamScreenShare={userIdStreamScreenShare}
-                    userIdFilePresentation={userIdFilePresentation}
-                    userIdVideoPresentation={userIdVideoPresentation}
-                    screenShareEnabled={screenShareEnabled}
-                    activeSpeaker={activeSpeakerChecker}
-                    forceActiveUserEnabled={forceActiveUserEnabled}
-                    isAdminActived={isAdminActived}
-                    isWidgetFullScreenOn={isWidgetFullScreenOn}
-                    disableForceActiveSpeaker={disableForceActiveSpeaker}
-                    forceActiveSpeaker={forceActiveSpeaker}
-                    dolbyVoiceEnabled={dolbyVoiceEnabled}
-                    kickPermission={kickPermission}
-                    currentUser={currentUser}
-                    spatialAudioEnabled={spatialAudioEnabled}
-                  />
-                );
-            })}
-          </ul>
-        </div>
-      </div>
-    );
-  }
-}
-*/
-
 Speakers.propTypes = {
   participants: PropTypes.array.isRequired,
   forceActiveSpeaker: PropTypes.func.isRequired,
@@ -367,9 +201,12 @@ Speakers.propTypes = {
 };
 
 export default connect(
-  (store) => {
+  (state) => {
     return {
-      activeSpeakerStore: store.voxeet.activeSpeaker,
+      currentUser: state.voxeet.participants.currentUser,
+      activeSpeakerStore: state.voxeet.activeSpeaker,
+      userIdStreamScreenShare:
+        state.voxeet.participants.userIdStreamScreenShare,
     };
   },
   null,
