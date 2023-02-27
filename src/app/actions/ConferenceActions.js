@@ -1476,6 +1476,9 @@ export class Actions {
       });
 
       VoxeetSDK.conference.on("streamUpdated", (user, stream) => {
+        if (stream && stream.type === "ScreenShare") {
+          return;
+        }
         dispatch(
           ParticipantWaitingActions.onParticipantWaitingUpdated(user.id, stream)
         );

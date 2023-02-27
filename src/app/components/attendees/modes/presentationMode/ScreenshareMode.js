@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { strings } from "../../../../languages/localizedStrings";
 import SpeakerActive from "../SpeakerActive";
@@ -25,8 +24,11 @@ class ScreenshareMode extends Component {
       currentUser,
       isWebinar,
       isScreenshare,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
     } = this.props;
+
+    const muted = userIdStreamScreenShare === currentUser.participant_id;
+
     return !isScreenshare ? (
       <SpeakerActive
         participant={participant}
@@ -40,6 +42,7 @@ class ScreenshareMode extends Component {
         isAdminActived={isAdminActived}
         mySelf={participants.length === 0}
         dolbyVoiceEnabled={dolbyVoiceEnabled}
+        muted={muted}
       />
     ) : (
       <div className="screenshare-current-user">
@@ -57,6 +60,7 @@ class ScreenshareMode extends Component {
           isAdminActived={isAdminActived}
           mySelf={false}
           dolbyVoiceEnabled={dolbyVoiceEnabled}
+          muted={muted}
         />
       </div>
     );
@@ -76,6 +80,8 @@ ScreenshareMode.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
+  currentUser: PropTypes.object.isRequired,
+  userIdStreamScreenShare: PropTypes.string,
 };
 
 export default ScreenshareMode;
