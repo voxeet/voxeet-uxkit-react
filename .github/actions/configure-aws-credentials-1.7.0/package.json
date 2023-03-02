@@ -1,0 +1,37 @@
+{
+  "name": "aws-actions-configure-aws-credentials",
+  "version": "1.7.0",
+  "description": "Configure AWS Credentials",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint **.js",
+    "package": "ncc build index.js -o dist && ncc build cleanup.js -o dist/cleanup",
+    "test": "npm run lint && jest --coverage --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aws-actions/configure-aws-credentials.git"
+  },
+  "keywords": [
+    "AWS",
+    "GitHub",
+    "Actions",
+    "JavaScript"
+  ],
+  "author": "AWS",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aws-actions/configure-aws-credentials/issues"
+  },
+  "homepage": "https://github.com/aws-actions/configure-aws-credentials#readme",
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "aws-sdk": "^2.1112.0",
+    "axios": "^0.26.1"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.22.3",
+    "eslint": "^8.13.0",
+    "jest": "^27.5.1"
+  }
+}

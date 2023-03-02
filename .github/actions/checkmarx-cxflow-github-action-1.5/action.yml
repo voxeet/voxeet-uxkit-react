@@ -1,0 +1,216 @@
+name: 'Checkmarx CxFlow Action'
+description: 'Simplify Checkmarx Scanning of source code along with Result consumption leveraging Checkmarx CxFlow solution.'
+author: 'Checkmarx Technical Services'
+inputs:
+  checkmarx_url:
+    required: true
+    description: 'Provide Checkmarx URL'
+    default: ''
+  team:
+    required: true
+    description: 'Select a Checkmarx Team'
+    default: '/CxServer/SP/Company'
+  checkmarx_username:
+    required: true
+    description: 'Provide Checkmarx Username'
+    default: ''
+  checkmarx_password:
+    required: true
+    description: 'Provide Checkmarx Password'
+    default: ''
+  checkmarx_client_secret:
+    required: true
+    description: 'Provide Checkmarx Client Secret'
+    default: ''
+  project:
+    required: true
+    default: ''
+    description: 'Select a Checkmarx Project'
+  app:
+    required: false
+    default: 'SampleApp'
+    description: 'Select an Application Name used by downstream bug tracker systems'  
+  preset:
+    required: false
+    default: 'High and Medium'
+    description: 'Select a Checkmarx Preset'
+  break_build:
+    required: false
+    default: false
+    description: 'Break build based on Checkmarx findings?'
+  bug_tracker:
+    required: false
+    default: Sarif
+    description: 'Bug tracker for the scan results.'
+  incremental:
+    required: false
+    default: true
+    description: 'Incremental Scans?'
+  params:
+    required: false
+    default: ''
+    description: 'Additional CLI parameters'
+  github_token:
+    required: false
+    default: ${{ github.token }}
+    description: 'GitHub API Token'
+  scanners:
+    required: true
+    default: ''
+    description: 'Vulnerability Scanners (sast, sca, cxgo)'
+######### SCA Properties ##########
+  sca_api_url:
+    required: false
+    description: 'Provide SCA API URL'
+    default: 'https://api.scacheckmarx.com'
+  sca_app_url:
+    required: false
+    description: 'Provide SCA APP URL'
+    default: 'https://sca.scacheckmarx.com'
+  sca_access_control_url:
+    required: false
+    description: 'Provide SCA Access Control URL'
+    default: 'https://platform.checkmarx.net'
+  sca_tenant:
+    required: false
+    description: 'Provide SCA Tenant'
+    default: ''
+  sca_username:
+    required: false
+    description: 'Provide SCA Username'
+    default: ''
+  sca_password:
+    required: false
+    description: 'Provide SCA Password'
+    default: ''
+  ######### CxGo Properties ##########
+  cxgo_client_secret:
+    required: false
+    description: 'Provide CxGo Client Secret'
+    default: ''
+  cxgo_base_url:
+    required: false
+    description: 'Provide CxGo API URL'
+    default: 'https://api.checkmarx.net'
+  cxgo_portal_url:
+    required: false
+    description: 'Provide CxGo Portal URL'
+    default: 'https://cloud.checkmarx.net'
+  ######### Java/JVM Properties ##########
+  java_opts: 
+    required: false
+    description: Java options will be passed to java
+    default: -XX:MaxRAMPercentage=75.0
+  ######### Jira Properties ##########
+  jira_url:
+    required: false
+    description: 'Jira URL'
+    default: ''
+  jira_username:
+    required: false
+    description: 'Jira Username'
+    default: ''
+  jira_token:
+    required: false
+    description: 'Jira Token'
+    default: ''
+  jira_project:
+    required: false
+    description: 'Jira Project'
+    default: ''
+  jira_issue_type:
+    required: false
+    description: 'Jira Issue Type'
+    default: ''
+  jira_open_transition:
+    required: false
+    description: 'Jira Open Transition'
+    default: ''
+  jira_close_transition:
+    required: false
+    description: 'Jira Close Transition'
+    default: ''
+  jira_open_status:
+    required: false
+    description: 'Jira Open Status'
+    default: ''
+  jira_closed_status:
+    required: false
+    description: 'Jira Closed Status'
+    default: ''
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.team }}
+    - ${{ inputs.project }}
+    - ${{ inputs.app }}
+    - ${{ inputs.checkmarx_username }}
+    - ${{ inputs.checkmarx_password }}
+    - ${{ inputs.checkmarx_client_secret }}
+    - ${{ inputs.checkmarx_url }}
+    - ${{ inputs.preset }}
+    - ${{ inputs.incremental }}
+    - ${{ inputs.break_build }}
+    - ${{ inputs.params }}
+    - ${{ inputs.github_token }}
+    - ${{ inputs.scanners }}
+    - ${{ inputs.sca_api_url }}
+    - ${{ inputs.sca_app_url }}
+    - ${{ inputs.sca_access_control_url }}
+    - ${{ inputs.sca_tenant }}
+    - ${{ inputs.sca_username }}
+    - ${{ inputs.sca_password }}
+    - ${{ inputs.cxgo_client_secret }}
+    - ${{ inputs.cxgo_base_url }}
+    - ${{ inputs.cxgo_portal_url }}
+    - ${{ inputs.java_opts }}
+    - ${{ inputs.jira_url }}
+    - ${{ inputs.jira_username }}
+    - ${{ inputs.jira_token }}
+    - ${{ inputs.jira_project }}
+    - ${{ inputs.jira_issue_type }}
+    - ${{ inputs.jira_open_transition }}
+    - ${{ inputs.jira_close_transition }}
+    - ${{ inputs.jira_open_status }}
+    - ${{ inputs.jira_closed_status }}
+
+  env:
+    TEAM: "${{ inputs.team }}"
+    PROJECT: ${{ inputs.project }}
+    APP: ${{ inputs.app }}
+    GITHUB_TOKEN: ${{ inputs.github_token }}
+    CHECKMARX_USERNAME: ${{ inputs.checkmarx_username }}
+    CHECKMARX_PASSWORD: ${{ inputs.checkmarx_password }}
+    CHECKMARX_CLIENT_SECRET: ${{ inputs.checkmarx_client_secret }}
+    CHECKMARX_BASE_URL: ${{ inputs.checkmarx_url }}
+    CHECKMARX_SCAN_PRESET: ${{ inputs.preset }}
+    CHECKMARX_INCREMENTAL: ${{ inputs.incremental }}
+    CX_FLOW_BREAK_BUILD: ${{ inputs.break_build }}
+    CXFLOW_PARAMS: ${{ inputs.params }}
+    CX_FLOW_ENABLED_VULNERABILITY_SCANNERS: ${{ inputs.scanners }}
+    CX_FLOW_BUG_TRACKER: ${{ inputs.bug_tracker }}
+    SCA_APIURL: ${{ inputs.sca_api_url }}
+    SCA_APPURL: ${{ inputs.sca_app_url }}
+    SCA_ACCESSCONTROLURL: ${{ inputs.sca_access_control_url }}
+    SCA_TENANT: ${{ inputs.sca_tenant }}
+    SCA_USERNAME: ${{ inputs.sca_username }}
+    SCA_PASSWORD: ${{ inputs.sca_password }}
+    CXGO_CLIENT_SECRET: ${{ inputs.cxgo_client_secret }}
+    CXGO_BASE_URL: ${{ inputs.cxgo_base_url }}
+    CXGO_PORTAL_URL: ${{ inputs.cxgo_portal_url }}
+    JAVA_OPTS: ${{ inputs.java_opts }}
+    JIRA_URL: ${{ inputs.jira_url }}
+    JIRA_USERNAME: ${{ inputs.jira_username }}
+    JIRA_TOKEN: ${{ inputs.jira_token }}
+    JIRA_PROJECT: ${{ inputs.jira_project }}
+    JIRA_ISSUE_TYPE: ${{ inputs.jira_issue_type }}
+    JIRA_OPEN_TRANSITION: ${{ inputs.jira_open_transition }}
+    JIRA_CLOSE_TRANSITION: ${{ inputs.jira_close_transition }}
+    JIRA_OPEN_STATUS: ${{ inputs.jira_open_status }}
+    JIRA_CLOSED_STATUS: ${{ inputs.jira_closed_status }}
+
+branding:
+  icon: 'check'
+  color: 'green'
