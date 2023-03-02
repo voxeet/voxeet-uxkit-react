@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import bowser from "bowser";
 import PropTypes from "prop-types";
 
 import {
@@ -160,7 +159,6 @@ class ActionsButtons extends Component {
           {!isWidgetFullScreenOn &&
             !forceFullscreen &&
             (!isWebinar || (isWebinar && isAdmin)) &&
-            !bowser.msie &&
             (
               <ToggleSettingsButton
                 attendeesSettingsOpened={attendeesSettingsOpened}

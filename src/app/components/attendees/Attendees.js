@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import bowser from "bowser";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
 import { Actions as ControlsActions } from "../../actions/ControlsActions";
 import { Actions as ParticipantActions } from "../../actions/ParticipantActions";
@@ -183,14 +182,12 @@ const Attendees = (props) => {
         />
       )}
 
-      {!bowser.msie && (
-        <AttendeesSettings
-          videoEnabled={props.videoEnabled}
-          isListener={props.currentUser.isListener}
-          attendeesSettingsOpened={props.attendeesSettingsOpened}
-          dolbyVoiceEnabled={props.dolbyVoiceEnabled}
-        />
-      )}
+      <AttendeesSettings
+        videoEnabled={props.videoEnabled}
+        isListener={props.currentUser.isListener}
+        attendeesSettingsOpened={props.attendeesSettingsOpened}
+        dolbyVoiceEnabled={props.dolbyVoiceEnabled}
+      />
 
       {renderParticipantList()}
 

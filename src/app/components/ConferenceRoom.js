@@ -468,7 +468,6 @@ class ConferenceRoom extends Component {
       (!isWebinar || (isWebinar && isAdmin));
     let doPreConfig =
       !isListener &&
-      !bowser.msie &&
       !isMobile() &&
       (!isWebinar || (isWebinar && isAdmin))
         ? preConfig
@@ -695,37 +694,11 @@ class ConferenceRoom extends Component {
             <div className="voxeet-loading-info-container">
               {errorMessage === "NotAllowedError: Permission denied" &&
                 strings.errorPermissionDeniedMicrophone}
-              {bowser.msie && (
-                <Fragment>
-                  {strings.errorIE11}
-                  <div>
-                    <a
-                      download
-                      href="https://s3.amazonaws.com/voxeet-cdn/ie11/WebRTC+ActiveX+Setup.exe"
-                    >
-                      Download
-                    </a>
-                  </div>
-                </Fragment>
-              )}
             </div>
           </div>
           <div className="voxeet-loading-info-container">
             {errorMessage === "NotAllowedError: Permission denied" &&
               strings.errorPermissionDenied}
-            {bowser.msie && (
-              <Fragment>
-                {strings.errorIE11}
-                <div>
-                  <a
-                    download
-                    href="https://s3.amazonaws.com/voxeet-cdn/ie11/WebRTC+ActiveX+Setup.exe"
-                  >
-                    Download
-                  </a>
-                </div>
-              </Fragment>
-            )}
           </div>
         </div>
       );
