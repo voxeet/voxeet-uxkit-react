@@ -18,10 +18,10 @@ jobs:
       jfrog_snapshots_registry_url: ${{ secrets.JFA_NPM_SNAPSHOTS_REGISTRY_URL }}
       NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
     steps:
-      - uses: actions/checkout@v2
-      - uses: rlespinasse/github-slug-action@v3.x
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/github-slug-action-3.7.1
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: ./.github/actions/configure-aws-credentials-1.7.0
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -66,14 +66,14 @@ jobs:
 
       - name: Generate github app token
         id: generate_token
-        uses: tibdex/github-app-token@v1
+        uses: ./.github/actions/github-app-token-1.8.0
         with:
           app_id: ${{ secrets.VOXEET_IO_WEB_APP_ID }}
           private_key: ${{ secrets.VOXEET_IO_WEB_APP_PRIVATE_KEY }}
           repository: voxeet/voxeet-io-web
 
       - name: Send repository dispatch to voxeet-io-web
-        uses: peter-evans/repository-dispatch@v1
+        uses: ./.github/actions/repository-dispatch-2.1.1
         continue-on-error: true
         with:
           token: ${{ steps.generate_token.outputs.token }}
