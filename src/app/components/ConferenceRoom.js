@@ -650,6 +650,7 @@ class ConferenceRoom extends Component {
     } = this.props;
     const {
       screenShareEnabled,
+      maxScreenShareReached,
       filePresentationEnabled,
       videoPresentationEnabled,
     } = this.props.participantsStore;
@@ -738,6 +739,7 @@ class ConferenceRoom extends Component {
           attendeesChat={attendeesChat}
           attendeesList={attendeesList}
           screenShareEnabled={screenShareEnabled}
+          maxScreenShareReached={maxScreenShareReached}
           filePresentationEnabled={filePresentationEnabled}
           videoPresentationEnabled={videoPresentationEnabled}
           handleOnLeave={handleOnLeave}

@@ -11,8 +11,8 @@ const defaultState = {
     stream: null,
   },
   currentUser: null,
-  userStreamScreenShare: null,
-  userIdStreamScreenShare: null,
+  userStreamScreenShare: [],
+  maxScreenShareReached: false,
   userIdFilePresentation: null,
   invitedUsers: null,
   userIdVideoPresentation: null,
@@ -36,8 +36,8 @@ const ParticipantReducer = (state = defaultState, action) => {
         ...state,
         participants: [],
         currentUser: null,
-        userStreamScreenShare: null,
-        userIdStreamScreenShare: null,
+        userStreamScreenShare: [],
+        maxScreenShareReached: false,
         userIdFilePresentation: null,
         userIdVideoPresentation: null,
         userStream: {
@@ -412,19 +412,44 @@ const ParticipantReducer = (state = defaultState, action) => {
       };
     }
     case Types.SCREENSHARE_STARTED: {
+      const { userId, stream } = action.payload;
+      let userStreamScreenShare = [...state.userStreamScreenShare];
+      const index = userStreamScreenShare.findIndex(
+        (st) => st.userId === userId
+      );
+
+      if (index === -1) {
+        userStreamScreenShare.push({
+          userId,
+          stream,
+        });
+      }
+
       return {
         ...state,
-        screenShareEnabled: true,
-        userIdStreamScreenShare: action.payload.userId,
-        userStreamScreenShare: action.payload.stream,
+        screenShareEnabled: userStreamScreenShare.length > 0,
+        maxScreenShareReached: userStreamScreenShare.length >= 2,
+        userStreamScreenShare: [...userStreamScreenShare],
       };
     }
     case Types.SCREENSHARE_STOPPED: {
+      const { userId } = action.payload;
+      let userStreamScreenShare = [...state.userStreamScreenShare];
+      const index = userStreamScreenShare.findIndex(
+        (st) => st.userId === userId
+      );
+
+      if (index === -1) {
+        return state;
+      } else {
+        userStreamScreenShare.splice(index, 1);
+      }
+
       return {
         ...state,
-        screenShareEnabled: false,
-        userIdStreamScreenShare: null,
-        userStreamScreenShare: null,
+        screenShareEnabled: userStreamScreenShare.length > 0,
+        maxScreenShareReached: userStreamScreenShare.length >= 2,
+        userStreamScreenShare: [...userStreamScreenShare],
       };
     }
     case Types.SAVE_USER_POSITION: {

@@ -35,6 +35,7 @@ class ActionsButtons extends Component {
       convertFilePresentation,
       toggleMicrophone,
       screenShareEnabled,
+      maxScreenShareReached,
       filePresentationEnabled,
       toggleRecording,
       toggleVideo,
@@ -123,6 +124,7 @@ class ActionsButtons extends Component {
             shareActions.length > 0 && (
               <ToggleScreenShareButton
                 screenShareEnabled={screenShareEnabled}
+                maxScreenShareReached={maxScreenShareReached}
                 filePresentationEnabled={filePresentationEnabled}
                 videoPresentationEnabled={videoPresentationEnabled}
                 currentUserScreenShare={isScreenshare}
@@ -202,6 +204,7 @@ ActionsButtons.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   videoEnabled: PropTypes.bool.isRequired,
   screenShareEnabled: PropTypes.bool.isRequired,
+  maxScreenShareReached: PropTypes.bool.isRequired,
   filePresentationEnabled: PropTypes.bool.isRequired,
   videoPresentationEnabled: PropTypes.bool.isRequired,
   displayModal: PropTypes.bool.isRequired,

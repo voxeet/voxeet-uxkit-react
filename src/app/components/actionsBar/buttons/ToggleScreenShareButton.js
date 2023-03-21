@@ -67,11 +67,12 @@ class ToggleScreenShareButton extends Component {
   togglePopUp() {
     const {
       screenShareEnabled,
+      maxScreenShareReached,
       filePresentationEnabled,
       videoPresentationEnabled
     } = this.props;
     if (
-      !screenShareEnabled &&
+      !maxScreenShareReached &&
       !filePresentationEnabled &&
       !videoPresentationEnabled
     ) {
@@ -125,7 +126,8 @@ class ToggleScreenShareButton extends Component {
       currentUserVideoPresentation,
       currentUserScreenShare,
       shareActions,
-      videoPresentationEnabled
+      videoPresentationEnabled,
+      maxScreenShareReached
     } = this.props;
     const {
       opened,
@@ -143,7 +145,8 @@ class ToggleScreenShareButton extends Component {
         id="screenshare-container"
         className={
           filePresentationEnabled ||
-            screenShareEnabled ||
+            currentUserScreenShare ||
+            maxScreenShareReached ||
             videoPresentationEnabled ||
             opened ||
             openedVideoPresentation
@@ -187,7 +190,8 @@ class ToggleScreenShareButton extends Component {
                 <img
                   src={
                     filePresentationEnabled ||
-                      screenShareEnabled ||
+                      currentUserScreenShare ||
+                      maxScreenShareReached ||
                       videoPresentationEnabled
                       ? ShareScreenOn
                       : ShareScreenOff
@@ -343,6 +347,7 @@ class ToggleScreenShareButton extends Component {
 ToggleScreenShareButton.propTypes = {
   shareActions: PropTypes.array.isRequired,
   screenShareEnabled: PropTypes.bool.isRequired,
+  maxScreenShareReached: PropTypes.bool.isRequired,
   filePresentationEnabled: PropTypes.bool.isRequired,
   videoPresentationEnabled: PropTypes.bool.isRequired,
   currentUserScreenShare: PropTypes.bool.isRequired,

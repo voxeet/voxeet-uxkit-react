@@ -27,7 +27,6 @@ const Speakers = ({
   isAdmin,
   kickParticipant,
   isAdminActived,
-  userIdStreamScreenShare,
   userIdFilePresentation,
   userIdVideoPresentation,
   currentUser,
@@ -85,7 +84,6 @@ const Speakers = ({
             isScreenshare={isScreenshare}
             screenShareStream={screenShareStream}
             dolbyVoiceEnabled={dolbyVoiceEnabled}
-            userIdStreamScreenShare={userIdStreamScreenShare}
           />
         )}
       {videoPresentationEnabled && (
@@ -149,7 +147,6 @@ const Speakers = ({
                   kickParticipant={kickParticipant}
                   isAdmin={isAdmin}
                   nbParticipant={i}
-                  userIdStreamScreenShare={userIdStreamScreenShare}
                   userIdFilePresentation={userIdFilePresentation}
                   userIdVideoPresentation={userIdVideoPresentation}
                   screenShareEnabled={screenShareEnabled}
@@ -178,7 +175,6 @@ Speakers.propTypes = {
   participants: PropTypes.array.isRequired,
   forceActiveSpeaker: PropTypes.func.isRequired,
   disableForceActiveSpeaker: PropTypes.func.isRequired,
-  userIdStreamScreenShare: PropTypes.string,
   isWebinar: PropTypes.bool.isRequired,
   isScreenshare: PropTypes.bool,
   isFilePresentation: PropTypes.bool,
@@ -190,7 +186,7 @@ Speakers.propTypes = {
   videoPresentationEnabled: PropTypes.bool.isRequired,
   userIdFilePresentation: PropTypes.string,
   userIdVideoPresentation: PropTypes.string,
-  screenShareStream: PropTypes.object,
+  screenShareStream: PropTypes.array,
   userStream: PropTypes.object,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
@@ -204,8 +200,6 @@ export default connect(
     return {
       currentUser: state.voxeet.participants.currentUser,
       activeSpeakerStore: state.voxeet.activeSpeaker,
-      userIdStreamScreenShare:
-        state.voxeet.participants.userIdStreamScreenShare,
     };
   },
   null,

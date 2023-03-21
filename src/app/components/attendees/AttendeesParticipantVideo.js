@@ -31,17 +31,17 @@ class AttendeesParticipantVideo extends Component {
   }
 
   toggleScreenShareFullScreen() {
-    if (this.videoRef.current.requestFullscreen) {
-      this.videoRef.current.requestFullscreen();
-    } else if (this.videoRef.current.mozRequestFullScreen) {
-      this.videoRef.current.mozRequestFullScreen();
-    } else if (this.videoRef.current.webkitRequestFullscreen) {
-      this.videoRef.current.webkitRequestFullscreen();
+    if (this.state.videoRef.current.requestFullscreen) {
+      this.state.videoRef.current.requestFullscreen();
+    } else if (this.state.videoRef.current.mozRequestFullScreen) {
+      this.state.videoRef.current.mozRequestFullScreen();
+    } else if (this.state.videoRef.current.webkitRequestFullscreen) {
+      this.state.videoRef.current.webkitRequestFullscreen();
     }
   }
 
   render() {
-    const { classes, width, height, enableDbClick, muted } = this.props;
+    const { classes, width, height, enableDbClick, muted, streamId } = this.props;
 
     return window.voxeetNodeModule ? (
       <canvas
@@ -54,7 +54,7 @@ class AttendeesParticipantVideo extends Component {
       <video
         className="video-participant"
         width={width}
-        id="fullscreen-video"
+        id={streamId ? `fullscreen-video-${streamId}` : "fullscreen-video"}
         playsInline
         height={height}
         ref={this.state.videoRef}
@@ -72,6 +72,7 @@ AttendeesParticipantVideo.propTypes = {
   height: PropTypes.string,
   enableDbClick: PropTypes.bool,
   muted: PropTypes.bool,
+  streamId: PropTypes.string
 };
 
 AttendeesParticipantVideo.defaultProps = {

@@ -1040,54 +1040,53 @@ export class Actions {
       const {
         voxeet: { participants, controls },
       } = getState();
-      const enableScreenShare = !participants.screenShareEnabled;
-      if (!enableScreenShare && !controls.isScreenshare) {
-        dispatch(
-          OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
-            strings.screenshareInProgress,
-            null,
-            true
-          )
-        );
+      if (controls.isScreenshare) return VoxeetSDK.conference.stopScreenShare();
+      else {
+        if (participants.maxScreenShareReached) {
+          dispatch(
+            OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
+              strings.screenshareInProgress,
+              null,
+              true
+            )
+          );
+        } else return VoxeetSDK.conference
+        .startScreenShare({ audio: true })
+        .catch((err) => {
+          if (
+            err.message === "Chrome Web Extension is not installed" &&
+            controls.chromeExtensionId != null
+          ) {
+            dispatch(
+              OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
+                strings.installExtension,
+                "https://chrome.google.com/webstore/detail/" +
+                  controls.chromeExtensionId +
+                  "."
+              )
+            );
+          } else if (
+            err.message === "Chrome Web Extension is not installed" &&
+            controls.chromeExtensionId == null
+          ) {
+            dispatch(
+              OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
+                strings.noExtensionAvailable,
+                null,
+                true
+              )
+            );
+          } else if (err) {
+            dispatch(
+              OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
+                err.message,
+                null,
+                true
+              )
+            );
+          }
+        });
       }
-      if (enableScreenShare)
-        return VoxeetSDK.conference
-          .startScreenShare({ audio: true })
-          .catch((err) => {
-            if (
-              err.message === "Chrome Web Extension is not installed" &&
-              controls.chromeExtensionId != null
-            ) {
-              dispatch(
-                OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
-                  strings.installExtension,
-                  "https://chrome.google.com/webstore/detail/" +
-                    controls.chromeExtensionId +
-                    "."
-                )
-              );
-            } else if (
-              err.message === "Chrome Web Extension is not installed" &&
-              controls.chromeExtensionId == null
-            ) {
-              dispatch(
-                OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
-                  strings.noExtensionAvailable,
-                  null,
-                  true
-                )
-              );
-            } else if (err) {
-              dispatch(
-                OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
-                  err.message,
-                  null,
-                  true
-                )
-              );
-            }
-          });
-      else return VoxeetSDK.conference.stopScreenShare();
     };
   }
 
@@ -1435,6 +1434,7 @@ export class Actions {
           if (VoxeetSDK.session.participant.id === user.id) {
             dispatch(ControlsActions.toggleScreenShareMode(true));
           }
+          console.log("the screenshare has started")
           dispatch(ParticipantActions.onScreenShareStarted(user.id, stream));
         } else {
           dispatch(
@@ -1480,8 +1480,10 @@ export class Actions {
 
       VoxeetSDK.conference.on("streamRemoved", (user, stream) => {
         if (stream && stream.type === "ScreenShare") {
-          dispatch(ParticipantActions.onScreenShareStopped());
-          dispatch(ControlsActions.toggleScreenShareMode(false));
+          dispatch(ParticipantActions.onScreenShareStopped(user.id));
+          if (VoxeetSDK.session.participant.id === user.id) {
+            dispatch(ControlsActions.toggleScreenShareMode(false));
+          }
         } else {
           // VFS
           dispatch(ForwardedVideoActions.updateForwardedVideos());

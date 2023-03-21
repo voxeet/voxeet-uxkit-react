@@ -24,7 +24,6 @@ class VideoPresentationMode extends Component {
       isAdmin,
       kickParticipant,
       isAdminActived,
-      userIdStreamScreenShare,
       currentUser,
       isWebinar,
       isScreenshare
@@ -57,7 +56,7 @@ VideoPresentationMode.propTypes = {
   toggleMicrophone: PropTypes.func.isRequired,
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
   screenShareEnabled: PropTypes.bool.isRequired,
-  screenShareStream: PropTypes.object,
+  screenShareStream: PropTypes.array,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired
