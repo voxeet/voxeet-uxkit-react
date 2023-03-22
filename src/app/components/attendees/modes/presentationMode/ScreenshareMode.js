@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { strings } from "../../../../languages/localizedStrings";
 import SpeakerActive from "../SpeakerActive";
 
 class ScreenshareMode extends Component {
@@ -26,7 +25,7 @@ class ScreenshareMode extends Component {
       dolbyVoiceEnabled,
     } = this.props;
 
-    return !isScreenshare ? (
+    return (
       <SpeakerActive
         participant={participant}
         toggleMicrophone={toggleMicrophone}
@@ -41,26 +40,7 @@ class ScreenshareMode extends Component {
         dolbyVoiceEnabled={dolbyVoiceEnabled}
         currentUser={currentUser}
       />
-    ) : (
-      <div className="screenshare-current-user">
-        <div className="screenshare-current-user-enable">
-          {strings.screensharerunning}
-        </div>
-        <SpeakerActive
-          participant={participant}
-          toggleMicrophone={toggleMicrophone}
-          isWidgetFullScreenOn={isWidgetFullScreenOn}
-          screenShareEnabled={screenShareEnabled}
-          screenShareStream={screenShareStream}
-          kickParticipant={kickParticipant}
-          isAdmin={isAdmin}
-          isAdminActived={isAdminActived}
-          mySelf={false}
-          dolbyVoiceEnabled={dolbyVoiceEnabled}
-          currentUser={currentUser}
-        />
-      </div>
-    );
+    )
   }
 }
 

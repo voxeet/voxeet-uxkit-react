@@ -64,7 +64,6 @@ class SpeakerActive extends Component {
       currentUser,
     } = this.props;
     const photoUrl = participant.avatarUrl || userPlaceholder;
-    console.log(screenShareStream)// prend un state plutôt qu'une props peut être
     return (
       <div
         id={
@@ -109,18 +108,20 @@ class SpeakerActive extends Component {
           {!filePresentationEnabled && !videoPresentationEnabled && screenShareEnabled && (
             <Fragment>
               {screenShareStream.map((st) => {
-                return (<div key={st.stream.id}
-                className="stream-media">
-                  {!isScreenshare && (
+                const isLocalScreenShare = currentUser.participant_id === st.userId;
+                return (
+                <div key={st.stream.id}
+                  className="stream-media">
+                  { !isLocalScreenShare &&
                     <ToggleFullScreenScreenShare streamId={st.stream.id}/>
-                  )}
-                  <AttendeesParticipantVideo
-                    streamId={st.stream.id}
-                    muted={currentUser.participant_id === st.userId}
-                    stream={st.stream}
-                    enableDbClick={screenShareEnabled}
-                  />
-                </div>)
+                  }
+                    <AttendeesParticipantVideo
+                      streamId={st.stream.id}
+                      muted={isLocalScreenShare}
+                      stream={st.stream}
+                      enableDbClick={!isLocalScreenShare}
+                    />
+                  </div>)
                 })
 
               }

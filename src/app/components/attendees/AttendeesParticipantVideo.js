@@ -58,7 +58,7 @@ class AttendeesParticipantVideo extends Component {
         playsInline
         height={height}
         ref={this.state.videoRef}
-        onDoubleClick={this.toggleScreenShareFullScreen}
+        onDoubleClick={enableDbClick ? this.toggleScreenShareFullScreen : null}
         autoPlay
         muted={muted}
       />
