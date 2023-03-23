@@ -16,16 +16,13 @@ class SpeakerActive extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("should component update")
     if (
       (!this.props.screenShareEnabled && nextProps.screenShareEnabled) ||
       (this.props.screenShareEnabled && !nextProps.screenShareEnabled)
     ) {
-      console.log("screenshare enabled/disable")
       return true;
     }
     if (this.props.screenShareStream.length !== nextProps.screenShareStream) {
-      console.log("yes update !!!")
       return true;
     }
     const checker = document.getElementById("video-active-video-on");
