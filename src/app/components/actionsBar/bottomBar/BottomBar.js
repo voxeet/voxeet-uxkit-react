@@ -39,6 +39,7 @@ BottomBar.propTypes = {
   actionsButtons: PropTypes.func,
   shareActions: PropTypes.array,
   screenShareEnabled: PropTypes.bool,
+  maxScreenShareReached: PropTypes.bool,
   filePresentationEnabled: PropTypes.bool,
   videoPresentationEnabled: PropTypes.bool,
   forceFullscreen: PropTypes.bool.isRequired,

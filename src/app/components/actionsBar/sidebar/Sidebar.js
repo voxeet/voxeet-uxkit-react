@@ -64,6 +64,7 @@ class Sidebar extends Component {
 Sidebar.propTypes = {
   actionsButtons: PropTypes.func,
   screenShareEnabled: PropTypes.bool,
+  maxScreenShareReached: PropTypes.bool,
   displayActions: PropTypes.array.isRequired,
   forceFullscreen: PropTypes.bool.isRequired,
   isScreenshare: PropTypes.bool.isRequired,

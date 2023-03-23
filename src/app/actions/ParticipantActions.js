@@ -243,9 +243,10 @@ export class Actions {
     };
   }
 
-  static onScreenShareStopped() {
+  static onScreenShareStopped(userId) {
     return {
       type: Types.SCREENSHARE_STOPPED,
+      payload: { userId },
     };
   }
 

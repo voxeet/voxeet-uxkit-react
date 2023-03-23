@@ -206,6 +206,7 @@ class ConferenceRoomContainer extends Component {
       isModal,
       forceFullscreen,
       screenShareEnabled,
+      maxScreenShareReached,
       filePresentationEnabled,
       videoPresentationEnabled,
       actionsButtons,
@@ -279,6 +280,7 @@ class ConferenceRoomContainer extends Component {
               filePresentationEnabled={filePresentationEnabled}
               displayActions={displayActions}
               screenShareEnabled={screenShareEnabled}
+              maxScreenShareReached={maxScreenShareReached}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
               toggleWidget={this.toggleWidget}
               toggleFullScreen={this.toggleFullScreen}
@@ -358,6 +360,7 @@ class ConferenceRoomContainer extends Component {
               shareActions={shareActions}
               leave={this.leaveConference}
               screenShareEnabled={screenShareEnabled}
+              maxScreenShareReached={maxScreenShareReached}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
               filePresentationEnabled={filePresentationEnabled}
               videoPresentationEnabled={videoPresentationEnabled}
@@ -420,6 +423,7 @@ ConferenceRoomContainer.propTypes = {
   filePresentationEnabled: PropTypes.bool,
   videoPresentationEnabled: PropTypes.bool,
   screenShareEnabled: PropTypes.bool,
+  maxScreenShareReached: PropTypes.bool,
   handleOnLeave: PropTypes.func,
   conferenceId: PropTypes.string,
   conferencePincode: PropTypes.string,

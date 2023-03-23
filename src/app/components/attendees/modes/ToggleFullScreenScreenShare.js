@@ -11,8 +11,8 @@ class ToggleFullScreenScreenShare extends Component {
     );
   }
 
-  toggleScreenShareFullScreen() {
-    var elem = document.getElementById("fullscreen-video");
+  toggleScreenShareFullScreen(streamId) {
+    var elem = document.getElementById(`fullscreen-video-${streamId}`);
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
     } else if (elem.mozRequestFullScreen) {
@@ -23,9 +23,11 @@ class ToggleFullScreenScreenShare extends Component {
   }
 
   render() {
+    const { streamId } = this.props;
+
     return (
       <a
-        onClick={() => this.toggleScreenShareFullScreen()}
+        onClick={() => this.toggleScreenShareFullScreen(streamId)}
         className="fullscreen-screenshare"
       >
         <img width="20" src={Fullscreen} />

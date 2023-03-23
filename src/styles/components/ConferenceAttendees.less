@@ -1177,7 +1177,7 @@
         .fullscreen-screenshare {
           position: absolute;
           top: 25px;
-          left: 25px;
+          margin-left: 30px;
           padding: 5px;
           background-color: #fff;
           border-radius: 4px;
@@ -1299,9 +1299,7 @@
           }
           .stream-media {
             height: ~"calc(100% - 75px)";
-            display: flex;
             align-items: center;
-            justify-content: center;
 
             .video-participant {
               //object-fit: fill;
@@ -1431,6 +1429,8 @@
         border-radius: 0;
         margin-bottom: 0;
         &.screen-share {
+          display: flex;
+          justify-content: center;
           cursor: pointer;
         }
         &:after {

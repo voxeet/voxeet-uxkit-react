@@ -303,7 +303,6 @@ const Attendees = (props) => {
               isFilePresentation={props.isFilePresentation}
               isWebinar={props.isWebinar}
               kickParticipant={kickParticipant}
-              userIdStreamScreenShare={props.userIdStreamScreenShare}
               forceActiveSpeaker={forceActiveSpeaker}
               disableForceActiveSpeaker={disableForceActiveSpeaker}
               toggleMicrophone={toggleMicrophone}

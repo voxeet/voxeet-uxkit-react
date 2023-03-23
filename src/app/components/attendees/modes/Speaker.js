@@ -41,7 +41,6 @@ class Speaker extends Component {
       kickParticipant,
       isAdminActived,
       userIdFilePresentation,
-      userIdStreamScreenShare,
       userIdVideoPresentation,
       disableForceActiveSpeaker,
       forceActiveUserEnabled,
@@ -57,7 +56,6 @@ class Speaker extends Component {
       (participant.participant_id == activeSpeaker.participant_id &&
         forceActiveUserEnabled &&
         !screenShareEnabled) ||
-      userIdStreamScreenShare == participant.participant_id ||
       userIdVideoPresentation == participant.participant_id ||
       userIdFilePresentation == participant.participant_id
     ) {
@@ -118,7 +116,6 @@ Speaker.propTypes = {
   forceActiveUserEnabled: PropTypes.bool.isRequired,
   activeSpeaker: PropTypes.object.isRequired,
   nbParticipant: PropTypes.number,
-  userIdStreamScreenShare: PropTypes.string,
   userIdFilePresentation: PropTypes.string,
   userIdVideoPresentation: PropTypes.string,
   disableForceActiveSpeaker: PropTypes.func.isRequired,
