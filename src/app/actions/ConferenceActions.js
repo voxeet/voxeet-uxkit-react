@@ -1434,7 +1434,6 @@ export class Actions {
           if (VoxeetSDK.session.participant.id === user.id) {
             dispatch(ControlsActions.toggleScreenShareMode(true));
           }
-          console.log("the screenshare has started")
           dispatch(ParticipantActions.onScreenShareStarted(user.id, stream));
         } else {
           dispatch(
