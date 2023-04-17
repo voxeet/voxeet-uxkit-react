@@ -22,7 +22,7 @@ class SpeakerActive extends Component {
     ) {
       return true;
     }
-    if (this.props.screenShareStream.length !== nextProps.screenShareStream) {
+    if (this.props.screenShareStream.length !== nextProps.screenShareStream.length) {
       return true;
     }
     const checker = document.getElementById("video-active-video-on");
