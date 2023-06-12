@@ -39,14 +39,12 @@ export const Types = {
 };
 
 export class Actions {
-  static initialize(consumerKey, consumerSecret, options) {
+  static initialize(appKey, appSecret, options) {
     return (dispatch) => {
       return this._initializeListeners(dispatch, options)
         .then(() => {
-          VoxeetSDK.session.participant ||
-            VoxeetSDK.initialize(consumerKey, consumerSecret).catch((err) => {
-              this._throwErrorModal(err);
-            });
+          return VoxeetSDK.session.participant ||
+            VoxeetSDK.initialize(appKey, appSecret);
         })
         .then((userId) => {
           dispatch(this._sdkInitializedSuccessful(userId));
@@ -61,11 +59,9 @@ export class Actions {
     return (dispatch) => {
       return this._initializeListeners(dispatch, options)
         .then(() => {
-          VoxeetSDK.session.participant ||
+          return VoxeetSDK.session.participant ||
             VoxeetSDK.initializeToken(token, () => {
               return refreshTokenCallback();
-            }).catch((err) => {
-              this._throwErrorModal(err);
             });
         })
         .then((userId) => dispatch(this._sdkInitializedSuccessful(userId)))
