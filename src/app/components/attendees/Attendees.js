@@ -187,6 +187,7 @@ const Attendees = (props) => {
         isListener={props.currentUser.isListener}
         attendeesSettingsOpened={props.attendeesSettingsOpened}
         dolbyVoiceEnabled={props.dolbyVoiceEnabled}
+        virtualBackgroundModeSupported={props.virtualBackgroundModeSupported}
       />
 
       {renderParticipantList()}
@@ -381,4 +382,5 @@ Attendees.propTypes = {
   conferencePermissions: PropTypes.object,
   chatOptions: PropTypes.object,
   spatialAudioEnabled: PropTypes.bool,
+  virtualBackgroundModeSupported: PropTypes.bool,
 };
