@@ -423,7 +423,9 @@ class ConferenceRoom extends Component {
     );
     this.audioTransparentMode = audioTransparentMode;
 
-    let virtualBackgroundMode = Cookies.get("virtualBackgroundMode");
+    let virtualBackgroundMode = this.props.virtualBackgroundModeSupported
+      ? Cookies.get("virtualBackgroundMode")
+      : null;
     if (virtualBackgroundMode === "null") virtualBackgroundMode = null;
     this.props.dispatch(
       ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode)
@@ -720,6 +722,7 @@ class ConferenceRoom extends Component {
           handleJoin={this.handleJoin}
           dolbyVoiceEnabled={dolbyVoice}
           spatialAudioEnabled={spatialAudio}
+          virtualBackgroundModeSupported={this.props.virtualBackgroundModeSupported}
         />
       );
     } else if (isJoined || !isWidget || conferenceReplayId != null) {
@@ -748,6 +751,7 @@ class ConferenceRoom extends Component {
           dolbyVoiceEnabled={dolbyVoiceEnabled}
           chatOptions={chatOptions}
           spatialAudioEnabled={spatialAudio}
+          virtualBackgroundModeSupported={this.props.virtualBackgroundModeSupported}
         />
       );
     }
@@ -805,6 +809,7 @@ ConferenceRoom.propTypes = {
   handleOnConnect: PropTypes.func,
   attendeesWaiting: PropTypes.func,
   spatialAudio: PropTypes.bool,
+  virtualBackgroundModeSupported: PropTypes.bool,
 };
 
 ConferenceRoom.defaultProps = {
@@ -860,6 +865,7 @@ ConferenceRoom.defaultProps = {
   loadingScreen: LoadingScreen,
   attendeesWaiting: AttendeesWaiting,
   spatialAudio: false,
+  virtualBackgroundModeSupported: true,
 };
 
 export default ConferenceRoom;

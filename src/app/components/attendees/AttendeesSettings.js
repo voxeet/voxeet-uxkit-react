@@ -61,6 +61,13 @@ class AttendeesSettings extends Component {
       this.props.controlsStore.videoDenoise !== undefined
         ? this.props.controlsStore.videoDenoise
         : false;
+    let virtualBackgroundModeSupported =
+      this.props.virtualBackgroundModeSupported === false
+        ? false
+        : true;
+    if (!virtualBackgroundModeSupported) {
+      virtualBackgroundMode = null;
+    }
 
     this.state = {
       runningAnimation: false,
@@ -76,6 +83,7 @@ class AttendeesSettings extends Component {
       lowBandwidthMode: lowBandwidthMode,
       virtualBackgroundMode: virtualBackgroundMode,
       videoDenoise: videoDenoise,
+      virtualBackgroundModeSupported: virtualBackgroundModeSupported
     };
     this.onAudioDeviceSelected = this.onAudioDeviceSelected.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
@@ -471,6 +479,7 @@ class AttendeesSettings extends Component {
       virtualBackgroundMode,
       videoEnabled,
       videoDenoise,
+      virtualBackgroundModeSupported,
     } = this.state;
     //const { audioTransparentMode } = this.props.controlsStore;
 
@@ -583,7 +592,7 @@ class AttendeesSettings extends Component {
                 </div>
               </div>
 
-              {(bowser.chrome || isElectron()) && (
+              {virtualBackgroundModeSupported && (bowser.chrome || isElectron()) && (
                 <div
                   className={`form-group switch-enable ${
                     !videoEnabled ? "disabled-form" : ""
@@ -676,6 +685,7 @@ AttendeesSettings.propTypes = {
   attendeesSettingsOpened: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
   maxVideoForwarding: PropTypes.number,
+  virtualBackgroundModeSupported: PropTypes.bool,
 };
 
 export default AttendeesSettings;

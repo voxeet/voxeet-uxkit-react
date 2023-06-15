@@ -60,6 +60,12 @@ class ConferencePreConfigContainer extends Component {
       this.props.controlsStore.videoDenoise !== undefined
         ? this.props.controlsStore.videoDenoise
         : false;
+    let virtualBackgroundModeSupported = this.props.virtualBackgroundModeSupported === false
+        ? false
+        : true;
+    if (!virtualBackgroundModeSupported) {
+      virtualBackgroundMode = null;
+    }
 
     this.state = {
       loading: true,
@@ -81,6 +87,7 @@ class ConferencePreConfigContainer extends Component {
       lowBandwidthMode: lowBandwidthMode,
       virtualBackgroundMode: virtualBackgroundMode,
       videoDenoise: videoDenoise,
+      virtualBackgroundModeSupported: virtualBackgroundModeSupported,
     };
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
@@ -809,6 +816,7 @@ class ConferencePreConfigContainer extends Component {
       maxVideoForwarding,
       lowBandwidthMode,
       virtualBackgroundMode,
+      virtualBackgroundModeSupported,
     } = this.state;
     const MAX_MAXVF = isMobile() ? 4 : 16;
 
@@ -976,7 +984,7 @@ class ConferencePreConfigContainer extends Component {
                                 </label>
                               </div>
                             </div>
-                            {(bowser.chrome || isElectron()) && (
+                            {virtualBackgroundModeSupported && (bowser.chrome || isElectron()) && (
                               <div
                                 className={`group-enable ${
                                   !this.state.videoEnabled
@@ -1103,6 +1111,7 @@ ConferencePreConfigContainer.propTypes = {
   maxVideoForwarding: PropTypes.bool,
   virtualBackgroundMode: PropTypes.string,
   videoDenoise: PropTypes.bool,
+  virtualBackgroundModeSupported: PropTypes.bool,
 };
 
 export default ConferencePreConfigContainer;
