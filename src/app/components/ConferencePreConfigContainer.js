@@ -818,7 +818,7 @@ class ConferencePreConfigContainer extends Component {
       virtualBackgroundMode,
       virtualBackgroundModeSupported,
     } = this.state;
-    const MAX_MAXVF = isMobile() ? 4 : 16;
+    const MAX_MAXVF = isMobile() ? 4 : 49;
 
     return (
       <Fragment>

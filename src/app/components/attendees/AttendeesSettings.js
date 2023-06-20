@@ -485,7 +485,7 @@ class AttendeesSettings extends Component {
 
     const { attendeesSettingsOpened, isListener, dolbyVoiceEnabled } =
       this.props;
-    const MAX_MAXVF = isMobile() ? 4 : 16;
+    const MAX_MAXVF = isMobile() ? 4 : 49;
     const { currentAudioDevice, currentVideoDevice, currentOutputDevice } =
       this.props.inputManager;
     return (
