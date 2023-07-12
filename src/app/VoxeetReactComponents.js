@@ -20,6 +20,15 @@ import {
   ToggleAttendeesListButton,
 } from "./components/actionsBar/buttons";
 
+import {
+  DefaultVirtualBackgrounds,
+  getVideoProcessorOptionsFromCache,
+  VideoProcessorCache,
+  VideoProcessorDefaultState,
+  VirtualBackgroundFacade,
+  VirtualBackgroundId,
+} from "./components/videoProcessor/VideoProcessorUtils";
+
 const UxKitVersion = __VERSION__;
 
 module.exports = {
@@ -45,4 +54,12 @@ module.exports = {
   },
   ConferenceSounds,
   UxKitVersion,
+  VideoProcessorUtils: {
+    DefaultVirtualBackgrounds,
+    getVideoProcessorOptionsFromCache,
+    VideoProcessorCache,
+    VideoProcessorDefaultState,
+    VirtualBackgroundFacade,
+    VirtualBackgroundId,
+  },
 };

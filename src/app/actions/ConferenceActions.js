@@ -26,6 +26,7 @@ import {
   RECORDING_STATE,
 } from "../constants/BroadcastMessageType";
 import { STATUS_CONNECTING } from "../constants/ParticipantStatus";
+import { getVideoProcessorOptionsFromCache } from "../components/videoProcessor/VideoProcessorUtils";
 
 export const Types = {
   INITIALIZED_SUCCESS: "INITIALIZED_SUCCESS",
@@ -355,7 +356,8 @@ export class Actions {
     maxVideoForwardingParam,
     chatOptions,
     dvwc,
-    spatialAudio
+    spatialAudio,
+    virtualBackgroundModeSupported
   ) {
     let maxVideoForwarding =
       preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined
@@ -374,6 +376,21 @@ export class Actions {
         ? preConfigPayload.videoDenoise
         : Cookies.get("videoDenoise");
     return async (dispatch, getState) => {
+      let videoProcessorOptions =
+        preConfigPayload?.videoProcessorOptions ??
+        (await getVideoProcessorOptionsFromCache());
+      // Video processing should be enabled only if at least one option is enabled.
+      // When all options are off, video processing should be disabled to reduce CPU usage.
+      if (
+        !videoProcessorOptions.virtualBackgroundId &&
+        !videoProcessorOptions.facialSmoothingStrength &&
+        !videoProcessorOptions.spotLightStrength &&
+        !videoProcessorOptions.autoFraming &&
+        !videoProcessorOptions.noiseReduction &&
+        !videoProcessorOptions.autoBrightness
+      ) {
+        videoProcessorOptions = undefined;
+      }
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
       dispatch(this._conferenceConnecting());
@@ -515,6 +532,7 @@ export class Actions {
                   videoFilterOptions: { videoDenoise: videoDenoise },
                   dvwc: dvwc,
                   spatialAudio,
+                  videoProcessor: videoProcessorOptions,
                 })
                 .then((res) => {
                   dispatch(
@@ -590,13 +608,16 @@ export class Actions {
                     }
                   }
                 })
-                .then(() =>
-                  this.setVirtualBackground(
-                    virtualBackgroundMode,
-                    controls.videoEnabled,
-                    controls.videoDenoise
-                  )
-                );
+                .then(() => {
+                  if (virtualBackgroundModeSupported) {
+                    this.setVirtualBackground(
+                      virtualBackgroundModeSupported,
+                      virtualBackgroundMode,
+                      controls.videoEnabled,
+                      controls.videoDenoise
+                    );
+                  }
+                });
             })
             .catch((err) => {
               console.error(err);
@@ -638,6 +659,7 @@ export class Actions {
               videoFilterOptions: { videoDenoise: videoDenoise },
               dvwc: dvwc,
               spatialAudio,
+              videoProcessor: videoProcessorOptions,
             })
             .then((res) => {
               dispatch(
@@ -725,13 +747,15 @@ export class Actions {
                 );
               }
             })
-            .then(() =>
-              this.setVirtualBackground(
-                virtualBackgroundMode,
-                controls.videoEnabled,
-                controls.videoDenoise
-              )
-            );
+            .then(() => {
+              if (virtualBackgroundModeSupported) {
+                return this.setVirtualBackground(
+                  virtualBackgroundMode,
+                  controls.videoEnabled,
+                  controls.videoDenoise
+                );
+              }
+            });
         })
         .catch((err) => {
           console.log(err);

@@ -168,6 +168,12 @@ export const strings = new LocalizedStrings({
     bokehMode: "Bokeh mode",
     videoDenoise: "Video noise reduction",
     dolbyVoiceNotSupported: "Unable to use Dolby Voice",
+    videoProcessorAutoFraming: "Auto Framing",
+    videoProcessorNoiseReduction: "Noise Reduction",
+    videoProcessorAutoBrightness: "Auto Brightness",
+    videoProcessorVirtualBackground: "Virtual Background",
+    videoProcessorSpotLight: "Spot Light",
+    videoProcessorFacialSmoothing: "Facial Smoothing",
   },
   fr: {
     noPstnNumbers: "Pas de numéro PSTN ...",

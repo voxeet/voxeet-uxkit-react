@@ -137,17 +137,21 @@ class ConferenceRoom extends Component {
       this.audioTransparentMode = preConfigPayload.audioTransparentMode;
     }
     let audioTransparentMode = this.audioTransparentMode;
-    if (
-      preConfigPayload &&
-      preConfigPayload.virtualBackgroundMode !== undefined
-    ) {
-      this.props.dispatch(
-        ControlsActions.setVirtualBackgroundMode(
-          preConfigPayload.virtualBackgroundMode
-        )
-      );
-      this.virtualBackgroundMode = preConfigPayload.virtualBackgroundMode;
+
+    if (this.props.virtualBackgroundModeSupported) {
+      if (
+        preConfigPayload &&
+        preConfigPayload.virtualBackgroundMode !== undefined
+      ) {
+        this.props.dispatch(
+          ControlsActions.setVirtualBackgroundMode(
+            preConfigPayload.virtualBackgroundMode
+          )
+        );
+        this.virtualBackgroundMode = preConfigPayload.virtualBackgroundMode;
+      }
     }
+
     if (preConfigPayload && preConfigPayload.videoDenoise !== undefined) {
       this.props.dispatch(
         ControlsActions.setVideoDenoise(preConfigPayload.videoDenoise)
@@ -318,7 +322,8 @@ class ConferenceRoom extends Component {
               maxVideoForwarding,
               chatOptions,
               dvwc,
-              spatialAudio
+              spatialAudio,
+              this.props.virtualBackgroundModeSupported
             )
           );
         });
@@ -422,19 +427,18 @@ class ConferenceRoom extends Component {
     );
     this.audioTransparentMode = audioTransparentMode;
 
-    let virtualBackgroundMode = this.props.virtualBackgroundModeSupported
-      ? Cookies.get("virtualBackgroundMode")
-      : null;
-    if (virtualBackgroundMode === "null") virtualBackgroundMode = null;
-    this.props.dispatch(
-      ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode)
-    );
-    this.virtualBackgroundMode = virtualBackgroundMode;
-    console.log(
-      "initializeControlsStore virtualBackgroundMode",
-      this.virtualBackgroundMode
-    );
-
+    if (this.props.virtualBackgroundModeSupported) {
+      let virtualBackgroundMode = Cookies.get("virtualBackgroundMode");
+      if (virtualBackgroundMode === "null") virtualBackgroundMode = null;
+      this.props.dispatch(
+        ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode)
+      );
+      this.virtualBackgroundMode = virtualBackgroundMode;
+      console.log(
+        "initializeControlsStore virtualBackgroundMode",
+        this.virtualBackgroundMode
+      );
+    }
     let videoDenoise = Cookies.get("videoDenoise");
     if (videoDenoise !== undefined) {
       if (typeof videoDenoise === "string" || videoDenoise instanceof String)

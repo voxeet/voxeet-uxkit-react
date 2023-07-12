@@ -10,6 +10,13 @@ import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName, getDevice } from "../libs/getVideoDeviceName";
 import { isElectron, isMobile } from "../libs/browserDetection";
 import { getUxKitContext } from "../context";
+import {
+  VideoProcessorCache,
+  VideoProcessorOptionsBuilder,
+  VideoProcessorProxy,
+  VirtualBackgroundFacade,
+  VirtualBackgroundId,
+} from "./videoProcessor/VideoProcessorUtils";
 
 const today = new Date();
 today.setDate(today.getDate() + 365);
@@ -34,6 +41,12 @@ const default_cookies_param = {
 class ConferencePreConfigContainer extends Component {
   constructor(props) {
     super(props);
+
+    this.videoProcessorCache = new VideoProcessorCache();
+    this.videoProcessorProxy = new VideoProcessorProxy();
+    this.virtualBackgroundFacade = new VirtualBackgroundFacade();
+    const virtualBackgroundId = this.virtualBackgroundFacade.initFromCache();
+
     // defaults
     let maxVideoForwarding =
       this.props.controlsStore.maxVideoForwarding !== undefined
@@ -87,7 +100,20 @@ class ConferencePreConfigContainer extends Component {
       virtualBackgroundMode: virtualBackgroundMode,
       videoDenoise: videoDenoise,
       virtualBackgroundModeSupported: virtualBackgroundModeSupported,
+      // Init video processor UI state
+      videoProcessorSetButtonDisabled: true,
+      videoProcessorVirtualBackgroundId: virtualBackgroundId,
+      videoProcessorFacialSmothingStrength:
+        this.videoProcessorCache.facialSmoothingStrength,
+      videoProcessorSpotLightStrength:
+        this.videoProcessorCache.spotLightStrength,
+      videoProcessorAutoFraming: this.videoProcessorCache.autoFraming,
+      videoProcessorNoiseReduction: this.videoProcessorCache.noiseReduction,
+      videoProcessorAutoBrightness: this.videoProcessorCache.autoBrightness,
+      videoProcessorFlagNonBlockingAsyncPixelReadback:
+        this.videoProcessorCache.flagNonBlockingAsyncPixelReadback,
     };
+
     this.setAudioDevice = this.setAudioDevice.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
     this.setOutputDevice = this.setOutputDevice.bind(this);
@@ -108,6 +134,23 @@ class ConferencePreConfigContainer extends Component {
     this.attachMediaStream = this.attachMediaStream.bind(this);
     this.maxVFTimer = null;
     this.onVideoStarted = this.onVideoStarted.bind(this);
+    this.onVideoUpdated = this.onVideoUpdated.bind(this);
+    this.handleVideoProcessorVirtualBackgroundIdChange =
+      this.handleVideoProcessorVirtualBackgroundIdChange.bind(this);
+    this.handleVideoProcessorCustomButtonClick =
+      this.handleVideoProcessorCustomButtonClick.bind(this);
+    this.handleVideoProcessorSetButtonClick =
+      this.handleVideoProcessorSetButtonClick.bind(this);
+    this.handleVideoProcessorFacialSmothingStrengthChange =
+      this.handleVideoProcessorFacialSmothingStrengthChange.bind(this);
+    this.handleVideoProcessorSpotLightStrengthChange =
+      this.handleVideoProcessorSpotLightStrengthChange.bind(this);
+    this.handleVideoProcessorAutoFramingChange =
+      this.handleVideoProcessorAutoFramingChange.bind(this);
+    this.handleVideoProcessorNoiseReductionChange =
+      this.handleVideoProcessorNoiseReductionChange.bind(this);
+    this.handleVideoProcessorAutoBrightnessChange =
+      this.handleVideoProcessorAutoBrightnessChange.bind(this);
   }
 
   componentDidMount() {
@@ -119,6 +162,7 @@ class ConferencePreConfigContainer extends Component {
     });
 
     VoxeetSDK.video.local.on("videoStarted", this.onVideoStarted);
+    VoxeetSDK.video.local.on("videoUpdated", this.onVideoUpdated);
   }
 
   componentWillUnmount() {
@@ -128,6 +172,7 @@ class ConferencePreConfigContainer extends Component {
     );
 
     VoxeetSDK.video.local.removeListener("videoStarted", this.onVideoStarted);
+    VoxeetSDK.video.local.removeListener("videoUpdated", this.onVideoUpdated);
 
     this.releaseAudioStream().then(() => this.releaseVideoStream());
   }
@@ -137,14 +182,39 @@ class ConferencePreConfigContainer extends Component {
   }
 
   onVideoStarted(videoTrack) {
-    const stream = this.state.userVideoStream;
+    let stream = this.state.userVideoStream;
     if (stream) {
       const videoTracks = stream.getVideoTracks();
       if (videoTracks && videoTracks[0]) {
         stream.removeTrack(videoTracks[0]);
       }
       stream.addTrack(videoTrack);
+    } else {
+      stream = new MediaStream([videoTrack]);
     }
+    this.setState({
+      userVideoStream: stream,
+    });
+
+    this.attachMediaStream(stream);
+  }
+
+  onVideoUpdated(videoTrack) {
+    let stream = this.state.userVideoStream;
+    if (stream) {
+      const videoTracks = stream.getVideoTracks();
+      if (videoTracks && videoTracks[0]) {
+        stream.removeTrack(videoTracks[0]);
+      }
+      stream.addTrack(videoTrack);
+    } else {
+      stream = new MediaStream([videoTrack]);
+    }
+    this.setState({
+      userVideoStream: stream,
+    });
+
+    this.attachMediaStream(stream);
   }
 
   onDeviceChange() {
@@ -163,7 +233,7 @@ class ConferencePreConfigContainer extends Component {
       });
   }
 
-  handleJoin() {
+  async handleJoin() {
     const { handleJoin, constraints } = this.props;
     constraints.video = this.state.videoEnabled;
     const payload = {
@@ -177,6 +247,7 @@ class ConferencePreConfigContainer extends Component {
       maxVideoForwarding: this.state.maxVideoForwarding,
       virtualBackgroundMode: this.state.virtualBackgroundMode,
       videoDenoise: this.state.videoDenoise,
+      videoProcessorOptions: await this.buildVideoProcessorOptions(),
     };
     handleJoin(payload);
   }
@@ -246,41 +317,39 @@ class ConferencePreConfigContainer extends Component {
     return navigator.mediaDevices
       .getUserMedia({ audio: audioConstraints, video: false })
       .then((audioStream) => {
-        const processor =
-          this.state.virtualBackgroundMode === "bokeh"
-            ? { type: this.state.virtualBackgroundMode }
-            : null;
-        return VoxeetSDK.video.local
-          .start(videoConstraints, processor)
-          .then((videoTrack) => new MediaStream([videoTrack]))
-          .then((videoStream) => {
-            this.attachMediaStream(videoStream);
-            if (
-              navigator.mediaDevices &&
-              navigator.mediaDevices.enumerateDevices
-            ) {
-              return navigator.mediaDevices
-                .enumerateDevices()
-                .then((sources) => {
-                  let resultVideo = [];
-                  /* GET SOURCES */
-                  sources.forEach((source) => {
-                    if (
-                      source.kind === "videoinput" &&
-                      source.deviceId !== ""
-                    ) {
-                      resultVideo.push(source);
-                    }
-                  });
+        return this.buildVideoProcessorOptions().then((videoProcessorOptions) =>
+          VoxeetSDK.video.local
+            .start(videoConstraints, videoProcessorOptions)
+            .then((videoTrack) => new MediaStream([videoTrack]))
+            .then((videoStream) => {
+              this.attachMediaStream(videoStream);
+              if (
+                navigator.mediaDevices &&
+                navigator.mediaDevices.enumerateDevices
+              ) {
+                return navigator.mediaDevices
+                  .enumerateDevices()
+                  .then((sources) => {
+                    let resultVideo = [];
+                    /* GET SOURCES */
+                    sources.forEach((source) => {
+                      if (
+                        source.kind === "videoinput" &&
+                        source.deviceId !== ""
+                      ) {
+                        resultVideo.push(source);
+                      }
+                    });
 
-                  this.setState({
-                    userVideoStream: videoStream,
-                    userAudioStream: audioStream,
-                    videoDevices: resultVideo,
+                    this.setState({
+                      userVideoStream: videoStream,
+                      userAudioStream: audioStream,
+                      videoDevices: resultVideo,
+                    });
                   });
-                });
-            }
-          });
+              }
+            })
+        );
       })
       .catch((error) => {
         this.reportError(error.message);
@@ -331,8 +400,9 @@ class ConferencePreConfigContainer extends Component {
       this.state.virtualBackgroundMode == "bokeh"
         ? { type: this.state.virtualBackgroundMode }
         : null;
+    const videoProcessorOptions = await this.buildVideoProcessorOptions();
     const videoStream = await VoxeetSDK.video.local
-      .start({ deviceId: { exact: device.deviceId } }, processor)
+      .start({ deviceId: { exact: device.deviceId } }, videoProcessorOptions)
       .then((videoTrack) => new MediaStream([videoTrack]));
 
     getVideoDeviceName(device.deviceId).then((isBackCamera) => {
@@ -589,19 +659,26 @@ class ConferencePreConfigContainer extends Component {
                               this.state.virtualBackgroundMode === "bokeh"
                                 ? { type: this.state.virtualBackgroundMode }
                                 : null;
-                            return VoxeetSDK.video.local
-                              .start(videoConstraints, processor)
-                              .then(
-                                (videoTrack) => new MediaStream([videoTrack])
-                              )
-                              .then((videoStream) => {
-                                this.attachMediaStream(videoStream);
-                                this.setState({
-                                  userAudioStream: audioStream,
-                                  userVideoStream: videoStream,
-                                });
-                                this.forceUpdate();
-                              });
+                            return this.buildVideoProcessorOptions().then(
+                              (videoProcessorOptions) =>
+                                VoxeetSDK.video.local
+                                  .start(
+                                    videoConstraints,
+                                    videoProcessorOptions
+                                  )
+                                  .then(
+                                    (videoTrack) =>
+                                      new MediaStream([videoTrack])
+                                  )
+                                  .then((videoStream) => {
+                                    this.attachMediaStream(videoStream);
+                                    this.setState({
+                                      userAudioStream: audioStream,
+                                      userVideoStream: videoStream,
+                                    });
+                                    this.forceUpdate();
+                                  })
+                            );
                           } else {
                             this.setState({ userAudioStream: audioStream });
                             this.forceUpdate();
@@ -841,6 +918,246 @@ class ConferencePreConfigContainer extends Component {
     }
   }
 
+  handleVideoProcessorVirtualBackgroundIdChange(event) {
+    const virtualBackgroundId = event.target.value;
+    this.setState({
+      videoProcessorVirtualBackgroundId: virtualBackgroundId,
+      videoProcessorSetButtonDisabled: false,
+    });
+  }
+
+  handleVideoProcessorCustomButtonClick(event) {
+    const fileSelector = document.createElement("input");
+    fileSelector.setAttribute("type", "file");
+    fileSelector.setAttribute(
+      "accept",
+      this.virtualBackgroundFacade.supportedCustomMediaFormats().join(",")
+    );
+    fileSelector.onchange = () => {
+      const selectedFile = fileSelector.files[0];
+      if (!selectedFile) return;
+
+      this.virtualBackgroundFacade
+        // Read the selected file and associate a new virtual background id with the file
+        .addCustomMediaFile(selectedFile)
+        .then((newVirtualBackgroundId) =>
+          // Prepare WebSDK-acceptable parameter associated with the new id.
+          // It may be: HTMLVideoElement, HTMLImageElement.
+          this.virtualBackgroundFacade
+            .prepareVirtualBackground(newVirtualBackgroundId)
+            // Set a new image/video as a background
+            .then((htmlMediaElement) =>
+              this.videoProcessorProxy.set(
+                new VideoProcessorOptionsBuilder()
+                  .setVirtualBackground(htmlMediaElement)
+                  .setFlagNonBlockingAsyncPixelReadback(
+                    this.state.videoProcessorFlagNonBlockingAsyncPixelReadback
+                  )
+                  .build()
+              )
+            )
+            .then(() => {
+              // Update the cache if setting the background was successful
+              this.virtualBackgroundFacade.writeToCache(newVirtualBackgroundId);
+              this.setState({
+                videoProcessorVirtualBackgroundId: newVirtualBackgroundId,
+              });
+            })
+        )
+        .catch((error) => {
+          console.error(
+            `Failed to set Virtual Background to '${selectedFile.name}'. Error:`,
+            error
+          );
+        });
+    };
+    // Open the file dialog
+    fileSelector.click();
+  }
+
+  handleVideoProcessorSetButtonClick(event) {
+    const virtualBackgroundId = this.state.videoProcessorVirtualBackgroundId;
+
+    // Prepare WebSDK-acceptable parameter associated with the virtual background id.
+    // It may be: false, "bokeh", HTMLVideoElement, HTMLImageElement
+    this.virtualBackgroundFacade
+      .prepareVirtualBackground(virtualBackgroundId)
+      // Set a new background
+      .then((virtualBackground) =>
+        this.videoProcessorProxy.set(
+          new VideoProcessorOptionsBuilder()
+            .setVirtualBackground(virtualBackground)
+            .setFlagNonBlockingAsyncPixelReadback(
+              this.state.videoProcessorFlagNonBlockingAsyncPixelReadback
+            )
+            .build()
+        )
+      )
+      .then(() => {
+        // Update the cache if setting the background was successful
+        this.virtualBackgroundFacade.writeToCache(virtualBackgroundId);
+        this.setState({
+          videoProcessorSetButtonDisabled: true,
+        });
+      })
+      .catch((error) => {
+        console.error(
+          `Failed to set Virtual Background to '${virtualBackgroundId}'. Error:`,
+          error
+        );
+      });
+  }
+
+  handleVideoProcessorFacialSmothingStrengthChange(event) {
+    const strength = Number(event.target.value);
+    this.videoProcessorProxy
+      .set(
+        new VideoProcessorOptionsBuilder()
+          .setFacialSmoothing(strength)
+          .setFlagNonBlockingAsyncPixelReadback(
+            this.state.videoProcessorFlagNonBlockingAsyncPixelReadback
+          )
+          .build()
+      )
+      .then(() => {
+        this.videoProcessorCache.facialSmoothingStrength = strength;
+        this.setState({
+          videoProcessorFacialSmothingStrength: strength,
+        });
+      })
+      .catch((error) => {
+        console.error(
+          `Failed to set Facial Smoothing strength to ${strength}. Error:`,
+          error
+        );
+      });
+  }
+
+  handleVideoProcessorSpotLightStrengthChange(event) {
+    const strength = Number(event.target.value);
+    this.videoProcessorProxy
+      .set(
+        new VideoProcessorOptionsBuilder()
+          .setSpotLight(strength)
+          .setFlagNonBlockingAsyncPixelReadback(
+            this.state.videoProcessorFlagNonBlockingAsyncPixelReadback
+          )
+          .build()
+      )
+      .then(() => {
+        this.videoProcessorCache.spotLightStrength = strength;
+        this.setState({
+          videoProcessorSpotLightStrength: strength,
+        });
+      })
+      .catch((error) => {
+        console.error(
+          `Failed to set Spot Light strength to ${strength}. Error:`,
+          error
+        );
+      });
+  }
+
+  handleVideoProcessorAutoFramingChange(event) {
+    const enabled = event.target.checked;
+    this.videoProcessorProxy
+      .set(
+        new VideoProcessorOptionsBuilder()
+          .setAutoFraming(enabled)
+          .setFlagNonBlockingAsyncPixelReadback(
+            this.state.videoProcessorFlagNonBlockingAsyncPixelReadback
+          )
+          .build()
+      )
+      .then(() => {
+        this.videoProcessorCache.autoFraming = enabled;
+        this.setState({
+          videoProcessorAutoFraming: enabled,
+        });
+      })
+      .catch((error) => {
+        console.error(
+          `Failed to set Auto Framing to ${enabled}. Error:`,
+          error
+        );
+      });
+  }
+
+  handleVideoProcessorNoiseReductionChange(event) {
+    const enabled = event.target.checked;
+    this.videoProcessorProxy
+      .set(
+        new VideoProcessorOptionsBuilder()
+          .setNoiseReduction(enabled)
+          .setFlagNonBlockingAsyncPixelReadback(
+            this.state.videoProcessorFlagNonBlockingAsyncPixelReadback
+          )
+          .build()
+      )
+      .then(() => {
+        this.videoProcessorCache.noiseReduction = enabled;
+        this.setState({
+          videoProcessorNoiseReduction: enabled,
+        });
+      })
+      .catch((error) => {
+        console.error(
+          `Failed to set Noise Reduction to ${enabled}. Error:`,
+          error
+        );
+      });
+  }
+
+  handleVideoProcessorAutoBrightnessChange(event) {
+    const enabled = event.target.checked;
+    this.videoProcessorProxy
+      .set(
+        new VideoProcessorOptionsBuilder()
+          .setAutoBrightness(enabled)
+          .setFlagNonBlockingAsyncPixelReadback(
+            this.state.videoProcessorFlagNonBlockingAsyncPixelReadback
+          )
+          .build()
+      )
+      .then(() => {
+        this.videoProcessorCache.autoBrightness = enabled;
+        this.setState({
+          videoProcessorAutoBrightness: enabled,
+        });
+      })
+      .catch((error) => {
+        console.error(
+          `Failed to set Auto Brightness to ${enabled}. Error:`,
+          error
+        );
+      });
+  }
+
+  async buildVideoProcessorOptions() {
+    let virtualBackground;
+    try {
+      //virtualBackground = await this.prepareVirtualBackground(
+      virtualBackground =
+        await this.virtualBackgroundFacade.prepareVirtualBackground(
+          this.state.videoProcessorVirtualBackgroundId
+        );
+    } catch (error) {
+      // Virtual background preparation may fail but it is acceptable, just ignore the error
+      console.warn(error);
+    }
+    return new VideoProcessorOptionsBuilder()
+      .setVirtualBackground(virtualBackground)
+      .setFacialSmoothing(this.state.videoProcessorFacialSmothingStrength)
+      .setSpotLight(this.state.videoProcessorSpotLightStrength)
+      .setAutoFraming(this.state.videoProcessorAutoFraming)
+      .setNoiseReduction(this.state.videoProcessorNoiseReduction)
+      .setAutoBrightness(this.state.videoProcessorAutoBrightness)
+      .setFlagNonBlockingAsyncPixelReadback(
+        this.state.videoProcessorFlagNonBlockingAsyncPixelReadback
+      )
+      .build();
+  }
+
   renderLoading() {
     return React.createElement(this.props.loadingScreen, {
       logo: this.props.logo,
@@ -857,6 +1174,13 @@ class ConferencePreConfigContainer extends Component {
       lowBandwidthMode,
       virtualBackgroundMode,
       virtualBackgroundModeSupported,
+      videoProcessorSetButtonDisabled,
+      videoProcessorVirtualBackgroundId,
+      videoProcessorFacialSmothingStrength,
+      videoProcessorSpotLightStrength,
+      videoProcessorAutoFraming,
+      videoProcessorNoiseReduction,
+      videoProcessorAutoBrightness,
     } = this.state;
     const MAX_MAXVF = isMobile() ? 4 : 49;
 
@@ -1054,6 +1378,204 @@ class ConferencePreConfigContainer extends Component {
                                   </div>
                                 </div>
                               )}
+
+                            {!isMobile() && (
+                              <details className="video-processor-details">
+                                <summary className="video-processor-summary">
+                                  Video processor
+                                </summary>
+                                <div className="video-processor-details-content">
+                                  <div
+                                    className={`${
+                                      !this.state.videoEnabled
+                                        ? "video-processor-disabled-form"
+                                        : ""
+                                    }`}
+                                  >
+                                    <label
+                                      className="video-processor-label"
+                                      htmlFor="videoProcessorVirtualBackground"
+                                    >
+                                      Virtual Background
+                                    </label>
+                                    <div className="select-wrapper">
+                                      <select
+                                        id="videoProcessorVirtualBackground"
+                                        value={
+                                          videoProcessorVirtualBackgroundId
+                                        }
+                                        onChange={
+                                          this
+                                            .handleVideoProcessorVirtualBackgroundIdChange
+                                        }
+                                      >
+                                        {this.virtualBackgroundFacade.generateSelectList()}
+                                      </select>
+                                    </div>
+
+                                    <div className="video-processor-button-wrapper">
+                                      <button
+                                        className="video-processor-button video-processor-button-left"
+                                        type="button"
+                                        onClick={
+                                          this
+                                            .handleVideoProcessorCustomButtonClick
+                                        }
+                                      >
+                                        Custom...
+                                      </button>
+                                      <button
+                                        className="video-processor-button video-processor-button-right"
+                                        type="button"
+                                        onClick={
+                                          this
+                                            .handleVideoProcessorSetButtonClick
+                                        }
+                                        disabled={
+                                          videoProcessorSetButtonDisabled
+                                        }
+                                      >
+                                        Set
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  <div
+                                    className={`group-enable maxVideoForwarding ${
+                                      !this.state.videoEnabled
+                                        ? "disabled-form"
+                                        : ""
+                                    }`}
+                                  >
+                                    <div className="input-wrapper">
+                                      <div className="input-value">Off</div>
+                                      <input
+                                        type="range"
+                                        style={{
+                                          background: `linear-gradient(to right, #00afef 0%, #00afef ${
+                                            videoProcessorFacialSmothingStrength *
+                                            100
+                                          }%, #fff ${
+                                            videoProcessorFacialSmothingStrength *
+                                            100
+                                          }%, #fff 100%)`,
+                                        }}
+                                        id="videoProcessorFacialSmothing"
+                                        min={0}
+                                        max={1}
+                                        step={0.25}
+                                        value={
+                                          videoProcessorFacialSmothingStrength
+                                        }
+                                        onChange={
+                                          this
+                                            .handleVideoProcessorFacialSmothingStrengthChange
+                                        }
+                                      />
+                                      <div className="input-value">Max</div>
+                                    </div>
+                                    <label htmlFor="videoProcessorFacialSmothing">
+                                      <div className="maxVideoForwardingValue">
+                                        Facial Smoothing
+                                      </div>
+                                    </label>
+                                  </div>
+
+                                  <div
+                                    className={`group-enable maxVideoForwarding ${
+                                      !this.state.videoEnabled
+                                        ? "disabled-form"
+                                        : ""
+                                    }`}
+                                  >
+                                    <div className="input-wrapper">
+                                      <div className="input-value">Off</div>
+                                      <input
+                                        type="range"
+                                        style={{
+                                          background: `linear-gradient(to right, #00afef 0%, #00afef ${
+                                            videoProcessorSpotLightStrength *
+                                            100
+                                          }%, #fff ${
+                                            videoProcessorSpotLightStrength *
+                                            100
+                                          }%, #fff 100%)`,
+                                        }}
+                                        id="videoProcessorSpotLight"
+                                        min={0}
+                                        max={1}
+                                        step={0.25}
+                                        value={videoProcessorSpotLightStrength}
+                                        onChange={
+                                          this
+                                            .handleVideoProcessorSpotLightStrengthChange
+                                        }
+                                      />
+                                      <div className="input-value">Max</div>
+                                    </div>
+                                    <label htmlFor="videoProcessorSpotLight">
+                                      <div className="maxVideoForwardingValue">
+                                        Spot Light
+                                      </div>
+                                    </label>
+                                  </div>
+
+                                  <div
+                                    className={`group-enable ${
+                                      !this.state.videoEnabled
+                                        ? "disabled-form"
+                                        : ""
+                                    }`}
+                                  >
+                                    <div className="enable-item">
+                                      <input
+                                        id="videoProcessorAutoFraming"
+                                        type="checkbox"
+                                        onChange={
+                                          this
+                                            .handleVideoProcessorAutoFramingChange
+                                        }
+                                        checked={videoProcessorAutoFraming}
+                                      />
+                                      <label htmlFor="videoProcessorAutoFraming">
+                                        {strings.videoProcessorAutoFraming}
+                                      </label>
+                                    </div>
+
+                                    <div className="enable-item">
+                                      <input
+                                        id="videoProcessorNoiseReduction"
+                                        type="checkbox"
+                                        onChange={
+                                          this
+                                            .handleVideoProcessorNoiseReductionChange
+                                        }
+                                        checked={videoProcessorNoiseReduction}
+                                      />
+                                      <label htmlFor="videoProcessorNoiseReduction">
+                                        {strings.videoProcessorNoiseReduction}
+                                      </label>
+                                    </div>
+
+                                    <div className="enable-item">
+                                      <input
+                                        id="videoProcessorAutoBrightness"
+                                        type="checkbox"
+                                        onChange={
+                                          this
+                                            .handleVideoProcessorAutoBrightnessChange
+                                        }
+                                        checked={videoProcessorAutoBrightness}
+                                      />
+                                      <label htmlFor="videoProcessorAutoBrightness">
+                                        {strings.videoProcessorAutoBrightness}
+                                      </label>
+                                    </div>
+                                  </div>
+                                  <div className="bottom-line" />
+                                </div>
+                              </details>
+                            )}
                             <div
                               className={`group-enable maxVideoForwarding ${
                                 lowBandwidthMode ? "disabled-form" : ""
