@@ -33,7 +33,7 @@ ModalError.defaultProps = {};
 
 ModalError.propTypes = {
   error: PropTypes.string,
-  toggle: PropTypes.func
+  toggle: PropTypes.func,
 };
 
 export default ModalError;

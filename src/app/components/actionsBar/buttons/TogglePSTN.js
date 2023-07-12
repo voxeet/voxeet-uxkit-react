@@ -14,7 +14,7 @@ class TogglePSTN extends Component {
     this.state = {
       opened: false,
       isMobile: isMobile(),
-      hover: false
+      hover: false,
     };
     this.togglePopUp = this.togglePopUp.bind(this);
     this.toggleClosePopUp = this.toggleClosePopUp.bind(this);
@@ -51,7 +51,7 @@ class TogglePSTN extends Component {
       ? String.fromCodePoint.apply(
           String,
           _toConsumableArray(
-            [].concat(_toConsumableArray(cc)).map(function(c) {
+            [].concat(_toConsumableArray(cc)).map(function (c) {
               return c.charCodeAt() + OFFSET;
             })
           )
@@ -102,7 +102,7 @@ class TogglePSTN extends Component {
                 <span className="pincode">{conferencePincode}</span>
               </p>
               <p>{strings.pinCodeExplanations}</p>
-              { pinCode.length > 0 ?
+              {pinCode.length > 0 ? (
                 <select>
                   {pinCode.map((code, i) => {
                     return (
@@ -112,9 +112,9 @@ class TogglePSTN extends Component {
                     );
                   })}
                 </select>
-              :
-                  <div className="no-pstn-numbers">{strings.noPstnNumbers}</div>
-              }
+              ) : (
+                <div className="no-pstn-numbers">{strings.noPstnNumbers}</div>
+              )}
             </div>
 
             <div className="anchor-popup"></div>
@@ -138,11 +138,11 @@ class TogglePSTN extends Component {
 TogglePSTN.propTypes = {
   conferencePincode: PropTypes.string,
   tooltipPlace: PropTypes.string.isRequired,
-  isBottomBar: PropTypes.bool.isRequired
+  isBottomBar: PropTypes.bool.isRequired,
 };
 
 TogglePSTN.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default TogglePSTN;

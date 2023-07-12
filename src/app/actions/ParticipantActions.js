@@ -276,7 +276,8 @@ export class Actions {
       type: Types.STREAM_ADDED_FOR_PARTICIPANT,
       payload: {
         user,
-        stream},
+        stream,
+      },
     };
   }
 

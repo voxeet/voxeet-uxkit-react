@@ -7,7 +7,7 @@ const broadcastType = [
   BROADCAST_KICK,
   BROADCAST_KICK_ADMIN_HANG_UP,
   CHAT_MESSAGE,
-  RECORDING_STATE
+  RECORDING_STATE,
 ];
 
 export default broadcastType;

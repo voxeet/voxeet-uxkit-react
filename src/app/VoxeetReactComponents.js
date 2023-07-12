@@ -2,7 +2,7 @@ import reducer from "./reducers";
 import ConferenceRoom from "./components/ConferenceRoom";
 import Provider from "./components/VoxeetProvider";
 import ConferenceSounds from "./libs/sounds";
-import {getUxKitContext, setUxKitContext} from "./context";
+import { getUxKitContext, setUxKitContext } from "./context";
 
 import {
   ToggleMicrophoneButton,
@@ -17,7 +17,7 @@ import {
   HangUpButtonBottomBar,
   Toggle3DAudioButton,
   ToggleAttendeesChatButton,
-  ToggleAttendeesListButton
+  ToggleAttendeesListButton,
 } from "./components/actionsBar/buttons";
 
 const UxKitVersion = __VERSION__;
@@ -41,8 +41,8 @@ module.exports = {
     Toggle3DAudioButton,
     ToggleAttendeesChatButton,
     TogglePSTN,
-    ToggleAttendeesListButton
+    ToggleAttendeesListButton,
   },
   ConferenceSounds,
-  UxKitVersion
+  UxKitVersion,
 };

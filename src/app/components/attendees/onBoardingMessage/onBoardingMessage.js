@@ -3,13 +3,18 @@ import PropTypes from "prop-types";
 import { strings } from "../../../languages/localizedStrings";
 import { connect } from "react-redux";
 import { Actions as OnBoardingMessageActions } from "../../../actions/OnBoardingMessageActions";
-import {getUxKitContext} from "../../../context";
+import { getUxKitContext } from "../../../context";
 
-@connect(state => {
-  return {
-    onBoardingMessage: state.voxeet.onBoardingMessage
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (state) => {
+    return {
+      onBoardingMessage: state.voxeet.onBoardingMessage,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class OnBoardingMessage extends Component {
   constructor(props) {
     super(props);
@@ -17,11 +22,8 @@ class OnBoardingMessage extends Component {
   }
 
   componentDidUpdate() {
-    const {
-      message,
-      timer,
-      displayOnBoardingMessage
-    } = this.props.onBoardingMessage;
+    const { message, timer, displayOnBoardingMessage } =
+      this.props.onBoardingMessage;
     if (displayOnBoardingMessage) {
       setTimeout(() => {
         this.props.dispatch(OnBoardingMessageActions.hideOnBoarding());
@@ -34,11 +36,8 @@ class OnBoardingMessage extends Component {
   }
 
   render() {
-    const {
-      message,
-      timer,
-      displayOnBoardingMessage
-    } = this.props.onBoardingMessage;
+    const { message, timer, displayOnBoardingMessage } =
+      this.props.onBoardingMessage;
     return (
       <div
         className={

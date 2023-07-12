@@ -14,16 +14,19 @@ class Tile extends Component {
       "video-" + this.props.nbParticipant + "-video-on"
     );
     if (
-      (this.props.participant.participant_id !== nextProps.participant.participant_id) ||
+      this.props.participant.participant_id !==
+        nextProps.participant.participant_id ||
       (checker != null && nextProps.participant.stream == null) ||
       (checker != null && !nextProps.participant.stream.active) ||
-      (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
+      (checker != null &&
+        nextProps.participant.stream.getVideoTracks().length === 0) ||
       (checker == null && nextProps.participant.stream) ||
       (this.props.mySelf && this.props.participant.name == null) ||
-      (this.props.participant.stream && nextProps.participant.stream &&
-          this.props.participant.stream.id != nextProps.participant.stream.id) ||
+      (this.props.participant.stream &&
+        nextProps.participant.stream &&
+        this.props.participant.stream.id != nextProps.participant.stream.id) ||
       (!this.props.participant.stream && nextProps.participant.stream) ||
-      (this.props.kickPermission != nextProps.kickPermission)
+      this.props.kickPermission != nextProps.kickPermission
     ) {
       return true;
     }
@@ -43,11 +46,11 @@ class Tile extends Component {
       dolbyVoiceEnabled,
       kickPermission,
       currentUser,
-      forwardedRef
+      forwardedRef,
     } = this.props;
     return (
       <div
-      ref={forwardedRef}
+        ref={forwardedRef}
         className={
           "tile-item " +
           (participant.isConnected
@@ -103,7 +106,7 @@ Tile.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   nbParticipant: PropTypes.number,
   dolbyVoiceEnabled: PropTypes.bool,
-  kickPermission: PropTypes.bool
+  kickPermission: PropTypes.bool,
 };
 
 export default Tile;

@@ -11,7 +11,7 @@ class AttendeesParticipantVuMeter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSpeaking: false
+      isSpeaking: false,
     };
   }
 
@@ -19,14 +19,17 @@ class AttendeesParticipantVuMeter extends Component {
     const el = this.node;
     const { participant } = this.props;
     this._interval = setInterval(() => {
-      VoxeetSDK.conference.isSpeaking(VoxeetSDK.conference.participants.get(participant.participant_id), isSpeaking => {
-        if (participant.isMuted && this.state.isSpeaking) {
-          this.setState({ isSpeaking: false });
-        }
+      VoxeetSDK.conference.isSpeaking(
+        VoxeetSDK.conference.participants.get(participant.participant_id),
+        (isSpeaking) => {
+          if (participant.isMuted && this.state.isSpeaking) {
+            this.setState({ isSpeaking: false });
+          }
 
-        if (this.state.isSpeaking !== isSpeaking && !participant.isMuted)
-          this.setState({ isSpeaking });
-      });
+          if (this.state.isSpeaking !== isSpeaking && !participant.isMuted)
+            this.setState({ isSpeaking });
+        }
+      );
     }, 300);
   }
 
@@ -41,7 +44,7 @@ class AttendeesParticipantVuMeter extends Component {
       includeName,
       isVideo,
       participant,
-      isActiveSpeaker
+      isActiveSpeaker,
     } = this.props;
     let className = " avatar-vumeter ";
     const photoUrl = participant.avatarUrl || userPlaceholder;
@@ -81,13 +84,13 @@ AttendeesParticipantVuMeter.propTypes = {
   height: PropTypes.number,
   includeName: PropTypes.bool,
   isVideo: PropTypes.bool,
-  isActiveSpeaker: PropTypes.bool
+  isActiveSpeaker: PropTypes.bool,
 };
 
 AttendeesParticipantVuMeter.defaultProps = {
   includeName: false,
   isActiveSpeaker: false,
-  isVideo: false
+  isVideo: false,
 };
 
 export default AttendeesParticipantVuMeter;

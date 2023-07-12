@@ -2,13 +2,18 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Actions as OnBoardingMessageWithConfirmationActions } from "../../../actions/OnBoardingMessageWithConfirmationActions";
-import {getUxKitContext} from "../../../context";
+import { getUxKitContext } from "../../../context";
 
-@connect(state => {
-  return {
-    onBoardingMessageWithAction: state.voxeet.onBoardingMessageWithAction
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (state) => {
+    return {
+      onBoardingMessageWithAction: state.voxeet.onBoardingMessageWithAction,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class OnBoardingMessageWithConfirmation extends Component {
   constructor(props) {
     super(props);
@@ -17,10 +22,8 @@ class OnBoardingMessageWithConfirmation extends Component {
   }
 
   componentDidUpdate() {
-    const {
-      displayOnBoardingMessageWithConfirmation,
-      isError
-    } = this.props.onBoardingMessageWithAction;
+    const { displayOnBoardingMessageWithConfirmation, isError } =
+      this.props.onBoardingMessageWithAction;
     if (displayOnBoardingMessageWithConfirmation && isError) {
       this.timeout = setTimeout(() => {
         this.props.dispatch(
@@ -39,11 +42,8 @@ class OnBoardingMessageWithConfirmation extends Component {
     );
   }
 
-
   confirmed() {
-    const {
-      actionCallback
-    } = this.props.onBoardingMessageWithAction;
+    const { actionCallback } = this.props.onBoardingMessageWithAction;
 
     actionCallback();
 
@@ -54,7 +54,6 @@ class OnBoardingMessageWithConfirmation extends Component {
       OnBoardingMessageWithConfirmationActions.hideOnBoardingMessageOverlay()
     );
   }
-
 
   render() {
     const {
@@ -71,25 +70,23 @@ class OnBoardingMessageWithConfirmation extends Component {
             : "onboardingmessagewithconfirmation-hidden"
         }
       >
-        <div className='overlay-wrapper'>
-          {messageWithConfirmation &&
-            <div className='overlay-title'>
-              <div className='title-text'>{messageWithConfirmation}</div>
-            </div>}
-          <div className='overlay-text'>
-            <button
-              className="button"
-              onClick={() => this.confirmed()}
-            >{confirmButtonTitle}</button>
-            {withCancelOption &&
-              <button
-              className="button"
-              onClick={() => this.linkClicked()}
-            >No</button>
-            }
+        <div className="overlay-wrapper">
+          {messageWithConfirmation && (
+            <div className="overlay-title">
+              <div className="title-text">{messageWithConfirmation}</div>
+            </div>
+          )}
+          <div className="overlay-text">
+            <button className="button" onClick={() => this.confirmed()}>
+              {confirmButtonTitle}
+            </button>
+            {withCancelOption && (
+              <button className="button" onClick={() => this.linkClicked()}>
+                No
+              </button>
+            )}
           </div>
         </div>
-
       </div>
     );
   }

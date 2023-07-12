@@ -7,7 +7,7 @@ const defaultState = {
   imageCount: 0,
   fileUrl: null,
   thumbnails: [],
-  filePresentationName: null
+  filePresentationName: null,
 };
 
 const FilePresentationReducer = (state = defaultState, action) => {
@@ -15,21 +15,21 @@ const FilePresentationReducer = (state = defaultState, action) => {
     case Types.FILE_PRESENTATION_CONVERTED_START:
       return {
         ...state,
-        fileConverted: true
+        fileConverted: true,
       };
     case Types.FILE_PRESENTATION_ADD_THUMB: {
       let thumbnails = [...state.thumbnails];
       thumbnails.push(action.payload.thumbUrl);
       return {
         ...state,
-        thumbnails: [...thumbnails]
+        thumbnails: [...thumbnails],
       };
     }
     case Types.FILE_PRESENTATION_CONVERTED_OVER:
       return {
         ...state,
         fileConverted: false,
-        filePresentationId: action.payload.filePresentationId
+        filePresentationId: action.payload.filePresentationId,
       };
     case Types.FILE_PRESENTATION_START:
       return {
@@ -38,7 +38,7 @@ const FilePresentationReducer = (state = defaultState, action) => {
         filePresentationId: action.payload.filePresentationId,
         filePresentationPosition: action.payload.position,
         imageCount: action.payload.imageCount,
-        filePresentationRunning: true
+        filePresentationRunning: true,
       };
     case Types.FILE_PRESENTATION_STOP:
       return {
@@ -49,13 +49,13 @@ const FilePresentationReducer = (state = defaultState, action) => {
         imageCount: 0,
         fileUrl: null,
         thumbnails: [],
-        filePresentationRunning: false
+        filePresentationRunning: false,
       };
     case Types.FILE_PRESENTATION_UPDATE:
       return {
         ...state,
         fileUrl: action.payload.fileUrl,
-        filePresentationPosition: action.payload.position
+        filePresentationPosition: action.payload.position,
       };
     default:
       return state;

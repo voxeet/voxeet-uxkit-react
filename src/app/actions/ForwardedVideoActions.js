@@ -5,7 +5,6 @@ export const Types = {
 };
 
 export class Actions {
-
   static updateForwardedVideos() {
     return {
       type: Types.UPDATE_FORWARDED_VIDEOS,

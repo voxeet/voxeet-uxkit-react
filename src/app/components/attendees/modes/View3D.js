@@ -18,7 +18,7 @@ class View3D extends Component {
       isAdminActived,
       saveUserPosition,
       participants,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
     } = this.props;
     const participantsConnected = [];
     let size = 0;

@@ -43,11 +43,11 @@ class ToggleFullScreenButton extends Component {
 ToggleFullScreenButton.propTypes = {
   toggleFullScreen: PropTypes.func.isRequired,
   isWidgetFullScreenOn: PropTypes.bool.isRequired,
-  tooltipPlace: PropTypes.string.isRequired
+  tooltipPlace: PropTypes.string.isRequired,
 };
 
 ToggleFullScreenButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleFullScreenButton;

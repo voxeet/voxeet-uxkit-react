@@ -10,7 +10,7 @@ import {
   STATUS_CONNECTING,
   STATUS_CONNECTED,
   STATUS_WARN,
-  STATUS_ERROR
+  STATUS_ERROR,
 } from "../../../constants/ParticipantStatus";
 
 class ListWidgetItem extends Component {
@@ -48,7 +48,7 @@ class ListWidgetItem extends Component {
       isAdminActived,
       mySelf,
       dolbyVoiceEnabled,
-      currentUser
+      currentUser,
     } = this.props;
     return (
       <li
@@ -60,7 +60,9 @@ class ListWidgetItem extends Component {
         }
       >
         <span className="participant-details">
-          {participant.stream && participant.stream.active && participant.stream.getVideoTracks().length > 0 ? (
+          {participant.stream &&
+          participant.stream.active &&
+          participant.stream.getVideoTracks().length > 0 ? (
             <div className="stream-media bubble-widget">
               <AttendeesParticipantVideo
                 width="200"

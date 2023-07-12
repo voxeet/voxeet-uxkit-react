@@ -9,12 +9,8 @@ class Toggle3DAudioButton extends Component {
   }
 
   render() {
-    const {
-      audio3DEnabled,
-      toggleAudio3D,
-      tooltipPlace,
-      isBottomBar
-    } = this.props;
+    const { audio3DEnabled, toggleAudio3D, tooltipPlace, isBottomBar } =
+      this.props;
     return (
       <li className={audio3DEnabled ? "active" : ""}>
         <a
@@ -40,11 +36,11 @@ Toggle3DAudioButton.propTypes = {
   toggleAudio3D: PropTypes.func.isRequired,
   audio3DEnabled: PropTypes.bool.isRequired,
   tooltipPlace: PropTypes.string.isRequired,
-  isBottomBar: PropTypes.bool.isRequired
+  isBottomBar: PropTypes.bool.isRequired,
 };
 
 Toggle3DAudioButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default Toggle3DAudioButton;

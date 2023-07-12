@@ -10,7 +10,7 @@ import {
   STATUS_CONNECTING,
   STATUS_CONNECTED,
   STATUS_WARN,
-  STATUS_ERROR
+  STATUS_ERROR,
 } from "../../../constants/ParticipantStatus";
 
 class ListItem extends Component {
@@ -47,7 +47,7 @@ class ListItem extends Component {
       kickParticipant,
       isAdminActived,
       dolbyVoiceEnabled,
-      currentUser
+      currentUser,
     } = this.props;
     return (
       <li
@@ -59,7 +59,9 @@ class ListItem extends Component {
         }
       >
         <span className="participant-details">
-          {participant.stream && participant.stream.active && participant.stream.getVideoTracks().length > 0 ? (
+          {participant.stream &&
+          participant.stream.active &&
+          participant.stream.getVideoTracks().length > 0 ? (
             <div className="stream-media bubble">
               <AttendeesParticipantVideo
                 width="200"
@@ -72,10 +74,12 @@ class ListItem extends Component {
           )}
           <span className="participant-username">{participant.name}</span>
         </span>
-        {!(dolbyVoiceEnabled && currentUser.isListener) && <AttendeesParticipantMute
-          participant={participant}
-          toggleMicrophone={toggleMicrophone}
-        />}
+        {!(dolbyVoiceEnabled && currentUser.isListener) && (
+          <AttendeesParticipantMute
+            participant={participant}
+            toggleMicrophone={toggleMicrophone}
+          />
+        )}
         {isAdmin && isAdminActived && (
           <AttendeesKickParticipant
             participant={participant}

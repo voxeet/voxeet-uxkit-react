@@ -11,17 +11,13 @@ class ToggleSettingsButton extends Component {
     super(props);
     this.state = {
       isMobile: isMobile(),
-      hover: false
+      hover: false,
     };
   }
 
   render() {
-    const {
-      attendeesSettingsOpened,
-      toggle,
-      tooltipPlace,
-      isBottomBar
-    } = this.props;
+    const { attendeesSettingsOpened, toggle, tooltipPlace, isBottomBar } =
+      this.props;
     const { hover, isMobile } = this.state;
     return (
       <li
@@ -69,11 +65,11 @@ ToggleSettingsButton.propTypes = {
   attendeesSettingsOpened: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
   tooltipPlace: PropTypes.string.isRequired,
-  isBottomBar: PropTypes.bool.isRequired
+  isBottomBar: PropTypes.bool.isRequired,
 };
 
 ToggleSettingsButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleSettingsButton;

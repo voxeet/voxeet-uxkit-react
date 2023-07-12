@@ -41,7 +41,8 @@ class AttendeesParticipantVideo extends Component {
   }
 
   render() {
-    const { classes, width, height, enableDbClick, muted, streamId } = this.props;
+    const { classes, width, height, enableDbClick, muted, streamId } =
+      this.props;
 
     return window.voxeetNodeModule ? (
       <canvas
@@ -72,7 +73,7 @@ AttendeesParticipantVideo.propTypes = {
   height: PropTypes.string,
   enableDbClick: PropTypes.bool,
   muted: PropTypes.bool,
-  streamId: PropTypes.string
+  streamId: PropTypes.string,
 };
 
 AttendeesParticipantVideo.defaultProps = {

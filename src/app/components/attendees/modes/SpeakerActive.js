@@ -22,7 +22,9 @@ class SpeakerActive extends Component {
     ) {
       return true;
     }
-    if (this.props.screenShareStream.length !== nextProps.screenShareStream.length) {
+    if (
+      this.props.screenShareStream.length !== nextProps.screenShareStream.length
+    ) {
       return true;
     }
     const checker = document.getElementById("video-active-video-on");
@@ -102,59 +104,56 @@ class SpeakerActive extends Component {
             />
           )}
 
-          {!filePresentationEnabled && !videoPresentationEnabled && screenShareEnabled && (
-            <Fragment>
-              {screenShareStream.map((st) => {
-                const isLocalScreenShare = currentUser.participant_id === st.userId;
-                return (
-                <div key={st.stream.id}
-                  className="stream-media">
-                  { !isLocalScreenShare &&
-                    <ToggleFullScreenScreenShare streamId={st.stream.id}/>
-                  }
-                    <AttendeesParticipantVideo
-                      streamId={st.stream.id}
-                      muted={isLocalScreenShare}
-                      stream={st.stream}
-                      enableDbClick={!isLocalScreenShare}
-                    />
-                  </div>)
-                })
-
-              }
+          {!filePresentationEnabled &&
+            !videoPresentationEnabled &&
+            screenShareEnabled && (
+              <Fragment>
+                {screenShareStream.map((st) => {
+                  const isLocalScreenShare =
+                    currentUser.participant_id === st.userId;
+                  return (
+                    <div key={st.stream.id} className="stream-media">
+                      {!isLocalScreenShare && (
+                        <ToggleFullScreenScreenShare streamId={st.stream.id} />
+                      )}
+                      <AttendeesParticipantVideo
+                        streamId={st.stream.id}
+                        muted={isLocalScreenShare}
+                        stream={st.stream}
+                        enableDbClick={!isLocalScreenShare}
+                      />
+                    </div>
+                  );
+                })}
               </Fragment>
-          )}
-          {!filePresentationEnabled && !videoPresentationEnabled && !screenShareEnabled && (
-            <Fragment>
-              {(participant.stream &&
+            )}
+          {!filePresentationEnabled &&
+            !videoPresentationEnabled &&
+            !screenShareEnabled && (
+              <Fragment>
+                {participant.stream &&
                 participant.stream.active &&
-                participant.stream.getVideoTracks().length > 0) ? (
-                <div
-                  className={
-                    mySelf
-                      ? "stream-media myself"
-                      : "stream-media"
-                  }
-                >
-                  <AttendeesParticipantVideo
-                    muted={false}
-                    stream={
-                      participant.stream
-                    }
-                    enableDbClick={false}
+                participant.stream.getVideoTracks().length > 0 ? (
+                  <div
+                    className={mySelf ? "stream-media myself" : "stream-media"}
+                  >
+                    <AttendeesParticipantVideo
+                      muted={false}
+                      stream={participant.stream}
+                      enableDbClick={false}
+                    />
+                  </div>
+                ) : (
+                  <AttendeesParticipantVuMeter
+                    participant={participant}
+                    width={80}
+                    height={80}
+                    customClass={"preview-avatar"}
+                    isActiveSpeaker={true}
                   />
-                </div>
-              ) : (
-                <AttendeesParticipantVuMeter
-                  participant={participant}
-                  width={80}
-                  height={80}
-                  customClass={"preview-avatar"}
-                  isActiveSpeaker={true}
-                />
-              )}
-            </Fragment>
-          )}
+                )}
+              </Fragment>
+            )}
         </div>
       </div>
     );

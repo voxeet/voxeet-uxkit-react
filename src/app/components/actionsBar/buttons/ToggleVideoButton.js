@@ -11,7 +11,7 @@ class ToggleVideoButton extends Component {
     super(props);
     this.state = {
       isMobile: isMobile(),
-      hover: false
+      hover: false,
     };
   }
 
@@ -61,11 +61,11 @@ ToggleVideoButton.propTypes = {
   videoEnabled: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
   tooltipPlace: PropTypes.string.isRequired,
-  isBottomBar: PropTypes.bool.isRequired
+  isBottomBar: PropTypes.bool.isRequired,
 };
 
 ToggleVideoButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleVideoButton;

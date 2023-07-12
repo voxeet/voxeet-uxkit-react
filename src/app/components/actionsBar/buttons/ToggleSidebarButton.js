@@ -37,11 +37,11 @@ class ToggleSidebarButton extends Component {
 ToggleSidebarButton.propTypes = {
   toggleWidget: PropTypes.func.isRequired,
   isWidgetOpened: PropTypes.bool.isRequired,
-  tooltipPlace: PropTypes.string.isRequired
+  tooltipPlace: PropTypes.string.isRequired,
 };
 
 ToggleSidebarButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleSidebarButton;

@@ -6,9 +6,8 @@ import Fullscreen from "../../../../static/images/icons/icon-fullscreen.svg";
 class ToggleFullScreenScreenShare extends Component {
   constructor(props) {
     super(props);
-    this.toggleScreenShareFullScreen = this.toggleScreenShareFullScreen.bind(
-      this
-    );
+    this.toggleScreenShareFullScreen =
+      this.toggleScreenShareFullScreen.bind(this);
   }
 
   toggleScreenShareFullScreen(streamId) {

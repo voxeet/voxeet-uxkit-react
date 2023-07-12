@@ -8,13 +8,13 @@ class HangUpButtonBottomBar extends Component {
     super(props);
     this.state = {
       disabled: false,
-    }
+    };
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
     if (this.state.disabled) return;
-    this.setState({disabled: true})
+    this.setState({ disabled: true });
     this.props.leave();
   }
 
@@ -41,11 +41,11 @@ class HangUpButtonBottomBar extends Component {
 
 HangUpButtonBottomBar.propTypes = {
   leave: PropTypes.func.isRequired,
-  tooltipPlace: PropTypes.string.isRequired
+  tooltipPlace: PropTypes.string.isRequired,
 };
 
 HangUpButtonBottomBar.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default HangUpButtonBottomBar;

@@ -43,8 +43,10 @@ export class Actions {
     return (dispatch) => {
       return this._initializeListeners(dispatch, options)
         .then(() => {
-          return VoxeetSDK.session.participant ||
-            VoxeetSDK.initialize(appKey, appSecret);
+          return (
+            VoxeetSDK.session.participant ||
+            VoxeetSDK.initialize(appKey, appSecret)
+          );
         })
         .then((userId) => {
           dispatch(this._sdkInitializedSuccessful(userId));
@@ -59,10 +61,12 @@ export class Actions {
     return (dispatch) => {
       return this._initializeListeners(dispatch, options)
         .then(() => {
-          return VoxeetSDK.session.participant ||
+          return (
+            VoxeetSDK.session.participant ||
             VoxeetSDK.initializeToken(token, () => {
               return refreshTokenCallback();
-            });
+            })
+          );
         })
         .then((userId) => dispatch(this._sdkInitializedSuccessful(userId)))
         .catch((err) => {
@@ -1046,42 +1050,43 @@ export class Actions {
               true
             )
           );
-        } else return VoxeetSDK.conference
-        .startScreenShare({ audio: true })
-        .catch((err) => {
-          if (
-            err.message === "Chrome Web Extension is not installed" &&
-            controls.chromeExtensionId != null
-          ) {
-            dispatch(
-              OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
-                strings.installExtension,
-                "https://chrome.google.com/webstore/detail/" +
-                  controls.chromeExtensionId +
-                  "."
-              )
-            );
-          } else if (
-            err.message === "Chrome Web Extension is not installed" &&
-            controls.chromeExtensionId == null
-          ) {
-            dispatch(
-              OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
-                strings.noExtensionAvailable,
-                null,
-                true
-              )
-            );
-          } else if (err) {
-            dispatch(
-              OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
-                err.message,
-                null,
-                true
-              )
-            );
-          }
-        });
+        } else
+          return VoxeetSDK.conference
+            .startScreenShare({ audio: true })
+            .catch((err) => {
+              if (
+                err.message === "Chrome Web Extension is not installed" &&
+                controls.chromeExtensionId != null
+              ) {
+                dispatch(
+                  OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
+                    strings.installExtension,
+                    "https://chrome.google.com/webstore/detail/" +
+                      controls.chromeExtensionId +
+                      "."
+                  )
+                );
+              } else if (
+                err.message === "Chrome Web Extension is not installed" &&
+                controls.chromeExtensionId == null
+              ) {
+                dispatch(
+                  OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
+                    strings.noExtensionAvailable,
+                    null,
+                    true
+                  )
+                );
+              } else if (err) {
+                dispatch(
+                  OnBoardingMessageWithActionActions.onBoardingMessageWithAction(
+                    err.message,
+                    null,
+                    true
+                  )
+                );
+              }
+            });
       }
     };
   }

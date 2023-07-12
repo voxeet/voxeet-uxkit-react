@@ -29,7 +29,7 @@
       margin-top: 12px !important;
       color: #fff;
       font-size: 20px;
-      font-family: 'DINNextLTPro-Regular';
+      font-family: "DINNextLTPro-Regular";
     }
     form {
       padding: 0px;
@@ -74,7 +74,8 @@
         background-size: 20px 18px, 8px 16px;
         background-position: 3% 50%, 97% 50%;
         background-repeat: no-repeat, no-repeat;
-        background-image: url('../../static/images/icons/icon-speaker.svg'), url('../../static/images/icons/dropdown-arrows.svg');
+        background-image: url("../../static/images/icons/icon-speaker.svg"),
+          url("../../static/images/icons/dropdown-arrows.svg");
       }
       .select-video-device {
         margin-top: 15px;
@@ -83,7 +84,8 @@
         background-size: 21px 13px, 8px 16px;
         background-position: 3% 50%, 97% 50%;
         background-repeat: no-repeat, no-repeat;
-        background-image: url('../../static/images/icons/icon-camera.svg'), url('../../static/images/icons/dropdown-arrows.svg');
+        background-image: url("../../static/images/icons/icon-camera.svg"),
+          url("../../static/images/icons/dropdown-arrows.svg");
       }
       .select-audio-input {
         margin-top: 25px;
@@ -92,7 +94,8 @@
         background-size: 15px 24px, 8px 16px;
         background-position: 4% 50%, 97% 50%;
         background-repeat: no-repeat, no-repeat;
-        background-image: url('../../static/images/icons/icon-mic.svg'), url('../../static/images/icons/dropdown-arrows.svg');
+        background-image: url("../../static/images/icons/icon-mic.svg"),
+          url("../../static/images/icons/dropdown-arrows.svg");
       }
       select {
         float: right;
@@ -101,7 +104,7 @@
         -webkit-border-radius: 20px;
         padding: 3px 17px 0 50px;
         font-size: 16px;
-        font-family: 'DINNextLTPro-Regular';
+        font-family: "DINNextLTPro-Regular";
         height: 35px;
         width: 100%;
         margin: auto;
@@ -118,7 +121,7 @@
     .group-switch {
       margin: auto;
       display: table;
-    .group-enable {
+      .group-enable {
         display: table-row;
 
         &.disabled-form {
@@ -148,9 +151,9 @@
               -webkit-appearance: none;
 
               &::-webkit-slider-runnable-track {
-                height: .5em;
+                height: 0.5em;
                 border: none;
-                border-radius: .25em;
+                border-radius: 0.25em;
               }
 
               &::-webkit-slider-thumb {
@@ -174,7 +177,7 @@
           label {
             color: #fff;
             font-size: 18px;
-            font-family: 'DINNextLTPro-Regular';
+            font-family: "DINNextLTPro-Regular";
 
             .maxVideoForwardingValue {
               display: flex;
@@ -188,75 +191,75 @@
         }
         .enable-item {
           margin-bottom: 15px;
-      input {
-        opacity: 0;
-        position: absolute;
-      }
-      label {
-        position: relative;
-        display: block;
-        padding: 0.5em 1em 0.5em 5em;
-        margin: auto;
-        color: #fff;
-        font-size: 18px;
-        font-family: 'DINNextLTPro-Regular';
-        cursor: pointer;
-        text-align: left;
-        &::before {
-          content: "";
-          position: absolute;
-          top: 50%;
-          left: 0.7em;
-          width: 3em;
-          height: 1.2em;
-          border-radius: 0.6em;
-          background: #eee;
-          transform: translateY(-50%);
-        }
-        &::after {
-          content: "";
-          position: absolute;
-          top: 50%;
-          left: 0.5em;
-          width: 1.4em;
-          height: 1.4em;
-          border-radius: 50%;
-          box-sizing: border-box;
-          background-color: #ddd;
-          transform: translateY(-50%);
-        }
-        &,
-        &::before,
-        &::after {
-          transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-      }
-      label:hover,
-      input:focus + label {
-        color: #fff;
-        &::after {
-          background-color: #ccc;
-        }
-      }
-      input:checked {
-        & + label {
-          &::before {
-            background: #00AFEF;
+          input {
+            opacity: 0;
+            position: absolute;
           }
-          &::after {
-            transform: translateX(2em) translateY(-50%);
+          label {
+            position: relative;
+            display: block;
+            padding: 0.5em 1em 0.5em 5em;
+            margin: auto;
+            color: #fff;
+            font-size: 18px;
+            font-family: "DINNextLTPro-Regular";
+            cursor: pointer;
+            text-align: left;
+            &::before {
+              content: "";
+              position: absolute;
+              top: 50%;
+              left: 0.7em;
+              width: 3em;
+              height: 1.2em;
+              border-radius: 0.6em;
+              background: #eee;
+              transform: translateY(-50%);
+            }
+            &::after {
+              content: "";
+              position: absolute;
+              top: 50%;
+              left: 0.5em;
+              width: 1.4em;
+              height: 1.4em;
+              border-radius: 50%;
+              box-sizing: border-box;
+              background-color: #ddd;
+              transform: translateY(-50%);
+            }
+            &,
+            &::before,
+            &::after {
+              transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+            }
           }
-        }
-      }
+          label:hover,
+          input:focus + label {
+            color: #fff;
+            &::after {
+              background-color: #ccc;
+            }
+          }
+          input:checked {
+            & + label {
+              &::before {
+                background: #00afef;
+              }
+              &::after {
+                transform: translateX(2em) translateY(-50%);
+              }
+            }
+          }
         }
       }
     }
     .start-conference {
       padding: 10px 50px;
-      background-color: #00AFEF;
+      background-color: #00afef;
       color: #fff;
       font-size: 16px;
-      font-family: 'DINNextLTPro-Regular';
+      font-family: "DINNextLTPro-Regular";
       line-height: 20px;
       border-radius: 50px;
       text-align: center;
@@ -302,7 +305,7 @@
       position: relative;
       overflow: hidden;
       background-color: #000;
-      border: 2px solid #3E44FE;
+      border: 2px solid #3e44fe;
       margin: 10px auto 10px auto;
       .btn {
         position: absolute;
@@ -346,7 +349,7 @@
         }
 
         > .ins {
-          background-color: lighten(#00AFEF, 10%);
+          background-color: lighten(#00afef, 10%);
           width: 15px;
           height: 15px;
           border-radius: 15px;

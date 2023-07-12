@@ -15,7 +15,7 @@ class List extends Component {
       kickParticipant,
       isAdmin,
       isAdminActived,
-      currentUser  // TODO no usages found for this component
+      currentUser, // TODO no usages found for this component
     } = this.props;
     return (
       <div className="SidebarList">

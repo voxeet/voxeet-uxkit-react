@@ -6,14 +6,19 @@ import { strings } from "../../../languages/localizedStrings";
 import ListOn from "../../../../static/images/icons/btn-participant-on.svg";
 import ListOff from "../../../../static/images/icons/btn-participant-off.svg";
 import { isMobile } from "../../../libs/browserDetection";
-import {getUxKitContext} from "../../../context";
+import { getUxKitContext } from "../../../context";
 
-@connect((store) => {
-  return {
-    participantStore: store.voxeet.participants,
-    participantWaiting: store.voxeet.participantsWaiting,
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      participantStore: store.voxeet.participants,
+      participantWaiting: store.voxeet.participantsWaiting,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class ToggleAttendeesListButton extends Component {
   constructor(props) {
     super(props);
@@ -36,12 +41,14 @@ class ToggleAttendeesListButton extends Component {
     const { hover, isMobile } = this.state;
 
     let nbParticipants = 0;
-    const participantsConnected = this.props.participantStore.participants.filter(
-      (p) => p.isConnected
-    ).length;
-    const participantsListener = this.props.participantWaiting.participants.filter(
-      (p) => p.stream == null && p.isConnected && p.type == "listener"
-    ).length;
+    const participantsConnected =
+      this.props.participantStore.participants.filter(
+        (p) => p.isConnected
+      ).length;
+    const participantsListener =
+      this.props.participantWaiting.participants.filter(
+        (p) => p.stream == null && p.isConnected && p.type == "listener"
+      ).length;
     // Participant connected + listener + myself
     nbParticipants = participantsConnected + participantsListener + 1;
     return (

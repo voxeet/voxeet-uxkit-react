@@ -15,14 +15,14 @@ export class Actions {
   static inputVideoChange(device, isBackCamera) {
     return {
       type: Types.INPUT_VIDEO_CHANGE,
-      payload: { device, isBackCamera }
+      payload: { device, isBackCamera },
     };
   }
 
   static outputAudioChange(device) {
     return {
       type: Types.OUTPUT_AUDIO_CHANGE,
-      payload: { device }
+      payload: { device },
     };
   }
 }

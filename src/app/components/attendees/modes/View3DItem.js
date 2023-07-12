@@ -11,7 +11,7 @@ import { Actions as ParticipantActions } from "../../../actions/ParticipantActio
 
 import {
   getOrganizedPosition,
-  getRelativePosition
+  getRelativePosition,
 } from "../../../libs/position";
 
 class View3DItem extends Component {
@@ -24,7 +24,7 @@ class View3DItem extends Component {
       size: size,
       posY: participant.y,
       participant: participant,
-      timeout: true
+      timeout: true,
     };
   }
 
@@ -43,7 +43,7 @@ class View3DItem extends Component {
         width: width,
         height: height,
         size: size,
-        index: index
+        index: index,
       });
 
       const relativePosition = getRelativePosition(
@@ -63,7 +63,7 @@ class View3DItem extends Component {
         participant: participant,
         posX: position.posX,
         posY: position.posY,
-        size: size
+        size: size,
       });
       return true;
     } else if (
@@ -75,7 +75,7 @@ class View3DItem extends Component {
         posX: nextProps.participant.x,
         posY: nextProps.participant.y,
         size: size,
-        participant: participant
+        participant: participant,
       });
       return true;
     }
@@ -95,12 +95,12 @@ class View3DItem extends Component {
       kickParticipant,
       isAdmin,
       isAdminActived,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
     } = this.props;
     const { posX, posY } = this.state;
     return (
       <Draggable
-        ref={r => (this.node = r)}
+        ref={(r) => (this.node = r)}
         position={{ x: posX, y: posY }}
         onStart={(e, ui) => this.handleStart(e, ui)}
         onDrag={(e, ui) => this.handleDrag(e, ui)}
@@ -148,7 +148,7 @@ class View3DItem extends Component {
 
     const newPosition = {
       posX: ui.x,
-      posY: ui.y
+      posY: ui.y,
     };
     if (this.state.timeout == true) {
       this.setState({ timeout: false });
@@ -179,7 +179,7 @@ class View3DItem extends Component {
 
     const newPosition = {
       posX: ui.x,
-      posY: ui.y
+      posY: ui.y,
     };
     saveUserPosition(participant.participant_id, relativePosition, newPosition);
     this.setState({ posX: ui.x, posY: ui.y });

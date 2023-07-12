@@ -4,8 +4,8 @@ const defaultState = {
   interval: null,
   activeSpeaker: null,
   activeSpeakerSince: null,
-  silenceSince:null,
-  forceActiveUserEnabled: false
+  silenceSince: null,
+  forceActiveUserEnabled: false,
 };
 
 const ActiveSpeakerReducer = (state = defaultState, action) => {
@@ -13,13 +13,13 @@ const ActiveSpeakerReducer = (state = defaultState, action) => {
     case Types.START_ACTIVE_SPEAKER:
       return {
         ...state,
-        interval: action.payload.interval
+        interval: action.payload.interval,
       };
     case Types.STOP_ACTIVE_SPEAKER:
       if (state.interval) clearInterval(state.interval);
       return {
         ...state,
-        interval: null
+        interval: null,
       };
     case Types.FORCE_ACTIVE_SPEAKER: {
       return {
@@ -41,7 +41,10 @@ const ActiveSpeakerReducer = (state = defaultState, action) => {
       return {
         ...state,
         activeSpeaker: action.payload.participant,
-        activeSpeakerSince: action.payload.activeSpeakerSince || state.activeSpeakerSince || Date.now,
+        activeSpeakerSince:
+          action.payload.activeSpeakerSince ||
+          state.activeSpeakerSince ||
+          Date.now,
         silenceSince: null,
       };
     }

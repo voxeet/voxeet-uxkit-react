@@ -23,7 +23,7 @@ class ModalJoinParticipants extends Component {
 }
 
 ModalJoinParticipants.propTypes = {
-  participants: PropTypes.array.isRequired
+  participants: PropTypes.array.isRequired,
 };
 
 export default ModalJoinParticipants;

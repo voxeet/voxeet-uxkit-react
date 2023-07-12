@@ -13,7 +13,7 @@ const defaultState = {
   hasLeft: false,
   time: 0,
   isJoined: false,
-  dolbyVoiceEnabled: true
+  dolbyVoiceEnabled: true,
 };
 
 const ConferenceReducer = (state = defaultState, action) => {
@@ -21,25 +21,25 @@ const ConferenceReducer = (state = defaultState, action) => {
     case Types.INCREMENT_TIME:
       return {
         ...state,
-        time: action.payload.time
+        time: action.payload.time,
       };
     case Types.CONFERENCE_CONNECTING:
       return {
         ...state,
         connecting: true,
-        isReplaying: false
+        isReplaying: false,
       };
     case Types.CONFERENCE_DEMO:
       return {
         ...state,
-        isDemo: true
+        isDemo: true,
       };
     case Types.CONFERENCE_REPLAYING:
       return {
         ...state,
         connecting: true,
         conferenceReplayId: action.payload.conferenceReplayId,
-        isReplaying: true
+        isReplaying: true,
       };
     case Types.CONFERENCE_JOINED: {
       return {
@@ -49,15 +49,15 @@ const ConferenceReducer = (state = defaultState, action) => {
         dolbyVoiceEnabled: action.payload.dolbyVoiceEnabled,
         connecting: false,
         hasLeft: false,
-        isJoined: true
+        isJoined: true,
       };
     }
     case Types.CONFERENCE_LEAVE: {
       if (!action.payload.disableSounds) {
         const audio = new Audio(sounds.conference_exit);
         audio.play().catch((e) => {
-          console.error('Could not play the sound', e.message)
-        });;
+          console.error("Could not play the sound", e.message);
+        });
       }
       return {
         ...state,
@@ -71,7 +71,7 @@ const ConferenceReducer = (state = defaultState, action) => {
         isDemo: false,
         conferenceReplayId: null,
         time: 0,
-        isJoined: false
+        isJoined: false,
       };
     }
     case Types.REPLAY_ENDED: {
@@ -81,14 +81,14 @@ const ConferenceReducer = (state = defaultState, action) => {
         time: 0,
         conferenceReplayId: null,
         isReplaying: false,
-        isJoined: false
+        isJoined: false,
       };
     }
     case Types.INITIALIZED_SUCCESS:
       return {
         ...state,
         initialized: true,
-        userId: action.payload.userId
+        userId: action.payload.userId,
       };
     default:
       return state;

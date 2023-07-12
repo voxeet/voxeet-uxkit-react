@@ -6,7 +6,7 @@ import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import Cookies from "./../../libs/Storage";
 import { Actions as InputManagerActions } from "../../actions/InputManagerActions";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
-import { Actions as ControlsActions } from "../../actions/ControlsActions"
+import { Actions as ControlsActions } from "../../actions/ControlsActions";
 import AttendeesSettingsVuMeterFromAudioLevel from "./AttendeesSettingsVuMeterFromAudioLevel";
 import { strings } from "../../languages/localizedStrings";
 import { getVideoDeviceName } from "../../libs/getVideoDeviceName";
@@ -62,9 +62,7 @@ class AttendeesSettings extends Component {
         ? this.props.controlsStore.videoDenoise
         : false;
     let virtualBackgroundModeSupported =
-      this.props.virtualBackgroundModeSupported === false
-        ? false
-        : true;
+      this.props.virtualBackgroundModeSupported === false ? false : true;
     if (!virtualBackgroundModeSupported) {
       virtualBackgroundMode = null;
     }
@@ -83,7 +81,7 @@ class AttendeesSettings extends Component {
       lowBandwidthMode: lowBandwidthMode,
       virtualBackgroundMode: virtualBackgroundMode,
       videoDenoise: videoDenoise,
-      virtualBackgroundModeSupported: virtualBackgroundModeSupported
+      virtualBackgroundModeSupported: virtualBackgroundModeSupported,
     };
     this.onAudioDeviceSelected = this.onAudioDeviceSelected.bind(this);
     this.setVideoDevice = this.setVideoDevice.bind(this);
@@ -240,11 +238,13 @@ class AttendeesSettings extends Component {
       .enumerateAudioInputDevices()
       .then((devices) => {
         this.setState({ audioDevices: devices });
-        const currentInputDevice = VoxeetSDK.mediaDevice.selectedAudioInputDevice;
+        const currentInputDevice =
+          VoxeetSDK.mediaDevice.selectedAudioInputDevice;
         if (currentInputDevice) {
-          return this.props.dispatch(InputManagerActions.inputAudioChange(currentInputDevice));
+          return this.props.dispatch(
+            InputManagerActions.inputAudioChange(currentInputDevice)
+          );
         }
-
       })
       .catch((e) =>
         console.error("Initializing an audio input device failed.", e)
@@ -254,9 +254,12 @@ class AttendeesSettings extends Component {
       .enumerateAudioOutputDevices()
       .then((devices) => {
         this.setState({ outputDevices: devices });
-        const currentOutputDevice = VoxeetSDK.mediaDevice.selectedAudioOutputDevice;
+        const currentOutputDevice =
+          VoxeetSDK.mediaDevice.selectedAudioOutputDevice;
         if (currentOutputDevice) {
-          return this.props.dispatch(InputManagerActions.outputAudioChange(currentOutputDevice));
+          return this.props.dispatch(
+            InputManagerActions.outputAudioChange(currentOutputDevice)
+          );
         }
       })
       .catch((e) =>
@@ -266,7 +269,8 @@ class AttendeesSettings extends Component {
     VoxeetSDK.mediaDevice
       .enumerateVideoInputDevices()
       .then((devices) => {
-        const currentVideoDevice = VoxeetSDK.mediaDevice.selectedVideoInputDevice;
+        const currentVideoDevice =
+          VoxeetSDK.mediaDevice.selectedVideoInputDevice;
         if (currentVideoDevice) {
           getVideoDeviceName(currentVideoDevice.deviceId).then(
             (isBackCamera) => {
@@ -287,7 +291,7 @@ class AttendeesSettings extends Component {
   }
 
   onOutputDeviceSelected(e) {
-    const device =  e.target.value ? JSON.parse(e.target.value) : {};
+    const device = e.target.value ? JSON.parse(e.target.value) : {};
     this.setOutputDevice(device).catch((e) =>
       console.error("Selecting audio output device failed.", e)
     );
@@ -301,7 +305,7 @@ class AttendeesSettings extends Component {
   }
 
   onAudioDeviceSelected(e) {
-    const device =  e.target.value ? JSON.parse(e.target.value) : {};
+    const device = e.target.value ? JSON.parse(e.target.value) : {};
     this.setAudioDevice(device).catch((e) =>
       console.error("Selecting audio input device failed.", e)
     );
@@ -324,7 +328,7 @@ class AttendeesSettings extends Component {
 
   setVideoDevice(e) {
     const { videoEnabled } = this.props;
-    const device =  e.target.value ? JSON.parse(e.target.value) : {};
+    const device = e.target.value ? JSON.parse(e.target.value) : {};
     if (videoEnabled) {
       VoxeetSDK.mediaDevice.selectVideoInput(device);
     }
@@ -350,9 +354,7 @@ class AttendeesSettings extends Component {
           this.state.audioTransparentMode,
           default_cookies_param
         );
-        this.props.dispatch(
-          ControlsActions.toggleAudioTransparentMode()
-        );
+        this.props.dispatch(ControlsActions.toggleAudioTransparentMode());
         this.props.dispatch(
           ConferenceActions.setAudioTransparentMode(
             this.state.audioTransparentMode
@@ -592,26 +594,27 @@ class AttendeesSettings extends Component {
                 </div>
               </div>
 
-              {virtualBackgroundModeSupported && (bowser.chrome || isElectron()) && (
-                <div
-                  className={`form-group switch-enable ${
-                    !videoEnabled ? "disabled-form" : ""
-                  }`}
-                >
-                  <div className="switch-mode">
-                    <input
-                      id="vbModeBokeh"
-                      name="vbModeBokeh"
-                      type="checkbox"
-                      onChange={() =>
-                        this.onVirtualBackgroundModeChange("bokeh")
-                      }
-                      checked={virtualBackgroundMode === "bokeh"}
-                    />
-                    <label htmlFor="vbModeBokeh">{strings.bokehMode}</label>
+              {virtualBackgroundModeSupported &&
+                (bowser.chrome || isElectron()) && (
+                  <div
+                    className={`form-group switch-enable ${
+                      !videoEnabled ? "disabled-form" : ""
+                    }`}
+                  >
+                    <div className="switch-mode">
+                      <input
+                        id="vbModeBokeh"
+                        name="vbModeBokeh"
+                        type="checkbox"
+                        onChange={() =>
+                          this.onVirtualBackgroundModeChange("bokeh")
+                        }
+                        checked={virtualBackgroundMode === "bokeh"}
+                      />
+                      <label htmlFor="vbModeBokeh">{strings.bokehMode}</label>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {isElectron() && (
                 <div

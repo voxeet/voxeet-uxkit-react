@@ -37,21 +37,31 @@ export class Actions {
             const participantsConnected = participants.participants.filter(
               (p) => p.isConnected
             );
-            const activeParticipantConnected = activeSpeaker.activeSpeaker?
-                participantsConnected.find(participant =>
-                  activeSpeaker.activeSpeaker.participant_id === participant.participant_id
-                ):
-                false;
+            const activeParticipantConnected = activeSpeaker.activeSpeaker
+              ? participantsConnected.find(
+                  (participant) =>
+                    activeSpeaker.activeSpeaker.participant_id ===
+                    participant.participant_id
+                )
+              : false;
             const participant =
               participantsConnected.length === 1
                 ? participantsConnected[0]
-                : participantsConnected.find((p) => p.isSpeaking) ||
-                  null;
-            if(participant) {
+                : participantsConnected.find((p) => p.isSpeaking) || null;
+            if (participant) {
               // Set new active speaker if there are none
-              if(!activeParticipantConnected || !activeSpeaker.activeSpeaker || !activeSpeaker.activeSpeakerSince
-                  || activeSpeaker.activeSpeaker.participant_id == participant.participant_id) {
-                if(activeSpeaker.activeSpeaker && activeSpeaker.activeSpeaker.participant_id === participant.participant_id) {
+              if (
+                !activeParticipantConnected ||
+                !activeSpeaker.activeSpeaker ||
+                !activeSpeaker.activeSpeakerSince ||
+                activeSpeaker.activeSpeaker.participant_id ==
+                  participant.participant_id
+              ) {
+                if (
+                  activeSpeaker.activeSpeaker &&
+                  activeSpeaker.activeSpeaker.participant_id ===
+                    participant.participant_id
+                ) {
                   dispatch({
                     type: Types.PARTICIPANT_SPEAKING,
                     payload: { participant },
@@ -67,19 +77,23 @@ export class Actions {
                 }
               }
               // Set new active speaker
-              else if(activeSpeaker.activeSpeaker.participant_id != participant.participant_id &&
-                  ( !activeSpeaker.activeSpeakerSince || Date.now()-activeSpeaker.activeSpeakerSince>3000) ) {
+              else if (
+                activeSpeaker.activeSpeaker.participant_id !=
+                  participant.participant_id &&
+                (!activeSpeaker.activeSpeakerSince ||
+                  Date.now() - activeSpeaker.activeSpeakerSince > 3000)
+              ) {
                 // console.log('Switch to next active speaker', participant);
                 dispatch({
                   type: Types.PARTICIPANT_SPEAKING,
                   payload: { participant, activeSpeakerSince: Date.now() },
                 });
               } //else {
-                // console.log('Delay next active speaker', participant);
+              // console.log('Delay next active speaker', participant);
               //}
             } else {
               //console.log('No speakers');
-              dispatch(this.startSilence())
+              dispatch(this.startSilence());
             }
           }
         }, 500);

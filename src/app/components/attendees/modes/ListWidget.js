@@ -31,7 +31,7 @@ class ListWidget extends Component {
               mySelf={true}
               dolbyVoiceEnabled={dolbyVoiceEnabled}
               currentUser={currentUser}
-              key={'admin'}
+              key={"admin"}
             />
           )}
           {participants.map((participant, i) => {

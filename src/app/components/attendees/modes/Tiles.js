@@ -25,23 +25,24 @@ class Tiles extends Component {
       spatialAudioEnabled,
       forwardedRef,
     } = this.props;
-    let tilesParticipants = participants.filter(
-        (p) => p.isConnected
-    );
+    let tilesParticipants = participants.filter((p) => p.isConnected);
     let videoParticipants = tilesParticipants.filter(
-        (p) => p.isConnected &&
-            ((p.stream !== null) &&
-                (p.stream.active) &&
-                (p.stream.getVideoTracks().length > 0)
-            )
+      (p) =>
+        p.isConnected &&
+        p.stream !== null &&
+        p.stream.active &&
+        p.stream.getVideoTracks().length > 0
     );
-    let hasVideoParticipants = videoParticipants && videoParticipants.length>0;
-    let IHaveVideo = (!currentUser || (currentUser.stream && currentUser.stream.getVideoTracks().length > 0));
-    if(hasVideoParticipants || IHaveVideo)
+    let hasVideoParticipants =
+      videoParticipants && videoParticipants.length > 0;
+    let IHaveVideo =
+      !currentUser ||
+      (currentUser.stream && currentUser.stream.getVideoTracks().length > 0);
+    if (hasVideoParticipants || IHaveVideo)
       tilesParticipants = videoParticipants;
-    let showOwnTile = ((!isWebinar && !currentUser.isListener) ||
-        (isWebinar && isAdmin)) &&
-        (IHaveVideo || !hasVideoParticipants);
+    let showOwnTile =
+      ((!isWebinar && !currentUser.isListener) || (isWebinar && isAdmin)) &&
+      (IHaveVideo || !hasVideoParticipants);
 
     let nbParticipants = tilesParticipants.length;
     // if (showOwnTile)
@@ -53,10 +54,8 @@ class Tiles extends Component {
         className="SidebarTiles"
         data-number-user={nbParticipants <= 16 ? nbParticipants : 16}
       >
-        <div className={"tiles-list list" + nbParticipants}
-             ref={forwardedRef}
-        >
-          { showOwnTile && (
+        <div className={"tiles-list list" + nbParticipants} ref={forwardedRef}>
+          {showOwnTile && (
             <OwnTile
               participant={currentUser}
               isAdminActived={isAdminActived}
@@ -73,37 +72,41 @@ class Tiles extends Component {
           {tilesParticipants.map((participant, i) => {
             count = count + 1;
             return (
-              (!spatialAudioEnabled && <Tile
-                participant={participant}
-                nbParticipant={count}
-                mySelf={false}
-                isAdminActived={isAdminActived}
-                key={participant.participant_id}
-                kickParticipant={kickParticipant}
-                isAdmin={isAdmin}
-                toggleMicrophone={toggleMicrophone}
-                isWidgetFullScreenOn={isWidgetFullScreenOn}
-                dolbyVoiceEnabled={dolbyVoiceEnabled}
-                kickPermission={kickPermission}
-                currentUser={currentUser}
-                spatialAudioEnabled={spatialAudioEnabled}
-              />) ||
-              (spatialAudioEnabled && <MeasuredTile
-                participant={participant}
-                nbParticipant={count}
-                mySelf={false}
-                isAdminActived={isAdminActived}
-                key={participant.participant_id}
-                kickParticipant={kickParticipant}
-                isAdmin={isAdmin}
-                toggleMicrophone={toggleMicrophone}
-                isWidgetFullScreenOn={isWidgetFullScreenOn}
-                dolbyVoiceEnabled={dolbyVoiceEnabled}
-                kickPermission={kickPermission}
-                currentUser={currentUser}
-                spatialAudioEnabled={spatialAudioEnabled}
-              />)
-            )
+              (!spatialAudioEnabled && (
+                <Tile
+                  participant={participant}
+                  nbParticipant={count}
+                  mySelf={false}
+                  isAdminActived={isAdminActived}
+                  key={participant.participant_id}
+                  kickParticipant={kickParticipant}
+                  isAdmin={isAdmin}
+                  toggleMicrophone={toggleMicrophone}
+                  isWidgetFullScreenOn={isWidgetFullScreenOn}
+                  dolbyVoiceEnabled={dolbyVoiceEnabled}
+                  kickPermission={kickPermission}
+                  currentUser={currentUser}
+                  spatialAudioEnabled={spatialAudioEnabled}
+                />
+              )) ||
+              (spatialAudioEnabled && (
+                <MeasuredTile
+                  participant={participant}
+                  nbParticipant={count}
+                  mySelf={false}
+                  isAdminActived={isAdminActived}
+                  key={participant.participant_id}
+                  kickParticipant={kickParticipant}
+                  isAdmin={isAdmin}
+                  toggleMicrophone={toggleMicrophone}
+                  isWidgetFullScreenOn={isWidgetFullScreenOn}
+                  dolbyVoiceEnabled={dolbyVoiceEnabled}
+                  kickPermission={kickPermission}
+                  currentUser={currentUser}
+                  spatialAudioEnabled={spatialAudioEnabled}
+                />
+              ))
+            );
           })}
         </div>
       </div>

@@ -37,7 +37,7 @@ const OnBoardingMessageWithActionReducer = (state = defaultState, action) => {
         title: action.payload.title,
         description: action.payload.description,
         isError: action.payload.isError,
-        linkWithHelp: action.payload.linkWithHelp
+        linkWithHelp: action.payload.linkWithHelp,
       };
     case Types.HIDE_ON_BOARDING_WITH_DESCRIPTION:
       return {
@@ -45,19 +45,19 @@ const OnBoardingMessageWithActionReducer = (state = defaultState, action) => {
         title: state.title,
         description: state.description,
         isError: false,
-        linkWithHelp: state.linkWithHelp
+        linkWithHelp: state.linkWithHelp,
       };
     case Types.DISPLAY_ON_BOARDING_OVERLAY:
       return {
         displayOnBoardingMessageOverlay: true,
         description: action.payload.description,
-        title: action.payload.title
+        title: action.payload.title,
       };
     case Types.HIDE_ON_BOARDING_OVERLAY:
       return {
         displayOnBoardingMessageOverlay: false,
         description: state.description,
-        title: state.title
+        title: state.title,
       };
     case Types.DISPLAY_ON_BOARDING_WITH_CONFIRMATION:
       return {
@@ -73,7 +73,7 @@ const OnBoardingMessageWithActionReducer = (state = defaultState, action) => {
         messageWithConfirmation: state.messageWithConfirmation,
         actionCallback: state.actionCallback,
         withCancelOption: false,
-        confirmButtonTitle: state.confirmButtonTitle
+        confirmButtonTitle: state.confirmButtonTitle,
       };
 
     default:

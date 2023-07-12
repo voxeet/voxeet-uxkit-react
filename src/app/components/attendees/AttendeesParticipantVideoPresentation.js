@@ -7,18 +7,23 @@ import { Actions as VideoPresentationActions } from "../../actions/VideoPresenta
 import ReactPlayer from "react-player";
 import VoxeetSDK from "@voxeet/voxeet-web-sdk";
 import bowser from "bowser";
-import {getUxKitContext} from "../../context";
+import { getUxKitContext } from "../../context";
 
-@connect(store => {
-  return {
-    videoPresentationStore: store.voxeet.videoPresentation
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      videoPresentationStore: store.voxeet.videoPresentation,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class AttendeesParticipantVideoPresentation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      safariAutoplay: bowser.safari
+      safariAutoplay: bowser.safari,
     };
     this.onSeek = this.onSeek.bind(this);
     this.onPause = this.onPause.bind(this);
@@ -35,8 +40,7 @@ class AttendeesParticipantVideoPresentation extends Component {
 
   onSeek(seconds) {
     const { isVideoPresentation } = this.props;
-    if (isVideoPresentation)
-      VoxeetSDK.videoPresentation.seek(seconds * 1000);
+    if (isVideoPresentation) VoxeetSDK.videoPresentation.seek(seconds * 1000);
   }
 
   onPause() {
@@ -53,11 +57,15 @@ class AttendeesParticipantVideoPresentation extends Component {
     if (isVideoPresentation) {
       const { url } = this.props.videoPresentationStore;
       // Just for YouTube seek to current position before play (CC-1205)
-      if (url && (url.indexOf('youtube.com')!==-1
-          || url.indexOf('youtu.be')!==-1))
-        VoxeetSDK.videoPresentation.seek(this.videoPresentation.getCurrentTime() * 1000);
-      VoxeetSDK.videoPresentation.play(
+      if (
+        url &&
+        (url.indexOf("youtube.com") !== -1 || url.indexOf("youtu.be") !== -1)
+      )
+        VoxeetSDK.videoPresentation.seek(
           this.videoPresentation.getCurrentTime() * 1000
+        );
+      VoxeetSDK.videoPresentation.play(
+        this.videoPresentation.getCurrentTime() * 1000
       );
     }
   }
@@ -87,16 +95,16 @@ class AttendeesParticipantVideoPresentation extends Component {
           id="video-presentation"
           url={url}
           playsinline
-          ref={ref => (this.videoPresentation = ref)}
+          ref={(ref) => (this.videoPresentation = ref)}
           playing={playing && !safariAutoplay ? true : false}
           controls={isVideoPresentation ? true : false}
           pip={true}
           config={{
             file: {
               attributes: {
-                autoPlay: true
-              }
-            }
+                autoPlay: true,
+              },
+            },
           }}
           width="100%"
           height="100%"
@@ -110,7 +118,7 @@ class AttendeesParticipantVideoPresentation extends Component {
 }
 
 AttendeesParticipantVideoPresentation.propTypes = {
-  isVideoPresentation: PropTypes.bool
+  isVideoPresentation: PropTypes.bool,
 };
 
 export default AttendeesParticipantVideoPresentation;

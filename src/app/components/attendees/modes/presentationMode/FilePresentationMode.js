@@ -25,7 +25,7 @@ class FilePresentationMode extends Component {
       currentUser,
       isWebinar,
       isScreenshare,
-      dolbyVoiceEnabled
+      dolbyVoiceEnabled,
     } = this.props;
     return (
       <SpeakerActive

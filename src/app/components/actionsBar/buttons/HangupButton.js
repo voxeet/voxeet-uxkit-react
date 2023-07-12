@@ -35,11 +35,11 @@ class HangupButton extends Component {
 
 HangupButton.propTypes = {
   leave: PropTypes.func.isRequired,
-  tooltipPlace: PropTypes.string.isRequired
+  tooltipPlace: PropTypes.string.isRequired,
 };
 
 HangupButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default HangupButton;

@@ -17,15 +17,17 @@ class TileLegend extends Component {
       kickParticipant,
       isAdminActived,
       dolbyVoiceEnabled,
-      currentUser
+      currentUser,
     } = this.props;
     return (
       <span className="tile-legend">
         <span className="participant-username">{participant.name}</span>
-        {!(dolbyVoiceEnabled && currentUser.isListener) && <AttendeesParticipantMute
-          participant={participant}
-          toggleMicrophone={toggleMicrophone}
-        />}
+        {!(dolbyVoiceEnabled && currentUser.isListener) && (
+          <AttendeesParticipantMute
+            participant={participant}
+            toggleMicrophone={toggleMicrophone}
+          />
+        )}
         {isAdmin && isAdminActived && (
           <AttendeesKickParticipant
             isAdminActived={isAdminActived}

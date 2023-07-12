@@ -11,18 +11,13 @@ class ToggleRecordingButton extends Component {
     super(props);
     this.state = {
       isMobile: isMobile(),
-      hover: false
+      hover: false,
     };
   }
 
   render() {
-    const {
-      isRecording,
-      toggle,
-      tooltipPlace,
-      isBottomBar,
-      recordingLocked
-    } = this.props;
+    const { isRecording, toggle, tooltipPlace, isBottomBar, recordingLocked } =
+      this.props;
     const { hover, isMobile } = this.state;
     return (
       <li
@@ -74,11 +69,11 @@ ToggleRecordingButton.propTypes = {
   recordingLocked: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
   tooltipPlace: PropTypes.string.isRequired,
-  isBottomBar: PropTypes.bool.isRequired
+  isBottomBar: PropTypes.bool.isRequired,
 };
 
 ToggleRecordingButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleRecordingButton;
