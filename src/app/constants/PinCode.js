@@ -1,5 +1,4 @@
-export let pinCode = [
-];
+export let pinCode = [];
 
 export function setPstnNumbers(newValue) {
   pinCode = newValue;

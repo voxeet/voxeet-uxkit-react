@@ -5,28 +5,33 @@ import { connect } from "react-redux";
 import TileVideo from "./TileVideo";
 import TileLegend from "./TileLegend";
 import Draggable from "react-draggable";
-import {getUxKitContext} from "../../../context";
+import { getUxKitContext } from "../../../context";
 
-@connect(store => {
-  return {
-    inputManager: store.voxeet.inputManager
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      inputManager: store.voxeet.inputManager,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class OwnTile extends Component {
   constructor(props) {
     super(props);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const checker = document.getElementById(
-      "video-local-video-on"
-    );
+    const checker = document.getElementById("video-local-video-on");
     if (
       (checker != null && nextProps.participant.stream == null) ||
       (checker != null && !nextProps.participant.stream.active) ||
-      (checker != null && nextProps.participant.stream.getVideoTracks().length === 0) ||
+      (checker != null &&
+        nextProps.participant.stream.getVideoTracks().length === 0) ||
       (checker == null && nextProps.participant.stream) ||
-      (this.props.inputManager.isBackCamera != nextProps.inputManager.isBackCamera) ||
+      this.props.inputManager.isBackCamera !=
+        nextProps.inputManager.isBackCamera ||
       (this.props.mySelf && this.props.participant.name == null)
     ) {
       return true;
@@ -44,7 +49,7 @@ class OwnTile extends Component {
       isAdminActived,
       mySelf,
       dolbyVoiceEnabled,
-      currentUser
+      currentUser,
     } = this.props;
     const { currentVideoDevice, isBackCamera } = this.props.inputManager;
     return (
@@ -59,8 +64,8 @@ class OwnTile extends Component {
           id={
             "video-local-video-" +
             (participant.stream &&
-              participant.stream.active &&
-              participant.stream.getVideoTracks().length > 0
+            participant.stream.active &&
+            participant.stream.getVideoTracks().length > 0
               ? "on"
               : "off")
           }

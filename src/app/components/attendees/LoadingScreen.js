@@ -13,7 +13,7 @@ class LoadingScreen extends Component {
       <div className="voxeet-loading-message-container">
         <div className="voxeet-loading-center-container">
           <div className="voxeet-loading-logo-container">
-            {logo ? <img src={logo} /> : <div className='ddloader' />}
+            {logo ? <img src={logo} /> : <div className="ddloader" />}
           </div>
           <div className="voxeet-loading-info-container">
             {strings.electronloading}
@@ -28,7 +28,7 @@ class LoadingScreen extends Component {
 }
 
 LoadingScreen.propTypes = {
-  logo: PropTypes.string
+  logo: PropTypes.string,
 };
 
 export default LoadingScreen;

@@ -5,7 +5,7 @@ import {
   ToggleSidebarButton,
   ToggleFullScreenButton,
   HangupButton,
-  CloseModalButton
+  CloseModalButton,
 } from "../buttons";
 
 class Sidebar extends Component {
@@ -16,7 +16,7 @@ class Sidebar extends Component {
 
   renderButtons() {
     return React.createElement(this.props.actionsButtons, {
-      ...this.props
+      ...this.props,
     });
   }
 
@@ -27,7 +27,7 @@ class Sidebar extends Component {
       isWidgetFullScreenOn,
       toggleWidget,
       toggleFullScreen,
-      leave
+      leave,
     } = this.props;
 
     return (
@@ -94,11 +94,11 @@ Sidebar.propTypes = {
   toggleVideoPresentation: PropTypes.func.isRequired,
   convertFilePresentation: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
-  toggleMode: PropTypes.func.isRequired
+  toggleMode: PropTypes.func.isRequired,
 };
 
 Sidebar.defaultProps = {
-  forceFullscreen: false
+  forceFullscreen: false,
 };
 
 export default Sidebar;

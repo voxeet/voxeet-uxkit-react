@@ -16,13 +16,18 @@ import WindowShareOn from "../../../../static/images/icons/icon-window.svg";
 import WindowShareOff from "../../../../static/images/icons/icon-window-hover.svg";
 import dolbyLogo from "../../../../static/images/DDLoader.gif";
 import { isMobile } from "../../../libs/browserDetection";
-import {getUxKitContext} from "../../../context";
+import { getUxKitContext } from "../../../context";
 
-@connect(store => {
-  return {
-    filePresentationStore: store.voxeet.filePresentation
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      filePresentationStore: store.voxeet.filePresentation,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class ToggleScreenShareButton extends Component {
   constructor(props) {
     super(props);
@@ -34,24 +39,22 @@ class ToggleScreenShareButton extends Component {
       hover_screen: false,
       hover_window: false,
       hover_file: false,
-      hover_video: false
+      hover_video: false,
     };
     this.togglePopUp = this.togglePopUp.bind(this);
-    this.handleClickFilePresentation = this.handleClickFilePresentation.bind(
-      this
-    );
+    this.handleClickFilePresentation =
+      this.handleClickFilePresentation.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.toggleScreenShare = this.toggleScreenShare.bind(this);
-    this.handleChangeInputVideoPresentation = this.handleChangeInputVideoPresentation.bind(
-      this
-    );
+    this.handleChangeInputVideoPresentation =
+      this.handleChangeInputVideoPresentation.bind(this);
   }
 
   toggleScreenShare() {
     this.props.toggle("screenshare");
     this.setState({
       opened: !this.state.opened,
-      openedVideoPresentation: false
+      openedVideoPresentation: false,
     });
   }
 
@@ -69,7 +72,7 @@ class ToggleScreenShareButton extends Component {
       screenShareEnabled,
       maxScreenShareReached,
       filePresentationEnabled,
-      videoPresentationEnabled
+      videoPresentationEnabled,
     } = this.props;
     if (
       !maxScreenShareReached &&
@@ -81,21 +84,21 @@ class ToggleScreenShareButton extends Component {
       } else {
         this.setState({
           opened: !this.state.opened,
-          openedVideoPresentation: false
+          openedVideoPresentation: false,
         });
       }
     } else {
-      if(!this.state.opened) {
+      if (!this.state.opened) {
         this.props.dispatch(
-            OnBoardingMessageActions.onBoardingDisplay(
-                strings.shareAlreadyStarted,
-                2000
-            )
+          OnBoardingMessageActions.onBoardingDisplay(
+            strings.shareAlreadyStarted,
+            2000
+          )
         );
       }
       this.setState({
         opened: false,
-        openedVideoPresentation: false
+        openedVideoPresentation: false,
       });
     }
   }
@@ -127,7 +130,7 @@ class ToggleScreenShareButton extends Component {
       currentUserScreenShare,
       shareActions,
       videoPresentationEnabled,
-      maxScreenShareReached
+      maxScreenShareReached,
     } = this.props;
     const {
       opened,
@@ -137,7 +140,7 @@ class ToggleScreenShareButton extends Component {
       hover_screen,
       hover_window,
       hover_file,
-      hover_video
+      hover_video,
     } = this.state;
     const { fileConverted } = this.props.filePresentationStore;
     return (
@@ -145,15 +148,15 @@ class ToggleScreenShareButton extends Component {
         id="screenshare-container"
         className={
           filePresentationEnabled ||
-            currentUserScreenShare ||
-            maxScreenShareReached ||
-            videoPresentationEnabled ||
-            opened ||
-            openedVideoPresentation
+          currentUserScreenShare ||
+          maxScreenShareReached ||
+          videoPresentationEnabled ||
+          opened ||
+          openedVideoPresentation
             ? "active"
             : fileConverted
-              ? "conversion-running"
-              : ""
+            ? "conversion-running"
+            : ""
         }
       >
         {fileConverted ? (
@@ -171,40 +174,40 @@ class ToggleScreenShareButton extends Component {
             )}
           </Fragment>
         ) : (
-            <Fragment>
-              <a
-                data-tip
-                data-for="toggle-screenshare"
-                className={
-                  "" + (opened || openedVideoPresentation ? "on" : "off")
-                }
-                title={strings.screenshare}
-                onClick={() => {
+          <Fragment>
+            <a
+              data-tip
+              data-for="toggle-screenshare"
+              className={
+                "" + (opened || openedVideoPresentation ? "on" : "off")
+              }
+              title={strings.screenshare}
+              onClick={() => {
+                currentUserScreenShare ||
+                currentUserFilePresentation ||
+                currentUserVideoPresentation
+                  ? toggle()
+                  : this.togglePopUp();
+              }}
+            >
+              <img
+                src={
+                  filePresentationEnabled ||
                   currentUserScreenShare ||
-                    currentUserFilePresentation ||
-                    currentUserVideoPresentation
-                    ? toggle()
-                    : this.togglePopUp();
-                }}
-              >
-                <img
-                  src={
-                    filePresentationEnabled ||
-                      currentUserScreenShare ||
-                      maxScreenShareReached ||
-                      videoPresentationEnabled
-                      ? ShareScreenOn
-                      : ShareScreenOff
-                  }
-                />
-                {isBottomBar && (
-                  <div>
-                    <span>{strings.screenshare}</span>
-                  </div>
-                )}
-              </a>
-            </Fragment>
-          )}
+                  maxScreenShareReached ||
+                  videoPresentationEnabled
+                    ? ShareScreenOn
+                    : ShareScreenOff
+                }
+              />
+              {isBottomBar && (
+                <div>
+                  <span>{strings.screenshare}</span>
+                </div>
+              )}
+            </a>
+          </Fragment>
+        )}
         {openedVideoPresentation && (
           <div className="bubble-tip bubble-video-presentation">
             <a
@@ -237,25 +240,29 @@ class ToggleScreenShareButton extends Component {
             ></a>
             <span className="title">{strings.screenshareOption}</span>
             {shareActions.indexOf("screenshare") > -1 && (
-                <div>
-                  <Fragment>
-                    <a
-                      onClick={() =>
-                        this.toggleScreenShare()
+              <div>
+                <Fragment>
+                  <a
+                    onClick={() => this.toggleScreenShare()}
+                    onMouseEnter={() => {
+                      !isMobile && this.setState({ hover_screen: true });
+                    }}
+                    onMouseLeave={() => {
+                      !isMobile && this.setState({ hover_screen: false });
+                    }}
+                  >
+                    <img
+                      src={
+                        hover_screen
+                          ? EntireScreenShareOff
+                          : EntireScreenShareOn
                       }
-                      onMouseEnter={() => {
-                        !isMobile && this.setState({ hover_screen: true });
-                      }}
-                      onMouseLeave={() => {
-                        !isMobile && this.setState({ hover_screen: false });
-                      }}
-                    >
-                      <img src={hover_screen ? EntireScreenShareOff : EntireScreenShareOn} />
-                      {strings.screenshareEntireScreen}
-                    </a>
-                  </Fragment>
-                </div>
-              )}
+                    />
+                    {strings.screenshareEntireScreen}
+                  </a>
+                </Fragment>
+              </div>
+            )}
             {shareActions.indexOf("windowpresentation") > -1 && (
               <Fragment>
                 <a
@@ -358,11 +365,11 @@ ToggleScreenShareButton.propTypes = {
   toggleVideoPresentation: PropTypes.func.isRequired,
 
   tooltipPlace: PropTypes.string.isRequired,
-  isBottomBar: PropTypes.bool.isRequired
+  isBottomBar: PropTypes.bool.isRequired,
 };
 
 ToggleScreenShareButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleScreenShareButton;

@@ -11,7 +11,7 @@ class ToggleMicrophoneButton extends Component {
     super(props);
     this.state = {
       isMobile: isMobile(),
-      hover: false
+      hover: false,
     };
   }
 
@@ -61,11 +61,11 @@ ToggleMicrophoneButton.propTypes = {
   toggle: PropTypes.func.isRequired,
   isMuted: PropTypes.bool.isRequired,
   tooltipPlace: PropTypes.string.isRequired,
-  isBottomBar: PropTypes.bool.isRequired
+  isBottomBar: PropTypes.bool.isRequired,
 };
 
 ToggleMicrophoneButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleMicrophoneButton;

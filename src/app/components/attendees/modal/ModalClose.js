@@ -33,11 +33,11 @@ class ModalClose extends Component {
 
 ModalClose.propTypes = {
   tooltipPlace: PropTypes.string.isRequired,
-  toggle: PropTypes.func.isRequired
+  toggle: PropTypes.func.isRequired,
 };
 
 ModalClose.defaultProps = {
-  tooltipPlace: "left"
+  tooltipPlace: "left",
 };
 
 export default ModalClose;

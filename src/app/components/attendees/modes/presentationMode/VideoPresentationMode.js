@@ -26,7 +26,7 @@ class VideoPresentationMode extends Component {
       isAdminActived,
       currentUser,
       isWebinar,
-      isScreenshare
+      isScreenshare,
     } = this.props;
     return (
       <SpeakerActive
@@ -59,7 +59,7 @@ VideoPresentationMode.propTypes = {
   screenShareStream: PropTypes.array,
   kickParticipant: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
-  isAdminActived: PropTypes.bool.isRequired
+  isAdminActived: PropTypes.bool.isRequired,
 };
 
 export default VideoPresentationMode;

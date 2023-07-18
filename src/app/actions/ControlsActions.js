@@ -43,7 +43,7 @@ export const Types = {
 export class Actions {
   static toggleWidget() {
     return {
-      type: Types.TOGGLE_WIDGET
+      type: Types.TOGGLE_WIDGET,
     };
   }
 
@@ -51,14 +51,14 @@ export class Actions {
     return {
       type: Types.SET_SIMULCAST,
       payload: {
-        simulcast: simulcast
-      }
-    }
+        simulcast: simulcast,
+      },
+    };
   }
 
   static toggleFullScreen() {
     return {
-      type: Types.TOGGLE_FULLSCREEN
+      type: Types.TOGGLE_FULLSCREEN,
     };
   }
 
@@ -66,8 +66,8 @@ export class Actions {
     return {
       type: Types.CLOSE_SESSION_HANG_UP,
       payload: {
-        closeSessionAtHangUp: closeSessionAtHangUp
-      }
+        closeSessionAtHangUp: closeSessionAtHangUp,
+      },
     };
   }
 
@@ -75,8 +75,8 @@ export class Actions {
     return {
       type: Types.SET_CHROME_EXTENSION_ID,
       payload: {
-        chromeExtensionId: chromeExtensionId
-      }
+        chromeExtensionId: chromeExtensionId,
+      },
     };
   }
 
@@ -84,14 +84,14 @@ export class Actions {
     return {
       type: Types.SAVE_CONSTRAINTS,
       payload: {
-        constraints: constraints
-      }
+        constraints: constraints,
+      },
     };
   }
 
   static disableSounds() {
     return {
-      type: Types.DISABLE_SOUNDS
+      type: Types.DISABLE_SOUNDS,
     };
   }
 
@@ -99,8 +99,8 @@ export class Actions {
     return {
       type: Types.SET_VIDEO_RATIO,
       payload: {
-        videoRatio: videoRatio
-      }
+        videoRatio: videoRatio,
+      },
     };
   }
 
@@ -108,8 +108,8 @@ export class Actions {
     return {
       type: Types.FORCE_MODE,
       payload: {
-        mode: mode
-      }
+        mode: mode,
+      },
     };
   }
 
@@ -117,8 +117,8 @@ export class Actions {
     return {
       type: Types.TOGGLE_SCREEN_SHARE_MODE,
       payload: {
-        isScreenshare
-      }
+        isScreenshare,
+      },
     };
   }
 
@@ -126,8 +126,8 @@ export class Actions {
     return {
       type: Types.TOGGLE_FILE_PRESENTATION_MODE,
       payload: {
-        isFilePresentation
-      }
+        isFilePresentation,
+      },
     };
   }
 
@@ -135,32 +135,32 @@ export class Actions {
     return {
       type: Types.TOGGLE_VIDEO_PRESENTATION_MODE,
       payload: {
-        isVideoPresentation
-      }
+        isVideoPresentation,
+      },
     };
   }
 
   static toggleMode() {
     return {
-      type: Types.TOGGLE_MODE
+      type: Types.TOGGLE_MODE,
     };
   }
 
   static toggleAudio3D() {
     return {
-      type: Types.TOGGLE_AUDIO3D
+      type: Types.TOGGLE_AUDIO3D,
     };
   }
 
   static adminActived() {
     return {
-      type: Types.ADMIN_ACTIVED
+      type: Types.ADMIN_ACTIVED,
     };
   }
 
   static isKickOnHangUpActived() {
     return {
-      type: Types.KICK_ON_HANG_UP
+      type: Types.KICK_ON_HANG_UP,
     };
   }
 
@@ -168,8 +168,8 @@ export class Actions {
     return {
       type: Types.DISPLAY_MODES_ALLOWED,
       payload: {
-        displayModes: displayModes
-      }
+        displayModes: displayModes,
+      },
     };
   }
 
@@ -177,8 +177,8 @@ export class Actions {
     return {
       type: Types.SHARE_ACTIONS_ALLOWED,
       payload: {
-        shareActions: shareActions
-      }
+        shareActions: shareActions,
+      },
     };
   }
 
@@ -186,8 +186,8 @@ export class Actions {
     return {
       type: Types.DISPLAY_ACTIONS_ALLOWED,
       payload: {
-        displayActions: displayActions
-      }
+        displayActions: displayActions,
+      },
     };
   }
 
@@ -195,14 +195,14 @@ export class Actions {
     return {
       type: Types.TOGGLE_AUDIO,
       payload: {
-        state: state
-      }
+        state: state,
+      },
     };
   }
 
   static toggleMicrophone() {
     return {
-      type: Types.TOGGLE_MICROPHONE
+      type: Types.TOGGLE_MICROPHONE,
     };
   }
 
@@ -210,56 +210,56 @@ export class Actions {
     return {
       type: Types.TOGGLE_VIDEO,
       payload: {
-        state: state
-      }
+        state: state,
+      },
     };
   }
 
   static toggleModal() {
     return {
-      type: Types.TOGGLE_MODAL
+      type: Types.TOGGLE_MODAL,
     };
   }
 
   static toggleRecording() {
     return {
-      type: Types.TOGGLE_RECORDING
+      type: Types.TOGGLE_RECORDING,
     };
   }
 
   static lockRecording() {
     return {
-      type: Types.LOCK_RECORDING
+      type: Types.LOCK_RECORDING,
     };
   }
 
   static unlockRecording() {
     return {
-      type: Types.UNLOCK_RECORDING
+      type: Types.UNLOCK_RECORDING,
     };
   }
 
   static toggleModalWidget() {
     return {
-      type: Types.TOGGLE_MODAL_WIDGET
+      type: Types.TOGGLE_MODAL_WIDGET,
     };
   }
 
   static resetWidgetControls() {
     return {
-      type: Types.RESET_WIDGET_CONTROLS
+      type: Types.RESET_WIDGET_CONTROLS,
     };
   }
 
   static toggleAttendeesList() {
     return {
-      type: Types.TOGGLE_ATTENDEES_LIST
+      type: Types.TOGGLE_ATTENDEES_LIST,
     };
   }
 
   static toggleAttendeesSettings() {
     return {
-      type: Types.TOGGLE_ATTENDEES_SETTINGS
+      type: Types.TOGGLE_ATTENDEES_SETTINGS,
     };
   }
 
@@ -267,14 +267,14 @@ export class Actions {
     return {
       type: Types.SET_AUDIO_TRANSPARENT_MODE,
       payload: {
-        audioTransparentMode : state
-      }
+        audioTransparentMode: state,
+      },
     };
   }
 
   static toggleAudioTransparentMode() {
     return {
-      type: Types.TOGGLE_AUDIO_TRANSPARENT_MODE
+      type: Types.TOGGLE_AUDIO_TRANSPARENT_MODE,
     };
   }
 
@@ -282,14 +282,14 @@ export class Actions {
     return {
       type: Types.TOGGLE_MAX_REMOTE_PARTICIPANTS,
       payload: {
-        maxVideoForwarding: state
-      }
+        maxVideoForwarding: state,
+      },
     };
   }
 
   static toggleAttendeesChat() {
     return {
-      type: Types.TOGGLE_ATTENDEES_CHAT
+      type: Types.TOGGLE_ATTENDEES_CHAT,
     };
   }
 
@@ -297,8 +297,8 @@ export class Actions {
     return {
       type: Types.TOGGLE_REQUESTED_VIDEO,
       payload: {
-        participant_id
-      }
+        participant_id,
+      },
     };
   }
 
@@ -307,8 +307,8 @@ export class Actions {
       type: Types.SET_REQUESTED_VIDEO,
       payload: {
         participant_id,
-        state
-      }
+        state,
+      },
     };
   }
 
@@ -316,8 +316,8 @@ export class Actions {
     return {
       type: Types.SET_CONFERENCE_PERMISSIONS,
       payload: {
-        conferencePermissions
-      }
+        conferencePermissions,
+      },
     };
   }
 
@@ -325,8 +325,8 @@ export class Actions {
     return {
       type: Types.SET_VIRTUAL_BACKGROUND_MODE,
       payload: {
-        mode: mode
-      }
+        mode: mode,
+      },
     };
   }
 
@@ -334,8 +334,8 @@ export class Actions {
     return {
       type: Types.SET_VIDEO_DENOISE,
       payload: {
-        videoDenoise: enabled
-      }
+        videoDenoise: enabled,
+      },
     };
   }
 }

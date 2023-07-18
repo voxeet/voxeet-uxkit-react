@@ -12,13 +12,13 @@ const OnBoardingMessageReducer = (state = defaultState, action) => {
       return {
         displayOnBoardingMessage: true,
         message: action.payload.message,
-        timer: action.payload.timer
+        timer: action.payload.timer,
       };
     case Types.HIDE_ON_BOARDING:
       return {
         displayOnBoardingMessage: false,
         timer: 3000,
-        message: state.message
+        message: state.message,
       };
     default:
       return state;

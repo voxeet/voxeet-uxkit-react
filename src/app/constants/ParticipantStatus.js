@@ -13,7 +13,7 @@ const status = [
   STATUS_ERROR,
   STATUS_LEFT,
   STATUS_RESERVED,
-  STATUS_INACTIVE
+  STATUS_INACTIVE,
 ];
 
 export default status;

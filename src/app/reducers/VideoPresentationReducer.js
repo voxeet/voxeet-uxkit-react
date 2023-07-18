@@ -3,7 +3,7 @@ const defaultState = {
   url: null,
   playing: false,
   ts: 0,
-  player: null
+  player: null,
 };
 
 const VideoPresentationReducer = (state = defaultState, action) => {
@@ -11,26 +11,26 @@ const VideoPresentationReducer = (state = defaultState, action) => {
     case Types.VIDEO_PRESENTATION_PLAY: {
       return {
         ...state,
-        playing: true
+        playing: true,
       };
     }
     case Types.VIDEO_PRESENTATION_PLAYER: {
       return {
         ...state,
-        player: action.payload.player
+        player: action.payload.player,
       };
     }
     case Types.VIDEO_PRESENTATION_PAUSE: {
       return {
         ...state,
-        playing: false
+        playing: false,
       };
     }
     case Types.VIDEO_PRESENTATION_SEEK: {
       if (state.player != null)
         state.player.seekTo(action.payload.ts, "seconds");
       return {
-        ...state
+        ...state,
       };
     }
     case Types.VIDEO_PRESENTATION_START: {
@@ -38,7 +38,7 @@ const VideoPresentationReducer = (state = defaultState, action) => {
         ...state,
         playing: true,
         ts: action.payload.ts,
-        url: action.payload.url
+        url: action.payload.url,
       };
     }
     case Types.VIDEO_PRESENTATION_STOP: {
@@ -47,7 +47,7 @@ const VideoPresentationReducer = (state = defaultState, action) => {
         url: null,
         playing: false,
         player: null,
-        ts: 0
+        ts: 0,
       };
     }
     default: {

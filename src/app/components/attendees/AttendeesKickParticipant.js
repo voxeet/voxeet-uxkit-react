@@ -22,7 +22,7 @@ class AttendeesKickParticipant extends Component {
 
 AttendeesKickParticipant.propTypes = {
   participant: PropTypes.object.isRequired,
-  kickParticipant: PropTypes.func.isRequired
+  kickParticipant: PropTypes.func.isRequired,
 };
 
 export default AttendeesKickParticipant;

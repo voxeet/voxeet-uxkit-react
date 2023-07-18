@@ -12,18 +12,18 @@ const InputManagerReducer = (state = defaultState, action) => {
     case Types.INPUT_AUDIO_CHANGE:
       return {
         ...state,
-        currentAudioDevice: action.payload.device
+        currentAudioDevice: action.payload.device,
       };
     case Types.OUTPUT_AUDIO_CHANGE:
       return {
         ...state,
-        currentOutputDevice: action.payload.device
+        currentOutputDevice: action.payload.device,
       };
     case Types.INPUT_VIDEO_CHANGE:
       return {
         ...state,
         isBackCamera: action.payload.isBackCamera,
-        currentVideoDevice: action.payload.device
+        currentVideoDevice: action.payload.device,
       };
     default:
       return state;

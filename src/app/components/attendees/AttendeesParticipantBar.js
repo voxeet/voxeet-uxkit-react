@@ -4,13 +4,18 @@ import PropTypes from "prop-types";
 import AttendeesParticipantMute from "./AttendeesParticipantMute";
 import AttendeesKickParticipant from "./AttendeesKickParticipant";
 import { connect } from "react-redux";
-import {getUxKitContext} from "../../context";
+import { getUxKitContext } from "../../context";
 
-@connect((store) => {
-  return {
-    participantStore: store.voxeet.participants,
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      participantStore: store.voxeet.participants,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class AttendeesParticipantBar extends Component {
   constructor(props) {
     super(props);
@@ -50,27 +55,32 @@ class AttendeesParticipantBar extends Component {
     return (
       <div className={is3D ? "participant-bar-3d" : className}>
         <div className="quality">
-          <div className={avquality>=0.5?"on":"off"} />
-          <div className={avquality>=1.5?"on":"off"} />
-          <div className={avquality>=2.5?"on":"off"} />
-          <div className={avquality>=3.5?"on":"off"} />
-          <div className={avquality>=4.5?"on":"off"} />
+          <div className={avquality >= 0.5 ? "on" : "off"} />
+          <div className={avquality >= 1.5 ? "on" : "off"} />
+          <div className={avquality >= 2.5 ? "on" : "off"} />
+          <div className={avquality >= 3.5 ? "on" : "off"} />
+          <div className={avquality >= 4.5 ? "on" : "off"} />
         </div>
         <div className="name">{participant.name}</div>
         <ul className="bar-icons">
           <li>
-            {toggleMicrophone != null && !participant.isMyself && !(dolbyVoiceEnabled && currentUser.isListener) && (
-              <AttendeesParticipantMute
-                participant={participant}
-                toggleMicrophone={toggleMicrophone}
-              />
-            )}
-            {isAdmin && isAdminActived && !participant.isMyself &&  kickPermission && (
-              <AttendeesKickParticipant
-                participant={participant}
-                kickParticipant={kickParticipant}
-              />
-            )}
+            {toggleMicrophone != null &&
+              !participant.isMyself &&
+              !(dolbyVoiceEnabled && currentUser.isListener) && (
+                <AttendeesParticipantMute
+                  participant={participant}
+                  toggleMicrophone={toggleMicrophone}
+                />
+              )}
+            {isAdmin &&
+              isAdminActived &&
+              !participant.isMyself &&
+              kickPermission && (
+                <AttendeesKickParticipant
+                  participant={participant}
+                  kickParticipant={kickParticipant}
+                />
+              )}
           </li>
         </ul>
       </div>
@@ -87,7 +97,7 @@ AttendeesParticipantBar.propTypes = {
   isAdmin: PropTypes.bool,
   isAdminActived: PropTypes.bool,
   dolbyVoiceEnabled: PropTypes.bool,
-  kickPermission: PropTypes.bool
+  kickPermission: PropTypes.bool,
 };
 
 AttendeesParticipantBar.defaultProps = {

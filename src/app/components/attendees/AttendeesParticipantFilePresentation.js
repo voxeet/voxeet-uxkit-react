@@ -3,13 +3,18 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { strings } from "../../languages/localizedStrings";
 import { Actions as ConferenceActions } from "../../actions/ConferenceActions";
-import {getUxKitContext} from "../../context";
+import { getUxKitContext } from "../../context";
 
-@connect((store) => {
-  return {
-    filePresentationStore: store.voxeet.filePresentation,
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      filePresentationStore: store.voxeet.filePresentation,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class AttendeesParticipantFilePresentation extends Component {
   constructor(props) {
     super(props);
@@ -50,11 +55,8 @@ class AttendeesParticipantFilePresentation extends Component {
   }
 
   nextFilePresentation() {
-    const {
-      imageCount,
-      filePresentationPosition,
-      filePresentationId,
-    } = this.props.filePresentationStore;
+    const { imageCount, filePresentationPosition, filePresentationId } =
+      this.props.filePresentationStore;
     if (filePresentationPosition < imageCount - 1) {
       this.props.dispatch(
         ConferenceActions.updateFilePresentation(
@@ -67,11 +69,8 @@ class AttendeesParticipantFilePresentation extends Component {
   }
 
   prevFilePresentation() {
-    const {
-      imageCount,
-      filePresentationPosition,
-      filePresentationId,
-    } = this.props.filePresentationStore;
+    const { imageCount, filePresentationPosition, filePresentationId } =
+      this.props.filePresentationStore;
     if (filePresentationPosition > 0) {
       this.props.dispatch(
         ConferenceActions.updateFilePresentation(
@@ -104,12 +103,8 @@ class AttendeesParticipantFilePresentation extends Component {
 
   render() {
     const { isFilePresentation } = this.props;
-    const {
-      fileUrl,
-      imageCount,
-      filePresentationPosition,
-      thumbnails,
-    } = this.props.filePresentationStore;
+    const { fileUrl, imageCount, filePresentationPosition, thumbnails } =
+      this.props.filePresentationStore;
     const { mouseMoving } = this.state;
     return (
       <div

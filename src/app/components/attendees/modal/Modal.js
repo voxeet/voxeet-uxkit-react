@@ -45,13 +45,13 @@ class Modal extends Component {
 }
 
 Modal.defaultProps = {
-  isModalError: false
+  isModalError: false,
 };
 
 Modal.propTypes = {
   isModalError: PropTypes.bool,
   error: PropTypes.string,
-  toggle: PropTypes.func
+  toggle: PropTypes.func,
 };
 
 export default Modal;

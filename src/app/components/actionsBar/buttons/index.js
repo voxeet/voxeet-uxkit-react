@@ -10,9 +10,5 @@ export { default as ToggleScreenShareButton } from "./ToggleScreenShareButton";
 export { default as ToggleSettingsButton } from "./ToggleSettingsButton";
 export { default as ToggleSidebarButton } from "./ToggleSidebarButton";
 export { default as ToggleVideoButton } from "./ToggleVideoButton";
-export {
-  default as ToggleAttendeesListButton
-} from "./ToggleAttendeesListButton";
-export {
-  default as ToggleAttendeesChatButton
-} from "./ToggleAttendeesChatButton";
+export { default as ToggleAttendeesListButton } from "./ToggleAttendeesListButton";
+export { default as ToggleAttendeesChatButton } from "./ToggleAttendeesChatButton";

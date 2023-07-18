@@ -344,7 +344,9 @@ class ConferenceRoomContainer extends Component {
               conferencePermissions={conferencePermissions}
               chatOptions={chatOptions}
               spatialAudioEnabled={spatialAudioEnabled}
-              virtualBackgroundModeSupported={this.props.virtualBackgroundModeSupported}
+              virtualBackgroundModeSupported={
+                this.props.virtualBackgroundModeSupported
+              }
             />
           )}
           {isJoined && (isWidgetFullScreenOn || forceFullscreen) && (

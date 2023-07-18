@@ -3,13 +3,18 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import IconMuteSoundOff from "../../../static/images/icons/icon-mute-sound-off.svg";
 import IconMuteSoundOn from "../../../static/images/icons/icon-mute-sound-on.svg";
-import {getUxKitContext} from "../../context";
+import { getUxKitContext } from "../../context";
 
-@connect(store => {
-  return {
-    participantStore: store.voxeet.participants
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      participantStore: store.voxeet.participants,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class AttendeesParticipantMute extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +28,7 @@ class AttendeesParticipantMute extends Component {
           className={
             "icon-mute-participant-" + (participant.isMuted ? "on" : "off")
           }
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation();
             toggleMicrophone(participant.participant_id, participant.isMuted);
           }}
@@ -37,7 +42,7 @@ class AttendeesParticipantMute extends Component {
 
 AttendeesParticipantMute.propTypes = {
   participant: PropTypes.object,
-  toggleMicrophone: PropTypes.func
+  toggleMicrophone: PropTypes.func,
 };
 
 export default AttendeesParticipantMute;

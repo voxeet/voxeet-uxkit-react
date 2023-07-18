@@ -1,13 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import {getUxKitContext} from "../../../context";
+import { getUxKitContext } from "../../../context";
 
-@connect(store => {
-  return {
-    controlsStore: store.voxeet.controls
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      controlsStore: store.voxeet.controls,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class BottomBar extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +27,7 @@ class BottomBar extends Component {
       isRecording: this.props.controlsStore.isRecording,
       audio3DEnabled: this.props.controlsStore.audio3DEnabled,
       videoEnabled: this.props.controlsStore.videoEnabled,
-      isBottomBar: true
+      isBottomBar: true,
     });
   }
 
@@ -72,12 +77,12 @@ BottomBar.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   toggleMode: PropTypes.func.isRequired,
   conferencePincode: PropTypes.string,
-  mode: PropTypes.string.isRequired
+  mode: PropTypes.string.isRequired,
 };
 
 BottomBar.defaultProps = {
   forceFullscreen: false,
-  isWidgetFullScreenOn: false
+  isWidgetFullScreenOn: false,
 };
 
 export default BottomBar;

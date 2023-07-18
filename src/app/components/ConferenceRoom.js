@@ -107,7 +107,6 @@ class ConferenceRoom extends Component {
       isListener,
       chatOptions,
       spatialAudio,
-
     } = this.props;
     let { constraints } = this.props;
     if (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined) {
@@ -138,17 +137,21 @@ class ConferenceRoom extends Component {
       this.audioTransparentMode = preConfigPayload.audioTransparentMode;
     }
     let audioTransparentMode = this.audioTransparentMode;
-    if (
-      preConfigPayload &&
-      preConfigPayload.virtualBackgroundMode !== undefined
-    ) {
-      this.props.dispatch(
-        ControlsActions.setVirtualBackgroundMode(
-          preConfigPayload.virtualBackgroundMode
-        )
-      );
-      this.virtualBackgroundMode = preConfigPayload.virtualBackgroundMode;
+
+    if (this.props.virtualBackgroundModeSupported) {
+      if (
+        preConfigPayload &&
+        preConfigPayload.virtualBackgroundMode !== undefined
+      ) {
+        this.props.dispatch(
+          ControlsActions.setVirtualBackgroundMode(
+            preConfigPayload.virtualBackgroundMode
+          )
+        );
+        this.virtualBackgroundMode = preConfigPayload.virtualBackgroundMode;
+      }
     }
+
     if (preConfigPayload && preConfigPayload.videoDenoise !== undefined) {
       this.props.dispatch(
         ControlsActions.setVideoDenoise(preConfigPayload.videoDenoise)
@@ -319,7 +322,8 @@ class ConferenceRoom extends Component {
               maxVideoForwarding,
               chatOptions,
               dvwc,
-              spatialAudio
+              spatialAudio,
+              this.props.virtualBackgroundModeSupported
             )
           );
         });
@@ -423,19 +427,18 @@ class ConferenceRoom extends Component {
     );
     this.audioTransparentMode = audioTransparentMode;
 
-    let virtualBackgroundMode = this.props.virtualBackgroundModeSupported
-      ? Cookies.get("virtualBackgroundMode")
-      : null;
-    if (virtualBackgroundMode === "null") virtualBackgroundMode = null;
-    this.props.dispatch(
-      ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode)
-    );
-    this.virtualBackgroundMode = virtualBackgroundMode;
-    console.log(
-      "initializeControlsStore virtualBackgroundMode",
-      this.virtualBackgroundMode
-    );
-
+    if (this.props.virtualBackgroundModeSupported) {
+      let virtualBackgroundMode = Cookies.get("virtualBackgroundMode");
+      if (virtualBackgroundMode === "null") virtualBackgroundMode = null;
+      this.props.dispatch(
+        ControlsActions.setVirtualBackgroundMode(virtualBackgroundMode)
+      );
+      this.virtualBackgroundMode = virtualBackgroundMode;
+      console.log(
+        "initializeControlsStore virtualBackgroundMode",
+        this.virtualBackgroundMode
+      );
+    }
     let videoDenoise = Cookies.get("videoDenoise");
     if (videoDenoise !== undefined) {
       if (typeof videoDenoise === "string" || videoDenoise instanceof String)
@@ -469,9 +472,7 @@ class ConferenceRoom extends Component {
       // !isMobile() &&
       (!isWebinar || (isWebinar && isAdmin));
     let doPreConfig =
-      !isListener &&
-      !isMobile() &&
-      (!isWebinar || (isWebinar && isAdmin))
+      !isListener && !isMobile() && (!isWebinar || (isWebinar && isAdmin))
         ? preConfig
         : false;
 
@@ -532,7 +533,7 @@ class ConferenceRoom extends Component {
           //console.log('About to check preconfigured audio input / camera', Cookies.get("input"), Cookies.get("camera"));
           // Check selected devices stored in cookies
           let selectedAudio = Cookies.getDevice("input"),
-          selectedVideo = Cookies.getDevice("camera");
+            selectedVideo = Cookies.getDevice("camera");
           if (constraints.audio && !selectedAudio && !isMobile()) {
             console.log("Audio input not configured... will force preconfig");
             return this.setState({ preConfig: true }, () => {
@@ -549,22 +550,24 @@ class ConferenceRoom extends Component {
           // Check if exists device with Id set in cookies
           let foundAudio = !constraints.audio
             ? true
-            : selectedAudio && await VoxeetSDK.mediaDevice
+            : selectedAudio &&
+              (await VoxeetSDK.mediaDevice
                 .enumerateAudioInputDevices()
                 .then((devices) => {
                   return devices.find(
                     (source) => selectedAudio.deviceId === source.deviceId
                   );
-                });
-          let foundVideo = !constraints.video 
+                }));
+          let foundVideo = !constraints.video
             ? true
-            : selectedVideo && await VoxeetSDK.mediaDevice
+            : selectedVideo &&
+              (await VoxeetSDK.mediaDevice
                 .enumerateVideoInputDevices()
                 .then((devices) => {
                   return devices.find(
                     (source) => selectedVideo.deviceId === source.deviceId
                   );
-                });
+                }));
           // TODO: prevent read errors
           console.log(
             "About to check availability of preconfigured audio input / camera streams",
@@ -574,7 +577,9 @@ class ConferenceRoom extends Component {
           let gotAudioStream = true;
           if (constraints.audio && selectedAudio) {
             gotAudioStream = await navigator.mediaDevices
-              .getUserMedia({ audio: { deviceId: { exact: selectedAudio.deviceId } } })
+              .getUserMedia({
+                audio: { deviceId: { exact: selectedAudio.deviceId } },
+              })
               .then((stream) => {
                 stream.getTracks().forEach((track) => {
                   track.stop();
@@ -589,7 +594,9 @@ class ConferenceRoom extends Component {
           let gotVideoStream = true;
           if (constraints.video && selectedVideo) {
             gotVideoStream = await navigator.mediaDevices
-              .getUserMedia({ video: { deviceId: { exact: selectedVideo.deviceId } } })
+              .getUserMedia({
+                video: { deviceId: { exact: selectedVideo.deviceId } },
+              })
               .then((stream) => {
                 stream.getTracks().forEach((track) => {
                   track.stop();
@@ -722,7 +729,9 @@ class ConferenceRoom extends Component {
           handleJoin={this.handleJoin}
           dolbyVoiceEnabled={dolbyVoice}
           spatialAudioEnabled={spatialAudio}
-          virtualBackgroundModeSupported={this.props.virtualBackgroundModeSupported}
+          virtualBackgroundModeSupported={
+            this.props.virtualBackgroundModeSupported
+          }
         />
       );
     } else if (isJoined || !isWidget || conferenceReplayId != null) {
@@ -751,7 +760,9 @@ class ConferenceRoom extends Component {
           dolbyVoiceEnabled={dolbyVoiceEnabled}
           chatOptions={chatOptions}
           spatialAudioEnabled={spatialAudio}
-          virtualBackgroundModeSupported={this.props.virtualBackgroundModeSupported}
+          virtualBackgroundModeSupported={
+            this.props.virtualBackgroundModeSupported
+          }
         />
       );
     }

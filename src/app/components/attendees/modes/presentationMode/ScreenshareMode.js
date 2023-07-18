@@ -40,7 +40,7 @@ class ScreenshareMode extends Component {
         dolbyVoiceEnabled={dolbyVoiceEnabled}
         currentUser={currentUser}
       />
-    )
+    );
   }
 }
 

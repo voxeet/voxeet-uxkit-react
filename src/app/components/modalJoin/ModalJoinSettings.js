@@ -13,7 +13,7 @@ class ModalJoinSettings extends Component {
     super(props);
     this.state = {
       audioDevices: [],
-      videoDevices: []
+      videoDevices: [],
     };
     this.loadDevices = this.loadDevices.bind(this);
   }
@@ -28,23 +28,26 @@ class ModalJoinSettings extends Component {
 
   componentDidMount() {
     this.loadDevices();
-    navigator.mediaDevices.addEventListener('devicechange', this.loadDevices);
+    navigator.mediaDevices.addEventListener("devicechange", this.loadDevices);
   }
 
   componentWillUnmount() {
-    navigator.mediaDevices.removeEventListener('devicechange', this.loadDevices);
+    navigator.mediaDevices.removeEventListener(
+      "devicechange",
+      this.loadDevices
+    );
   }
 
   loadDevices() {
-    VoxeetSDK.mediaDevice.enumerateAudioDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateAudioDevices().then((devices) => {
       this.setState({
-        audioDevices: devices
+        audioDevices: devices,
       });
     });
 
-    VoxeetSDK.mediaDevice.enumerateVideoDevices().then(devices => {
+    VoxeetSDK.mediaDevice.enumerateVideoDevices().then((devices) => {
       this.setState({
-        videoDevices: devices
+        videoDevices: devices,
       });
     });
   }

@@ -28,7 +28,7 @@ const reducers = combineReducers({
   filePresentation: FilePresentationReducer,
   activeSpeaker: ActiveSpeakerReducer,
   videoPresentation: VideoPresentationReducer,
-  forwardedVideo: ForwardedVideoReducer
+  forwardedVideo: ForwardedVideoReducer,
 });
 
 export default reducers;

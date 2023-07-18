@@ -7,7 +7,7 @@ export const Types = {
   PARTICIPANT_WAITING_LEFT: "PARTICIPANT_WAITING_LEFT",
   PARTICIPANT_WAITING_UPDATED: "PARTICIPANT_WAITING_UPDATED",
   PARTICIPANT_WAITING_JOINED: "PARTICIPANT_WAITING_JOINED",
-  PARTICIPANT_WAITING_RESET: "PARTICIPANT_WAITING_RESET"
+  PARTICIPANT_WAITING_RESET: "PARTICIPANT_WAITING_RESET",
 };
 
 export class Actions {
@@ -16,8 +16,8 @@ export class Actions {
       type: Types.PARTICIPANT_WAITING_ADDED,
       payload: {
         userId,
-        userInfo
-      }
+        userInfo,
+      },
     };
   }
   static onParticipantWaitingJoined(userId, stream) {
@@ -25,8 +25,8 @@ export class Actions {
       type: Types.PARTICIPANT_WAITING_JOINED,
       payload: {
         userId,
-        stream
-      }
+        stream,
+      },
     };
   }
   static onParticipantWaitingStatusUpdated(userId, status, type) {
@@ -35,8 +35,8 @@ export class Actions {
       payload: {
         userId,
         status,
-        type
-      }
+        type,
+      },
     };
   }
   static onParticipantWaitingUpdated(userId, stream) {
@@ -44,21 +44,21 @@ export class Actions {
       type: Types.PARTICIPANT_WAITING_UPDATED,
       payload: {
         userId,
-        stream
-      }
+        stream,
+      },
     };
   }
   static onParticipantWaitingLeft(userId) {
     return {
       type: Types.PARTICIPANT_WAITING_LEFT,
       payload: {
-        userId
-      }
+        userId,
+      },
     };
   }
   static onParticipantWaitingReset() {
     return {
-      type: Types.PARTICIPANT_WAITING_RESET
+      type: Types.PARTICIPANT_WAITING_RESET,
     };
   }
 }

@@ -6,19 +6,24 @@ import { connect } from "react-redux";
 import ChatOn from "../../../../static/images/icons/btn-chat-on.svg";
 import ChatOff from "../../../../static/images/icons/btn-chat-off.svg";
 import { isMobile } from "../../../libs/browserDetection";
-import {getUxKitContext} from "../../../context";
+import { getUxKitContext } from "../../../context";
 
-@connect(store => {
-  return {
-    chatStore: store.voxeet.chat
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (store) => {
+    return {
+      chatStore: store.voxeet.chat,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class ToggleAttendeesChatButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isMobile: isMobile(),
-      hover: false
+      hover: false,
     };
   }
 
@@ -70,11 +75,11 @@ ToggleAttendeesChatButton.propTypes = {
   toggle: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   tooltipPlace: PropTypes.string.isRequired,
-  isBottomBar: PropTypes.bool.isRequired
+  isBottomBar: PropTypes.bool.isRequired,
 };
 
 ToggleAttendeesChatButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleAttendeesChatButton;

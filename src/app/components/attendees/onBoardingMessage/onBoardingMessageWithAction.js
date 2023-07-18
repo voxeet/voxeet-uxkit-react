@@ -3,13 +3,18 @@ import PropTypes from "prop-types";
 import { strings } from "../../../languages/localizedStrings";
 import { connect } from "react-redux";
 import { Actions as OnBoardingMessageWithActionActions } from "../../../actions/OnBoardingMessageWithActionActions";
-import {getUxKitContext} from "../../../context";
+import { getUxKitContext } from "../../../context";
 
-@connect(state => {
-  return {
-    onBoardingMessageWithAction: state.voxeet.onBoardingMessageWithAction
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (state) => {
+    return {
+      onBoardingMessageWithAction: state.voxeet.onBoardingMessageWithAction,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class OnBoardingMessageWithAction extends Component {
   constructor(props) {
     super(props);
@@ -17,10 +22,8 @@ class OnBoardingMessageWithAction extends Component {
   }
 
   componentDidUpdate() {
-    const {
-      displayOnBoardingMessageWithAction,
-      isError
-    } = this.props.onBoardingMessageWithAction;
+    const { displayOnBoardingMessageWithAction, isError } =
+      this.props.onBoardingMessageWithAction;
     if (displayOnBoardingMessageWithAction && isError) {
       setTimeout(() => {
         this.props.dispatch(

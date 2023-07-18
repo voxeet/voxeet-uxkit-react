@@ -49,7 +49,7 @@ class Speaker extends Component {
       dolbyVoiceEnabled,
       kickPermission,
       currentUser,
-      spatialAudioEnabled
+      spatialAudioEnabled,
     } = this.props;
     let forcedActive = "";
     if (
@@ -92,12 +92,13 @@ class Speaker extends Component {
             kickPermission={kickPermission}
           />
         )}
-        {!isWidgetFullScreenOn && !(dolbyVoiceEnabled && currentUser.isListener) && (
-          <AttendeesParticipantMute
-            participant={participant}
-            toggleMicrophone={toggleMicrophone}
-          />
-        )}
+        {!isWidgetFullScreenOn &&
+          !(dolbyVoiceEnabled && currentUser.isListener) && (
+            <AttendeesParticipantMute
+              participant={participant}
+              toggleMicrophone={toggleMicrophone}
+            />
+          )}
         {!isWidgetFullScreenOn && isAdmin && isAdminActived && (
           <AttendeesKickParticipant
             participant={participant}
@@ -126,7 +127,7 @@ Speaker.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   isAdminActived: PropTypes.bool.isRequired,
   dolbyVoiceEnabled: PropTypes.bool,
-  kickPermission: PropTypes.bool
+  kickPermission: PropTypes.bool,
 };
 
 export default Speaker;

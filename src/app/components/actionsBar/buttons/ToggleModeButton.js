@@ -57,11 +57,11 @@ class ToggleModeButton extends Component {
 ToggleModeButton.propTypes = {
   mode: PropTypes.string.isRequired,
   toggleMode: PropTypes.func.isRequired,
-  tooltipPlace: PropTypes.string.isRequired
+  tooltipPlace: PropTypes.string.isRequired,
 };
 
 ToggleModeButton.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default ToggleModeButton;

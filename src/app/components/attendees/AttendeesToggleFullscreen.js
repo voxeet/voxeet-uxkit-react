@@ -29,11 +29,11 @@ class AttendeesToggleFullscreen extends Component {
 AttendeesToggleFullscreen.propTypes = {
   toggleWidget: PropTypes.func.isRequired,
   isWidgetOpened: PropTypes.bool.isRequired,
-  tooltipPlace: PropTypes.string.isRequired
+  tooltipPlace: PropTypes.string.isRequired,
 };
 
 AttendeesToggleFullscreen.defaultProps = {
-  tooltipPlace: "right"
+  tooltipPlace: "right",
 };
 
 export default AttendeesToggleFullscreen;

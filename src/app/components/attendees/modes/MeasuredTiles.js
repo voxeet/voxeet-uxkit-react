@@ -17,7 +17,6 @@ import { getUxKitContext } from "../../../context";
   null,
   { context: getUxKitContext() }
 )
-
 class MeasuredTiles extends Component {
   onBoundsChange(size) {
     updateSpatialScene(size.bounds);
@@ -35,26 +34,26 @@ class MeasuredTiles extends Component {
       isWebinar,
       dolbyVoiceEnabled,
       kickPermission,
-      spatialAudioEnabled
+      spatialAudioEnabled,
     } = this.props;
     //Wrap this component if spatial is enabled to track layout changes
     return (
       <Measure bounds onResize={this.onBoundsChange}>
         {({ measureRef }) => (
-              <Tiles
-              forwardedRef={measureRef}
-              participants={participants}
-              isAdmin={isAdmin}
-              isWebinar={isWebinar}
-              isAdminActived={isAdminActived}
-              currentUser={currentUser}
-              kickParticipant={kickParticipant}
-              toggleMicrophone={toggleMicrophone}
-              isWidgetFullScreenOn={isWidgetFullScreenOn}
-              dolbyVoiceEnabled={dolbyVoiceEnabled}
-              kickPermission={kickPermission}
-              spatialAudioEnabled={spatialAudioEnabled}
-            />
+          <Tiles
+            forwardedRef={measureRef}
+            participants={participants}
+            isAdmin={isAdmin}
+            isWebinar={isWebinar}
+            isAdminActived={isAdminActived}
+            currentUser={currentUser}
+            kickParticipant={kickParticipant}
+            toggleMicrophone={toggleMicrophone}
+            isWidgetFullScreenOn={isWidgetFullScreenOn}
+            dolbyVoiceEnabled={dolbyVoiceEnabled}
+            kickPermission={kickPermission}
+            spatialAudioEnabled={spatialAudioEnabled}
+          />
         )}
       </Measure>
     );

@@ -2,7 +2,7 @@ import { Types } from "../actions/ChatActions";
 
 const defaultState = {
   newMessage: false,
-  messages: []
+  messages: [],
 };
 
 const ChatReducer = (state = defaultState, action) => {
@@ -15,29 +15,29 @@ const ChatReducer = (state = defaultState, action) => {
         time: action.payload.chat.time,
         name: action.payload.chat.name,
         avatarUrl: action.payload.chat.avatarUrl,
-        ownerId: action.payload.chat.ownerId
+        ownerId: action.payload.chat.ownerId,
       });
       return {
         ...state,
-        messages: [...messages]
+        messages: [...messages],
       };
     }
     case Types.CLEAR_MESSAGES: {
       return {
         messages: [],
-        newMessage: false
+        newMessage: false,
       };
     }
     case Types.NEW_BADGE_MESSAGE_CHAT: {
       return {
         ...state,
-        newMessage: true
+        newMessage: true,
       };
     }
     case Types.RESET_BADGE_MESSAGE_CHAT: {
       return {
         ...state,
-        newMessage: false
+        newMessage: false,
       };
     }
     default: {

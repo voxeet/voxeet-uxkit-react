@@ -2,13 +2,18 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Actions as OnBoardingMessageWithActionActions } from "../../../actions/OnBoardingMessageWithActionActions";
-import {getUxKitContext} from "../../../context";
+import { getUxKitContext } from "../../../context";
 
-@connect(state => {
-  return {
-    onBoardingMessageWithAction: state.voxeet.onBoardingMessageWithAction
-  };
-}, null, null, { context: getUxKitContext() })
+@connect(
+  (state) => {
+    return {
+      onBoardingMessageWithAction: state.voxeet.onBoardingMessageWithAction,
+    };
+  },
+  null,
+  null,
+  { context: getUxKitContext() }
+)
 class OnBoardingMessageWithDescription extends Component {
   constructor(props) {
     super(props);
@@ -17,10 +22,8 @@ class OnBoardingMessageWithDescription extends Component {
   }
 
   componentDidUpdate() {
-    const {
-      displayOnBoardingMessageWithDescription,
-      isError
-    } = this.props.onBoardingMessageWithAction;
+    const { displayOnBoardingMessageWithDescription, isError } =
+      this.props.onBoardingMessageWithAction;
     if (displayOnBoardingMessageWithDescription && isError) {
       this.timeout = setTimeout(() => {
         this.props.dispatch(
@@ -40,23 +43,19 @@ class OnBoardingMessageWithDescription extends Component {
   }
 
   questionMarkClicked() {
-    if(this.timeout) {
-      console.log('CLEAR TIMEOUT');
+    if (this.timeout) {
+      console.log("CLEAR TIMEOUT");
       clearTimeout(this.timeout);
     }
 
-    const {
-      title,
-      description,
-      linkWithHelp,
-      isError
-    } = this.props.onBoardingMessageWithAction;
+    const { title, description, linkWithHelp, isError } =
+      this.props.onBoardingMessageWithAction;
 
     this.props.dispatch(
-        OnBoardingMessageWithActionActions.onBoardingMessageOverlay(
-            description,
-            title
-        )
+      OnBoardingMessageWithActionActions.onBoardingMessageOverlay(
+        description,
+        title
+      )
     );
   }
 
@@ -66,7 +65,7 @@ class OnBoardingMessageWithDescription extends Component {
       description,
       linkWithHelp,
       displayOnBoardingMessageWithDescription,
-      isError
+      isError,
     } = this.props.onBoardingMessageWithAction;
     return (
       <div
@@ -76,15 +75,15 @@ class OnBoardingMessageWithDescription extends Component {
               ? "onboardingmessagewithdescription-error"
               : "onboardingmessagewithdescription-hidden"
             : displayOnBoardingMessageWithDescription
-              ? "onboardingmessagewithdescription"
-              : "onboardingmessagewithdescription-hidden"
+            ? "onboardingmessagewithdescription"
+            : "onboardingmessagewithdescription-hidden"
         }
       >
         {title}
         <a
           onClick={() => this.questionMarkClicked()}
           href={linkWithHelp}
-          className='question-icon'
+          className="question-icon"
         >
           {"?"}
         </a>

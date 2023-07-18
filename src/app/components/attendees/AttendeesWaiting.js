@@ -25,7 +25,7 @@ class AttendeesWaiting extends Component {
 
 AttendeesWaiting.propTypes = {
   forceFullscreen: PropTypes.bool,
-  isWidgetFullScreenOn: PropTypes.bool
+  isWidgetFullScreenOn: PropTypes.bool,
 };
 
 export default AttendeesWaiting;

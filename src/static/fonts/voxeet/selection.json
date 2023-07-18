@@ -10,9 +10,7 @@
         "isMulticolor": false,
         "isMulticolor2": false,
         "grid": 0,
-        "tags": [
-          "Combined Shape 2"
-        ],
+        "tags": ["Combined Shape 2"],
         "colorPermutations": {}
       },
       "attrs": [],
@@ -36,9 +34,7 @@
         "isMulticolor": false,
         "isMulticolor2": false,
         "grid": 0,
-        "tags": [
-          "Combined Shape"
-        ],
+        "tags": ["Combined Shape"],
         "colorPermutations": {}
       },
       "attrs": [],
@@ -60,9 +56,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "google-plus"
-        ],
+        "tags": ["google-plus"],
         "defaultCode": 59648,
         "grid": 0,
         "attrs": []
@@ -87,9 +81,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "twitter"
-        ],
+        "tags": ["twitter"],
         "defaultCode": 59649,
         "grid": 0,
         "attrs": []
@@ -115,9 +107,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "add-circle"
-        ],
+        "tags": ["add-circle"],
         "defaultCode": 59650,
         "grid": 0,
         "attrs": []
@@ -143,9 +133,7 @@
         "width": 1229,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "add-contact"
-        ],
+        "tags": ["add-contact"],
         "defaultCode": 59651,
         "grid": 0,
         "attrs": []
@@ -170,9 +158,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "add"
-        ],
+        "tags": ["add"],
         "defaultCode": 59652,
         "grid": 0,
         "attrs": []
@@ -198,9 +184,7 @@
         "width": 847,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "andriod"
-        ],
+        "tags": ["andriod"],
         "defaultCode": 59653,
         "grid": 0,
         "attrs": []
@@ -226,9 +210,7 @@
         "width": 827,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "apple"
-        ],
+        "tags": ["apple"],
         "defaultCode": 59654,
         "grid": 0,
         "attrs": []
@@ -254,9 +236,7 @@
         "width": 502,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "arrow-back-large"
-        ],
+        "tags": ["arrow-back-large"],
         "defaultCode": 59655,
         "grid": 0,
         "attrs": []
@@ -282,9 +262,7 @@
         "width": 502,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "arrow-next-large"
-        ],
+        "tags": ["arrow-next-large"],
         "defaultCode": 59656,
         "grid": 0,
         "attrs": []
@@ -309,9 +287,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "attach"
-        ],
+        "tags": ["attach"],
         "defaultCode": 59657,
         "grid": 0,
         "attrs": []
@@ -337,9 +313,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "calender"
-        ],
+        "tags": ["calender"],
         "defaultCode": 59658,
         "grid": 0,
         "attrs": []
@@ -365,9 +339,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "chat-filled"
-        ],
+        "tags": ["chat-filled"],
         "defaultCode": 59659,
         "grid": 0,
         "attrs": []
@@ -393,9 +365,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "chat"
-        ],
+        "tags": ["chat"],
         "defaultCode": 59660,
         "grid": 0,
         "attrs": []
@@ -421,9 +391,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "check-circle-unchecked"
-        ],
+        "tags": ["check-circle-unchecked"],
         "defaultCode": 59661,
         "grid": 0,
         "attrs": []
@@ -449,9 +417,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "check-circle"
-        ],
+        "tags": ["check-circle"],
         "defaultCode": 59662,
         "grid": 0,
         "attrs": []
@@ -477,9 +443,7 @@
         "width": 1170,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "check"
-        ],
+        "tags": ["check"],
         "defaultCode": 59663,
         "grid": 0,
         "attrs": []
@@ -505,9 +469,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "clock"
-        ],
+        "tags": ["clock"],
         "defaultCode": 59664,
         "grid": 0,
         "attrs": []
@@ -533,9 +495,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "close-sidebar"
-        ],
+        "tags": ["close-sidebar"],
         "defaultCode": 59665,
         "grid": 0,
         "attrs": []
@@ -561,9 +521,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "close"
-        ],
+        "tags": ["close"],
         "defaultCode": 59666,
         "grid": 0,
         "attrs": []
@@ -588,9 +546,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "dial-in"
-        ],
+        "tags": ["dial-in"],
         "defaultCode": 59667,
         "grid": 0,
         "attrs": []
@@ -616,9 +572,7 @@
         "width": 967,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "download"
-        ],
+        "tags": ["download"],
         "defaultCode": 59668,
         "grid": 0,
         "attrs": []
@@ -644,9 +598,7 @@
         "width": 549,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "facebook"
-        ],
+        "tags": ["facebook"],
         "defaultCode": 59669,
         "grid": 0,
         "attrs": []
@@ -672,9 +624,7 @@
         "width": 853,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "file"
-        ],
+        "tags": ["file"],
         "defaultCode": 59670,
         "grid": 0,
         "attrs": []
@@ -700,9 +650,7 @@
         "width": 1152,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "hashtag"
-        ],
+        "tags": ["hashtag"],
         "defaultCode": 59671,
         "grid": 0,
         "attrs": []
@@ -728,9 +676,7 @@
         "width": 1229,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "invite"
-        ],
+        "tags": ["invite"],
         "defaultCode": 59672,
         "grid": 0,
         "attrs": []
@@ -755,9 +701,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "mention"
-        ],
+        "tags": ["mention"],
         "defaultCode": 59673,
         "grid": 0,
         "attrs": []
@@ -782,9 +726,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "menu-close"
-        ],
+        "tags": ["menu-close"],
         "defaultCode": 59674,
         "grid": 0,
         "attrs": []
@@ -810,9 +752,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "menu-closed-circle"
-        ],
+        "tags": ["menu-closed-circle"],
         "defaultCode": 59675,
         "grid": 0,
         "attrs": []
@@ -838,9 +778,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "menu-open-circle"
-        ],
+        "tags": ["menu-open-circle"],
         "defaultCode": 59676,
         "grid": 0,
         "attrs": []
@@ -865,9 +803,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "menu-open"
-        ],
+        "tags": ["menu-open"],
         "defaultCode": 59677,
         "grid": 0,
         "attrs": []
@@ -893,9 +829,7 @@
         "width": 711,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "microphone"
-        ],
+        "tags": ["microphone"],
         "defaultCode": 59678,
         "grid": 0,
         "attrs": []
@@ -920,9 +854,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "minimize"
-        ],
+        "tags": ["minimize"],
         "defaultCode": 59679,
         "grid": 0,
         "attrs": []
@@ -947,9 +879,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "mute"
-        ],
+        "tags": ["mute"],
         "defaultCode": 59680,
         "grid": 0,
         "attrs": []
@@ -975,9 +905,7 @@
         "width": 798,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "pause"
-        ],
+        "tags": ["pause"],
         "defaultCode": 59681,
         "grid": 0,
         "attrs": []
@@ -1002,9 +930,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "pencil"
-        ],
+        "tags": ["pencil"],
         "defaultCode": 59682,
         "grid": 0,
         "attrs": []
@@ -1030,9 +956,7 @@
         "width": 796,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "person"
-        ],
+        "tags": ["person"],
         "defaultCode": 59683,
         "grid": 0,
         "attrs": []
@@ -1058,9 +982,7 @@
         "width": 1365,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "phone-end-call"
-        ],
+        "tags": ["phone-end-call"],
         "defaultCode": 59684,
         "grid": 0,
         "attrs": []
@@ -1085,9 +1007,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "phone-right"
-        ],
+        "tags": ["phone-right"],
         "defaultCode": 59685,
         "grid": 0,
         "attrs": []
@@ -1112,9 +1032,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "phone"
-        ],
+        "tags": ["phone"],
         "defaultCode": 59686,
         "grid": 0,
         "attrs": []
@@ -1139,9 +1057,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "play"
-        ],
+        "tags": ["play"],
         "defaultCode": 59687,
         "grid": 0,
         "attrs": []
@@ -1167,9 +1083,7 @@
         "width": 1029,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "present"
-        ],
+        "tags": ["present"],
         "defaultCode": 59688,
         "grid": 0,
         "attrs": []
@@ -1193,9 +1107,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "present2"
-        ],
+        "tags": ["present2"],
         "defaultCode": 59689,
         "grid": 0,
         "attrs": []
@@ -1221,9 +1133,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "record"
-        ],
+        "tags": ["record"],
         "defaultCode": 59690,
         "grid": 0,
         "attrs": []
@@ -1249,9 +1159,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "recurring"
-        ],
+        "tags": ["recurring"],
         "defaultCode": 59691,
         "grid": 0,
         "attrs": []
@@ -1277,9 +1185,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "search"
-        ],
+        "tags": ["search"],
         "defaultCode": 59692,
         "grid": 0,
         "attrs": []
@@ -1305,9 +1211,7 @@
         "width": 1059,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "slack"
-        ],
+        "tags": ["slack"],
         "defaultCode": 59693,
         "grid": 0,
         "attrs": []
@@ -1333,9 +1237,7 @@
         "width": 1101,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "star-filled"
-        ],
+        "tags": ["star-filled"],
         "defaultCode": 59694,
         "grid": 0,
         "attrs": []
@@ -1360,9 +1262,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "tag"
-        ],
+        "tags": ["tag"],
         "defaultCode": 59695,
         "grid": 0,
         "attrs": []
@@ -1388,9 +1288,7 @@
         "width": 1052,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "text"
-        ],
+        "tags": ["text"],
         "defaultCode": 59696,
         "grid": 0,
         "attrs": []
@@ -1415,9 +1313,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "trash"
-        ],
+        "tags": ["trash"],
         "defaultCode": 59697,
         "grid": 0,
         "attrs": []
@@ -1443,9 +1339,7 @@
         "width": 967,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "upload"
-        ],
+        "tags": ["upload"],
         "defaultCode": 59698,
         "grid": 0,
         "attrs": []
@@ -1471,9 +1365,7 @@
         "width": 1348,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "volume"
-        ],
+        "tags": ["volume"],
         "defaultCode": 59699,
         "grid": 0,
         "attrs": []
@@ -1499,9 +1391,7 @@
         "width": 4195,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "voxeet-logo"
-        ],
+        "tags": ["voxeet-logo"],
         "defaultCode": 59700,
         "grid": 0,
         "attrs": []
@@ -1526,9 +1416,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "camera"
-        ],
+        "tags": ["camera"],
         "defaultCode": 59701,
         "grid": 0,
         "attrs": []
@@ -1553,9 +1441,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "present-arrow"
-        ],
+        "tags": ["present-arrow"],
         "defaultCode": 59702,
         "grid": 0,
         "attrs": []
@@ -1580,9 +1466,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "gear"
-        ],
+        "tags": ["gear"],
         "defaultCode": 59703,
         "grid": 0,
         "attrs": []
@@ -1607,9 +1491,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "contact-waiting"
-        ],
+        "tags": ["contact-waiting"],
         "defaultCode": 59704,
         "grid": 0,
         "attrs": []
@@ -1634,9 +1516,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "camera-filled"
-        ],
+        "tags": ["camera-filled"],
         "defaultCode": 59705,
         "grid": 0,
         "attrs": []
@@ -1662,9 +1542,7 @@
         "width": 1073,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "star-outline"
-        ],
+        "tags": ["star-outline"],
         "defaultCode": 59706,
         "grid": 0,
         "attrs": []
@@ -1689,9 +1567,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "bell"
-        ],
+        "tags": ["bell"],
         "defaultCode": 59707,
         "grid": 0,
         "attrs": []
@@ -1716,9 +1592,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "facebook2"
-        ],
+        "tags": ["facebook2"],
         "defaultCode": 59708,
         "grid": 0,
         "attrs": []
@@ -1743,9 +1617,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "appleinc"
-        ],
+        "tags": ["appleinc"],
         "defaultCode": 59709,
         "grid": 0,
         "attrs": []
@@ -1770,9 +1642,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "android"
-        ],
+        "tags": ["android"],
         "defaultCode": 59710,
         "grid": 0,
         "attrs": []
@@ -1797,9 +1667,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "smile-chat-bubble"
-        ],
+        "tags": ["smile-chat-bubble"],
         "defaultCode": 59711,
         "grid": 0,
         "attrs": []
@@ -1824,9 +1692,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "screen-share"
-        ],
+        "tags": ["screen-share"],
         "defaultCode": 59712,
         "grid": 0,
         "attrs": []
@@ -1851,9 +1717,7 @@
         ],
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "camera-video"
-        ],
+        "tags": ["camera-video"],
         "defaultCode": 59713,
         "grid": 0,
         "attrs": []
@@ -1879,9 +1743,7 @@
         "width": 1095,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "bubble"
-        ],
+        "tags": ["bubble"],
         "defaultCode": 59714,
         "grid": 0,
         "attrs": []
@@ -1907,9 +1769,7 @@
         "width": 1276,
         "isMulticolor": false,
         "isMulticolor2": false,
-        "tags": [
-          "tile"
-        ],
+        "tags": ["tile"],
         "defaultCode": 59715,
         "grid": 0,
         "attrs": []
@@ -1935,26 +1795,14 @@
           "M31.991 389.707h1212.456c17.74 0 31.991 9.016 31.991 20.067v594.158c0 11.051-14.25 20.067-31.991 20.067h-1212.456c-17.74 0-31.991-9.016-31.991-20.067v-594.158c0-11.051 14.25-20.067 31.991-20.067z",
           "M909.414 0h357.426c5.235 0 9.306 4.653 9.306 10.179v302.46c0 5.526-4.072 10.179-9.306 10.179h-357.426c-5.235 0-9.306-4.653-9.306-10.179v-302.46c0-5.526 4.072-10.179 9.306-10.179z"
         ],
-        "attrs": [
-          {},
-          {},
-          {},
-          {}
-        ],
+        "attrs": [{}, {}, {}, {}],
         "width": 1276,
         "isMulticolor": false,
         "isMulticolor2": false,
         "grid": 0,
-        "tags": [
-          "speaker"
-        ]
+        "tags": ["speaker"]
       },
-      "attrs": [
-        {},
-        {},
-        {},
-        {}
-      ],
+      "attrs": [{}, {}, {}, {}],
       "properties": {
         "order": 235,
         "id": 69,
@@ -1975,27 +1823,13 @@
           "M938.667 682.667h-853.333v-554.667h853.333v554.667zM128 640h768v-469.333h-768v469.333z",
           "M554.667 746.667c0 23.564-19.103 42.667-42.667 42.667s-42.667-19.103-42.667-42.667c0-23.564 19.103-42.667 42.667-42.667s42.667 19.103 42.667 42.667z"
         ],
-        "attrs": [
-          {},
-          {},
-          {},
-          {},
-          {}
-        ],
+        "attrs": [{}, {}, {}, {}, {}],
         "isMulticolor": false,
         "isMulticolor2": false,
         "grid": 0,
-        "tags": [
-          "share-your-screen"
-        ]
+        "tags": ["share-your-screen"]
       },
-      "attrs": [
-        {},
-        {},
-        {},
-        {},
-        {}
-      ],
+      "attrs": [{}, {}, {}, {}, {}],
       "properties": {
         "order": 236,
         "id": 70,
@@ -2016,27 +1850,13 @@
           "M341.333 256c0 23.564-19.103 42.667-42.667 42.667s-42.667-19.103-42.667-42.667c0-23.564 19.103-42.667 42.667-42.667s42.667 19.103 42.667 42.667z",
           "M469.333 256c0 23.564-19.103 42.667-42.667 42.667s-42.667-19.103-42.667-42.667c0-23.564 19.103-42.667 42.667-42.667s42.667 19.103 42.667 42.667z"
         ],
-        "attrs": [
-          {},
-          {},
-          {},
-          {},
-          {}
-        ],
+        "attrs": [{}, {}, {}, {}, {}],
         "isMulticolor": false,
         "isMulticolor2": false,
         "grid": 0,
-        "tags": [
-          "window"
-        ]
+        "tags": ["window"]
       },
-      "attrs": [
-        {},
-        {},
-        {},
-        {},
-        {}
-      ],
+      "attrs": [{}, {}, {}, {}, {}],
       "properties": {
         "order": 237,
         "id": 71,
@@ -2053,19 +1873,13 @@
         "paths": [
           "M42.667 490.667c0-270.988 219.679-490.667 490.667-490.667s490.667 219.679 490.667 490.667c0 270.988-219.679 490.667-490.667 490.667s-490.667-219.679-490.667-490.667zM981.333 490.667c0-247.424-200.576-448-448-448s-448 200.576-448 448c0 247.424 200.576 448 448 448s448-200.576 448-448zM497.846 656h62.187v65h-62.187v-65zM430.659 297.094c25.417-27.396 60.312-41.094 104.687-41.094 41.042 0 73.906 11.719 98.594 35.156s37.031 53.385 37.031 89.844c0 22.083-4.531 40-13.594 53.75s-27.344 33.958-54.844 60.625c-20 19.375-32.969 35.781-38.906 49.219s-8.906 33.281-8.906 59.531h-55.625c0-29.792 3.542-53.802 10.625-72.031s22.604-39.114 46.563-62.656l25-24.687c7.5-7.083 13.542-14.479 18.125-22.187 8.333-13.542 12.5-27.604 12.5-42.188 0-20.417-6.094-38.125-18.281-53.125s-32.344-22.5-60.469-22.5c-34.792 0-58.854 12.917-72.188 38.75-7.5 14.375-11.771 35.104-12.813 62.188h-55.625c0-45 12.708-81.198 38.125-108.594 0 0-25.417 27.396 0 0z"
         ],
-        "attrs": [
-          {}
-        ],
+        "attrs": [{}],
         "isMulticolor": false,
         "isMulticolor2": false,
         "grid": 0,
-        "tags": [
-          "question-mark"
-        ]
+        "tags": ["question-mark"]
       },
-      "attrs": [
-        {}
-      ],
+      "attrs": [{}],
       "properties": {
         "order": 238,
         "id": 72,
