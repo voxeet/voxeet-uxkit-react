@@ -118,7 +118,7 @@ class SpeakerActive extends Component {
                       )}
                       <AttendeesParticipantVideo
                         streamId={st.stream.id}
-                        muted={isLocalScreenShare || isUserStream}
+                        muted={isLocalScreenShare}
                         stream={st.stream}
                         enableDbClick={!isLocalScreenShare}
                       />
@@ -138,7 +138,7 @@ class SpeakerActive extends Component {
                     className={mySelf ? "stream-media myself" : "stream-media"}
                   >
                     <AttendeesParticipantVideo
-                      muted={false}
+                      muted={true}
                       stream={participant.stream}
                       enableDbClick={false}
                     />
