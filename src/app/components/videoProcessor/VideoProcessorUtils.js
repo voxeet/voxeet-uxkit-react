@@ -840,9 +840,9 @@ export async function getVideoProcessorOptionsFromCache() {
   }
   return new VideoProcessorOptionsBuilder()
     .setVirtualBackground(virtualBackground)
-    .setFacialSmoothing(videoProcessorCache.facialSmothingStrength)
+    .setFacialSmoothing(videoProcessorCache.facialSmoothingStrength)
     .setSpotLight(videoProcessorCache.spotLightStrength)
-    .setAutoFraming(videoProcessorCache.sutoFraming)
+    .setAutoFraming(videoProcessorCache.autoFraming)
     .setNoiseReduction(videoProcessorCache.noiseReduction)
     .setAutoBrightness(videoProcessorCache.autoBrightness)
     .setFlagNonBlockingAsyncPixelReadback(

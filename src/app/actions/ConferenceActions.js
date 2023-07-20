@@ -42,6 +42,23 @@ export const Types = {
   REPLAY_ENDED: "REPLAY_ENDED",
 };
 
+async function getCurrentVideoProcessorOptions() {
+  let videoProcessorOptions = await getVideoProcessorOptionsFromCache();
+  // Video processing should be enabled only if at least one option is enabled.
+  // When all options are off, video processing should be disabled to reduce CPU usage.
+  if (
+    videoProcessorOptions.virtualBackground ||
+    videoProcessorOptions.facialSmoothing ||
+    videoProcessorOptions.spotLight ||
+    videoProcessorOptions.autoFraming ||
+    videoProcessorOptions.noiseReduction ||
+    videoProcessorOptions.autoBrightness
+  ) {
+    return videoProcessorOptions;
+  }
+  return undefined;
+}
+
 export class Actions {
   static initialize(appKey, appSecret, options) {
     return (dispatch) => {
@@ -381,25 +398,7 @@ export class Actions {
     return async (dispatch, getState) => {
       let videoProcessorOptions =
         preConfigPayload?.videoProcessorOptions ??
-        (await getVideoProcessorOptionsFromCache());
-      // Video processing should be enabled only if at least one option is enabled.
-      // When all options are off, video processing should be disabled to reduce CPU usage.
-      if (
-        videoProcessorOptions.virtualBackgroundId ===
-          VideoProcessorDefaultState.VirtualBackgroundId &&
-        videoProcessorOptions.facialSmoothingStrength ===
-          VideoProcessorDefaultState.FacialSmoothingStrength &&
-        videoProcessorOptions.spotLightStrength ===
-          VideoProcessorDefaultState.SpotLightStrength &&
-        videoProcessorOptions.autoFraming ===
-          VideoProcessorDefaultState.AutoFraming &&
-        videoProcessorOptions.noiseReduction ===
-          VideoProcessorDefaultState.NoiseReduction &&
-        videoProcessorOptions.autoBrightness ===
-          VideoProcessorDefaultState.AutoBrightness
-      ) {
-        videoProcessorOptions = undefined;
-      }
+        (await getCurrentVideoProcessorOptions());
       dispatch(ChatActions.clearMessages());
       dispatch(ParticipantActions.clearParticipantsList());
       dispatch(this._conferenceConnecting());
@@ -981,15 +980,7 @@ export class Actions {
         voxeet: { controls, inputManager },
       } = getState();
       if (!videoStarted) {
-        const virtualBackgroundMode =
-          controls.virtualBackgroundMode !== undefined
-            ? controls.virtualBackgroundMode
-            : Cookies.get("virtualBackgroundMode");
-        const processor =
-          virtualBackgroundMode != null && virtualBackgroundMode !== "none"
-            ? { type: virtualBackgroundMode }
-            : null;
-
+        let videoProcessorOptions = await getCurrentVideoProcessorOptions();
         const payloadConstraints = {
           deviceId: inputManager.currentVideoDevice?.deviceId,
         };
@@ -999,7 +990,7 @@ export class Actions {
         }
 
         return VoxeetSDK.video.local
-          .start(payloadConstraints, processor)
+          .start(payloadConstraints, videoProcessorOptions)
           .then(() => {
             dispatch(
               OnBoardingMessageActions.onBoardingDisplay(strings.cameraOn, 1000)
