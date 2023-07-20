@@ -1508,6 +1508,9 @@ export class Actions {
           if (VoxeetSDK.session.participant.id === user.id) {
             dispatch(ControlsActions.toggleScreenShareMode(false));
           }
+          else {
+            dispatch(ControlsActions.restoreMode());
+          }
         } else {
           // VFS
           dispatch(ForwardedVideoActions.updateForwardedVideos());

@@ -174,7 +174,7 @@ class ConferencePreConfigContainer extends Component {
     VoxeetSDK.video.local.removeListener("videoStarted", this.onVideoStarted);
     VoxeetSDK.video.local.removeListener("videoUpdated", this.onVideoUpdated);
 
-    this.releaseAudioStream().then(() => this.releaseVideoStream());
+    this.releaseAudioStream(true).then(() => this.releaseVideoStream(true));
   }
 
   reportError(error) {
@@ -277,25 +277,27 @@ class ConferencePreConfigContainer extends Component {
     navigator.attachMediaStream(this.video, stream);
   }
 
-  async releaseVideoStream() {
+  async releaseVideoStream(onComponentUnmount=false) {
     if (this.state.userVideoStream) {
       await VoxeetSDK.video.local.stop();
-
-      this.setState({
-        userVideoStream: null,
-      });
+      if(!onComponentUnmount){
+        this.setState({
+          userVideoStream: null,
+        });
+      }
     }
   }
 
-  async releaseAudioStream() {
+  async releaseAudioStream(onComponentUnmount=false) {
     if (this.state.userAudioStream) {
       this.state.userAudioStream.getTracks().forEach((track) => {
         track.stop();
       });
-
-      this.setState({
-        userAudioStream: null,
-      });
+      if(!onComponentUnmount){
+        this.setState({
+          userAudioStream: null,
+        });
+      }
     }
   }
 

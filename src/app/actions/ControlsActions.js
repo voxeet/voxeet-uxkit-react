@@ -10,6 +10,7 @@ export const Types = {
   SHARE_ACTIONS_ALLOWED: "SHARE_ACTIONS_ALLOWED",
   TOGGLE_MODAL: "TOGGLE_MODAL",
   FORCE_MODE: "FORCE_MODE",
+  RESTORE_MODE: "RESTORE_MODE",
   TOGGLE_SCREEN_SHARE_MODE: "TOGGLE_SCREEN_SHARE_MODE",
   TOGGLE_FILE_PRESENTATION_MODE: "TOGGLE_FILE_PRESENTATION_MODE",
   TOGGLE_VIDEO_PRESENTATION_MODE: "TOGGLE_VIDEO_PRESENTATION_MODE",
@@ -111,6 +112,11 @@ export class Actions {
         mode: mode,
       },
     };
+  }
+  static restoreMode(){
+    return{
+      type:Types.RESTORE_MODE
+    }
   }
 
   static toggleScreenShareMode(isScreenshare) {
