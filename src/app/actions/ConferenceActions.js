@@ -26,7 +26,10 @@ import {
   RECORDING_STATE,
 } from "../constants/BroadcastMessageType";
 import { STATUS_CONNECTING } from "../constants/ParticipantStatus";
-import { getVideoProcessorOptionsFromCache } from "../components/videoProcessor/VideoProcessorUtils";
+import {
+  getVideoProcessorOptionsFromCache,
+  VideoProcessorDefaultState,
+} from "../components/videoProcessor/VideoProcessorUtils";
 
 export const Types = {
   INITIALIZED_SUCCESS: "INITIALIZED_SUCCESS",
@@ -382,12 +385,18 @@ export class Actions {
       // Video processing should be enabled only if at least one option is enabled.
       // When all options are off, video processing should be disabled to reduce CPU usage.
       if (
-        !videoProcessorOptions.virtualBackgroundId &&
-        !videoProcessorOptions.facialSmoothingStrength &&
-        !videoProcessorOptions.spotLightStrength &&
-        !videoProcessorOptions.autoFraming &&
-        !videoProcessorOptions.noiseReduction &&
-        !videoProcessorOptions.autoBrightness
+        videoProcessorOptions.virtualBackgroundId ===
+          VideoProcessorDefaultState.VirtualBackgroundId &&
+        videoProcessorOptions.facialSmoothingStrength ===
+          VideoProcessorDefaultState.FacialSmoothingStrength &&
+        videoProcessorOptions.spotLightStrength ===
+          VideoProcessorDefaultState.SpotLightStrength &&
+        videoProcessorOptions.autoFraming ===
+          VideoProcessorDefaultState.AutoFraming &&
+        videoProcessorOptions.noiseReduction ===
+          VideoProcessorDefaultState.NoiseReduction &&
+        videoProcessorOptions.autoBrightness ===
+          VideoProcessorDefaultState.AutoBrightness
       ) {
         videoProcessorOptions = undefined;
       }
