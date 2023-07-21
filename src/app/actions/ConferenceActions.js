@@ -15,6 +15,7 @@ import { Actions as OnBoardingMessageActions } from "./OnBoardingMessageActions"
 import { Actions as OnBoardingMessageWithActionActions } from "./OnBoardingMessageWithActionActions";
 import { Actions as OnBoardingMessageWithConfirmationActions } from "./OnBoardingMessageWithConfirmationActions";
 import { Actions as TimerActions } from "./TimerActions";
+import {Actions as ActiveSpeakerActions} from "./ActiveSpeakerActions"
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "../libs/getVideoDeviceName";
 import { isElectron, isIOS } from "../libs/browserDetection";
@@ -1256,7 +1257,7 @@ export class Actions {
   static checkIfUpdateStatusUser(user) {
     return (dispatch, getState) => {
       const {
-        voxeet: { participants },
+        voxeet: { participants,activeSpeaker },
       } = getState();
       const index = participants.participants.findIndex(
         (p) => p.participant_id === user.id
@@ -1275,6 +1276,14 @@ export class Actions {
             user.status
           )
         );
+        if(user.status==="Left"){
+          if(user.id === activeSpeaker?.activeSpeaker?.participant_id)
+          dispatch(ActiveSpeakerActions.disableForceActiveSpeaker())
+          if (participants.participants.length <= 1){
+            dispatch(ControlsActions.forceMode('tiles'))
+          }
+        }
+        
       }
       dispatch(
         ParticipantWaitingActions.onParticipantWaitingStatusUpdated(
@@ -1289,13 +1298,21 @@ export class Actions {
   static checkIfUpdateUser(user, stream) {
     return (dispatch, getState) => {
       const {
-        voxeet: { participants },
+        voxeet: { participants,activeSpeaker },
       } = getState();
       const index = participants.participants.findIndex(
         (p) => p.participant_id === user.id
       );
-      if (index !== -1 || VoxeetSDK.session.participant.id === user.id)
+      if (index !== -1 || VoxeetSDK.session.participant.id === user.id){
         dispatch(ParticipantActions.onParticipantUpdated(user, stream));
+        if(user.status ==="Left"){
+          if(user.participant_id === activeSpeaker?.activeSpeaker?.participant_id)
+            dispatch(ActiveSpeakerActions.disableForceActiveSpeaker());
+          if (participants.participants.length <= 1){
+            dispatch(ControlsActions.forceMode('tiles'))
+          }
+        }
+      }
     };
   }
 

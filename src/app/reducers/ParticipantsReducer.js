@@ -274,7 +274,8 @@ const ParticipantReducer = (state = defaultState, action) => {
       participants[index].stream = null;
       if (
         action.payload.stream &&
-        action.payload.stream.getVideoTracks().length > 0
+        action.payload.stream.getVideoTracks().length > 0 &&
+        action.payload.status !== STATUS_LEFT
       ) {
         participants[index] = {
           ...participants[index],
