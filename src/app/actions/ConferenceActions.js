@@ -1278,8 +1278,8 @@ export class Actions {
         );
         if(user.status==="Left"){
           if(user.id === activeSpeaker?.activeSpeaker?.participant_id)
-          dispatch(ActiveSpeakerActions.disableForceActiveSpeaker())
-          if (participants.participants.length <= 1){
+          dispatch(ActiveSpeakerActions.stopActiveSpeaker())
+          if (participants.participants.filter(p => p.status !== "Left").length === 0){
             dispatch(ControlsActions.forceMode('tiles'))
           }
         }
@@ -1306,7 +1306,7 @@ export class Actions {
       if (index !== -1 || VoxeetSDK.session.participant.id === user.id){
         dispatch(ParticipantActions.onParticipantUpdated(user, stream));
         if(user.status ==="Left"){
-          if(user.participant_id === activeSpeaker?.activeSpeaker?.participant_id)
+          if(user.id === activeSpeaker?.activeSpeaker?.participant_id || activeSpeaker?.activeSpeaker === null)
             dispatch(ActiveSpeakerActions.disableForceActiveSpeaker());
           if (participants.participants.length <= 1){
             dispatch(ControlsActions.forceMode('tiles'))
