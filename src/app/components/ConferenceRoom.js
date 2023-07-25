@@ -42,6 +42,30 @@ class ConferenceRoom extends Component {
     this.handleJoin = this.handleJoin.bind(this);
     this.initializeControlsStore();
     this.startConferenceWithParams = this.startConferenceWithParams.bind(this);
+
+    // Initialize SDK
+    const {
+      chatOptions,
+      consumerKey,
+      consumerSecret,
+      oauthToken,
+      refreshTokenCallback,
+    } = this.props;
+    if (oauthToken != null) {
+      this.initialized = this.props.dispatch(
+        ConferenceActions.initializeWithToken(
+          oauthToken,
+          refreshTokenCallback,
+          { chatOptions }
+        )
+      );
+    } else {
+      this.initialized = this.props.dispatch(
+        ConferenceActions.initialize(consumerKey, consumerSecret, {
+          chatOptions,
+        })
+      );
+    }
   }
 
   replayConference(conferenceId) {
@@ -85,8 +109,6 @@ class ConferenceRoom extends Component {
       // constraints,
       displayModes,
       displayActions,
-      consumerKey,
-      consumerSecret,
       userInfo,
       pstnNumbers,
       autoJoin,
@@ -98,12 +120,10 @@ class ConferenceRoom extends Component {
       handleOnLeave,
       conferenceReplayId,
       isAdmin,
-      oauthToken,
       disableSounds,
       dvwc,
       simulcast,
       invitedUsers,
-      refreshTokenCallback,
       isListener,
       chatOptions,
       spatialAudio,
@@ -158,23 +178,6 @@ class ConferenceRoom extends Component {
       );
       this.videoDenoise = preConfigPayload.videoDenoise;
     }
-    let initialized;
-    let pinCodeTmp = pinCode;
-    if (oauthToken != null) {
-      initialized = this.props.dispatch(
-        ConferenceActions.initializeWithToken(
-          oauthToken,
-          refreshTokenCallback,
-          { chatOptions }
-        )
-      );
-    } else {
-      initialized = this.props.dispatch(
-        ConferenceActions.initialize(consumerKey, consumerSecret, {
-          chatOptions,
-        })
-      );
-    }
 
     if (handleOnConnect != null) {
       this.props.dispatch(ParticipantActions.handleOnConnect(handleOnConnect));
@@ -184,6 +187,7 @@ class ConferenceRoom extends Component {
       setPstnNumbers(pstnNumbers);
     }
 
+    let pinCodeTmp = pinCode;
     if (pinCodeTmp != null) {
       if (pinCodeTmp.length !== 8 || !/^\d+$/.test(pinCodeTmp)) {
         pinCodeTmp = "";
@@ -217,7 +221,7 @@ class ConferenceRoom extends Component {
     }
 
     if (conferenceReplayId != null) {
-      initialized.then(() => {
+      this.initialized.then(() => {
         this.props.dispatch(
           ConferenceActions.subscribeConference(conferenceAlias)
         );
@@ -271,7 +275,7 @@ class ConferenceRoom extends Component {
       ControlsActions.setSimulcast(simulcast);
 
       if (isDemo) {
-        initialized.then(() =>
+        this.initialized.then(() =>
           this.props.dispatch(
             ConferenceActions.joinDemo(userInfo, spatialAudio)
           )
@@ -301,7 +305,7 @@ class ConferenceRoom extends Component {
         );
       } */ else if (autoJoin && conferenceReplayId == null) {
         // Autojoin when entering in fullscreen mode
-        initialized.then(() => {
+        this.initialized.then(() => {
           this.props.dispatch(
             ConferenceActions.join(
               conferenceAlias,
@@ -731,6 +735,9 @@ class ConferenceRoom extends Component {
           spatialAudioEnabled={spatialAudio}
           virtualBackgroundModeSupported={
             this.props.virtualBackgroundModeSupported
+          }
+          userInfo={
+            this.props.userInfo
           }
         />
       );

@@ -423,6 +423,10 @@ class ConferencePreConfigContainer extends Component {
   }
 
   async init() {
+    if (!VoxeetSDK.session.participant) {
+      await VoxeetSDK.session.open(this.props.userInfo);
+    }
+
     let resultAudio = [];
     let resultVideo = [];
     let resultAudioOutput = [];
@@ -1678,6 +1682,7 @@ ConferencePreConfigContainer.propTypes = {
   virtualBackgroundMode: PropTypes.string,
   videoDenoise: PropTypes.bool,
   virtualBackgroundModeSupported: PropTypes.bool,
+  userInfo: PropTypes.object,
 };
 
 export default ConferencePreConfigContainer;
