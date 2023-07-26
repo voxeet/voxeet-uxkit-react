@@ -35,6 +35,7 @@ class ActiveSpeakerOverlay extends Component {
 
   componentWillUnmount() {
     this.props.dispatch(ActiveSpeakerActions.stopActiveSpeaker());
+    clearTimeout(this.hideTimer)
   }
 
   componentDidUpdate(prevProps, prevState) {

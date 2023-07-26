@@ -212,11 +212,12 @@ class AttendeesSettings extends Component {
       this.setState({ videoDenoise: this.props.controlsStore.videoDenoise });
     }
 
-    if (
+    if (this.props.controlStore && this.props.controlStore.displayAttendeesList && (
       this.props.controlsStore.videoEnabled !==
         prevProps.controlsStore.videoEnabled ||
       this.props.controlsStore.audioEnabled !==
         prevProps.controlsStore.audioEnabled
+    )
     ) {
       this.initDevices();
     }

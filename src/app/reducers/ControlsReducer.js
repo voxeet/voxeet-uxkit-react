@@ -23,6 +23,7 @@ const defaultState = {
   isKickOnHangUpActived: false,
   recordingLocked: false,
   simulcast: false,
+  modeSaved:[],
   modalOpened: true,
   displayActions: [
     "mute",
@@ -84,9 +85,21 @@ const ControlsReducer = (state = defaultState, action) => {
     case Types.FORCE_MODE:
       return {
         ...state,
-        modeSaved: state.mode,
+        modeSaved: [...state.modeSaved,state.mode],
         mode: action.payload.mode,
       };
+    case Types.RESTORE_MODE:
+      if(!state.modeSaved.length)
+        return{
+          ...state
+        }
+      let tmp = state.modeSaved.pop();
+      return{
+        ...state,
+        modeSaved: state.modeSaved,
+        mode:tmp
+      }
+
     case Types.SET_CHROME_EXTENSION_ID:
       return {
         ...state,
@@ -106,19 +119,22 @@ const ControlsReducer = (state = defaultState, action) => {
       return {
         ...state,
         isScreenshare: action.payload.isScreenshare,
-        mode: action.payload.isScreenshare ? state.mode : state.modeSaved,
+        mode: action.payload.isScreenshare ? state.mode : state.modeSaved.pop(),
+        modeSaved:state.modeSaved
       };
     case Types.TOGGLE_VIDEO_PRESENTATION_MODE:
       return {
         ...state,
         isVideoPresentation: action.payload.isVideoPresentation,
-        mode: action.payload.isVideoPresentation ? state.mode : state.modeSaved,
+        mode: action.payload.isVideoPresentation ? state.mode : state.modeSaved.pop(),
+        modeSaved:state.modeSaved
       };
     case Types.TOGGLE_FILE_PRESENTATION_MODE:
       return {
         ...state,
         isFilePresentation: action.payload.isFilePresentation,
-        mode: action.payload.isFilePresentation ? state.mode : state.modeSaved,
+        mode: action.payload.isFilePresentation ? state.mode : state.modeSaved.pop(),
+        modeSaved:state.modeSaved
       };
     case Types.TOGGLE_FULLSCREEN:
       const fullScreenStatus = !state.isWidgetFullScreenOn;

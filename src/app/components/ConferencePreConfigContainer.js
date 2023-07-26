@@ -174,7 +174,12 @@ class ConferencePreConfigContainer extends Component {
     VoxeetSDK.video.local.removeListener("videoStarted", this.onVideoStarted);
     VoxeetSDK.video.local.removeListener("videoUpdated", this.onVideoUpdated);
 
-    this.releaseAudioStream().then(() => this.releaseVideoStream());
+    if (this.state.userVideoStream) 
+        VoxeetSDK.video.local.stop();
+    
+    if (this.state.userAudioStream) 
+      this.state.userAudioStream.getTracks().forEach(track => track.stop());
+    
   }
 
   reportError(error) {
@@ -280,7 +285,6 @@ class ConferencePreConfigContainer extends Component {
   async releaseVideoStream() {
     if (this.state.userVideoStream) {
       await VoxeetSDK.video.local.stop();
-
       this.setState({
         userVideoStream: null,
       });
