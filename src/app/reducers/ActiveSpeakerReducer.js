@@ -17,7 +17,7 @@ const ActiveSpeakerReducer = (state = defaultState, action) => {
       };
     case Types.STOP_ACTIVE_SPEAKER:
       if (state.interval) clearInterval(state.interval);
-      if(state?.activeSpeaker?.status ==="Left") return defaultState
+      if(state?.activeSpeaker?.status ==="Left" ) return defaultState
       return {
         ...state,
         interval: null,
