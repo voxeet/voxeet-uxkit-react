@@ -19,6 +19,7 @@ import {Actions as ActiveSpeakerActions} from "./ActiveSpeakerActions"
 import { strings } from "../languages/localizedStrings.js";
 import { getVideoDeviceName } from "../libs/getVideoDeviceName";
 import { isElectron, isIOS } from "../libs/browserDetection";
+import userPlaceholder from "../../static/images/user-placeholder.png";
 import Autolinker from "autolinker";
 import {
   BROADCAST_KICK,
@@ -1728,7 +1729,33 @@ export class Actions {
       });
 
       VoxeetSDK.command.on("received", (participant, message) => {
-        const dataParsed = JSON.parse(message);
+        let dataParsed;
+        try{
+          dataParsed = JSON.parse(message);
+           /*Event if the message is not in the UX-Kit JSON style,
+            it still may parse with no error, e.g if the message is a single number
+           */
+          if(!dataParsed.title) throw new Error(); 
+
+        }catch(err){
+            /*Commands from uxkit are always in JSON format, so if the parser fails, that most likely means 
+            the message originates from a different client app connected to the same conference, but using 
+            a different, incompatible command schema.
+            If that happens, there are 2 possibilities: discard the message, or prints its contents as a chat message
+            Since all messages are assumed to be meaningfull, the better option is to log unparseable commands to chat 
+            */
+           dataParsed = {
+              title:CHAT_MESSAGE,
+              content: message,
+              type:"text/external",  //To display messages from external sources in different style
+              avatarUrl:participant.info.avatarUrl || userPlaceholder,
+              time:Date.now(), //This is slightly incorrect, as the timestamp should come from the sender
+              name: participant.info.name,
+              ownerId:participant.id
+           }
+           
+        }
+
         switch (dataParsed.title) {
           case BROADCAST_KICK:
             if (VoxeetSDK.session.participant.id === dataParsed.userId) {
