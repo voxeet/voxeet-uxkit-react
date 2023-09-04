@@ -328,19 +328,22 @@ const generatePositionLayout = (
 };
 
 const refreshPositionLayout = () => {
-  const layout = generatePositionLayout(participantsConnected.length);
-
-  for (var i = 0; i < participantsConnected.length; i++) {
-    if (
-      !excludedParticipants.includes(participantsConnected[i].participant_id)
-    ) {
-      participantsConnected[i].id = participantsConnected[i].participant_id;
-      VoxeetSDK.conference.setSpatialPosition(
-        participantsConnected[i],
-        layout[i]
-      );
-      participantsConnected[i].x = layout[i].x;
-      participantsConnected[i].y = layout[i].y;
+  if (VoxeetSDK.conference.current.params.spatialAudioStyle === "shared")
+    return;
+  else {
+    const layout = generatePositionLayout(participantsConnected.length);
+    for (var i = 0; i < participantsConnected.length; i++) {
+      if (
+        !excludedParticipants.includes(participantsConnected[i].participant_id)
+      ) {
+        participantsConnected[i].id = participantsConnected[i].participant_id;
+        VoxeetSDK.conference.setSpatialPosition(
+          participantsConnected[i],
+          layout[i]
+        );
+        participantsConnected[i].x = layout[i].x;
+        participantsConnected[i].y = layout[i].y;
+      }
     }
   }
 };
@@ -361,6 +364,7 @@ export const updateParticipantPositions = (participants) => {
 export const updateSpatialScene = (
   currentBounds = { width: 1, height: 1, left: 0, top: 0 }
 ) => {
+  if(VoxeetSDK.conference.current.params.spatialAudioStyle === "shared") return;
   if (currentBounds) {
     // Set the scale so the pixel size of the component maps to the audio scene size
     const right = { x: 1, y: 0, z: 0 };

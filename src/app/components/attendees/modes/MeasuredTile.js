@@ -44,6 +44,8 @@ export default function MeasuredTile(props) {
   );
 
   const onBoundsUpdate = (size) => {
+    if(VoxeetSDK.conference.current.params.spatialAudioStyle === "shared")
+      return 
     const currentBounds = size.bounds;
     if (currentBounds) {
       const participant = VoxeetSDK.conference.current.participants.get(
