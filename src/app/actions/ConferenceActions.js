@@ -544,6 +544,16 @@ export class Actions {
                   videoProcessor: videoProcessorOptions,
                 })
                 .then((res) => {
+                  let participant = VoxeetSDK.session.participant;
+                  if (VoxeetSDK.conference.current.params.spatialAudioStyle === "shared") {
+                    if (participant.type === "user") {
+                      VoxeetSDK.conference.setSpatialPosition(participant, {
+                        x: 0,
+                        y: 0,
+                        z: 0,
+                      });
+                    }
+                  }
                   dispatch(
                     ParticipantActions.saveCurrentUser(
                       userInfo.name,
@@ -671,6 +681,16 @@ export class Actions {
               videoProcessor: videoProcessorOptions,
             })
             .then((res) => {
+              let participant = VoxeetSDK.session.participant;
+              if (VoxeetSDK.conference.current.params.spatialAudioStyle === "shared") {
+                if (participant.type === "user") {
+                  VoxeetSDK.conference.setSpatialPosition(participant, {
+                    x: 0,
+                    y: 0,
+                    z: 0,
+                  });
+                }
+              }
               dispatch(
                 ParticipantActions.saveCurrentUser(
                   userInfo.name,
