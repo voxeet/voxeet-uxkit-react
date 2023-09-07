@@ -22,12 +22,10 @@ class ListRow extends Component {
 
   render() {
     const { chatOptions } = this.props;
-
     let time = new Intl.DateTimeFormat("en-US", {
       hour: "2-digit",
       minute: "2-digit",
     }).format(this.props.time);
-
     return (
       <div key={this.props.index} style={this.props.style}>
         <li ref={this.rowRef}>
@@ -57,13 +55,13 @@ class ListRow extends Component {
                 <img src={this.props.avatarUrl} />
               </div>
               <div>
-                <span className="chat-name">{this.props.name}</span>
+                <span className="chat-name">{this.props.name}{this.props.type === "text" ? "" : " (external)"}</span>
                 {!chatOptions.autoLinker ? (
-                  <div className="chat-content">{this.props.content}</div>
+                  <div className={this.props.type === "text" ? "chat-content" : "chat-content-external"}>{this.props.content}</div>
                 ) : (
                   <div
                     dangerouslySetInnerHTML={{ __html: this.props.content }}
-                    className="chat-content"
+                    className={this.props.type === "text" ? "chat-content" : "chat-content-external"}
                   />
                 )}
               </div>
@@ -138,6 +136,7 @@ class MessageList extends Component {
           myself={data[index].ownerId === currentUser.participant_id}
           setRowHeight={this.setRowHeight.bind(this)}
           chatOptions={chatOptions}
+          type={data[index].type}
         />
       );
     };
