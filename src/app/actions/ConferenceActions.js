@@ -379,7 +379,8 @@ export class Actions {
     chatOptions,
     dvwc,
     spatialAudio,
-    virtualBackgroundModeSupported
+    virtualBackgroundModeSupported,
+    handleError
   ) {
     let maxVideoForwarding =
       preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined
@@ -637,6 +638,12 @@ export class Actions {
                       controls.videoDenoise
                     );
                   }
+                })
+                .catch(e => {
+                  if (handleError)
+                    handleError(e)
+                  else
+                    console.error(e)
                 });
             })
             .catch((err) => {
