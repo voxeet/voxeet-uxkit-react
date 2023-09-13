@@ -127,6 +127,7 @@ class ConferenceRoom extends Component {
       isListener,
       chatOptions,
       spatialAudio,
+      handleError
     } = this.props;
     let { constraints } = this.props;
     if (preConfigPayload && preConfigPayload.maxVideoForwarding !== undefined) {
@@ -327,7 +328,8 @@ class ConferenceRoom extends Component {
               chatOptions,
               dvwc,
               spatialAudio,
-              this.props.virtualBackgroundModeSupported
+              this.props.virtualBackgroundModeSupported,
+              handleError
             )
           );
         });
